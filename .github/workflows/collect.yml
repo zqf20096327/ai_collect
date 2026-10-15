@@ -1,0 +1,59 @@
+name: collect
+
+on:
+  schedule:
+    - cron: "0 13 * * *"   # UTC 13:00 = 北京 21:00
+  workflow_dispatch:        # 支持手动触发
+
+permissions:
+  contents: write           # 采完 commit + push 回仓库
+
+concurrency:
+  group: collect
+  cancel-in-progress: false # 同一时间只跑一个,后到的排队
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      PROXY: ""             # Actions runner 直连,不走 Clash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # 池数据历史完整保留
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: s1 topic 通道(>1000 自动拆分)
+        run: python s1_collect_topics.py
+
+      - name: s2 org 通道 + s3 watch 白名单
+        run: |
+          python s2_collect_orgs.py
+          python s3_collect_watch.py
+
+      - name: s4 新项目窗口
+        run: python s4_collect_new.py
+
+      - name: s5 合并(分片/事件/快照)
+        run: python s5_merge_pool.py
+
+      # GITHUB_TOKEN 内置配额 1000 次/时:s2/s3 用掉几百次,
+      # README 每晚只抓新入池仓(无 ETag 缓存),星数优先,上限 600
+      - name: s6 README(新入池增量)
+        run: python s6_fetch_readmes.py --new-only --limit 600
+
+      - name: commit & push
+        run: |
+          git config user.name "ai-collect-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data state .github
+          if git diff --cached --quiet; then
+            echo "今日无变化,跳过提交"
+          else
+            git commit -m "collect: $(date -u +%Y-%m-%d) 池/事件/README 日更"
+            git push
+          fi
