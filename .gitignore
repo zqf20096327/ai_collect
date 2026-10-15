@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+# 中间数据与全量快照不入 git(活文件/事件/星数点/READMEs 入 git)
+data/parts/
+data/snapshot_*/
+data/live/*.tmp
+state/*.tmp
+state/*.log
