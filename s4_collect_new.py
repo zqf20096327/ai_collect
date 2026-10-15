@@ -40,7 +40,9 @@ def sweep_new(topic, max_pages):
     items, total = gh.search_repos(q, max_pages=1)
     if total <= max_pages * 100:
         if total > len(items):
-            items, _ = gh.search_repos(q, max_pages=max_pages)
+            rest, _ = gh.search_repos(q, max_pages=max_pages, start_page=2,
+                                      known_total=total)
+            items += rest
         return items, total
     print(f"  [{topic}] total={total} 超单查询上限,按 3 天片拆分")
     out = list(items)

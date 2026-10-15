@@ -71,7 +71,9 @@ def sweep(base, max_pages, depth, stats, star=None, year=None):
             print(f"    [warn] 叶子层仍 >1000({total}),取星数 top "
                   f"{max_pages * 100}", flush=True)
         if total > len(items):
-            items, _ = gh.search_repos(q, max_pages=max_pages)
+            rest, _ = gh.search_repos(q, max_pages=max_pages, start_page=2,
+                                      known_total=total)
+            items += rest
         return items, total
     out = list(items)
     print(f"    total={total} > 1000,depth={depth} 拆分中", flush=True)
@@ -87,11 +89,28 @@ def sweep(base, max_pages, depth, stats, star=None, year=None):
         try:
             if "month" in kw:
                 y, m, last = kw["month"]
-                mq = base
-                if star:
-                    mq += " " + star_q(*star)
-                mq += f" created:{y}-{m:02d}-01..{y}-{m:02d}-{last:02d}"
-                sub_items, _ = sweep_leaf(mq, max_pages, stats)
+
+                def _mq(a, b):
+                    s = base
+                    if star:
+                        s += " " + star_q(*star)
+                    return s + f" created:{a}..{b}"
+
+                sub_items, t = sweep_leaf(
+                    _mq(f"{y}-{m:02d}-01", f"{y}-{m:02d}-{last:02d}"),
+                    max_pages, stats)
+                if t > 1000:   # 月超限 → 上下半月;半月再超由 sweep_leaf 兜底
+                    print(f"    月 {y}-{m} 共 {t} 超限,拆半月", flush=True)
+                    sub_items = list(sub_items)
+                    for a, b in ((f"{y}-{m:02d}-01", f"{y}-{m:02d}-15"),
+                                 (f"{y}-{m:02d}-16", f"{y}-{m:02d}-{last:02d}")):
+                        try:
+                            h_items, _ = sweep_leaf(_mq(a, b), max_pages, stats)
+                            sub_items.extend(h_items)
+                        except Exception as e:
+                            stats["errors"] = stats.get("errors", 0) + 1
+                            print(f"    [error] 半月查询失败跳过: {e}",
+                                  flush=True)
             else:
                 sub_items, _ = sweep(base, max_pages, depth + 1, stats, **kw)
         except Exception as e:
@@ -109,7 +128,9 @@ def sweep_leaf(q, max_pages, stats):
         print(f"    [warn] 叶子层仍 >1000({total}),取星数 top "
               f"{max_pages * 100}", flush=True)
     if total > len(items):
-        items, _ = gh.search_repos(q, max_pages=max_pages)
+        rest, _ = gh.search_repos(q, max_pages=max_pages, start_page=2,
+                                  known_total=total)
+        items += rest
     return items, total
 
 

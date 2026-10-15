@@ -55,5 +55,6 @@ jobs:
             echo "今日无变化,跳过提交"
           else
             git commit -m "collect: $(date -u +%Y-%m-%d) 池/事件/README 日更"
+            git pull --rebase origin main
             git push
           fi
