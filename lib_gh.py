@@ -11,10 +11,12 @@ import socket
 import ssl
 import subprocess
 import sys
+import threading
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -77,28 +79,34 @@ def _proxy_addr():
 
 def _drop_proxy():
     global OPENER, _PROXY_ALIVE
-    _PROXY_ALIVE = False
-    OPENER = urllib.request.build_opener()
-    print(f"  [proxy] {PROXY} 连接被拒,本进程降级为直连", flush=True)
+    with _PROXY_LOCK:
+        if not _PROXY_ALIVE:
+            return
+        _PROXY_ALIVE = False
+        OPENER = urllib.request.build_opener()
+        print(f"  [proxy] {PROXY} 连接被拒,本进程降级为直连", flush=True)
 
 
 def _try_restore_proxy():
     """直连模式下传输被掐时,探测代理是否恢复(30s 内不重复探测)。"""
     global OPENER, _PROXY_ALIVE, _LAST_PROBE
-    if not PROXY or _PROXY_ALIVE:
+    if not PROXY:
         return False
-    now = time.time()
-    if now - _LAST_PROBE < 30:
-        return False
-    _LAST_PROBE = now
-    try:
-        with socket.create_connection(_proxy_addr(), timeout=2):
-            pass
-    except OSError:
-        return False
-    OPENER = urllib.request.build_opener(urllib.request.ProxyHandler(
-        {"http": PROXY, "https": PROXY}))
-    _PROXY_ALIVE = True
+    with _PROXY_LOCK:
+        if _PROXY_ALIVE:
+            return False
+        now = time.time()
+        if now - _LAST_PROBE < 30:
+            return False
+        _LAST_PROBE = now
+        try:
+            with socket.create_connection(_proxy_addr(), timeout=2):
+                pass
+        except OSError:
+            return False
+        OPENER = urllib.request.build_opener(urllib.request.ProxyHandler(
+            {"http": PROXY, "https": PROXY}))
+        _PROXY_ALIVE = True
     print(f"  [proxy] {PROXY} 恢复可用,切回代理", flush=True)
     return True
 
@@ -146,6 +154,7 @@ def api_get(path, params=None, accept="application/vnd.github+json",
         try:
             with OPENER.open(req, timeout=timeout) as r:
                 body = r.read()
+                _pace_update(r.headers)
                 if want == "raw":
                     return r.headers, body
                 try:
@@ -155,8 +164,10 @@ def api_get(path, params=None, accept="application/vnd.github+json",
         except urllib.error.HTTPError as e:
             hdrs = e.headers
             if e.code == 304:
+                _pace_update(hdrs)
                 return hdrs, None
             if e.code in (403, 429):
+                _pace_update(hdrs)
                 ra = hdrs.get("Retry-After") if hdrs else None
                 if ra:
                     time.sleep(int(ra) + 1)
@@ -237,54 +248,97 @@ def api_send(method, path, payload=None, accept="application/vnd.github+json",
 
 
 def search_repos(q, max_pages=10, per_page=100, sort="stars", start_page=1,
-                 known_total=None):
-    """仓库搜索。返回 (items, total_count)。内置动态配速:按响应头的
-    剩余配额把请求均匀摊开,不撞墙(撞墙罚等整个重置周期,更慢)。
-    start_page/known_total 配合探测复用:探测拿了第 1 页后,
+                 known_total=None, concurrency=5):
+    """仓库搜索。返回 (items, total_count)。
+
+    第 1 页串行(拿 total_count 与配额头),余页有界并发:Pacer 闸门按
+    30 次/分钟配额把相邻请求的发出时刻至少隔开动态间隔,并发只用于
+    重叠网络往返(单页 RTT 5-15s),不提高单位时间请求量,不引入新的
+    漏页风险。start_page/known_total 配合探测复用:探测拿了第 1 页后,
     续页从第 2 页开始,首页不重复请求。"""
-    items, total = [], known_total
-    page = start_page
-    while page <= max_pages:
-        _pace_search()
-        h, data = api_get("/search/repositories",
-                          {"q": q, "per_page": per_page, "page": page,
-                           "sort": sort})
-        _update_search_state(h)
-        if total is None:
-            total = data.get("total_count", 0)
-        batch = data.get("items", [])
-        items.extend(batch)
-        got = (start_page - 1) * per_page + len(items)
-        if len(batch) < per_page or (total and got >= total):
-            break
-        page += 1
-    return items, total or 0
+    SEARCH_PACE.slot()
+    h, data = api_get("/search/repositories",
+                      {"q": q, "per_page": per_page, "page": start_page,
+                       "sort": sort})
+    total = known_total if known_total is not None else data.get("total_count", 0)
+    items = list(data.get("items", []))
+    got = (start_page - 1) * per_page + len(items)
+    if len(items) < per_page or (total and got >= total):
+        return items, total
+    last = min(max_pages, (total + per_page - 1) // per_page)
+    pages = list(range(start_page + 1, last + 1))
+    if len(pages) > 1 and concurrency > 1:
+        with ThreadPoolExecutor(max_workers=concurrency) as ex:
+            for batch in ex.map(lambda p: _search_page(q, per_page, sort, p),
+                                pages):
+                items.extend(batch)
+    else:
+        for p in pages:
+            items.extend(_search_page(q, per_page, sort, p))
+    return items, total
 
 
-_SEARCH_STATE = {"remaining": None, "reset": 0}
+def _search_page(q, per_page, sort, page):
+    SEARCH_PACE.slot()
+    _, data = api_get("/search/repositories",
+                      {"q": q, "per_page": per_page, "page": page,
+                       "sort": sort})
+    return data.get("items", [])
 
 
-def _update_search_state(h):
-    try:
-        _SEARCH_STATE["remaining"] = int(h.get("X-RateLimit-Remaining"))
-        _SEARCH_STATE["reset"] = int(h.get("X-RateLimit-Reset"))
-    except (TypeError, ValueError):
-        pass
+class Pacer:
+    """并发限速闸门:按配额响应头动态计算请求间隔;多线程共享时相邻请求
+    发出时刻至少间隔 interval,配额见底则睡到重置点。锁内只做时刻计算,
+    睡在锁外,不阻塞其它线程预订后续槽位。"""
+
+    def __init__(self, floor: float, cap: float = 6.0, reserve: int = 2):
+        self.floor, self.cap, self.reserve = floor, cap, reserve
+        self.rem = None            # X-RateLimit-Remaining
+        self.reset = 0.0           # X-RateLimit-Reset(epoch 秒)
+        self._lock = threading.Lock()
+        self._next_at = 0.0
+
+    def update(self, headers):
+        try:
+            rem = headers.get("X-RateLimit-Remaining")
+            if rem is None:
+                return
+            with self._lock:
+                self.rem = int(rem)
+                rst = headers.get("X-RateLimit-Reset")
+                if rst:
+                    self.reset = float(rst)
+        except (TypeError, ValueError):
+            pass
+
+    def _interval(self):
+        if self.rem is None:
+            return self.floor
+        if self.rem <= self.reserve:
+            return max(self.reset - time.time() + 1, self.floor)
+        window = max(self.reset - time.time(), 0.0)
+        return max(min(window / self.rem, self.cap), self.floor)
+
+    def slot(self):
+        """预留下一个请求时刻并等待到点。"""
+        with self._lock:
+            now = time.time()
+            start = max(self._next_at, now) + self._interval()
+            self._next_at = start
+        wait = start - time.time()
+        if wait > 0:
+            time.sleep(wait)
 
 
-def _pace_search():
-    """按剩余配额匀速:剩得多按基础间隔;剩得少把窗口剩余时间平摊;
-    见底则预等到重置——避免 403 罚等。"""
-    st = _SEARCH_STATE
-    if st["remaining"] is None:
-        time.sleep(2.2)
-        return
-    now = time.time()
-    if st["remaining"] <= 2:
-        w = min(max(st["reset"] - now + 1, 1), 70)
-        print(f"  [pace] 配额剩 {st['remaining']},预等 {int(w)}s", flush=True)
-        time.sleep(w)
-        return
-    window_left = max(st["reset"] - now, 0)
-    ideal = window_left / st["remaining"]
-    time.sleep(max(min(ideal, 6.0), 2.2))
+SEARCH_PACE = Pacer(2.2)     # 搜索 30 次/分钟
+CORE_PACE = Pacer(0.8)       # core 5000 次/时 ≈ 83 次/分钟
+_PACERS = {"search": SEARCH_PACE, "core": CORE_PACE}
+_PROXY_LOCK = threading.Lock()
+
+
+def _pace_update(headers):
+    """按响应头的资源域把配额信息喂给对应闸门(api_get 每个出口调用)。"""
+    res = headers.get("X-RateLimit-Resource") if headers else None
+    pacer = _PACERS.get(res)
+    if pacer is not None:
+        pacer.update(headers)

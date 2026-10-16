@@ -47,6 +47,7 @@ jobs:
         run: python s6_fetch_readmes.py --new-only --limit 600
 
       - name: commit & push
+        if: always()   # s6 失败也保住 s1-s5 已采集数据(10-15 超时丢整日数据教训)
         run: |
           git config user.name "ai-collect-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

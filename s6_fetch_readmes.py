@@ -7,6 +7,9 @@
   - 超 README_MAX_BYTES 截断
   - 出池仓的 README/ETag 由 --gc 清理(默认预览)
 
+并发:有界线程池重叠网络往返,间隔由 CORE_PACE 闸门按 5000 次/时
+配额控制,不超配额;ETag 每 1000 个落盘一次(长跑断点)。
+
 用法:
   python s6_fetch_readmes.py                  # 全池
   python s6_fetch_readmes.py --limit 50       # 星数最高的 50 个(抽样)
@@ -16,6 +19,7 @@
 import argparse
 import json
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -26,6 +30,8 @@ import lib_store as st  # noqa: E402
 gh._stdout_utf8()
 
 ETAG_FILE = st.STATE / "readme_etags.json"
+WORKERS = 6
+CHECKPOINT_EVERY = 1000
 
 
 def load_etags():
@@ -43,6 +49,7 @@ def readme_path(full_name):
 
 
 def fetch_one(full_name, etag):
+    gh.CORE_PACE.slot()
     hdrs = {"Accept": "application/vnd.github.raw+json"}
     if etag:
         hdrs["If-None-Match"] = etag
@@ -96,27 +103,35 @@ def main():
         recs = recs[:args.limit]
 
     etags = load_etags()
-    n_fetch = n_304 = n_miss = 0
-    print(f"== s6 README | 目标 {len(recs)} 仓 ==")
-    for i, rec in enumerate(recs, 1):
+
+    def job(rec):
         fn = rec["full_name"]
         try:
             status, etag = fetch_one(fn, etags.get(fn))
-        except Exception as e:
-            n_miss += 1
-            print(f"  [{i}/{len(recs)}] {fn}: MISS {e}")
-            continue
-        if status == "fetched":
-            n_fetch += 1
-            if etag:
-                etags[fn] = etag
-            mark = "fetch"
-        else:
-            n_304 += 1
-            mark = "304"
-        if i % 20 == 0 or status == "fetched" and rec.get("stars", 0) > 1000:
-            print(f"  [{i}/{len(recs)}] {fn} {mark} "
-                  f"(stars={rec.get('stars')})", flush=True)
+            return fn, status, etag, None
+        except Exception as e:                     # noqa: BLE001
+            return fn, None, None, e
+
+    n_fetch = n_304 = n_miss = 0
+    print(f"== s6 README | 目标 {len(recs)} 仓 | 并发 {WORKERS} ==")
+    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
+        for i, (fn, status, etag, err) in enumerate(
+                ex.map(job, recs), 1):
+            if err is not None:
+                n_miss += 1
+                print(f"  [{i}/{len(recs)}] {fn}: MISS {err}", flush=True)
+            elif status == "fetched":
+                n_fetch += 1
+                if etag:
+                    etags[fn] = etag
+            else:
+                n_304 += 1
+            if i % 100 == 0:
+                print(f"  [{i}/{len(recs)}] 抓 {n_fetch} · 304 {n_304} "
+                      f"· 失败 {n_miss} (stars={recs[i-1].get('stars')})",
+                      flush=True)
+            if n_fetch and n_fetch % CHECKPOINT_EVERY == 0:
+                save_etags(etags)          # 长跑断点:中断最多丢最近一段
     save_etags(etags)
     print(f"完成: 抓取 {n_fetch} · 304跳过 {n_304} · 失败 {n_miss}")
 
