@@ -19,6 +19,7 @@ jobs:
     timeout-minutes: 355   # 平台单 job 上限 6h,留 5 分钟提交
     env:
       PROXY: ""
+      PYTHONUNBUFFERED: "1" # 实时日志(同 collect.yml)
     steps:
       - uses: actions/checkout@v4
         with:

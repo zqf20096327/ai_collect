@@ -23,6 +23,7 @@ jobs:
     timeout-minutes: 360    # 平台单 job 上限 6h,各步骤按此自计时
     env:
       PROXY: ""             # Actions runner 直连,不走 Clash
+      PYTHONUNBUFFERED: "1" # 实时日志:Python 管道输出默认块缓冲,不加它运行中的步骤一行都看不到
     steps:
       - uses: actions/checkout@v4
         with:
