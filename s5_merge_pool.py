@@ -98,6 +98,14 @@ def main():
     day = st.utc_day()
     print(f"== s5 合并 | day={day} ==")
 
+    # 当日事件文件已存在 = 今日已合并过(本地或早前运行):
+    # 重采 parts 与正式合并间有天然漂移,重做会把漂移算成假 out 覆盖正式事件,
+    # 故优雅跳过(exit 0)让富集/README 等后续步骤照常跑,而不是整步报错
+    if st.events_path(day).exists() and not args.force:
+        print(f"当日事件文件已存在 events_{day}.ndjson——今日已合并过,跳过合并;"
+              "重做加 --force(会用重采数据重写当日事件,慎用)")
+        return
+
     # 完成门控:应跑单元不齐 = 今晚池采集被预算截断/部分失败,
     # 缺的通道会让全量仓变假 out 并被真删出活池 → 拒绝合并,明晚断点续齐
     done = st.done_tokens(day)
