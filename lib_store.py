@@ -38,8 +38,22 @@ def utc_day():
 
 def _atomic_write(path: Path, text: str):
     tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(text, encoding="utf-8")
+    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
     os.replace(tmp, path)
+
+
+def atomic_write_json(path: Path, data, keep: int = 3):
+    """JSON 原子写 + 轮转备份(.1/.2/.3,状态写坏可回滚)+ 强制 LF。
+    移植自 dbhub gh.atomic_write_json。"""
+    for i in range(keep, 1, -1):                 # .2->.3
+        src = path.with_suffix(path.suffix + f".{i - 1}")
+        dst = path.with_suffix(path.suffix + f".{i}")
+        if src.exists():
+            os.replace(src, dst)
+    if path.exists():                            # 旧主文件 -> .1
+        os.replace(path, path.with_suffix(path.suffix + ".1"))
+    _atomic_write(path, json.dumps(data, ensure_ascii=False) + "\n")
 
 
 def shard_path(i: int) -> Path:
@@ -51,10 +65,14 @@ def shard_of(repo_id: int) -> int:
 
 
 def load_pool() -> dict:
-    """读全池:id -> record。"""
+    """读全池:id -> record。
+
+    必须严格按 \\n 切行:splitlines() 还会切 U+2028 等 Unicode 行分隔符,
+    description 含它的一行 JSON 会被切成两半 → 静默丢仓(10-16 实际发生 2 仓)。
+    """
     pool = {}
     for p in sorted(LIVE.glob("pool_shard_*.ndjson")):
-        for line in p.read_text(encoding="utf-8").splitlines():
+        for line in p.read_text(encoding="utf-8").split("\n"):
             line = line.strip()
             if not line:
                 continue
@@ -139,7 +157,7 @@ def load_events(day: str) -> list:
     if not p.exists():
         return []
     out = []
-    for line in p.read_text(encoding="utf-8").splitlines():
+    for line in p.read_text(encoding="utf-8").split("\n"):
         line = line.strip()
         if line:
             out.append(json.loads(line))
@@ -165,3 +183,54 @@ def snapshot_dir(day: str) -> Path:
     d = DATA / f"snapshot_{day}"
     d.mkdir(parents=True, exist_ok=True)
     return d
+
+
+# ---------------- 池采集断点(s1-s4 共享,移植自 dbhub collect_state) ----------------
+
+COLLECT_STATE = STATE / "collect_state.json"
+
+
+def load_collect_state() -> dict:
+    if COLLECT_STATE.exists():
+        try:
+            return json.loads(COLLECT_STATE.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            pass
+    return {"date": "", "done": []}
+
+
+def done_tokens(day: str = None) -> set:
+    """当日已完成的采集单元 token(仅同 UTC 日期恢复,跨日自动清零)。"""
+    s = load_collect_state()
+    day = day or utc_day()
+    return set(s["done"]) if s.get("date") == day else set()
+
+
+def mark_done(token: str):
+    day = utc_day()
+    s = load_collect_state()
+    if s.get("date") != day:
+        s = {"date": day, "done": []}
+    if token not in s["done"]:
+        s["done"].append(token)
+    atomic_write_json(COLLECT_STATE, s)
+
+
+def expected_tokens() -> list:
+    """由 config 推导当日应跑完的全部单元 token(s5 完成门控的应到名册)。"""
+    toks = [f"new:{t}" for t in config.TOPICS]
+    toks += [f"topic:{t}" for t in config.TOPICS]
+    toks += [f"org:{o}" for o in list(config.ORG_DEDICATED)
+             + list(config.ORG_SUPERSET)]
+    toks.append("watch")
+    return toks
+
+
+def part_names_expected() -> set:
+    """与 expected_tokens 对应的 parts 文件名(清理 config 漂移残留用)。"""
+    names = {f"topic_{t}.json" for t in config.TOPICS}
+    names |= {f"new_{t}.json" for t in config.TOPICS}
+    names |= {f"org_{o}.json" for o in list(config.ORG_DEDICATED)
+              + list(config.ORG_SUPERSET)}
+    names.add("watch.json")
+    return names

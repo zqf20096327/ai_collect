@@ -74,11 +74,46 @@ def offline():
         if mb > config.SHARD_MAX_MB:
             err(f"{p.name} {mb:.1f}MB 超过单文件红线 {config.SHARD_MAX_MB}MB")
 
+    # 完成门控名册:expected_tokens 应与四通道的 parts 命名一一对应
+    toks = st.expected_tokens()
+    if len(toks) != len(set(toks)):
+        err("expected_tokens 存在重复 token(topic/org 同名撞车)")
+    if len(toks) != len(st.part_names_expected()):
+        err("expected_tokens 与 part_names_expected 数量不一致(命名映射断裂)")
+
+    # 状态文件体检:解析失败只告警不阻断(原子写轮转副本可兜底恢复)
+    import json
+    for name in ("readme_state.json", "enrich_state.json",
+                 "absent_since.json", "collect_state.json"):
+        p = st.STATE / name
+        if not p.is_file():
+            continue
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+            n = len(d.get("items", d)) if isinstance(d, dict) else 0
+            print(f"  state {name}: OK ({n} 条)")
+        except json.JSONDecodeError as e:
+            warn(f"state/{name} 解析失败({e})——检查 *.1 轮转副本恢复")
+    shards = list((st.STATE / "enrich_cache_shards").glob("*.json")) \
+        if (st.STATE / "enrich_cache_shards").is_dir() else []
+    bad_shard = 0
+    for p in shards:
+        try:
+            if not isinstance(json.loads(p.read_text(encoding="utf-8")), dict):
+                bad_shard += 1
+        except json.JSONDecodeError:
+            bad_shard += 1
+    if bad_shard:
+        warn(f"enrich_cache_shards {bad_shard}/{len(shards)} 桶损坏(非 dict/非 JSON)")
+    elif shards:
+        print(f"  state enrich_cache_shards: {len(shards)} 桶 OK")
+
     print(f"TOPICS={len(config.TOPICS)} ORG(dedicated)="
           f"{len(config.ORG_DEDICATED)} ORG(superset)="
           f"{len(config.ORG_SUPERSET)} WATCH={len(config.WATCH)} "
           f"EXCLUDE(users/repos)={len(config.EXCLUDE_USERS)}/"
-          f"{len(config.EXCLUDE_REPOS)} N_SHARDS={config.N_SHARDS}")
+          f"{len(config.EXCLUDE_REPOS)} N_SHARDS={config.N_SHARDS} "
+          f"门控单元={len(set(toks))}")
 
 
 def main():

@@ -1,0 +1,63 @@
+name: readme-monthly
+# 月度全量校准手动补跑:非 1 号也能跑(collect.yml 里 MODE 由 UTC 日期门控)。
+# 与 collect 同 concurrency 组:串行排队,不抢 Core 配额、提交不撞车。
+on:
+  workflow_dispatch:
+    inputs:
+      max_total_minutes:
+        description: '本窗总时长(分钟,默认吃满单 job 帽 ~345)'
+        type: string
+        default: ''
+permissions:
+  contents: write
+concurrency:
+  group: collect
+  cancel-in-progress: false
+jobs:
+  readme-monthly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355   # 平台单 job 上限 6h,留 5 分钟提交
+    env:
+      PROXY: ""
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 记录 job 起点(算剩余时间预算)
+        run: echo "JOB_T0=$(date +%s)" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # calibrated 当日标记跨 run 接力:本窗校验过的下窗自动跳过,
+      # 断点续采 = 再 dispatch 一次即接着跑
+      - name: README 月度全量校准
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REM=$(( 355*60 - ($(date +%s) - JOB_T0) - 600 ))
+          [ "$REM" -lt 300 ] && REM=300
+          MT="${{ github.event.inputs.max_total_minutes }}"
+          [ -n "$MT" ] && REM=$(( MT * 60 ))
+          echo "本窗总预算 $(( REM / 60 )) 分钟"
+          python s6_fetch_readmes.py --mode monthly \
+            --max-calls 4200 --max-minutes 60 \
+            --wait-windows 10 --max-total-minutes $(( REM / 60 ))
+
+      - name: 出池仓清理 dry-run 清单(月度窗口尾部,人工过目后本地 --apply)
+        run: python tools/purge_outpool.py || echo "::warning::purge dry-run 失败(不影响校准)"
+
+      - name: 提交并推送
+        run: |
+          git config user.name "zqf20096327"
+          git config user.email "zqf20096327@users.noreply.github.com"
+          git add -A
+          git commit -m "README 月度校准补跑 $(date -u +%F\ %H:%M)" || { echo "无变更"; exit 0; }
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main >/dev/null 2>&1 || true
+            git push && { echo "已推送"; exit 0; }
+            echo "推送撞车,40s 后重试($i/5)"; sleep 40
+          done
+          echo "::warning::推送 5 次未成功,本窗 calibrated 标记丢失,重新 dispatch 即从头续跑"

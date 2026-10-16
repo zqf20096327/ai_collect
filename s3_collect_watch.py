@@ -38,6 +38,7 @@ def main():
         flag = "archived" if it.get("archived") else "ok"
         print(f"  {full}: stars={rec['stars']} [{flag}]")
     st.write_part("watch", records)
+    st.mark_done("watch")
     print(f"-> {len(records)} 条写入 data/parts/watch.json")
 
 

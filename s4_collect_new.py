@@ -57,20 +57,34 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--topics", help="逗号分隔,覆盖配置")
     ap.add_argument("--max-pages", type=int, default=10)
+    ap.add_argument("--max-minutes", type=float, default=15,
+                    help="墙钟预算,超线收工靠断点次日续采,默认 15 分钟")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     topics = (args.topics.split(",") if args.topics
               else list(config.TOPICS))
     print(f"== s4 新项目窗口 | {len(topics)} 个 topic | "
-          f"created>=45 天前 stars>={config.NEW_STAR_MIN} ==")
+          f"created>=45 天前 stars>={config.NEW_STAR_MIN} | "
+          f"预算 {args.max_minutes}min ==")
+    gh.set_budget(gh.Budget(max_minutes=args.max_minutes))
+    done = st.done_tokens()
     for t in topics:
         q = (f"topic:{t} fork:false archived:false created:>=窗口起点 "
              f"stars:>={config.NEW_STAR_MIN}")
         if args.dry_run:
             print(f"[dry] {q}")
             continue
-        items, total = sweep_new(t, args.max_pages)
+        token = f"new:{t}"
+        if token in done:
+            print(f"[skip] {t} 今日已完成(断点续采)")
+            continue
+        try:
+            items, total = sweep_new(t, args.max_pages)
+        except (gh.BudgetOut, gh.QuotaPatienceOut) as e:
+            print(f"[budget] {e} — {t} 起的剩余 topic 明晚断点续采",
+                  flush=True)
+            break
         records = []
         for it in items:
             if it["owner"]["login"] in config.EXCLUDE_USERS:
@@ -79,6 +93,7 @@ def main():
                 continue
             records.append(st.slim(it, f"new:{t}"))
         st.write_part(f"new_{t}", records)
+        st.mark_done(token)
         print(f"  {t}: {len(records)} 条 (total={total})")
     if not args.dry_run:
         print("parts 已写入 data/parts/new_*.json")

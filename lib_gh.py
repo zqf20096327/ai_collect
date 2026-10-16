@@ -150,11 +150,14 @@ def api_get(path, params=None, accept="application/vnd.github+json",
     iterations = 0
     while attempt < retries and iterations < retries * 4:
         iterations += 1
+        if BUDGET is not None:
+            BUDGET.check()
         req = urllib.request.Request(url, headers=_headers(accept, extra_headers))
         try:
             with OPENER.open(req, timeout=timeout) as r:
                 body = r.read()
                 _pace_update(r.headers)
+                _budget_count(r.headers)
                 if want == "raw":
                     return r.headers, body
                 try:
@@ -163,21 +166,30 @@ def api_get(path, params=None, accept="application/vnd.github+json",
                     raise ConnectionError("non-json body (proxy hiccup?)")
         except urllib.error.HTTPError as e:
             hdrs = e.headers
+            _pace_update(hdrs)
+            _budget_count(hdrs)
             if e.code == 304:
-                _pace_update(hdrs)
                 return hdrs, None
             if e.code in (403, 429):
-                _pace_update(hdrs)
                 ra = hdrs.get("Retry-After") if hdrs else None
+                reset_ts = None
                 if ra:
-                    time.sleep(int(ra) + 1)
-                    continue
-                if hdrs and hdrs.get("X-RateLimit-Remaining") == "0":
-                    w = _wait_seconds(hdrs.get("X-RateLimit-Reset"))
-                    print(f"  [rate-limit] sleep {int(w)}s", flush=True)
-                    time.sleep(min(w, 3600))
-                    continue
-                raise
+                    w = int(ra) + 1
+                elif hdrs and hdrs.get("X-RateLimit-Remaining") == "0":
+                    reset_hdr = hdrs.get("X-RateLimit-Reset")
+                    reset_ts = (int(reset_hdr)
+                                if reset_hdr and reset_hdr.isdigit() else None)
+                    w = _wait_seconds(reset_hdr)
+                else:
+                    raise
+                # 设了预算的调用方靠 wait-windows 跨窗续跑,不让单次睡等超上限
+                if BUDGET is not None and w > SLEEP_CAP_SEC:
+                    raise QuotaPatienceOut(
+                        f"需睡等 {int(w)}s > 上限 {SLEEP_CAP_SEC}s,本次收尾",
+                        reset_ts)
+                print(f"  [rate-limit] sleep {int(w)}s", flush=True)
+                time.sleep(w if ra else min(w, 3600))
+                continue
             if e.code >= 500:
                 last_err = e
                 attempt += 1
@@ -334,6 +346,93 @@ SEARCH_PACE = Pacer(2.2)     # 搜索 30 次/分钟
 CORE_PACE = Pacer(0.8)       # core 5000 次/时 ≈ 83 次/分钟
 _PACERS = {"search": SEARCH_PACE, "core": CORE_PACE}
 _PROXY_LOCK = threading.Lock()
+
+
+# ---------------- 预算管家(移植自 dbhub,09-29/09-30 事故教训见注释) ----------------
+
+class BudgetOut(Exception):
+    """外部预算(调用数/墙钟)先到——优雅收尾,进度已落盘断点。"""
+
+
+class CoreReserveOut(BudgetOut):
+    """Core 剩余配额触保底线。reset=失败响应的 X-RateLimit-Reset(跨窗续跑
+    睡到那)。不能用 /rate_limit 探测判断——Actions token 上探测与真实调用
+    分属不同配额桶,等待决策只信本异常携带的响应头 reset。"""
+
+    def __init__(self, msg, reset=None):
+        super().__init__(msg)
+        self.reset = reset
+
+
+class QuotaPatienceOut(Exception):
+    """需睡等超过上限——调用方应立即收尾。reset=配额恢复时间戳(若有)。"""
+
+    def __init__(self, msg, reset=None):
+        super().__init__(msg)
+        self.reset = reset
+
+
+SLEEP_CAP_SEC = 900          # 403/429 单次睡等上限 15 分钟(设预算时生效)
+
+
+class Budget:
+    """调用数/墙钟预算 + core 保底线。None = 不设该项上限。
+    线程安全(s6 6 线程共享);调用方捕获 BudgetOut/CoreReserveOut 优雅收尾,
+    绝不能把这三类全局异常记成单仓失败振次。"""
+
+    def __init__(self, max_calls=None, max_minutes=None, reserve_remaining=0):
+        self.max_calls = max_calls
+        self.max_minutes = max_minutes
+        self.reserve_remaining = reserve_remaining
+        self.calls = 0
+        self.started = time.time()
+        self._lock = threading.Lock()
+
+    def check(self):
+        with self._lock:
+            if self.max_calls is not None and self.calls >= self.max_calls:
+                raise BudgetOut(f"调用数达上限 {self.max_calls}")
+        if self.max_minutes is not None and \
+                (time.time() - self.started) / 60 >= self.max_minutes:
+            raise BudgetOut(f"墙钟达上限 {self.max_minutes} 分钟")
+
+    def add_call(self):
+        with self._lock:
+            self.calls += 1
+            return self.calls
+
+    def check_core_reserve(self, headers):
+        """core 剩余触保底线抛 CoreReserveOut;保底线只对 core 生效
+        (search 是 30/分钟小窗口,由 Pacer 管,不拿它的剩余数对 core 判断)。"""
+        if self.reserve_remaining <= 0 or headers is None:
+            return
+        if headers.get("X-RateLimit-Resource") != "core":
+            return
+        rem = headers.get("X-RateLimit-Remaining")
+        if rem is None:
+            return
+        with self._lock:
+            if int(rem) <= self.reserve_remaining:
+                reset = headers.get("X-RateLimit-Reset")
+                raise CoreReserveOut(
+                    f"Core 剩余配额触保底线(remaining={rem})",
+                    int(reset) if reset and reset.isdigit() else None)
+
+
+BUDGET = None                 # 进程级活动预算;set_budget() 装载
+
+
+def set_budget(b):
+    global BUDGET
+    BUDGET = b
+
+
+def _budget_count(headers):
+    """每次真实 HTTP 响应记账 1 次 + core 保底线检查(未设预算则直通)。"""
+    if BUDGET is None:
+        return
+    BUDGET.add_call()
+    BUDGET.check_core_reserve(headers)
 
 
 def _pace_update(headers):

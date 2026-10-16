@@ -2,15 +2,17 @@
 """s5 · 合并:parts → 分片活文件 + 事件日志 + 快照。
 
 流程:
-  1. 读 data/parts/*.json,按 repo id 去重合并(src 通道并集)
-  2. 黑名单过滤(双保险第二层;查询层是第一层)
-  3. 与旧池(data/live 分片)对比 → 事件 in/out/chg
-  4. 写分片活文件、事件日志、当日快照(不入 git)、meta 摘要
-  5. 周一(或 --stars-point)写周度星数点
+  1. 完成门控:当日应跑单元(collect_state)不齐 → 拒绝合并(防假 out)
+  2. parts 漂移清理:config 已删通道的残留 part 不再混进合并
+  3. 读 data/parts/*.json,按 repo id 去重合并(src 通道并集)
+  4. 与旧池(data/live 分片)对比 → 事件 in/out/chg
+  5. 写分片活文件、事件日志、当日快照(meta+完成标记,入 git)、meta 摘要
+  6. 周一(或 --stars-point)写周度星数点;mark_done("merge") 防同日重并
 
 用法:
   python s5_merge_pool.py
-  python s5_merge_pool.py --force          # 事件文件已存在时允许重写
+  python s5_merge_pool.py --force          # 今日已合并过仍重做
+  python s5_merge_pool.py --allow-partial  # 人工恢复:通道不齐仍合并(慎用)
 """
 import argparse
 import json
@@ -86,13 +88,40 @@ def diff_events(old_pool, new_pool, day):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true",
-                    help="当日事件文件已存在时允许重写")
+                    help="当日已合并过/事件文件已存在时允许重做")
     ap.add_argument("--stars-point", action="store_true",
                     help="强制写周度星数点(默认周一自动写)")
+    ap.add_argument("--allow-partial", action="store_true",
+                    help="跳过完成门控(仅人工恢复用:明知通道不齐仍合并)")
     args = ap.parse_args()
 
     day = st.utc_day()
     print(f"== s5 合并 | day={day} ==")
+
+    # 完成门控:应跑单元不齐 = 今晚池采集被预算截断/部分失败,
+    # 缺的通道会让全量仓变假 out 并被真删出活池 → 拒绝合并,明晚断点续齐
+    done = st.done_tokens(day)
+    if "merge" in done and not args.force:
+        print("今日已合并过,跳过(重跑加 --force)")
+        return
+    expected = set(st.expected_tokens())
+    missing = sorted(expected - done)
+    if missing and not args.allow_partial:
+        print(f"[门控] 当日应跑 {len(expected)} 单元缺 {len(missing)} 个,拒绝合并:")
+        for m in missing[:10]:
+            print(f"    - {m}")
+        if len(missing) > 10:
+            print(f"    ... 共 {len(missing)} 个")
+        print("明晚 s1-s4 断点续采补齐后自动合并;人工恢复可加 --allow-partial")
+        return
+
+    # parts 漂移清理:config 删掉的 topic/org 的残留 part 不清会永远混进合并
+    keep = st.part_names_expected()
+    stale = [p for p in st.parts_files() if p.name not in keep]
+    for p in stale:
+        p.unlink()
+        print(f"[parts 清理] 删除 config 漂移残留: {p.name}")
+
     old_pool = st.load_pool()
     print(f"旧池: {len(old_pool)} 仓")
 
@@ -124,13 +153,9 @@ def main():
         st.write_stars_point(day, new_pool)
         print("周度星数点已写入 data/stars/")
 
-    # 当日全量快照 + meta(不入 git)
+    # 当日快照(瘦身版):meta + 完成标记入 git;全池历史由 live 分片 +
+    # events + 周度星数点回放,不再落 33MB/天 的全池副本
     snap = st.snapshot_dir(day)
-    pool_json = "\n".join(json.dumps(r, ensure_ascii=False)
-                          for r in sorted(new_pool.values(),
-                                          key=lambda x: -x.get("stars", 0)))
-    (snap / "pool.ndjson").write_text(pool_json, encoding="utf-8")
-
     chan = {}
     disc_bucket = 0
     for rec in new_pool.values():
@@ -145,9 +170,13 @@ def main():
             "shard_bytes": {str(k): v for k, v in sizes.items()}}
     (snap / "meta.json").write_text(
         json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    st.atomic_write_json(snap / "pool.json",
+                         {"date": day, "count": len(new_pool),
+                          "merged": True})
+    st.mark_done("merge")
     print(f"通道分布: {chan}")
     print(f"发现桶(仅被 topic:ai 捞到): {disc_bucket} 仓")
-    print(f"快照: data/snapshot_{day}/ (pool.ndjson + meta.json)")
+    print(f"快照: data/snapshot_{day}/ (meta.json + pool.json 完成标记)")
 
 
 if __name__ == "__main__":

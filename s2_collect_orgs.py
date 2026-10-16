@@ -14,6 +14,7 @@ superset(大厂综合 org):在三道闸之上,要求 挂任一配置 topic 或
   python s2_collect_orgs.py --dry-run
 """
 import argparse
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -33,12 +34,30 @@ def active_cutoff():
             - timedelta(days=config.PUSHED_DAYS)).strftime("%Y-%m-%d")
 
 
+# 短词必须整词命中,防子串误伤:"ai"⊂available/pairwise、"rag"⊂storage、"llm"⊂…
+SHORT_KW = {"ai", "llm", "gpt", "rag", "mcp"}
+TOKEN_RE = re.compile(r"[a-z0-9]+")
+
+
+def kw_hit(text):
+    """短词按 token 整词(含复数;连字符/下划线天然切成独立 token,如 ai-powered
+    → token "ai");长词(deep learning/transformer 等)保持子串。"""
+    for k in config.AI_KEYWORDS:
+        if k in SHORT_KW:
+            for tok in TOKEN_RE.findall(text):
+                if tok == k or tok == k + "s":
+                    return True
+        elif k in text:
+            return True
+    return False
+
+
 def is_relevant(it):
     """superset 二级过滤:topic 或 名称/描述 关键词。"""
     if TOPIC_SET & set(it.get("topics") or []):
         return True
     text = ((it.get("name") or "") + " " + (it.get("description") or "")).lower()
-    return any(k in text for k in config.AI_KEYWORDS)
+    return kw_hit(text)
 
 
 def sweep_org(org, org_class, max_pages, cutoff, dry):
@@ -86,6 +105,8 @@ def main():
     ap.add_argument("--only-dedicated", action="store_true")
     ap.add_argument("--max-pages", type=int, default=100,
                     help="每 org 最多翻页数,默认 100")
+    ap.add_argument("--max-minutes", type=float, default=15,
+                    help="墙钟预算,超线收工靠断点次日续采,默认 15 分钟")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -99,13 +120,26 @@ def main():
             orgs += [(o, "superset") for o in config.ORG_SUPERSET]
 
     print(f"== s2 org 通道 | {len(orgs)} 个 org | "
-          f"stars>={config.STAR_MIN} pushed>={config.PUSHED_DAYS}d ==")
+          f"stars>={config.STAR_MIN} pushed>={config.PUSHED_DAYS}d | "
+          f"预算 {args.max_minutes}min ==")
+    gh.set_budget(gh.Budget(max_minutes=args.max_minutes))
+    done = st.done_tokens()
     total = 0
     for org, cls in orgs:
-        n = sweep_org(org, cls, args.max_pages, active_cutoff(),
-                      args.dry_run)
+        token = f"org:{org}"
+        if token in done:
+            print(f"[skip] {org} 今日已完成(断点续采)")
+            continue
+        try:
+            n = sweep_org(org, cls, args.max_pages, active_cutoff(),
+                          args.dry_run)
+        except (gh.BudgetOut, gh.QuotaPatienceOut) as e:
+            print(f"[budget] {e} — {org} 起的剩余 org 明晚断点续采",
+                  flush=True)
+            break
         if n is not None:
             total += n
+            st.mark_done(token)
     if not args.dry_run:
         print(f"合计 {total} 条,parts 已写入 data/parts/")
 

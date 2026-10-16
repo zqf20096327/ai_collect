@@ -107,12 +107,16 @@ def sweep(base, max_pages, depth, stats, star=None, year=None):
                         try:
                             h_items, _ = sweep_leaf(_mq(a, b), max_pages, stats)
                             sub_items.extend(h_items)
+                        except (gh.BudgetOut, gh.QuotaPatienceOut):
+                            raise                  # 同上,穿透
                         except Exception as e:
                             stats["errors"] = stats.get("errors", 0) + 1
                             print(f"    [error] 半月查询失败跳过: {e}",
                                   flush=True)
             else:
                 sub_items, _ = sweep(base, max_pages, depth + 1, stats, **kw)
+        except (gh.BudgetOut, gh.QuotaPatienceOut):
+            raise                                  # 全局预算事件,不许记成子查询失败
         except Exception as e:
             stats["errors"] = stats.get("errors", 0) + 1
             print(f"    [error] 子查询失败跳过: {e}", flush=True)
@@ -140,6 +144,8 @@ def main():
     ap.add_argument("--limit", type=int, help="只跑前 N 个 topic(抽样)")
     ap.add_argument("--max-pages", type=int, default=10,
                     help="每条查询最多翻页数,默认 10(=1000 条)")
+    ap.add_argument("--max-minutes", type=float, default=60,
+                    help="墙钟预算,超线收工靠断点次日续采,默认 60 分钟")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
@@ -155,16 +161,27 @@ def main():
 
     print(f"== s1 topic 通道 | {len(topics)} 个 topic | "
           f"stars>={config.STAR_MIN} pushed>={config.PUSHED_DAYS}d | "
-          f"max_pages={args.max_pages} ==")
+          f"max_pages={args.max_pages} | 预算 {args.max_minutes}min ==")
+    gh.set_budget(gh.Budget(max_minutes=args.max_minutes))
+    done = st.done_tokens()
     stats = {"queries": 0}
     for t in topics:
         q = base_query(t)
         if args.dry_run:
             print(f"[dry] {q}")
             continue
+        token = f"topic:{t}"
+        if token in done:
+            print(f"[skip] {t} 今日已完成(断点续采)")
+            continue
         print(f"[{t}] {q} (stars:>={config.STAR_MIN} 由根查询补)",
               flush=True)
-        items, total = sweep(q, args.max_pages, 0, stats)
+        try:
+            items, total = sweep(q, args.max_pages, 0, stats)
+        except (gh.BudgetOut, gh.QuotaPatienceOut) as e:
+            print(f"[budget] {e} — {t} 起的剩余 topic 明晚断点续采",
+                  flush=True)
+            break
         seen, records = set(), []
         for it in items:
             if it["id"] in seen:
@@ -176,6 +193,7 @@ def main():
                 continue
             records.append(st.slim(it, f"topic:{t}"))
         st.write_part(f"topic_{t}", records)
+        st.mark_done(token)
         print(f"  -> 去重后 {len(records)} 条 (total_count={total}, "
               f"查询 {stats['queries']} 次)", flush=True)
         stats["queries"] = 0

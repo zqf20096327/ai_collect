@@ -1,9 +1,17 @@
 .env
 __pycache__/
 *.pyc
-# 中间数据与全量快照不入 git(活文件/事件/星数点/READMEs 入 git)
+# 中间数据不入 git(活文件/事件/星数点/READMEs/富集缓存 入 git)
 data/parts/
-data/snapshot_*/
+# 快照瘦身(10-17 起):meta+完成标记入 git;旧 33MB 全池副本仍挡在外
+data/snapshot_*/pool.ndjson
+data/snapshot_latest/
 data/live/*.tmp
+# 状态原子写轮转备份与瞬态件
 state/*.tmp
 state/*.log
+state/*.json.[0-9]
+state/*.json.[0-9][0-9]
+state/enrich_cache_shards/*.tmp
+# 快照归档打包暂存目录
+_archive_tmp/

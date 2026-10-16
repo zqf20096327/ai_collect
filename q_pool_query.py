@@ -28,7 +28,7 @@ def u():
 def repo_events(full_name):
     out = []
     for p in st.all_event_files():
-        for line in p.read_text(encoding="utf-8").splitlines():
+        for line in p.read_text(encoding="utf-8").split("\n"):
             if not line.strip():
                 continue
             e = json.loads(line)
