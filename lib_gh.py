@@ -187,21 +187,104 @@ def api_get(path, params=None, accept="application/vnd.github+json",
     raise last_err if last_err else RuntimeError("api_get failed: " + url)
 
 
-def search_repos(q, max_pages=10, per_page=100, sort="stars", sleep=2.2):
-    """仓库搜索。返回 (items, total_count)。内置节流,尊重 1000 条硬上限。
-    注意:同一 q 翻页时 page1 会被再次请求(调用方按 id 去重即可)。"""
-    items, total = [], None
-    page = 1
+def api_send(method, path, payload=None, accept="application/vnd.github+json",
+             extra_headers=None, timeout=30, retries=6):
+    """POST/PATCH/PUT/PATCH JSON。与 api_get 同一套重试/换通道逻辑。"""
+    url = path if path.startswith("http") else API + path
+    body = json.dumps(payload).encode("utf-8") if payload is not None else None
+    h = _headers(accept, extra_headers)
+    if body is not None:
+        h["Content-Type"] = "application/json"
+    last_err = None
+    attempt, iterations = 0, 0
+    while attempt < retries and iterations < retries * 4:
+        iterations += 1
+        req = urllib.request.Request(url, data=body, headers=h, method=method)
+        try:
+            with OPENER.open(req, timeout=timeout) as r:
+                return r.headers, json.loads(r.read() or b"{}")
+        except urllib.error.HTTPError as e:
+            hdrs = e.headers
+            if e.code in (403, 429):
+                ra = hdrs.get("Retry-After") if hdrs else None
+                if ra:
+                    time.sleep(int(ra) + 1)
+                    continue
+                if hdrs and hdrs.get("X-RateLimit-Remaining") == "0":
+                    w = _wait_seconds(hdrs.get("X-RateLimit-Reset"))
+                    print(f"  [rate-limit] sleep {int(w)}s", flush=True)
+                    time.sleep(min(w, 3600))
+                    continue
+            if e.code >= 500:
+                last_err = e
+                attempt += 1
+                time.sleep(2 * attempt)
+                continue
+            detail = e.read()[:300] if hasattr(e, "read") else b""
+            raise RuntimeError(f"{method} {path} -> {e.code}: {detail!r}") from e
+        except (http.client.HTTPException, urllib.error.URLError,
+                TimeoutError, ConnectionError, ssl.SSLError, OSError) as e:
+            if _PROXY_ALIVE and _proxy_broken(e):
+                _drop_proxy()
+                time.sleep(2)
+                continue
+            if _try_restore_proxy():
+                continue
+            last_err = e
+            attempt += 1
+            time.sleep(min(3 * attempt, 30))
+    raise last_err if last_err else RuntimeError(f"api_send failed: {method} {path}")
+
+
+def search_repos(q, max_pages=10, per_page=100, sort="stars", start_page=1,
+                 known_total=None):
+    """仓库搜索。返回 (items, total_count)。内置动态配速:按响应头的
+    剩余配额把请求均匀摊开,不撞墙(撞墙罚等整个重置周期,更慢)。
+    start_page/known_total 配合探测复用:探测拿了第 1 页后,
+    续页从第 2 页开始,首页不重复请求。"""
+    items, total = [], known_total
+    page = start_page
     while page <= max_pages:
-        time.sleep(sleep)  # 30 次/分钟以内
-        _, data = api_get("/search/repositories",
+        _pace_search()
+        h, data = api_get("/search/repositories",
                           {"q": q, "per_page": per_page, "page": page,
                            "sort": sort})
+        _update_search_state(h)
         if total is None:
             total = data.get("total_count", 0)
         batch = data.get("items", [])
         items.extend(batch)
-        if len(batch) < per_page or len(items) >= total:
+        got = (start_page - 1) * per_page + len(items)
+        if len(batch) < per_page or (total and got >= total):
             break
         page += 1
     return items, total or 0
+
+
+_SEARCH_STATE = {"remaining": None, "reset": 0}
+
+
+def _update_search_state(h):
+    try:
+        _SEARCH_STATE["remaining"] = int(h.get("X-RateLimit-Remaining"))
+        _SEARCH_STATE["reset"] = int(h.get("X-RateLimit-Reset"))
+    except (TypeError, ValueError):
+        pass
+
+
+def _pace_search():
+    """按剩余配额匀速:剩得多按基础间隔;剩得少把窗口剩余时间平摊;
+    见底则预等到重置——避免 403 罚等。"""
+    st = _SEARCH_STATE
+    if st["remaining"] is None:
+        time.sleep(2.2)
+        return
+    now = time.time()
+    if st["remaining"] <= 2:
+        w = min(max(st["reset"] - now + 1, 1), 70)
+        print(f"  [pace] 配额剩 {st['remaining']},预等 {int(w)}s", flush=True)
+        time.sleep(w)
+        return
+    window_left = max(st["reset"] - now, 0)
+    ideal = window_left / st["remaining"]
+    time.sleep(max(min(ideal, 6.0), 2.2))
