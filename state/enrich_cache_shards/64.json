@@ -1,7 +1,7 @@
 {
  "microsoft/autogen": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "python-v0.7.5",
   "rel_pub": "2025-09-30",
   "rel_days": 381,
@@ -51,106 +51,6 @@
    "Shell": 2,
    "Yacc": 1,
    "Jsonnet": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "adbar/trafilatura": {
-  "commit_90d": 44,
-  "commit_7d": 0,
-  "rel_ver": "v2.3.1",
-  "rel_pub": "2026-10-06",
-  "rel_days": 10,
-  "rel_n90": 3,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 78,
-  "lang": {
-   "Python": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "deepseek-ai/Engram": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 2,
-  "lang": {
-   "Python": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "Astrosp/Awesome-OSINT-List": {
-  "commit_90d": 61,
-  "commit_7d": 11,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 69,
-  "lang": {
-   "Shell": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "memodb-io/Acontext": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "ui/v0.1.14",
-  "rel_pub": "2026-04-08",
-  "rel_days": 191,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 10,
-  "lang": {
-   "JavaScript": 31,
-   "TypeScript": 30,
-   "Go": 21,
-   "Python": 16,
-   "CSS": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

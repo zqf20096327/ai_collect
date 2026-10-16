@@ -142,57 +142,5 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
- },
- "promptslab/Promptify": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 13,
-  "lang": {
-   "Python": 48,
-   "Jupyter Notebook": 45,
-   "Jinja": 7
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "google/go-containerregistry": {
-  "commit_90d": 61,
-  "commit_7d": 1,
-  "rel_ver": "v0.22.1",
-  "rel_pub": "2026-09-04",
-  "rel_days": 42,
-  "rel_n90": 4,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 215,
-  "lang": {
-   "Go": 99,
-   "Shell": 1,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
  }
 }

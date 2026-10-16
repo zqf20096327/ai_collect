@@ -1,7 +1,7 @@
 {
  "github/spec-kit": {
   "commit_90d": 749,
-  "commit_7d": 43,
+  "commit_7d": 37,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -86,36 +86,6 @@
    "CSS": 0,
    "JavaScript": 0,
    "HTML": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "the-open-agent/openagent": {
-  "commit_90d": 91,
-  "commit_7d": 18,
-  "rel_ver": "v2.95.1",
-  "rel_pub": "2026-10-05",
-  "rel_days": 11,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 63,
-  "lang": {
-   "Go": 75,
-   "TypeScript": 25,
-   "Shell": 0,
-   "JavaScript": 0,
-   "Dockerfile": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

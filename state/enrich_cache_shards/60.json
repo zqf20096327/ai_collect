@@ -86,7 +86,7 @@
  },
  "botpress/botpress": {
   "commit_90d": 99,
-  "commit_7d": 3,
+  "commit_7d": 2,
   "rel_ver": "v12.30.9",
   "rel_pub": "2023-06-22",
   "rel_days": 1212,
@@ -104,89 +104,6 @@
    "JavaScript": 0,
    "Shell": 0,
    "Starlark": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "Klavis-AI/klavis": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "ts-v2.20.0",
-  "rel_pub": "2026-01-29",
-  "rel_days": 260,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 40,
-  "lang": {
-   "Python": 40,
-   "Go": 24,
-   "TypeScript": 22,
-   "JavaScript": 12,
-   "MDX": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "rasbt/reasoning-from-scratch": {
-  "commit_90d": 15,
-  "commit_7d": 0,
-  "rel_ver": "v1.0",
-  "rel_pub": "2026-05-18",
-  "rel_days": 151,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 6,
-  "lang": {
-   "Jupyter Notebook": 67,
-   "Python": 32,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "THUDM/AgentBench": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 12,
-  "lang": {
-   "Python": 86,
-   "Shell": 6,
-   "PDDL": 5,
-   "Dockerfile": 2
   },
   "enriched_at": "20261016",
   "dim_ts": {

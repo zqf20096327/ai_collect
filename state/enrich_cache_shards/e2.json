@@ -91,7 +91,7 @@
  },
  "HKUDS/DeepCode": {
   "commit_90d": 479,
-  "commit_7d": 152,
+  "commit_7d": 151,
   "rel_ver": "v2.3.1",
   "rel_pub": "2026-10-12",
   "rel_days": 4,
@@ -121,7 +121,7 @@
  },
  "dataelement/bisheng": {
   "commit_90d": 1117,
-  "commit_7d": 22,
+  "commit_7d": 16,
   "rel_ver": "v3.0.0-beta5",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -139,208 +139,6 @@
    "HTML": 1,
    "JavaScript": 1,
    "MDX": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "TheLastBen/fast-stable-diffusion": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 18,
-  "lang": {
-   "Python": 80,
-   "Jupyter Notebook": 20
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "microsoft/TinyTroupe": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v0.7.0",
-  "rel_pub": "2026-03-28",
-  "rel_days": 202,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 15,
-  "lang": {
-   "Jupyter Notebook": 99,
-   "Python": 1,
-   "Mustache": 0,
-   "HTML": 0,
-   "Batchfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "Angel-ML/angel": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "Release-3.3.0",
-  "rel_pub": "2025-09-29",
-  "rel_days": 382,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 49,
-  "lang": {
-   "Java": 73,
-   "Scala": 25,
-   "Turing": 2,
-   "Shell": 0,
-   "Jupyter Notebook": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "argmaxinc/argmax-oss-swift": {
-  "commit_90d": 23,
-  "commit_7d": 2,
-  "rel_ver": "v1.1.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 8,
-  "rel_n90": 2,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 44,
-  "lang": {
-   "Swift": 98,
-   "Ruby": 1,
-   "Python": 1,
-   "Makefile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "looplj/axonhub": {
-  "commit_90d": 375,
-  "commit_7d": 24,
-  "rel_ver": "v1.0.0-beta11",
-  "rel_pub": "2026-10-08",
-  "rel_days": 8,
-  "rel_n90": 6,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 148,
-  "lang": {
-   "Go": 70,
-   "TypeScript": 27,
-   "JavaScript": 2,
-   "Shell": 1,
-   "CSS": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "u14app/deep-research": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v0.11.0",
-  "rel_pub": "2026-02-10",
-  "rel_days": 248,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 10,
-  "lang": {
-   "JavaScript": 54,
-   "TypeScript": 46,
-   "Smarty": 0,
-   "CSS": 0,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "brycewang-stanford/Auto-Empirical-Research-Skills": {
-  "commit_90d": 105,
-  "commit_7d": 2,
-  "rel_ver": "v2026.07",
-  "rel_pub": "2026-07-02",
-  "rel_days": 106,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 12,
-  "lang": {
-   "Stata": 53,
-   "Python": 18,
-   "Jupyter Notebook": 12,
-   "TeX": 10,
-   "BibTeX Style": 2
   },
   "enriched_at": "20261016",
   "dim_ts": {

@@ -30,8 +30,8 @@
   }
  },
  "topoteretes/cognee": {
-  "commit_90d": 2461,
-  "commit_7d": 7,
+  "commit_90d": 2669,
+  "commit_7d": 174,
   "rel_ver": "v1.6.5.dev0",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -47,7 +47,7 @@
   "contrib_n": 293,
   "lang": {
    "Python": 88,
-   "TypeScript": 11,
+   "TypeScript": 10,
    "JavaScript": 1,
    "HTML": 0,
    "Shell": 0
@@ -81,173 +81,6 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "google-deepmind/weathernext": {
-  "commit_90d": 4,
-  "commit_7d": 0,
-  "rel_ver": "v0.3.0",
-  "rel_pub": "2026-08-06",
-  "rel_days": 71,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 13,
-  "lang": {
-   "Python": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "lintsinghua/DeepAudit": {
-  "commit_90d": 5,
-  "commit_7d": 1,
-  "rel_ver": "v3.0.4",
-  "rel_pub": "2026-01-24",
-  "rel_days": 265,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 1,
-  "sec_worst": "low",
-  "sec_last": "2026-02-05",
-  "sec_ids": [
-   "GHSA-vmmm-48w2-q56q(CVE-2026-25729,low)"
-  ],
-  "contrib_n": 15,
-  "lang": {
-   "Python": 61,
-   "TypeScript": 35,
-   "Shell": 1,
-   "PowerShell": 1,
-   "CSS": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "zenml-io/zenml": {
-  "commit_90d": 148,
-  "commit_7d": 7,
-  "rel_ver": "0.98.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 4,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 137,
-  "lang": {
-   "Python": 98,
-   "Shell": 1,
-   "JavaScript": 0,
-   "Go Template": 0,
-   "CSS": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "open-mmlab/mmaction2": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v1.2.0",
-  "rel_pub": "2023-10-12",
-  "rel_days": 1100,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 68,
-  "lang": {
-   "Python": 84,
-   "Jupyter Notebook": 15,
-   "Shell": 1,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "ericc-ch/copilot-api": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v0.7.0",
-  "rel_pub": "2025-10-05",
-  "rel_days": 376,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 14,
-  "lang": {
-   "TypeScript": 74,
-   "HTML": 17,
-   "JavaScript": 8,
-   "Dockerfile": 0,
-   "Batchfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "M-3LAB/awesome-industrial-anomaly-detection": {
-  "commit_90d": 8,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 28,
-  "lang": {},
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

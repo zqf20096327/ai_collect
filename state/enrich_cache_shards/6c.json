@@ -113,37 +113,5 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
- },
- "iflytek/astron-agent": {
-  "commit_90d": 93,
-  "commit_7d": 10,
-  "rel_ver": "v1.1.2",
-  "rel_pub": "2026-09-07",
-  "rel_days": 39,
-  "rel_n90": 3,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 1,
-  "sec_worst": "critical",
-  "sec_last": "2026-09-07",
-  "sec_ids": [
-   "GHSA-mh3w-4q3f-2fg5(CVE-2026-108263,critical)"
-  ],
-  "contrib_n": 61,
-  "lang": {
-   "Java": 35,
-   "Python": 26,
-   "TypeScript": 25,
-   "JavaScript": 8,
-   "SCSS": 2
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
  }
 }

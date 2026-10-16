@@ -26,7 +26,7 @@
   }
  },
  "zoicware/RemoveWindowsAI": {
-  "commit_90d": 65,
+  "commit_90d": 64,
   "commit_7d": 8,
   "rel_ver": null,
   "rel_none": true,
@@ -76,8 +76,8 @@
   }
  },
  "openchamber/openchamber": {
-  "commit_90d": 2910,
-  "commit_7d": 359,
+  "commit_90d": 2912,
+  "commit_7d": 362,
   "rel_ver": "v2.3.3",
   "rel_pub": "2026-10-14",
   "rel_days": 2,
@@ -116,43 +116,6 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "leejet/stable-diffusion.cpp": {
-  "commit_90d": 187,
-  "commit_7d": 20,
-  "rel_ver": "master-968-8cd731e",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 6,
-  "sec_worst": "high",
-  "sec_last": "2026-09-27",
-  "sec_ids": [
-   "GHSA-v2m4-h57v-fr6w(CVE-2026-70660,medium)",
-   "GHSA-6q7q-2v9c-x8m7(CVE-2026-70659,high)",
-   "GHSA-rx4w-x86j-vx57(CVE-2026-47748,medium)",
-   "GHSA-v37x-jwp7-mcvc(CVE-2026-47750,high)",
-   "GHSA-2c29-5hxg-fv9g(CVE-2026-47749,high)",
-   "GHSA-mghm-5mqc-pwmp(CVE-2026-47747,high)"
-  ],
-  "contrib_n": 118,
-  "lang": {
-   "C++": 100,
-   "Python": 0,
-   "C": 0,
-   "CMake": 0,
-   "Dockerfile": 0
-  },
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

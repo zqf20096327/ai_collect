@@ -108,7 +108,7 @@
  },
  "dyad-sh/dyad": {
   "commit_90d": 449,
-  "commit_7d": 28,
+  "commit_7d": 27,
   "rel_ver": "v1.20.0-beta.1",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -161,86 +161,6 @@
    "JavaScript": 1,
    "HTML": 1,
    "Shell": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "UfoMiao/zcf": {
-  "commit_90d": 27,
-  "commit_7d": 0,
-  "rel_ver": "zcf@3.7.3",
-  "rel_pub": "2026-08-31",
-  "rel_days": 46,
-  "rel_n90": 3,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 12,
-  "lang": {
-   "TypeScript": 100,
-   "Shell": 0,
-   "JavaScript": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "ashleve/lightning-hydra-template": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v2.0.3",
-  "rel_pub": "2023-09-01",
-  "rel_days": 1141,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 29,
-  "lang": {
-   "Python": 98,
-   "Makefile": 1,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "huggingface/blog": {
-  "commit_90d": 74,
-  "commit_7d": 10,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 446,
-  "lang": {
-   "Jupyter Notebook": 100,
-   "Python": 0,
-   "TypeScript": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

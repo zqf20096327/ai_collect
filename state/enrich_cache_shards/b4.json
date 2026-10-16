@@ -30,7 +30,7 @@
   }
  },
  "agent0ai/agent-zero": {
-  "commit_90d": 463,
+  "commit_90d": 462,
   "commit_7d": 19,
   "rel_ver": "v2.14",
   "rel_pub": "2026-10-13",
@@ -77,90 +77,6 @@
    "Python": 100,
    "Dockerfile": 0,
    "Makefile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "crestalnetwork/intentkit": {
-  "commit_90d": 76,
-  "commit_7d": 0,
-  "rel_ver": "v2.6.3",
-  "rel_pub": "2026-06-14",
-  "rel_days": 124,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 16,
-  "lang": {
-   "Python": 86,
-   "TypeScript": 8,
-   "Go": 6,
-   "HTML": 0,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "YILS-LIN/short-video-factory": {
-  "commit_90d": 31,
-  "commit_7d": 10,
-  "rel_ver": "v1.3.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 3,
-  "lang": {
-   "TypeScript": 71,
-   "Vue": 20,
-   "JavaScript": 9,
-   "SCSS": 0,
-   "HTML": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "OpenMOSS/MOSS-TTS": {
-  "commit_90d": 6,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 20,
-  "lang": {
-   "Python": 98,
-   "Shell": 1,
-   "C": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

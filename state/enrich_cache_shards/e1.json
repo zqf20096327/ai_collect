@@ -1,8 +1,8 @@
 {
  "siyuan-note/siyuan": {
-  "commit_90d": 4016,
+  "commit_90d": 4013,
   "commit_7d": 1,
-  "rel_ver": "v3.8.8-alpha.2",
+  "rel_ver": "v3.8.8-alpha.3",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
   "rel_n90": 12,
@@ -54,7 +54,7 @@
   "contrib_n": 75,
   "lang": {
    "Python": 50,
-   "TypeScript": 26,
+   "TypeScript": 25,
    "C++": 20,
    "JavaScript": 3,
    "C": 1
@@ -115,30 +115,6 @@
    "Tree-sitter Query": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "armankhondker/awesome-ai-ml-resources": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v2.0",
-  "rel_pub": "2025-03-11",
-  "rel_days": 584,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 1,
-  "lang": {},
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

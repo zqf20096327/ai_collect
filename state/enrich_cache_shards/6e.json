@@ -72,35 +72,5 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
- },
- "KaiyangZhou/deep-person-reid": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v1.0.6",
-  "rel_pub": "2019-10-23",
-  "rel_days": 2550,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 13,
-  "lang": {
-   "Python": 98,
-   "Cython": 1,
-   "Cuda": 0,
-   "C++": 0,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
  }
 }

@@ -1,7 +1,7 @@
 {
  "career-ops-hq/career-ops": {
-  "commit_90d": 2216,
-  "commit_7d": 363,
+  "commit_90d": 2230,
+  "commit_7d": 355,
   "rel_ver": "web-v0.15.0",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -33,7 +33,7 @@
  },
  "google-ai-edge/mediapipe": {
   "commit_90d": 274,
-  "commit_7d": 40,
+  "commit_7d": 37,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-10-14",
   "rel_days": 2,
@@ -83,97 +83,6 @@
    "Python": 100,
    "Dockerfile": 0,
    "Makefile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "openai/openai-realtime-agents": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 10,
-  "lang": {
-   "TypeScript": 99,
-   "JavaScript": 0,
-   "CSS": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "canopyai/Orpheus-TTS": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 13,
-  "lang": {
-   "Python": 96,
-   "HTML": 4
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "xai-org/grok-prompts": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 0,
-  "lang": {
-   "Jinja": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "rlcode/reinforcement-learning": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 11,
-  "lang": {
-   "Python": 100
   },
   "enriched_at": "20261016",
   "dim_ts": {

@@ -1,7 +1,7 @@
 {
  "koala73/worldmonitor": {
-  "commit_90d": 3544,
-  "commit_7d": 76,
+  "commit_90d": 3554,
+  "commit_7d": 86,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -129,69 +129,11 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 40,
+  "contrib_n": 39,
   "lang": {
    "Rust": 54,
    "JavaScript": 30,
    "Dockerfile": 16
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "denizsafak/abogen": {
-  "commit_90d": 124,
-  "commit_7d": 9,
-  "rel_ver": "v1.3.1",
-  "rel_pub": "2026-02-06",
-  "rel_days": 252,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 20,
-  "lang": {
-   "Python": 79,
-   "JavaScript": 9,
-   "HTML": 8,
-   "CSS": 3,
-   "Batchfile": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "conorbronsdon/avoid-ai-writing": {
-  "commit_90d": 496,
-  "commit_7d": 32,
-  "rel_ver": "v3.38.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 49,
-  "lang": {
-   "JavaScript": 90,
-   "Python": 8,
-   "Shell": 2
   },
   "enriched_at": "20261016",
   "dim_ts": {

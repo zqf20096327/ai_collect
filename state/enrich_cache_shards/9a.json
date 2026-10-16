@@ -54,35 +54,5 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
- },
- "GoogleCloudPlatform/kubectl-ai": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v0.0.31",
-  "rel_pub": "2026-03-27",
-  "rel_days": 203,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 53,
-  "lang": {
-   "Go": 87,
-   "HTML": 8,
-   "Shell": 5,
-   "Makefile": 1,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
  }
 }

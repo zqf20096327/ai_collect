@@ -84,55 +84,5 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
- },
- "didilili/ai-agents-from-zero": {
-  "commit_90d": 31,
-  "commit_7d": 24,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 2,
-  "lang": {
-   "Python": 87,
-   "JavaScript": 8,
-   "HTML": 4,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "nexu-io/html-video": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 8,
-  "lang": {
-   "HTML": 87,
-   "TypeScript": 9,
-   "JavaScript": 4,
-   "CSS": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
  }
 }

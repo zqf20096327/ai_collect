@@ -1,7 +1,7 @@
 {
  "pydantic/pydantic-ai": {
-  "commit_90d": 1726,
-  "commit_7d": 226,
+  "commit_90d": 1750,
+  "commit_7d": 218,
   "rel_ver": "v2.57.0",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -27,96 +27,6 @@
    "TypeScript": 1,
    "PLpgSQL": 0,
    "CSS": 0,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "BlockRunAI/ClawRouter": {
-  "commit_90d": 205,
-  "commit_7d": 25,
-  "rel_ver": "v0.12.288",
-  "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 26,
-  "lang": {
-   "TypeScript": 90,
-   "Shell": 5,
-   "JavaScript": 2,
-   "CSS": 2,
-   "PowerShell": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "NVIDIA/nccl": {
-  "commit_90d": 406,
-  "commit_7d": 0,
-  "rel_ver": "v2.32.3-1",
-  "rel_pub": "2026-09-17",
-  "rel_days": 29,
-  "rel_n90": 5,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 133,
-  "lang": {
-   "C++": 55,
-   "Cuda": 17,
-   "C": 13,
-   "Python": 9,
-   "Cython": 3
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "huggingface/text-embeddings-inference": {
-  "commit_90d": 9,
-  "commit_7d": 1,
-  "rel_ver": "v1.9.4",
-  "rel_pub": "2026-09-15",
-  "rel_days": 31,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 67,
-  "lang": {
-   "Rust": 87,
-   "Python": 11,
-   "JavaScript": 1,
-   "Dockerfile": 0,
    "Shell": 0
   },
   "enriched_at": "20261016",

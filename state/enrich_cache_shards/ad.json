@@ -24,8 +24,8 @@
   }
  },
  "NanmiCoder/cc-haha": {
-  "commit_90d": 846,
-  "commit_7d": 74,
+  "commit_90d": 850,
+  "commit_7d": 77,
   "rel_ver": "v0.7.4",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -36,7 +36,7 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 37,
+  "contrib_n": 38,
   "lang": {
    "TypeScript": 96,
    "Swift": 2,
@@ -84,12 +84,12 @@
   }
  },
  "wandb/wandb": {
-  "commit_90d": 551,
-  "commit_7d": 46,
-  "rel_ver": "v0.30.0",
-  "rel_pub": "2026-09-09",
-  "rel_days": 37,
-  "rel_n90": 3,
+  "commit_90d": 555,
+  "commit_7d": 49,
+  "rel_ver": "v0.31.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -129,91 +129,6 @@
    "Python": 25,
    "CSS": 7,
    "HTML": 3
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "generalaction/emdash": {
-  "commit_90d": 1727,
-  "commit_7d": 24,
-  "rel_ver": "v1.2.8",
-  "rel_pub": "2026-10-10",
-  "rel_days": 6,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 131,
-  "lang": {
-   "TypeScript": 99,
-   "CSS": 0,
-   "JavaScript": 0,
-   "HTML": 0,
-   "Nix": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "ageerle/ruoyi-ai": {
-  "commit_90d": 67,
-  "commit_7d": 2,
-  "rel_ver": "v3.1.0",
-  "rel_pub": "2026-08-04",
-  "rel_days": 73,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 48,
-  "lang": {
-   "Java": 97,
-   "Python": 3,
-   "PowerShell": 0,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "meta-llama/PurpleLlama": {
-  "commit_90d": 12,
-  "commit_7d": 1,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 46,
-  "lang": {
-   "Python": 77,
-   "C++": 17,
-   "JavaScript": 2,
-   "Jupyter Notebook": 1,
-   "CSS": 1
   },
   "enriched_at": "20261016",
   "dim_ts": {

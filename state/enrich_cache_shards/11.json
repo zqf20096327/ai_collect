@@ -1,7 +1,7 @@
 {
  "HumanSignal/label-studio": {
-  "commit_90d": 838,
-  "commit_7d": 19,
+  "commit_90d": 840,
+  "commit_7d": 21,
   "rel_ver": "nightly",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -28,89 +28,6 @@
    "Python": 25,
    "CSS": 8,
    "HTML": 2
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "GetStream/Vision-Agents": {
-  "commit_90d": 15,
-  "commit_7d": 0,
-  "rel_ver": "v0.6.9",
-  "rel_pub": "2026-08-13",
-  "rel_days": 64,
-  "rel_n90": 2,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 30,
-  "lang": {
-   "Python": 100,
-   "Jinja": 0,
-   "Shell": 0,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "InternLM/xtuner": {
-  "commit_90d": 112,
-  "commit_7d": 15,
-  "rel_ver": "v1.0.1",
-  "rel_pub": "2026-05-15",
-  "rel_days": 154,
-  "rel_n90": 0,
-  "rel_pre": true,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 64,
-  "lang": {
-   "Python": 100,
-   "Shell": 0,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "dromara/liteflow": {
-  "commit_90d": 128,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 37,
-  "lang": {
-   "Java": 100,
-   "Shell": 0,
-   "Lua": 0,
-   "Dockerfile": 0,
-   "Groovy": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

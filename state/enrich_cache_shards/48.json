@@ -1,7 +1,7 @@
 {
  "anthropics/claude-code": {
   "commit_90d": 223,
-  "commit_7d": 13,
+  "commit_7d": 11,
   "rel_ver": "v2.1.301",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -119,36 +119,6 @@
    "Gherkin": 1,
    "Makefile": 0,
    "Batchfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "yaojingang/GEOFlow": {
-  "commit_90d": 165,
-  "commit_7d": 2,
-  "rel_ver": "v3.2.0-beta.1",
-  "rel_pub": "2026-09-16",
-  "rel_days": 30,
-  "rel_n90": 7,
-  "rel_pre": true,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 12,
-  "lang": {
-   "PHP": 67,
-   "Blade": 13,
-   "CSS": 12,
-   "JavaScript": 5,
-   "Python": 2
   },
   "enriched_at": "20261016",
   "dim_ts": {

@@ -1,7 +1,7 @@
 {
  "tensorflow/tensorflow": {
-  "commit_90d": 4676,
-  "commit_7d": 680,
+  "commit_90d": 4682,
+  "commit_7d": 663,
   "rel_ver": "v2.22.0-rc0",
   "rel_pub": "2026-09-24",
   "rel_days": 22,
@@ -39,8 +39,8 @@
   }
  },
  "Arize-ai/phoenix": {
-  "commit_90d": 1150,
-  "commit_7d": 70,
+  "commit_90d": 1143,
+  "commit_7d": 62,
   "rel_ver": "arize-phoenix-v20.23.0",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -82,104 +82,6 @@
    "HTML": 72,
    "Ruby": 24,
    "SCSS": 4
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "Project-MONAI/MONAI": {
-  "commit_90d": 95,
-  "commit_7d": 11,
-  "rel_ver": "1.6.1",
-  "rel_pub": "2026-09-27",
-  "rel_days": 19,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 18,
-  "sec_worst": "critical",
-  "sec_last": "2026-10-15",
-  "sec_ids": [
-   "GHSA-vm9c-7j6g-c7mm(-,high)",
-   "GHSA-8f32-8649-rv87(-,high)",
-   "GHSA-x6pr-233j-x5cw(-,critical)",
-   "GHSA-wvpx-5qmp-46g3(-,high)",
-   "GHSA-2wx3-8x3w-r8qv(-,high)",
-   "GHSA-873f-pvrv-4x83(-,high)",
-   "GHSA-636w-j999-g7x5(-,high)",
-   "GHSA-h89g-r5pc-wxfm(-,high)"
-  ],
-  "contrib_n": 312,
-  "lang": {
-   "Python": 96,
-   "C++": 2,
-   "Cuda": 2,
-   "Shell": 0,
-   "C": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "HelixDB/helix-db": {
-  "commit_90d": 1492,
-  "commit_7d": 46,
-  "rel_ver": "v3.5.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 8,
-  "rel_n90": 11,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 34,
-  "lang": {
-   "Rust": 94,
-   "Python": 3,
-   "TypeScript": 1,
-   "Go": 1,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "mosaicml/llm-foundry": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v0.22.0",
-  "rel_pub": "2025-07-29",
-  "rel_days": 444,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 95,
-  "lang": {
-   "Python": 98,
-   "Shell": 2,
-   "Makefile": 0,
-   "Dockerfile": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

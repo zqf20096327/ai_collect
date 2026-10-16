@@ -1,6 +1,6 @@
 {
  "HKUDS/DeepTutor": {
-  "commit_90d": 1614,
+  "commit_90d": 1584,
   "commit_7d": 0,
   "rel_ver": "v1.6.14",
   "rel_pub": "2026-10-08",
@@ -30,8 +30,8 @@
   }
  },
  "xai-org/x-algorithm": {
-  "commit_90d": 46,
-  "commit_7d": 3,
+  "commit_90d": 47,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -41,7 +41,7 @@
   "contrib_n": 2,
   "lang": {
    "Rust": 43,
-   "Python": 30,
+   "Python": 31,
    "Scala": 18,
    "Java": 6,
    "C++": 1
@@ -70,92 +70,6 @@
   "sec_ids": [],
   "contrib_n": 204,
   "lang": {},
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "evidentlyai/evidently": {
-  "commit_90d": 3,
-  "commit_7d": 0,
-  "rel_ver": "v0.7.23",
-  "rel_pub": "2026-09-11",
-  "rel_days": 35,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 88,
-  "lang": {
-   "Jupyter Notebook": 70,
-   "Python": 26,
-   "TypeScript": 3,
-   "CSS": 0,
-   "HTML": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "MoonshotAI/kimi-code": {
-  "commit_90d": 758,
-  "commit_7d": 36,
-  "rel_ver": "@moonshot-ai/kimi-code@2.2.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 56,
-  "lang": {
-   "TypeScript": 98,
-   "JavaScript": 2,
-   "C": 0,
-   "CSS": 0,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "NVlabs/Eagle": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 10,
-  "lang": {
-   "Python": 93,
-   "C": 3,
-   "Shell": 2,
-   "C++": 2,
-   "Dockerfile": 0
-  },
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

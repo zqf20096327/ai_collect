@@ -1,6 +1,6 @@
 {
  "anthropics/claude-plugins-official": {
-  "commit_90d": 2254,
+  "commit_90d": 2249,
   "commit_7d": 181,
   "rel_ver": null,
   "rel_none": true,
@@ -152,64 +152,6 @@
   "sec_ids": [],
   "contrib_n": 29,
   "lang": {},
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "tech-leads-club/agent-skills": {
-  "commit_90d": 127,
-  "commit_7d": 8,
-  "rel_ver": "v1.6.1",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 15,
-  "lang": {
-   "TypeScript": 60,
-   "Python": 29,
-   "JavaScript": 7,
-   "Shell": 2,
-   "HTML": 2
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "alexlenail/NN-SVG": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "1.0",
-  "rel_pub": "2019-01-15",
-  "rel_days": 2831,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 10,
-  "lang": {
-   "JavaScript": 58,
-   "HTML": 41,
-   "TeX": 1
-  },
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

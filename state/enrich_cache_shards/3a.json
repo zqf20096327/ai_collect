@@ -27,7 +27,7 @@
   }
  },
  "altic-dev/FluidVoice": {
-  "commit_90d": 469,
+  "commit_90d": 468,
   "commit_7d": 11,
   "rel_ver": "v1.6.12-beta.1",
   "rel_pub": "2026-10-13",
@@ -57,7 +57,7 @@
   }
  },
  "OpenWhispr/openwhispr": {
-  "commit_90d": 852,
+  "commit_90d": 851,
   "commit_7d": 37,
   "rel_ver": "v1.10.3",
   "rel_pub": "2026-10-12",
@@ -76,62 +76,6 @@
    "Swift": 3,
    "C": 1,
    "CSS": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "py-why/dowhy": {
-  "commit_90d": 49,
-  "commit_7d": 10,
-  "rel_ver": "v0.14",
-  "rel_pub": "2025-11-08",
-  "rel_days": 342,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 113,
-  "lang": {
-   "Python": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "OpenBMB/UltraRAG": {
-  "commit_90d": 32,
-  "commit_7d": 4,
-  "rel_ver": "v0.3.0.3",
-  "rel_pub": "2026-09-15",
-  "rel_days": 31,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 23,
-  "lang": {
-   "Python": 49,
-   "TypeScript": 31,
-   "CSS": 14,
-   "JavaScript": 4,
-   "Jinja": 2
   },
   "enriched_at": "20261016",
   "dim_ts": {

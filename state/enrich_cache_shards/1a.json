@@ -57,8 +57,8 @@
   }
  },
  "google/adk-python": {
-  "commit_90d": 1484,
-  "commit_7d": 143,
+  "commit_90d": 1501,
+  "commit_7d": 152,
   "rel_ver": "v2.12.0",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -69,7 +69,7 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 428,
+  "contrib_n": 430,
   "lang": {
    "Python": 98,
    "Jupyter Notebook": 1,
@@ -88,10 +88,10 @@
  },
  "iii-hq/iii": {
   "commit_90d": 240,
-  "commit_7d": 23,
-  "rel_ver": "iii/v0.24.6-rc.5",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
+  "commit_7d": 21,
+  "rel_ver": "iii-alpha/v0.24.5-alpha.2",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -127,96 +127,6 @@
   "sec_ids": [],
   "contrib_n": 8,
   "lang": {},
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "rllm-org/rllm": {
-  "commit_90d": 14,
-  "commit_7d": 0,
-  "rel_ver": "v0.3.0-pre",
-  "rel_pub": "2026-04-30",
-  "rel_days": 169,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 80,
-  "lang": {
-   "Python": 72,
-   "Jupyter Notebook": 26,
-   "Shell": 1,
-   "Go Template": 0,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "cloudflare/vibesdk": {
-  "commit_90d": 186,
-  "commit_7d": 0,
-  "rel_ver": "v1.5.0",
-  "rel_pub": "2026-02-06",
-  "rel_days": 252,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 18,
-  "lang": {
-   "TypeScript": 96,
-   "Python": 2,
-   "CSS": 1,
-   "JavaScript": 0,
-   "HTML": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "yangjian102621/geekai": {
-  "commit_90d": 14,
-  "commit_7d": 0,
-  "rel_ver": "v4.3.0",
-  "rel_pub": "2026-08-11",
-  "rel_days": 66,
-  "rel_n90": 2,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 16,
-  "lang": {
-   "Vue": 50,
-   "Go": 33,
-   "JavaScript": 8,
-   "SCSS": 6,
-   "CSS": 2
-  },
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

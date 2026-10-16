@@ -1,6 +1,6 @@
 {
  "blakeblackshear/frigate": {
-  "commit_90d": 498,
+  "commit_90d": 497,
   "commit_7d": 47,
   "rel_ver": "v0.18.2",
   "rel_pub": "2026-10-15",
@@ -39,8 +39,8 @@
   }
  },
  "casdoor/casdoor": {
-  "commit_90d": 406,
-  "commit_7d": 20,
+  "commit_90d": 407,
+  "commit_7d": 21,
   "rel_ver": "v4.20.0",
   "rel_pub": "2026-10-11",
   "rel_days": 5,
@@ -70,7 +70,7 @@
  },
  "huggingface/speech-to-speech": {
   "commit_90d": 865,
-  "commit_7d": 58,
+  "commit_7d": 52,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-09-06",
   "rel_days": 40,
@@ -86,36 +86,6 @@
    "Python": 100,
    "Dockerfile": 0,
    "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "vercel/streamdown": {
-  "commit_90d": 88,
-  "commit_7d": 6,
-  "rel_ver": "streamdown@2.7.0",
-  "rel_pub": "2026-09-30",
-  "rel_days": 16,
-  "rel_n90": 8,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 98,
-  "lang": {
-   "TypeScript": 88,
-   "MDX": 11,
-   "HTML": 1,
-   "CSS": 0,
-   "JavaScript": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

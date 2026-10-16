@@ -54,37 +54,5 @@
    "contrib": "20261016",
    "lang": "20261016"
   }
- },
- "BitterSecurity/Decepticon": {
-  "commit_90d": 216,
-  "commit_7d": 79,
-  "rel_ver": "v1.4.4",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 1,
-  "sec_worst": "critical",
-  "sec_last": "2026-06-24",
-  "sec_ids": [
-   "GHSA-g5f9-3xfg-p9mf(CVE-2026-61732,critical)"
-  ],
-  "contrib_n": 16,
-  "lang": {
-   "Python": 51,
-   "Cypher": 37,
-   "TypeScript": 7,
-   "Go": 4,
-   "JavaScript": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
  }
 }

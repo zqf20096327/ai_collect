@@ -1,6 +1,6 @@
 {
  "ahmedkhaleel2004/gitdiagram": {
-  "commit_90d": 451,
+  "commit_90d": 449,
   "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -45,92 +45,6 @@
    "Astro": 4,
    "JavaScript": 2,
    "CSS": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "aipoch/open-science": {
-  "commit_90d": 2895,
-  "commit_7d": 187,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 2,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 24,
-  "lang": {
-   "TypeScript": 91,
-   "JavaScript": 8,
-   "Python": 0,
-   "CSS": 0,
-   "R": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "LazyAGI/LazyLLM": {
-  "commit_90d": 72,
-  "commit_7d": 5,
-  "rel_ver": "v1.4.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 11,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 54,
-  "lang": {
-   "Python": 99,
-   "C++": 1,
-   "Lua": 0,
-   "CMake": 0,
-   "TeX": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "morphik-org/morphik-core": {
-  "commit_90d": 14,
-  "commit_7d": 5,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 18,
-  "lang": {
-   "Python": 66,
-   "TypeScript": 23,
-   "Shell": 9,
-   "PowerShell": 1,
-   "Rust": 1
   },
   "enriched_at": "20261016",
   "dim_ts": {

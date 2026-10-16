@@ -55,7 +55,7 @@
  },
  "invoke-ai/InvokeAI": {
   "commit_90d": 3885,
-  "commit_7d": 185,
+  "commit_7d": 183,
   "rel_ver": "v7.0.0-alpha.2",
   "rel_pub": "2026-10-11",
   "rel_days": 5,
@@ -97,66 +97,6 @@
    "Jupyter Notebook": 98,
    "Python": 2
   },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "zai-org/GLM-5": {
-  "commit_90d": 11,
-  "commit_7d": 1,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 7,
-  "lang": {},
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "opendilab/awesome-RLHF": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 36,
-  "lang": {},
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "CommandCodeAI/command-code": {
-  "commit_90d": 11,
-  "commit_7d": 7,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 9,
-  "lang": {},
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

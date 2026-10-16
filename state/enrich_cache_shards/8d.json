@@ -1,7 +1,7 @@
 {
  "vllm-project/vllm": {
-  "commit_90d": 4331,
-  "commit_7d": 442,
+  "commit_90d": 4336,
+  "commit_7d": 436,
   "rel_ver": "v0.31.0",
   "rel_pub": "2026-10-05",
   "rel_days": 11,
@@ -39,7 +39,7 @@
   }
  },
  "meilisearch/meilisearch": {
-  "commit_90d": 354,
+  "commit_90d": 353,
   "commit_7d": 16,
   "rel_ver": "v1.55.0",
   "rel_pub": "2026-10-12",
@@ -105,8 +105,8 @@
   }
  },
  "thesysdev/openui": {
-  "commit_90d": 400,
-  "commit_7d": 61,
+  "commit_90d": 401,
+  "commit_7d": 62,
   "rel_ver": "@openuidev/vue-lang@0.4.2",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -124,88 +124,6 @@
    "JavaScript": 1,
    "CSS": 0,
    "Vue": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "mlpack/mlpack": {
-  "commit_90d": 21,
-  "commit_7d": 1,
-  "rel_ver": "4.8.0",
-  "rel_pub": "2026-06-09",
-  "rel_days": 129,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 269,
-  "lang": {
-   "C++": 89,
-   "C": 8,
-   "CMake": 2,
-   "Python": 1,
-   "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "Tencent-Hunyuan/HunyuanVideo-1.5": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 6,
-  "lang": {
-   "Python": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "deta/surf": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "1.4.7-beta.0",
-  "rel_pub": "2026-04-29",
-  "rel_days": 170,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 8,
-  "lang": {
-   "TypeScript": 44,
-   "Svelte": 38,
-   "Rust": 16,
-   "JavaScript": 1,
-   "SCSS": 1
   },
   "enriched_at": "20261016",
   "dim_ts": {

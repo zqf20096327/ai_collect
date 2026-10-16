@@ -1,6 +1,6 @@
 {
  "modelscope/FunASR": {
-  "commit_90d": 637,
+  "commit_90d": 634,
   "commit_7d": 3,
   "rel_ver": "v1.4.16",
   "rel_pub": "2026-09-18",
@@ -30,8 +30,8 @@
   }
  },
  "kortix-ai/suna": {
-  "commit_90d": 7740,
-  "commit_7d": 442,
+  "commit_90d": 7751,
+  "commit_7d": 466,
   "rel_ver": "dev-latest",
   "rel_pub": "2026-05-31",
   "rel_days": 138,
@@ -105,9 +105,9 @@
  "go-vgo/robotgo": {
   "commit_90d": 83,
   "commit_7d": 0,
-  "rel_ver": "v1.3.5",
-  "rel_pub": "2026-10-07",
-  "rel_days": 9,
+  "rel_ver": "v1.3.6",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -122,89 +122,6 @@
    "Objective-C": 3,
    "HTML": 0,
    "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "xerj-org/xerj": {
-  "commit_90d": 2766,
-  "commit_7d": 450,
-  "rel_ver": "v1.0.0-rc.96",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 35,
-  "lang": {
-   "Rust": 67,
-   "HTML": 22,
-   "JavaScript": 5,
-   "Python": 4,
-   "Shell": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "openai/simple-evals": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 12,
-  "lang": {
-   "Python": 60,
-   "Jupyter Notebook": 40
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "modelscope/evalscope": {
-  "commit_90d": 269,
-  "commit_7d": 32,
-  "rel_ver": "v1.13.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 3,
-  "rel_n90": 6,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 130,
-  "lang": {
-   "Python": 88,
-   "TypeScript": 11,
-   "CSS": 0,
-   "Jinja": 0,
-   "JavaScript": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

@@ -1,7 +1,7 @@
 {
  "microsoft/onnxruntime": {
-  "commit_90d": 858,
-  "commit_7d": 54,
+  "commit_90d": 865,
+  "commit_7d": 58,
   "rel_ver": "v1.31.0",
   "rel_pub": "2026-10-09",
   "rel_days": 7,
@@ -30,7 +30,7 @@
   }
  },
  "xbtlin/ai-berkshire": {
-  "commit_90d": 261,
+  "commit_90d": 260,
   "commit_7d": 4,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-04-07",
@@ -77,36 +77,6 @@
    "Python": 68,
    "Makefile": 17,
    "Shell": 15
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "FailproofAI/failproofai": {
-  "commit_90d": 251,
-  "commit_7d": 8,
-  "rel_ver": "v1.0.11",
-  "rel_pub": "2026-10-16",
-  "rel_days": 0,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 12,
-  "lang": {
-   "TypeScript": 48,
-   "MDX": 28,
-   "Python": 12,
-   "Rust": 9,
-   "JavaScript": 1
   },
   "enriched_at": "20261016",
   "dim_ts": {

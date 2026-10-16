@@ -1,6 +1,6 @@
 {
  "google-gemini/gemini-cli": {
-  "commit_90d": 197,
+  "commit_90d": 201,
   "commit_7d": 25,
   "rel_ver": "v0.66.0-nightly.20261016.gdebf42324",
   "rel_pub": "2026-10-16",
@@ -30,8 +30,8 @@
   }
  },
  "langfuse/langfuse": {
-  "commit_90d": 2261,
-  "commit_7d": 279,
+  "commit_90d": 2263,
+  "commit_7d": 280,
   "rel_ver": "v4.63.0",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -87,8 +87,8 @@
   }
  },
  "voxel51/fiftyone": {
-  "commit_90d": 3457,
-  "commit_7d": 131,
+  "commit_90d": 3458,
+  "commit_7d": 128,
   "rel_ver": "v1.22.1",
   "rel_pub": "2026-09-29",
   "rel_days": 17,
@@ -138,90 +138,6 @@
    "Shell": 2,
    "Lua": 0,
    "C": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "k8sgpt-ai/k8sgpt": {
-  "commit_90d": 90,
-  "commit_7d": 14,
-  "rel_ver": "v0.4.40",
-  "rel_pub": "2026-10-09",
-  "rel_days": 7,
-  "rel_n90": 4,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 2,
-  "sec_worst": "high",
-  "sec_last": "2026-04-14",
-  "sec_ids": [
-   "GHSA-rp7v-4384-hfrp(-,high)",
-   "GHSA-85rg-8m6h-825p(-,high)"
-  ],
-  "contrib_n": 140,
-  "lang": {
-   "Go": 99,
-   "Makefile": 0,
-   "Go Template": 0,
-   "Dockerfile": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "alirezamika/autoscraper": {
-  "commit_90d": 1,
-  "commit_7d": 0,
-  "rel_ver": "v1.1.14",
-  "rel_pub": "2022-07-17",
-  "rel_days": 1552,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 7,
-  "lang": {
-   "Python": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "microsoft/CUAWright": {
-  "commit_90d": 13,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 11,
-  "lang": {
-   "Python": 85,
-   "JavaScript": 9,
-   "HTML": 4,
-   "CSS": 1,
-   "Shell": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

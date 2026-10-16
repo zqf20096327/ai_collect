@@ -1,6 +1,6 @@
 {
  "xtekky/gpt4free": {
-  "commit_90d": 310,
+  "commit_90d": 309,
   "commit_7d": 2,
   "rel_ver": "v8.7.4",
   "rel_pub": "2026-10-09",
@@ -30,8 +30,8 @@
   }
  },
  "HKUDS/nanobot": {
-  "commit_90d": 1399,
-  "commit_7d": 123,
+  "commit_90d": 1400,
+  "commit_7d": 95,
   "rel_ver": "v0.3.5",
   "rel_pub": "2026-09-15",
   "rel_days": 31,
@@ -66,7 +66,7 @@
   }
  },
  "mcp-use/mcp-use": {
-  "commit_90d": 475,
+  "commit_90d": 465,
   "commit_7d": 5,
   "rel_ver": "mcp-use@2.10.1-canary.1",
   "rel_pub": "2026-10-15",
@@ -85,34 +85,6 @@
    "JavaScript": 3,
    "CSS": 1,
    "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "algorithmicsuperintelligence/optillm": {
-  "commit_90d": 16,
-  "commit_7d": 12,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 18,
-  "rel_n90": 2,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 22,
-  "lang": {
-   "Python": 100,
-   "Shell": 0,
-   "Dockerfile": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

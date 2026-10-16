@@ -85,7 +85,7 @@
   }
  },
  "LMCache/LMCache": {
-  "commit_90d": 572,
+  "commit_90d": 573,
   "commit_7d": 75,
   "rel_ver": "nightly-xpu",
   "rel_pub": "2026-10-16",
@@ -134,62 +134,6 @@
    "Python": 96,
    "Starlark": 4,
    "Shell": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "zuruoke/watermark-removal": {
-  "commit_90d": 2,
-  "commit_7d": 0,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-06-05",
-  "rel_days": 133,
-  "rel_n90": 0,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 6,
-  "lang": {
-   "Python": 99,
-   "Dockerfile": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "SwanHubX/SwanLab": {
-  "commit_90d": 40,
-  "commit_7d": 1,
-  "rel_ver": "v0.10.2",
-  "rel_pub": "2026-10-09",
-  "rel_days": 7,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 44,
-  "lang": {
-   "Python": 98,
-   "Go": 1,
-   "Shell": 0,
-   "Makefile": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

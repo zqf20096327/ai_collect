@@ -30,7 +30,7 @@
   }
  },
  "HKUDS/Vibe-Trading": {
-  "commit_90d": 2352,
+  "commit_90d": 2349,
   "commit_7d": 213,
   "rel_ver": "v0.1.16",
   "rel_pub": "2026-09-29",
@@ -78,118 +78,6 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "vllm-project/vllm-omni": {
-  "commit_90d": 1432,
-  "commit_7d": 149,
-  "rel_ver": "v0.31.0rc1",
-  "rel_pub": "2026-10-06",
-  "rel_days": 10,
-  "rel_n90": 9,
-  "rel_pre": true,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 446,
-  "lang": {
-   "Python": 100,
-   "Shell": 0,
-   "JavaScript": 0,
-   "Jinja": 0,
-   "Cuda": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "microsoft/poml": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v0.0.8",
-  "rel_pub": "2025-08-25",
-  "rel_days": 417,
-  "rel_n90": 0,
-  "rel_pre": true,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 11,
-  "lang": {
-   "TypeScript": 82,
-   "Python": 13,
-   "JavaScript": 3,
-   "CSS": 2,
-   "HTML": 0
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "openmlsys/openmlsys": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 55,
-  "lang": {
-   "TeX": 55,
-   "Python": 30,
-   "HTML": 9,
-   "JavaScript": 3,
-   "CSS": 2
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "huggingface/autotrain-advanced": {
-  "commit_90d": 4,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 25,
-  "lang": {
-   "Python": 89,
-   "HTML": 6,
-   "JavaScript": 3,
-   "Jupyter Notebook": 2,
-   "Dockerfile": 0
-  },
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

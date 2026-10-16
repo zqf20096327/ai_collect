@@ -32,8 +32,8 @@
   }
  },
  "tradecatlabs/vibe-coding-cn": {
-  "commit_90d": 72,
-  "commit_7d": 26,
+  "commit_90d": 75,
+  "commit_7d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -113,8 +113,8 @@
   }
  },
  "google/adk-recipes": {
-  "commit_90d": 226,
-  "commit_7d": 8,
+  "commit_90d": 227,
+  "commit_7d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -129,79 +129,6 @@
    "JavaScript": 1,
    "Kotlin": 0
   },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "aymericdamien/TopDeepLearning": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 7,
-  "lang": {
-   "Python": 100
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "icip-cas/PPTAgent": {
-  "commit_90d": 3,
-  "commit_7d": 0,
-  "rel_ver": "v1.1.38",
-  "rel_pub": "2026-09-20",
-  "rel_days": 26,
-  "rel_n90": 1,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 3,
-  "sec_worst": "high",
-  "sec_last": "2026-04-27",
-  "sec_ids": [
-   "GHSA-hrcw-xc63-g29m(CVE-2026-42078,medium)",
-   "GHSA-pxhg-7xr2-w7xg(CVE-2026-42080,medium)",
-   "GHSA-89g2-xw5c-v95p(CVE-2026-42079,high)"
-  ],
-  "contrib_n": 24,
-  "lang": {
-   "Python": 98,
-   "HTML": 2
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "filipecalegario/awesome-generative-ai": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 103,
-  "lang": {},
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

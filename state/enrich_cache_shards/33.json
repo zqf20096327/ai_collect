@@ -89,11 +89,11 @@
   }
  },
  "anthropics/claude-code-action": {
-  "commit_90d": 123,
+  "commit_90d": 124,
   "commit_7d": 4,
-  "rel_ver": "v1.0.251",
-  "rel_pub": "2026-10-15",
-  "rel_days": 1,
+  "rel_ver": "v1.0.252",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -109,32 +109,6 @@
    "Python": 6,
    "Shell": 1,
    "JavaScript": 1
-  },
-  "enriched_at": "20261016",
-  "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
-   "security": "20261016",
-   "contrib": "20261016",
-   "lang": "20261016"
-  }
- },
- "yifanfeng97/Hyper-Extract": {
-  "commit_90d": 238,
-  "commit_7d": 10,
-  "rel_ver": "v0.10.5",
-  "rel_pub": "2026-09-29",
-  "rel_days": 17,
-  "rel_n90": 12,
-  "rel_pre": false,
-  "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
-  "contrib_n": 16,
-  "lang": {
-   "Python": 100
   },
   "enriched_at": "20261016",
   "dim_ts": {

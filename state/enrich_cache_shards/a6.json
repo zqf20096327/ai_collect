@@ -1,11 +1,11 @@
 {
  "roboflow/supervision": {
-  "commit_90d": 260,
-  "commit_7d": 36,
-  "rel_ver": "0.30.9",
-  "rel_pub": "2026-10-08",
-  "rel_days": 8,
-  "rel_n90": 10,
+  "commit_90d": 261,
+  "commit_7d": 33,
+  "rel_ver": "0.31.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -27,7 +27,7 @@
  },
  "ifixai-ai/iFixAi": {
   "commit_90d": 232,
-  "commit_7d": 86,
+  "commit_7d": 85,
   "rel_ver": "v4.2.0",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
