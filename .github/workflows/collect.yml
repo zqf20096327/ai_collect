@@ -73,7 +73,10 @@ jobs:
           python s7_enrich.py --tier all
           --max-calls 5000 --max-minutes 100 --wait-windows 8
 
+      # README_SKIP=true 时整步跳过(本地回填期间暂停远端采集,防两边重复;
+      # 回填推完用 API 把变量改回 false 或删掉即恢复,无需改代码)
       - name: s6 README(weekly;每月 1 号自动转月度全量校准)
+        if: vars.README_SKIP != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

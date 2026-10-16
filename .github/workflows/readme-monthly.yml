@@ -35,6 +35,7 @@ jobs:
       # calibrated 当日标记跨 run 接力:本窗校验过的下窗自动跳过,
       # 断点续采 = 再 dispatch 一次即接着跑
       - name: README 月度全量校准
+        if: vars.README_SKIP != 'true'   # 与 collect.yml 同一暂停开关
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
