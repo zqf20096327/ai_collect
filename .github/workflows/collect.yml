@@ -121,8 +121,15 @@ jobs:
           else
             git commit -m "collect: $(date -u +%Y-%m-%d) 池/事件/富集/README 日更"
             for i in 1 2 3 4 5; do
-              git pull --rebase --autostash origin main >/dev/null 2>&1 || true
-              git push && { echo "已推送"; exit 0; }
+              git fetch origin main
+              if ! git rebase --autostash origin/main; then
+                # 同日两次运行的状态文件会 add/add 冲突;rebase 语义反转:
+                # --theirs 才是本窗提交(当日最新状态),冲突一律取它
+                git diff --name-only --diff-filter=U -z | xargs -0 -r git checkout --theirs --
+                git diff --name-only --diff-filter=U -z | xargs -0 -r git add
+                GIT_EDITOR=true git rebase --continue
+              fi
+              git push origin HEAD:main && { echo "已推送"; exit 0; }
               echo "推送撞车,40s 后重试($i/5)"; sleep 40
             done
             echo "::warning::推送 5 次未成功,本窗数据丢失(断点续采次晚重做)"
