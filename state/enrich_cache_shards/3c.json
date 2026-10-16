@@ -1,0 +1,190 @@
+{
+ "onnx/onnx": {
+  "commit_90d": 246,
+  "commit_7d": 22,
+  "rel_ver": "v1.23.2",
+  "rel_pub": "2026-10-06",
+  "rel_days": 10,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 8,
+  "sec_worst": "high",
+  "sec_last": "2026-07-03",
+  "sec_ids": [
+   "GHSA-hwpq-hmq9-wj77(CVE-2026-44512,medium)",
+   "GHSA-p893-rvq9-2xf9(CVE-2026-63632,low)",
+   "GHSA-hqmj-h5c6-369m(CVE-2026-28500,medium)",
+   "GHSA-538c-55jv-c5g9(CVE-2026-34445,high)",
+   "GHSA-cmw6-hcpp-c6jp(CVE-2026-34446,medium)",
+   "GHSA-q56x-g2fj-4rj6(-,high)",
+   "GHSA-3r9x-f23j-gc73(CVE-2026-27489,high)",
+   "GHSA-p433-9wv8-28xj(CVE-2026-34447,medium)"
+  ],
+  "contrib_n": 402,
+  "lang": {
+   "Python": 55,
+   "C++": 45,
+   "CMake": 1,
+   "C": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "T8RIN/ImageToolbox": {
+  "commit_90d": 678,
+  "commit_7d": 35,
+  "rel_ver": "4.2.1-rc01",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 181,
+  "lang": {
+   "Kotlin": 100,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/accelerate": {
+  "commit_90d": 81,
+  "commit_7d": 4,
+  "rel_ver": "v1.15.0",
+  "rel_pub": "2026-09-09",
+  "rel_days": 37,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 443,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tensorflow/examples": {
+  "commit_90d": 14,
+  "commit_7d": 0,
+  "rel_ver": "tflmm/v0.3.2",
+  "rel_pub": "2021-05-16",
+  "rel_days": 1979,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 268,
+  "lang": {
+   "Jupyter Notebook": 36,
+   "Python": 25,
+   "Kotlin": 14,
+   "Swift": 11,
+   "Java": 7
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Mai-with-u/MaiBot": {
+  "commit_90d": 969,
+  "commit_7d": 135,
+  "rel_ver": "v1.3.9",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 116,
+  "lang": {
+   "Python": 58,
+   "TypeScript": 40,
+   "CSS": 1,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "NVIDIA/nvidia-container-toolkit": {
+  "commit_90d": 147,
+  "commit_7d": 6,
+  "rel_ver": "v1.20.1",
+  "rel_pub": "2026-09-19",
+  "rel_days": 27,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "critical",
+  "sec_last": "2024-10-08",
+  "sec_ids": [
+   "GHSA-f748-7hpg-88ch(CVE-2024-0133,medium)",
+   "GHSA-mjjw-553x-87pq(CVE-2024-0132,critical)"
+  ],
+  "contrib_n": 61,
+  "lang": {
+   "Go": 91,
+   "Shell": 5,
+   "C": 2,
+   "Makefile": 1,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

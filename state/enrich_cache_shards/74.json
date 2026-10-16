@@ -1,0 +1,279 @@
+{
+ "firecrawl/firecrawl": {
+  "commit_90d": 608,
+  "commit_7d": 29,
+  "rel_ver": "v2.11.0",
+  "rel_pub": "2026-06-19",
+  "rel_days": 119,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-29",
+  "sec_ids": [
+   "GHSA-3p54-jg6f-68r8(CVE-2026-72904,high)",
+   "GHSA-7843-ffpq-5f9p(CVE-2026-72905,critical)",
+   "GHSA-p2wg-prhf-jx79(CVE-2025-57818,high)",
+   "GHSA-vjp8-2wgg-p734(CVE-2024-56800,high)"
+  ],
+  "contrib_n": 166,
+  "lang": {
+   "TypeScript": 73,
+   "Python": 12,
+   "Rust": 3,
+   "Java": 3,
+   "PHP": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "shadcn-ui/ui": {
+  "commit_90d": 275,
+  "commit_7d": 25,
+  "rel_ver": "shadcn@4.22.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 469,
+  "lang": {
+   "TypeScript": 86,
+   "MDX": 10,
+   "CSS": 3,
+   "JavaScript": 0,
+   "Astro": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "github/awesome-copilot": {
+  "commit_90d": 568,
+  "commit_7d": 126,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 435,
+  "lang": {
+   "JavaScript": 49,
+   "Python": 30,
+   "TypeScript": 7,
+   "CSS": 6,
+   "HTML": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "assafelovic/gpt-researcher": {
+  "commit_90d": 138,
+  "commit_7d": 7,
+  "rel_ver": "v3.7.0",
+  "rel_pub": "2026-09-26",
+  "rel_days": 20,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 252,
+  "lang": {
+   "Python": 71,
+   "TypeScript": 18,
+   "JavaScript": 5,
+   "CSS": 4,
+   "HCL": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/agent-framework": {
+  "commit_90d": 1012,
+  "commit_7d": 119,
+  "rel_ver": "python-1.22.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "high",
+  "sec_last": "2026-10-07",
+  "sec_ids": [
+   "GHSA-q7g7-7c7x-frcq(-,medium)",
+   "GHSA-9f26-7mqc-9vc4(-,high)",
+   "GHSA-r2mq-wgc9-vgh3(-,medium)"
+  ],
+  "contrib_n": 296,
+  "lang": {
+   "Python": 59,
+   "C#": 39,
+   "TypeScript": 2,
+   "HTML": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "langchain-ai/open-swe": {
+  "commit_90d": 1589,
+  "commit_7d": 166,
+  "rel_ver": "desktop-v0.3.8-nightly.20261016142804",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-09-18",
+  "sec_ids": [
+   "GHSA-wpjg-64mw-3qj9(-,medium)"
+  ],
+  "contrib_n": 62,
+  "lang": {
+   "Python": 65,
+   "TypeScript": 31,
+   "C": 2,
+   "Jinja": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "catboost/catboost": {
+  "commit_90d": 262,
+  "commit_7d": 7,
+  "rel_ver": "node-package-v1.27.0",
+  "rel_pub": "2026-02-21",
+  "rel_days": 237,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 189,
+  "lang": {
+   "C++": 77,
+   "Python": 10,
+   "Cuda": 3,
+   "CMake": 3,
+   "Scala": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "smol-machines/smolvm": {
+  "commit_90d": 862,
+  "commit_7d": 153,
+  "rel_ver": "v1.29.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 55,
+  "lang": {
+   "Rust": 92,
+   "Shell": 6,
+   "Python": 1,
+   "C": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "MCP-UI-Org/mcp-ui": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "client/v7.1.1",
+  "rel_pub": "2026-05-09",
+  "rel_days": 160,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "TypeScript": 70,
+   "Python": 19,
+   "Ruby": 6,
+   "HTML": 2,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

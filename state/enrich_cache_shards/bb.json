@@ -1,0 +1,199 @@
+{
+ "CherryHQ/cherry-studio": {
+  "commit_90d": 2033,
+  "commit_7d": 211,
+  "rel_ver": "v2.1.6",
+  "rel_pub": "2026-10-11",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "critical",
+  "sec_last": "2025-10-10",
+  "sec_ids": [
+   "GHSA-hh6w-rmjc-26f6(CVE-2025-61929,critical)",
+   "GHSA-gjp6-9cvg-8w93(CVE-2025-54382,critical)",
+   "GHSA-8xr5-732g-84px(CVE-2025-54074,critical)",
+   "GHSA-p6vw-w3p8-4g72(CVE-2025-54063,critical)"
+  ],
+  "contrib_n": 411,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "Python": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ConardLi/garden-skills": {
+  "commit_90d": 10,
+  "commit_7d": 3,
+  "rel_ver": "motion-showreel-v0.1.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 5,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "CSS": 36,
+   "TypeScript": 32,
+   "JavaScript": 26,
+   "Shell": 4,
+   "Python": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "MoonshotAI/Kimi-K3": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "gpustack/gpustack": {
+  "commit_90d": 432,
+  "commit_7d": 55,
+  "rel_ver": "v2.3.0rc3",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-01",
+  "sec_ids": [
+   "GHSA-gj9m-f8ph-pmhr(CVE-2026-102895,critical)",
+   "GHSA-3hch-x692-6qj3(CVE-2026-103002,high)",
+   "GHSA-62m9-f875-rqw6(CVE-2026-102894,critical)"
+  ],
+  "contrib_n": 61,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "Jinja": 0,
+   "Dockerfile": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "salesforce/CodeGen": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "sreeharierk/datascience": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "homeassistant-ai/ha-mcp": {
+  "commit_90d": 1056,
+  "commit_7d": 65,
+  "rel_ver": "v8.7.0.dev3056",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": null,
+  "sec_last": "2026-07-19",
+  "sec_ids": [
+   "GHSA-mx64-982r-65vg(-,medium)",
+   "GHSA-q855-8rh5-jfgq(-,medium)",
+   "GHSA-g39v-cvjh-8fpf(-,medium)",
+   "GHSA-fmfg-9g7c-3vq7(CVE-2026-32111,medium)",
+   "GHSA-pf93-j98v-25pv(CVE-2026-32112,medium)"
+  ],
+  "contrib_n": 84,
+  "lang": {
+   "Python": 96,
+   "Astro": 2,
+   "JavaScript": 1,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

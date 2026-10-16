@@ -1,0 +1,109 @@
+{
+ "oraios/serena": {
+  "commit_90d": 438,
+  "commit_7d": 49,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-14",
+  "sec_ids": [
+   "GHSA-pp6p-xvxf-8hhx(-,high)",
+   "GHSA-pp25-4cg4-qcr9(-,critical)",
+   "GHSA-37h2-6p4f-mp3q(CVE-2026-49471,high)"
+  ],
+  "contrib_n": 244,
+  "lang": {
+   "Python": 91,
+   "JavaScript": 2,
+   "HTML": 1,
+   "CSS": 1,
+   "AL": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "OptimalScale/LMFlow": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-07-11",
+  "rel_days": 462,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 38,
+  "lang": {
+   "Python": 93,
+   "Shell": 7
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "aadi1011/AI-ML-Roadmap-from-scratch": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "gusye1234/nano-graphrag": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.0.8",
+  "rel_pub": "2024-10-01",
+  "rel_days": 745,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

@@ -1,0 +1,172 @@
+{
+ "AstrBotDevs/AstrBot": {
+  "commit_90d": 399,
+  "commit_7d": 28,
+  "rel_ver": "v4.29.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "critical",
+  "sec_last": "2025-11-14",
+  "sec_ids": [
+   "GHSA-4m32-cjv7-f425(CVE-2025-55449,critical)",
+   "GHSA-cq37-g2qp-3c2p(CVE-2025-48957,high)"
+  ],
+  "contrib_n": 373,
+  "lang": {
+   "Python": 72,
+   "Vue": 21,
+   "TypeScript": 5,
+   "JavaScript": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "google/magika": {
+  "commit_90d": 127,
+  "commit_7d": 14,
+  "rel_ver": "cli/v1.1.0",
+  "rel_pub": "2026-04-24",
+  "rel_days": 175,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 51,
+  "lang": {
+   "Rust": 58,
+   "YARA": 12,
+   "Python": 11,
+   "TypeScript": 7,
+   "Shell": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "GLips/Figma-Context-MCP": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.13.2",
+  "rel_pub": "2026-06-18",
+  "rel_days": 120,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2025-09-29",
+  "sec_ids": [
+   "GHSA-gxw4-4fc5-9gr5(CVE-2025-53967,high)"
+  ],
+  "contrib_n": 30,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "aws/amazon-sagemaker-examples": {
+  "commit_90d": 7,
+  "commit_7d": 1,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-09-08",
+  "rel_days": 38,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 391,
+  "lang": {
+   "Jupyter Notebook": 85,
+   "Python": 13,
+   "JavaScript": 1,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "shashankvemuri/Finance": {
+  "commit_90d": 22,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "lucidrains/vector-quantize-pytorch": {
+  "commit_90d": 12,
+  "commit_7d": 0,
+  "rel_ver": "1.27.21",
+  "rel_pub": "2026-02-12",
+  "rel_days": 246,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

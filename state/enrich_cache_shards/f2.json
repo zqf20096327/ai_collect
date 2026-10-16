@@ -1,0 +1,275 @@
+{
+ "anthropics/skills": {
+  "commit_90d": 16,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 82,
+   "HTML": 8,
+   "JavaScript": 8,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ray-project/ray": {
+  "commit_90d": 1054,
+  "commit_7d": 89,
+  "rel_ver": "ray-2.59.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 14,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-01",
+  "sec_ids": [
+   "GHSA-hhrp-gw25-jr43(CVE-2026-57516,high)",
+   "GHSA-mw35-8rx3-xf9r(CVE-2026-41486,high)",
+   "GHSA-q5fh-2hc8-f6rq(CVE-2026-27482,medium)",
+   "GHSA-q279-jhrf-cc6v(CVE-2025-62593,critical)"
+  ],
+  "contrib_n": 409,
+  "lang": {
+   "Python": 78,
+   "C++": 17,
+   "Java": 2,
+   "Starlark": 1,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "agno-agi/agno": {
+  "commit_90d": 342,
+  "commit_7d": 40,
+  "rel_ver": "v3.1.4",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-27",
+  "sec_ids": [
+   "GHSA-w9j5-7p53-pvr3(CVE-2026-10105,high)",
+   "GHSA-m4w4-3r8h-jw98(CVE-2026-35002,critical)",
+   "GHSA-vw84-hprm-cxmm(CVE-2025-64168,high)"
+  ],
+  "contrib_n": 440,
+  "lang": {
+   "Python": 100,
+   "HTML": 0,
+   "Shell": 0,
+   "Batchfile": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Dokploy/dokploy": {
+  "commit_90d": 814,
+  "commit_7d": 47,
+  "rel_ver": "v0.30.8",
+  "rel_pub": "2026-09-29",
+  "rel_days": 17,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 30,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-21",
+  "sec_ids": [
+   "GHSA-6jrh-8qmg-jj3p(CVE-2026-72862,high)",
+   "GHSA-4mfc-grxw-6858(CVE-2026-72736,high)",
+   "GHSA-p2c7-8j28-c7gq(CVE-2026-72878,high)",
+   "GHSA-899j-cjwp-v4gw(CVE-2026-72864,critical)",
+   "GHSA-3rpx-c3j9-q99x(CVE-2026-72734,high)",
+   "GHSA-cg8g-x23v-5fw8(CVE-2026-72867,critical)",
+   "GHSA-56g6-wjr4-5q7p(CVE-2026-93425,critical)",
+   "GHSA-r89g-h7x9-phr2(CVE-2026-72886,critical)"
+  ],
+  "contrib_n": 384,
+  "lang": {
+   "TypeScript": 98,
+   "PLpgSQL": 1,
+   "Go": 1,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "feder-cr/invisible_dots": {
+  "commit_90d": 418,
+  "commit_7d": 100,
+  "rel_ver": "golden-a92891c4ded8",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 57,
+   "Python": 37,
+   "Go": 3,
+   "Shell": 3,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "open-compass/opencompass": {
+  "commit_90d": 73,
+  "commit_7d": 24,
+  "rel_ver": "0.5.4",
+  "rel_pub": "2026-08-26",
+  "rel_days": 51,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 193,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "vynect/venom": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v5.3.0",
+  "rel_pub": "2024-11-15",
+  "rel_days": 700,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 62,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 7
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "online-ml/river": {
+  "commit_90d": 80,
+  "commit_7d": 2,
+  "rel_ver": "0.26.1",
+  "rel_pub": "2026-08-21",
+  "rel_days": 56,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 148,
+  "lang": {
+   "Python": 93,
+   "Rust": 7,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "torchgeo/torchgeo": {
+  "commit_90d": 223,
+  "commit_7d": 15,
+  "rel_ver": "v0.10.1",
+  "rel_pub": "2026-09-29",
+  "rel_days": 17,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-03-29",
+  "sec_ids": [
+   "GHSA-ghq9-vc6f-8qjf(CVE-2024-49048,high)"
+  ],
+  "contrib_n": 136,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

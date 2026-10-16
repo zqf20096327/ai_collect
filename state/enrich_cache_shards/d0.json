@@ -1,0 +1,169 @@
+{
+ "openai/codex-security": {
+  "commit_90d": 1093,
+  "commit_7d": 102,
+  "rel_ver": "npm-v0.3.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 57,
+  "lang": {
+   "TypeScript": 75,
+   "Python": 22,
+   "JavaScript": 2,
+   "Rust": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "mishushakov/llm-scraper": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Giskard-AI/giskard-oss": {
+  "commit_90d": 149,
+  "commit_7d": 2,
+  "rel_ver": "giskard-llm/v1.0.2",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "high",
+  "sec_last": "2026-04-13",
+  "sec_ids": [
+   "GHSA-rq2q-4r55-9877(CVE-2026-40319,low)",
+   "GHSA-7xjm-g8f4-rp26(CVE-2026-40320,medium)",
+   "GHSA-frv4-x25r-588m(CVE-2026-34172,high)",
+   "GHSA-pjwm-cr36-mwv3(CVE-2024-52524,low)"
+  ],
+  "contrib_n": 74,
+  "lang": {
+   "Python": 95,
+   "Jinja": 4,
+   "Makefile": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "benjitaylor/agentation": {
+  "commit_90d": 14,
+  "commit_7d": 0,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 25,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "TypeScript": 83,
+   "SCSS": 9,
+   "CSS": 3,
+   "HTML": 3,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "google-deepmind/mujoco_menagerie": {
+  "commit_90d": 19,
+  "commit_7d": 3,
+  "rel_ver": "assets",
+  "rel_pub": "2026-09-04",
+  "rel_days": 42,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 59,
+  "lang": {
+   "Python": 92,
+   "Jupyter Notebook": 6,
+   "Makefile": 2,
+   "OpenSCAD": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Visualize-ML/Book5_Essentials-of-Probability-and-Statistics": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

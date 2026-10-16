@@ -1,0 +1,169 @@
+{
+ "anthropics/knowledge-work-plugins": {
+  "commit_90d": 725,
+  "commit_7d": 49,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 32,
+  "lang": {
+   "Python": 74,
+   "HTML": 26
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Tiiny-AI/PowerInfer": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 391,
+  "lang": {
+   "C++": 56,
+   "C": 16,
+   "Python": 9,
+   "Cuda": 7,
+   "Objective-C": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "TencentCloud/Octop": {
+  "commit_90d": 766,
+  "commit_7d": 70,
+  "rel_ver": "v1.0.2b8",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 62,
+  "lang": {
+   "Python": 54,
+   "TypeScript": 36,
+   "Less": 5,
+   "Shell": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "kserve/kserve": {
+  "commit_90d": 288,
+  "commit_7d": 31,
+  "rel_ver": "v0.21.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 21,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-07",
+  "sec_ids": [
+   "GHSA-9qqf-96g5-8234(-,high)"
+  ],
+  "contrib_n": 377,
+  "lang": {
+   "Go": 65,
+   "Python": 31,
+   "Shell": 3,
+   "Dockerfile": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "CCOSTAN/Home-AssistantConfig": {
+  "commit_90d": 178,
+  "commit_7d": 12,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 66,
+   "HTML": 14,
+   "Jinja": 13,
+   "Shell": 7,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "synthetic-sciences/openscience": {
+  "commit_90d": 897,
+  "commit_7d": 7,
+  "rel_ver": "v2.0.151",
+  "rel_pub": "2026-10-05",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "TypeScript": 70,
+   "Python": 20,
+   "TeX": 3,
+   "CSS": 3,
+   "MDX": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

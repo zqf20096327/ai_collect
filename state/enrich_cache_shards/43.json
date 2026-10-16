@@ -1,0 +1,193 @@
+{
+ "tensorflow/tensorflow": {
+  "commit_90d": 4676,
+  "commit_7d": 680,
+  "rel_ver": "v2.22.0-rc0",
+  "rel_pub": "2026-09-24",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 30,
+  "sec_worst": "high",
+  "sec_last": "2024-07-30",
+  "sec_ids": [
+   "GHSA-gjh7-xx4r-x345(CVE-2023-33976,medium)",
+   "GHSA-5w96-866f-6rm8(CVE-2023-27579,medium)",
+   "GHSA-f49c-87jh-g47q(CVE-2023-25801,medium)",
+   "GHSA-6wfh-89q8-44jq(CVE-2023-25676,medium)",
+   "GHSA-7x4v-9gxg-9hwj(CVE-2023-25675,low)",
+   "GHSA-gf97-q72m-7579(CVE-2023-25674,medium)",
+   "GHSA-647v-r7qq-24fh(CVE-2023-25673,medium)",
+   "GHSA-94mm-g2mv-8p7r(CVE-2023-25672,medium)"
+  ],
+  "contrib_n": 411,
+  "lang": {
+   "C++": 55,
+   "Python": 25,
+   "MLIR": 7,
+   "Starlark": 4,
+   "HTML": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Arize-ai/phoenix": {
+  "commit_90d": 1150,
+  "commit_7d": 70,
+  "rel_ver": "arize-phoenix-v20.23.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 247,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 43,
+   "Jupyter Notebook": 7,
+   "C": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "alexeygrigorev/data-science-interviews": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 88,
+  "lang": {
+   "HTML": 72,
+   "Ruby": 24,
+   "SCSS": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Project-MONAI/MONAI": {
+  "commit_90d": 95,
+  "commit_7d": 11,
+  "rel_ver": "1.6.1",
+  "rel_pub": "2026-09-27",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 18,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-15",
+  "sec_ids": [
+   "GHSA-vm9c-7j6g-c7mm(-,high)",
+   "GHSA-8f32-8649-rv87(-,high)",
+   "GHSA-x6pr-233j-x5cw(-,critical)",
+   "GHSA-wvpx-5qmp-46g3(-,high)",
+   "GHSA-2wx3-8x3w-r8qv(-,high)",
+   "GHSA-873f-pvrv-4x83(-,high)",
+   "GHSA-636w-j999-g7x5(-,high)",
+   "GHSA-h89g-r5pc-wxfm(-,high)"
+  ],
+  "contrib_n": 312,
+  "lang": {
+   "Python": 96,
+   "C++": 2,
+   "Cuda": 2,
+   "Shell": 0,
+   "C": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "HelixDB/helix-db": {
+  "commit_90d": 1492,
+  "commit_7d": 46,
+  "rel_ver": "v3.5.1",
+  "rel_pub": "2026-10-08",
+  "rel_days": 8,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 34,
+  "lang": {
+   "Rust": 94,
+   "Python": 3,
+   "TypeScript": 1,
+   "Go": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "mosaicml/llm-foundry": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.22.0",
+  "rel_pub": "2025-07-29",
+  "rel_days": 444,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 95,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

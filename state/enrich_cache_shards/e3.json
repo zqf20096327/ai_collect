@@ -1,0 +1,120 @@
+{
+ "microsoft/onnxruntime": {
+  "commit_90d": 858,
+  "commit_7d": 54,
+  "rel_ver": "v1.31.0",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 399,
+  "lang": {
+   "C++": 83,
+   "Python": 6,
+   "C": 3,
+   "Cuda": 2,
+   "Assembly": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "xbtlin/ai-berkshire": {
+  "commit_90d": 261,
+  "commit_7d": 4,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-04-07",
+  "rel_days": 192,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "HTML": 90,
+   "Python": 8,
+   "TeX": 2,
+   "Roff": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "drivendataorg/cookiecutter-data-science": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v2.3.0",
+  "rel_pub": "2025-07-24",
+  "rel_days": 449,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 51,
+  "lang": {
+   "Python": 68,
+   "Makefile": 17,
+   "Shell": 15
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "FailproofAI/failproofai": {
+  "commit_90d": 251,
+  "commit_7d": 8,
+  "rel_ver": "v1.0.11",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "TypeScript": 48,
+   "MDX": 28,
+   "Python": 12,
+   "Rust": 9,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

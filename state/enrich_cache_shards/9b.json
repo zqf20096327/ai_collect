@@ -1,0 +1,84 @@
+{
+ "jingyaogong/minimind": {
+  "commit_90d": 51,
+  "commit_7d": 0,
+  "rel_ver": "v2",
+  "rel_pub": "2025-10-21",
+  "rel_days": 360,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Zackriya-Solutions/meetily": {
+  "commit_90d": 101,
+  "commit_7d": 0,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-09-12",
+  "rel_days": 34,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Rust": 48,
+   "TypeScript": 29,
+   "C++": 9,
+   "PowerShell": 4,
+   "Shell": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tyiannak/pyAudioAnalysis": {
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Python": 93,
+   "Shell": 4,
+   "HTML": 2,
+   "CSS": 1,
+   "MATLAB": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

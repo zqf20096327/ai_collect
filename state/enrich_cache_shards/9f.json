@@ -1,0 +1,179 @@
+{
+ "Graphify-Labs/graphify": {
+  "commit_90d": 1219,
+  "commit_7d": 204,
+  "rel_ver": "v0.9.91",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-27",
+  "sec_ids": [
+   "GHSA-pcc4-rvhr-2pr8(-,high)"
+  ],
+  "contrib_n": 325,
+  "lang": {
+   "Python": 100,
+   "TypeScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "harvard-edge/cs249r_book": {
+  "commit_90d": 5229,
+  "commit_7d": 300,
+  "rel_ver": "tinytorch-v0.2.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 15,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 109,
+  "lang": {
+   "Python": 50,
+   "JavaScript": 29,
+   "TeX": 14,
+   "TypeScript": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "FareedKhan-dev/kimi-k3-in-c": {
+  "commit_90d": 98,
+  "commit_7d": 0,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-02",
+  "rel_days": 14,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "C": 71,
+   "Python": 20,
+   "Shell": 5,
+   "Makefile": 2,
+   "CMake": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "py-why/EconML": {
+  "commit_90d": 12,
+  "commit_7d": 0,
+  "rel_ver": "v0.17.0",
+  "rel_pub": "2026-08-04",
+  "rel_days": 73,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 51,
+  "lang": {
+   "Jupyter Notebook": 81,
+   "Python": 17,
+   "Cython": 1,
+   "TeX": 0,
+   "R": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "kirodotdev/KiroCrew": {
+  "commit_90d": 10560,
+  "commit_7d": 1396,
+  "rel_ver": "v0.10.0-rc.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-28",
+  "sec_ids": [
+   "GHSA-mh7w-q9jx-chg2(-,high)"
+  ],
+  "contrib_n": 270,
+  "lang": {
+   "Python": 72,
+   "TypeScript": 23,
+   "JavaScript": 4,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "decodingai-magazine/llm-twin-course": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 96,
+   "Makefile": 2,
+   "Dockerfile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

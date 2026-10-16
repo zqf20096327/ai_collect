@@ -1,0 +1,214 @@
+{
+ "hacksider/Deep-Live-Cam": {
+  "commit_90d": 34,
+  "commit_7d": 1,
+  "rel_ver": "2.7.5-Ultimate",
+  "rel_pub": "2026-09-07",
+  "rel_days": 39,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 82,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "JuliaLang/julia": {
+  "commit_90d": 1076,
+  "commit_7d": 195,
+  "rel_ver": "v1.13.2",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 388,
+  "lang": {
+   "Julia": 69,
+   "C": 17,
+   "C++": 9,
+   "Tree-sitter Query": 2,
+   "LLVM": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "udecode/plate": {
+  "commit_90d": 94,
+  "commit_7d": 25,
+  "rel_ver": "v53.3.17",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 15,
+  "sec_worst": "high",
+  "sec_last": "2026-09-21",
+  "sec_ids": [
+   "GHSA-vhp8-hhv6-v349(-,medium)",
+   "GHSA-r3c4-jjfg-3vvx(-,medium)",
+   "GHSA-p8g2-cf33-p28j(-,medium)",
+   "GHSA-2q2r-jqh4-grp3(-,medium)",
+   "GHSA-6gwv-m56p-wc8m(-,medium)",
+   "GHSA-5pmq-h882-6g62(-,medium)",
+   "GHSA-fm23-57g4-6m2p(-,medium)",
+   "GHSA-qrfj-mgw8-j9c6(CVE-2026-88976,medium)"
+  ],
+  "contrib_n": 240,
+  "lang": {
+   "TypeScript": 71,
+   "MDX": 18,
+   "JavaScript": 6,
+   "HTML": 4,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "pyro-ppl/pyro": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": "1.9.2",
+  "rel_pub": "2026-10-03",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 151,
+  "lang": {
+   "Python": 99,
+   "Makefile": 0,
+   "C++": 0,
+   "Shell": 0,
+   "TeX": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/Mastering-GitHub-Copilot-for-Paired-Programming": {
+  "commit_90d": 4,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ArcReel/ArcReel": {
+  "commit_90d": 1283,
+  "commit_7d": 116,
+  "rel_ver": "v0.33.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 8,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "high",
+  "sec_last": "2026-09-23",
+  "sec_ids": [
+   "GHSA-65x3-pwr9-fhp3(-,high)",
+   "GHSA-p7vp-rgr9-4v77(-,medium)",
+   "GHSA-5r36-2f3p-5q87(-,high)"
+  ],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 70,
+   "TypeScript": 29,
+   "Shell": 1,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "PAIR-code/lit": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2024-12-20",
+  "rel_days": 665,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 37,
+  "lang": {
+   "TypeScript": 49,
+   "Python": 43,
+   "CSS": 4,
+   "JavaScript": 2,
+   "Jupyter Notebook": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

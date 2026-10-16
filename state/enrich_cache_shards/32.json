@@ -1,0 +1,178 @@
+{
+ "mukul975/Anthropic-Cybersecurity-Skills": {
+  "commit_90d": 36,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-06-22",
+  "rel_days": 116,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0,
+   "YARA": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "osaurus-ai/osaurus": {
+  "commit_90d": 780,
+  "commit_7d": 33,
+  "rel_ver": "0.25.22",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 36,
+  "lang": {
+   "Swift": 80,
+   "C": 18,
+   "Shell": 1,
+   "Python": 0,
+   "Go": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Gentleman-Programming/gentle-ai": {
+  "commit_90d": 3330,
+  "commit_7d": 55,
+  "rel_ver": "v4.2.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 89,
+  "lang": {
+   "Go": 96,
+   "Python": 2,
+   "Shell": 1,
+   "JavaScript": 1,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "grab/cursor-talk-to-figma-mcp": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "JavaScript": 87,
+   "HTML": 10,
+   "TypeScript": 3,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "clearml/clearml": {
+  "commit_90d": 47,
+  "commit_7d": 1,
+  "rel_ver": "v2.1.12",
+  "rel_pub": "2026-08-19",
+  "rel_days": 58,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 109,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Countly/countly-server": {
+  "commit_90d": 816,
+  "commit_7d": 12,
+  "rel_ver": "25.03.55",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": "high",
+  "sec_last": "2026-07-15",
+  "sec_ids": [
+   "GHSA-jqp4-p86c-phxc(CVE-2026-44977,high)",
+   "GHSA-5pmc-54j6-jcgq(CVE-2026-42269,high)",
+   "GHSA-86cv-qwp9-jwp3(CVE-2026-42270,high)",
+   "GHSA-fqgp-6rm9-8696(CVE-2026-41582,high)",
+   "GHSA-98vh-wqw5-p23v(CVE-2022-29174,high)"
+  ],
+  "contrib_n": 92,
+  "lang": {
+   "JavaScript": 83,
+   "HTML": 9,
+   "CSS": 3,
+   "SCSS": 3,
+   "Shell": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

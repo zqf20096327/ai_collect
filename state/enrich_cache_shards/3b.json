@@ -1,0 +1,176 @@
+{
+ "lightgbm-org/LightGBM": {
+  "commit_90d": 46,
+  "commit_7d": 4,
+  "rel_ver": "v4.7.0",
+  "rel_pub": "2026-07-18",
+  "rel_days": 90,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 345,
+  "lang": {
+   "C++": 49,
+   "Python": 25,
+   "R": 11,
+   "Cuda": 8,
+   "C": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "google-deepmind/alphafold": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.3.2",
+  "rel_pub": "2023-04-05",
+  "rel_days": 1290,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 97,
+   "Shell": 2,
+   "Dockerfile": 0,
+   "Jupyter Notebook": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "deepseek-ai/awesome-deepseek-agent": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "uber/causalml": {
+  "commit_90d": 60,
+  "commit_7d": 1,
+  "rel_ver": "v0.18.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 82,
+  "lang": {
+   "Python": 79,
+   "Cython": 21,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "hiyouga/EasyR1": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2025-09-18",
+  "rel_days": 393,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 49,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "IBM/mcp-context-forge": {
+  "commit_90d": 289,
+  "commit_7d": 25,
+  "rel_ver": "v1.0.11",
+  "rel_pub": "2026-09-28",
+  "rel_days": 18,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 19,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-07",
+  "sec_ids": [
+   "GHSA-qmfj-jjw4-8qrq(-,high)",
+   "GHSA-9qxh-fpx5-vxvw(-,high)",
+   "GHSA-gj7g-7r6g-jc8v(-,medium)",
+   "GHSA-gv3m-3mvj-w6f2(-,critical)",
+   "GHSA-578v-pgw5-36gv(-,high)",
+   "GHSA-w8vq-gj3v-h664(-,medium)",
+   "GHSA-5424-f25v-29r8(-,high)",
+   "GHSA-hxq2-5h3j-jqjv(-,medium)"
+  ],
+  "contrib_n": 170,
+  "lang": {
+   "Python": 83,
+   "JavaScript": 7,
+   "HTML": 5,
+   "Rust": 2,
+   "Makefile": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

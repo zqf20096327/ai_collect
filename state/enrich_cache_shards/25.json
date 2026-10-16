@@ -1,0 +1,258 @@
+{
+ "punkpeye/awesome-mcp-servers": {
+  "commit_90d": 3813,
+  "commit_7d": 75,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 446,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "pathwaycom/serviette": {
+  "commit_90d": 5,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 24,
+  "lang": {
+   "Python": 97,
+   "HTML": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "chatchat-space/Langchain-Chatchat": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2024-07-12",
+  "rel_days": 826,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 155,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "zilliztech/GPTCache": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": "0.1.44",
+  "rel_pub": "2024-08-01",
+  "rel_days": 806,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openai/plugins": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 62,
+  "lang": {
+   "JavaScript": 55,
+   "Python": 34,
+   "TypeScript": 3,
+   "HTML": 2,
+   "CSS": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "arcee-ai/mergekit": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v0.1.4",
+  "rel_pub": "2025-10-31",
+  "rel_days": 350,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 48,
+  "lang": {
+   "Python": 99,
+   "Jinja": 0,
+   "Jupyter Notebook": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tensorflow/tpu": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 65,
+  "lang": {
+   "Jupyter Notebook": 92,
+   "Python": 6,
+   "C": 1,
+   "Go": 0,
+   "HCL": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tencentmusic/cube-studio": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2026.03.01",
+  "rel_pub": "2026-05-09",
+  "rel_days": 160,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "r0f1/datascience": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "letta-ai/letta-code": {
+  "commit_90d": 936,
+  "commit_7d": 51,
+  "rel_ver": "v0.34.15",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 51,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "Nix": 1,
+   "Python": 0,
+   "MDX": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

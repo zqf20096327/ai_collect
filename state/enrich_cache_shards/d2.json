@@ -1,0 +1,145 @@
+{
+ "gradio-app/gradio": {
+  "commit_90d": 199,
+  "commit_7d": 5,
+  "rel_ver": "gradio@6.30.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 8,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 29,
+  "sec_worst": "critical",
+  "sec_last": "2026-02-27",
+  "sec_ids": [
+   "GHSA-39mp-8hj3-5c49(CVE-2026-28414,high)",
+   "GHSA-h3h8-3v2v-rg7m(CVE-2026-27167,low)",
+   "GHSA-pfjf-5gxr-995x(CVE-2026-28415,medium)",
+   "GHSA-jmh7-g254-2cq9(CVE-2026-28416,high)",
+   "GHSA-8jw3-6x8j-v96g(CVE-2025-48889,medium)",
+   "GHSA-j2jg-fq62-7c3h(CVE-2025-23042,high)",
+   "GHSA-rhm9-gp5p-5248(CVE-2024-51751,medium)",
+   "GHSA-8c87-gvhj-xm8m(CVE-2024-47867,low)"
+  ],
+  "contrib_n": 467,
+  "lang": {
+   "Python": 46,
+   "TypeScript": 26,
+   "Svelte": 23,
+   "mdsvex": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "NVIDIA/TensorRT": {
+  "commit_90d": 6,
+  "commit_7d": 1,
+  "rel_ver": "v11.4",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 84,
+  "lang": {
+   "C++": 98,
+   "Python": 2,
+   "Cuda": 0,
+   "Jupyter Notebook": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "roboflow/notebooks": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": "1.0.0",
+  "rel_pub": "2022-12-01",
+  "rel_days": 1415,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 41,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "unicity-sphere/sphere-sdk": {
+  "commit_90d": 254,
+  "commit_7d": 25,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-05-29",
+  "rel_days": 140,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "eosphoros-ai/Awesome-Text2SQL": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

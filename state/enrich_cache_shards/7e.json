@@ -1,0 +1,115 @@
+{
+ "agentscope-ai/agentscope": {
+  "commit_90d": 339,
+  "commit_7d": 30,
+  "rel_ver": "v2.0.10",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 169,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0,
+   "Mako": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "nltk/nltk": {
+  "commit_90d": 1240,
+  "commit_7d": 148,
+  "rel_ver": "v3.10.3-rc1",
+  "rel_pub": "2026-08-12",
+  "rel_days": 65,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 30,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-29",
+  "sec_ids": [
+   "GHSA-j456-xh4h-cpf2(-,high)",
+   "GHSA-ww6m-cw3f-q94g(CVE-2026-81722,medium)",
+   "GHSA-ff5c-cp5c-9wjf(CVE-2026-12876,medium)",
+   "GHSA-6hwm-xvph-95vm(CVE-2026-78680,high)",
+   "GHSA-97qj-x29f-37w7(CVE-2026-78681,high)",
+   "GHSA-rrv8-h7p8-rx55(CVE-2026-80205,high)",
+   "GHSA-3gq4-3j92-5w49(CVE-2026-79674,high)",
+   "GHSA-3hhw-38pf-pxj6(CVE-2026-62383,medium)"
+  ],
+  "contrib_n": 368,
+  "lang": {
+   "Python": 99,
+   "Jupyter Notebook": 1,
+   "HTML": 0,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "yzhao062/anomaly-detection-resources": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/alignment-handbook": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 33,
+  "lang": {
+   "Python": 86,
+   "Shell": 12,
+   "Makefile": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

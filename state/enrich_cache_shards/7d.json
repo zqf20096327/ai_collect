@@ -1,0 +1,277 @@
+{
+ "n8n-io/n8n": {
+  "commit_90d": 3831,
+  "commit_7d": 313,
+  "rel_ver": "stable",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 30,
+  "sec_worst": "high",
+  "sec_last": "2026-10-14",
+  "sec_ids": [
+   "GHSA-43v8-hjhm-chjp(-,medium)",
+   "GHSA-mgpr-56r4-5c67(-,medium)",
+   "GHSA-8vrr-mgc5-jg55(-,medium)",
+   "GHSA-qmvv-q3c9-wpp7(-,medium)",
+   "GHSA-pcr3-v5vr-qppf(-,medium)",
+   "GHSA-65mv-v8rp-54wc(-,medium)",
+   "GHSA-m7gv-mpg5-7c9v(-,high)",
+   "GHSA-crfj-5wv6-8v86(-,medium)"
+  ],
+  "contrib_n": 431,
+  "lang": {
+   "TypeScript": 92,
+   "Vue": 6,
+   "JavaScript": 1,
+   "SCSS": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "esengine/DeepSeek-Reasonix": {
+  "commit_90d": 6937,
+  "commit_7d": 1533,
+  "rel_ver": "v2.42.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 7,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-15",
+  "sec_ids": [
+   "GHSA-j7r7-jh9q-wrq2(-,high)",
+   "GHSA-4p5q-jhpc-rf9q(-,high)",
+   "GHSA-83jp-h8cg-2gcr(-,high)",
+   "GHSA-grg2-7gc6-36m6(-,critical)",
+   "GHSA-6qf8-c4r6-q4qq(-,high)",
+   "GHSA-wqg8-98mr-4jcj(-,critical)",
+   "GHSA-8789-pp7w-w83p(-,high)"
+  ],
+  "contrib_n": 157,
+  "lang": {
+   "Go": 74,
+   "TypeScript": 17,
+   "HTML": 3,
+   "JavaScript": 3,
+   "CSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "EmbraceAGI/awesome-chatgpt-zh": {
+  "commit_90d": 31,
+  "commit_7d": 18,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 30,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Upsonic/Upsonic": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.77.3",
+  "rel_pub": "2026-05-19",
+  "rel_days": 150,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 39,
+  "lang": {
+   "Python": 97,
+   "Jupyter Notebook": 3,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "KnockOutEZ/wigolo": {
+  "commit_90d": 166,
+  "commit_7d": 0,
+  "rel_ver": "binary-v0.2.1-sd507.1",
+  "rel_pub": "2026-09-08",
+  "rel_days": 38,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "TypeScript": 95,
+   "Python": 3,
+   "JavaScript": 1,
+   "Shell": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "entireio/cli": {
+  "commit_90d": 3448,
+  "commit_7d": 310,
+  "rel_ver": "v0.11.6-nightly.202610160625.a76657c2d",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "high",
+  "sec_last": "2026-08-20",
+  "sec_ids": [
+   "GHSA-hqjp-v5g5-vxvf(-,high)",
+   "GHSA-2h46-9x5w-4wf7(CVE-2026-57208,medium)"
+  ],
+  "contrib_n": 65,
+  "lang": {
+   "Go": 99,
+   "Shell": 1,
+   "PowerShell": 0,
+   "TypeScript": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "53AI/53AIHub": {
+  "commit_90d": 24,
+  "commit_7d": 0,
+  "rel_ver": "v0.5.3",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Go": 50,
+   "TypeScript": 41,
+   "JavaScript": 6,
+   "CSS": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openai/transformer-debugger": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 81,
+   "TypeScript": 19,
+   "HTML": 0,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "gofireflyio/aiac": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v5.3.0",
+  "rel_pub": "2024-10-29",
+  "rel_days": 717,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Go": 96,
+   "Ruby": 4,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

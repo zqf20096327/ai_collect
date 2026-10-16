@@ -1,0 +1,113 @@
+{
+ "keras-team/keras": {
+  "commit_90d": 362,
+  "commit_7d": 53,
+  "rel_ver": "v3.15.1",
+  "rel_pub": "2026-07-29",
+  "rel_days": 79,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 8,
+  "sec_worst": "critical",
+  "sec_last": "2026-04-29",
+  "sec_ids": [
+   "GHSA-jqh4-m4qc-6f23(-,medium)",
+   "GHSA-mgx6-5cf9-rr43(CVE-2026-0897,medium)",
+   "GHSA-3m4q-jmj6-r34q(CVE-2026-1669,high)",
+   "GHSA-qg93-c7p6-gg7f(CVE-2025-12058,medium)",
+   "GHSA-hjqc-jx6g-rwp9(CVE-2025-12060,critical)",
+   "GHSA-36rr-ww3j-vrjv(CVE-2025-9905,high)",
+   "GHSA-c9rc-mg46-23w3(CVE-2025-8747,high)",
+   "GHSA-48g7-3x6r-xfhp(CVE-2025-1550,high)"
+  ],
+  "contrib_n": 408,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "hesreallyhim/awesome-claude-code": {
+  "commit_90d": 859,
+  "commit_7d": 115,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 95,
+   "Makefile": 5
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "shengjidaguai-china/goutoujunshi": {
+  "commit_90d": 35,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "superagent-ai/superagent": {
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": "rust-v0.0.9",
+  "rel_pub": "2025-09-14",
+  "rel_days": 397,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-08-13",
+  "sec_ids": [
+   "GHSA-pw7h-8x4q-fwwh(-,high)"
+  ],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 54,
+   "Python": 43,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

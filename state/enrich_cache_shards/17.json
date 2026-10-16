@@ -1,0 +1,202 @@
+{
+ "songquanpeng/one-api": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.10",
+  "rel_pub": "2025-02-02",
+  "rel_days": 621,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 130,
+  "lang": {
+   "JavaScript": 62,
+   "Go": 37,
+   "SCSS": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "HKUDS/Vibe-Trading": {
+  "commit_90d": 2352,
+  "commit_7d": 213,
+  "rel_ver": "v0.1.16",
+  "rel_pub": "2026-09-29",
+  "rel_days": 17,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-29",
+  "sec_ids": [
+   "GHSA-5rmq-chc7-m22f(-,high)",
+   "GHSA-jqmf-mx4f-hfr6(-,critical)",
+   "GHSA-v2f8-6655-7grj(-,critical)"
+  ],
+  "contrib_n": 178,
+  "lang": {
+   "Python": 90,
+   "TypeScript": 8,
+   "JavaScript": 1,
+   "HTML": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "helloianneo/ian-xiaohei-illustrations": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-05-27",
+  "rel_days": 142,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "vllm-project/vllm-omni": {
+  "commit_90d": 1432,
+  "commit_7d": 149,
+  "rel_ver": "v0.31.0rc1",
+  "rel_pub": "2026-10-06",
+  "rel_days": 10,
+  "rel_n90": 9,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 446,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "JavaScript": 0,
+   "Jinja": 0,
+   "Cuda": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/poml": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.0.8",
+  "rel_pub": "2025-08-25",
+  "rel_days": 417,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "TypeScript": 82,
+   "Python": 13,
+   "JavaScript": 3,
+   "CSS": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openmlsys/openmlsys": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 55,
+  "lang": {
+   "TeX": 55,
+   "Python": 30,
+   "HTML": 9,
+   "JavaScript": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/autotrain-advanced": {
+  "commit_90d": 4,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 25,
+  "lang": {
+   "Python": 89,
+   "HTML": 6,
+   "JavaScript": 3,
+   "Jupyter Notebook": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

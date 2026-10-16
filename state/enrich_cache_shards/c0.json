@@ -1,0 +1,91 @@
+{
+ "langchain-ai/deepagents": {
+  "commit_90d": 1412,
+  "commit_7d": 78,
+  "rel_ver": "deepagents==0.7.26",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": null,
+  "sec_last": "2026-10-15",
+  "sec_ids": [
+   "GHSA-47w2-rfrr-wvq8(-,medium)",
+   "GHSA-459r-276m-w72x(-,medium)"
+  ],
+  "contrib_n": 160,
+  "lang": {
+   "Python": 99,
+   "Shell": 1,
+   "JavaScript": 0,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "panaversity/learn-agentic-ai": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Jupyter Notebook": 91,
+   "Python": 8,
+   "Starlark": 0,
+   "HTML": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "NVIDIA/GenerativeAIExamples": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2024-08-21",
+  "rel_days": 786,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 88,
+  "lang": {
+   "Jupyter Notebook": 70,
+   "Python": 25,
+   "TypeScript": 2,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

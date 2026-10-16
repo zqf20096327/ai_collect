@@ -1,0 +1,81 @@
+{
+ "qax-os/excelize": {
+  "commit_90d": 53,
+  "commit_7d": 2,
+  "rel_ver": "v2.11.0",
+  "rel_pub": "2026-07-06",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 19,
+  "sec_worst": "high",
+  "sec_last": "2026-10-03",
+  "sec_ids": [
+   "GHSA-jw42-f3rr-4cc3(CVE-2026-107212,high)",
+   "GHSA-r7x5-4969-99p7(CVE-2026-107213,medium)",
+   "GHSA-mx22-3794-2vpv(CVE-2026-107211,medium)",
+   "GHSA-x2q3-8cjh-766f(CVE-2026-107215,high)",
+   "GHSA-wp2g-vpjj-g53r(CVE-2026-107216,high)",
+   "GHSA-c85p-xxjj-2r75(CVE-2026-107217,high)",
+   "GHSA-2j4c-ffch-9f23(CVE-2026-107214,high)",
+   "GHSA-8jjq-8j9w-m2v6(CVE-2026-107218,medium)"
+  ],
+  "contrib_n": 331,
+  "lang": {
+   "Go": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "liaokongVFX/LangChain-Chinese-Getting-Started-Guide": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openai/harmony": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Rust": 74,
+   "Python": 26,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

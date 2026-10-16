@@ -1,0 +1,198 @@
+{
+ "zeroclaw-labs/zeroclaw": {
+  "commit_90d": 1210,
+  "commit_7d": 80,
+  "rel_ver": "v0.8.5",
+  "rel_pub": "2026-09-05",
+  "rel_days": 41,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-05",
+  "sec_ids": [
+   "GHSA-93f6-34w8-5g98(-,high)"
+  ],
+  "contrib_n": 420,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "lidge-jun/opencodex": {
+  "commit_90d": 11543,
+  "commit_7d": 248,
+  "rel_ver": "v2.87.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 221,
+  "lang": {
+   "TypeScript": 97,
+   "Rust": 1,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Swift": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "argoproj/argo-workflows": {
+  "commit_90d": 336,
+  "commit_7d": 21,
+  "rel_ver": "v4.1.5",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 24,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-18",
+  "sec_ids": [
+   "GHSA-vm9v-p987-xm32(-,high)",
+   "GHSA-q65w-j2vp-47c4(-,high)",
+   "GHSA-48p8-g2fx-3wwm(CVE-2026-54526,high)",
+   "GHSA-p4gq-3vxj-f4jq(CVE-2026-42183,low)",
+   "GHSA-xchc-cqwg-g76q(CVE-2026-42297,high)",
+   "GHSA-5jv8-h7qh-rf5p(CVE-2026-40886,high)",
+   "GHSA-3775-99mw-8rp4(CVE-2026-42296,high)",
+   "GHSA-7vf8-2cr6-54mf(CVE-2026-42295,high)"
+  ],
+  "contrib_n": 425,
+  "lang": {
+   "Go": 86,
+   "TypeScript": 10,
+   "Nix": 1,
+   "Makefile": 1,
+   "SCSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "amitness/learning": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "amazon-science/chronos-forecasting": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": "v2.3.2",
+  "rel_pub": "2026-09-08",
+  "rel_days": 38,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "rivet-dev/agentos": {
+  "commit_90d": 181,
+  "commit_7d": 16,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Rust": 92,
+   "C": 4,
+   "TypeScript": 2,
+   "Shell": 1,
+   "MDX": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "raiyanyahya/how-to-train-your-gpt": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 89,
+   "Python": 11
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

@@ -1,0 +1,239 @@
+{
+ "obra/superpowers": {
+  "commit_90d": 56,
+  "commit_7d": 1,
+  "rel_ver": "v7.0.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 6,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 37,
+  "lang": {
+   "Shell": 54,
+   "JavaScript": 37,
+   "Python": 5,
+   "TypeScript": 2,
+   "HTML": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Comfy-Org/ComfyUI": {
+  "commit_90d": 543,
+  "commit_7d": 36,
+  "rel_ver": "v0.41.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "high",
+  "sec_last": "2026-07-15",
+  "sec_ids": [
+   "GHSA-rj8c-c4p8-3c5h(CVE-2026-56670,high)",
+   "GHSA-53g8-45wq-pcv8(CVE-2026-56672,high)",
+   "GHSA-rvxv-29p8-pxgq(CVE-2026-56673,high)",
+   "GHSA-pj59-g5vv-74q4(CVE-2026-56671,high)"
+  ],
+  "contrib_n": 344,
+  "lang": {
+   "Python": 100,
+   "GLSL": 0,
+   "Batchfile": 0,
+   "Mako": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "herdrdev/herdr": {
+  "commit_90d": 716,
+  "commit_7d": 34,
+  "rel_ver": "v0.9.5",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 89,
+  "lang": {
+   "Rust": 94,
+   "Python": 3,
+   "PowerShell": 1,
+   "TypeScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/trl": {
+  "commit_90d": 663,
+  "commit_7d": 74,
+  "rel_ver": "v1.16.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 465,
+  "lang": {
+   "Python": 92,
+   "Jinja": 8,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "e2b-dev/E2B": {
+  "commit_90d": 238,
+  "commit_7d": 6,
+  "rel_ver": "e2b@2.56.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 60,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 43,
+   "Dockerfile": 0,
+   "Makefile": 0,
+   "Handlebars": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "camel-ai/oasis": {
+  "commit_90d": 27,
+  "commit_7d": 1,
+  "rel_ver": "v0.2.5",
+  "rel_pub": "2025-12-04",
+  "rel_days": 316,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 30,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Nixtla/nixtla": {
+  "commit_90d": 61,
+  "commit_7d": 3,
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 25,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {
+   "Jupyter Notebook": 90,
+   "Python": 5,
+   "MDX": 4,
+   "CSS": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "isjiamu/gzh-design-skill": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-07-06",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 95,
+   "Python": 5
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

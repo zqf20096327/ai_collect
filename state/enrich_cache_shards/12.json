@@ -1,0 +1,261 @@
+{
+ "eyaltoledano/claude-task-master": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "task-master-ai@0.43.1",
+  "rel_pub": "2026-03-31",
+  "rel_days": 199,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 56,
+  "lang": {
+   "JavaScript": 52,
+   "TypeScript": 44,
+   "MDX": 3,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "flipped-aurora/gin-vue-admin": {
+  "commit_90d": 20,
+  "commit_7d": 2,
+  "rel_ver": "v2.9.2-stable",
+  "rel_pub": "2026-07-17",
+  "rel_days": 91,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 11,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-16",
+  "sec_ids": [
+   "GHSA-mqv7-9mvf-h9fh(-,high)",
+   "GHSA-22cv-9jv2-6m62(CVE-2026-48787,high)",
+   "GHSA-3558-j79f-vvm6(CVE-2026-22786,high)",
+   "GHSA-jrhg-82w2-vvj7(CVE-2025-66410,high)",
+   "GHSA-gf3r-h744-mqgp(CVE-2024-37896,high)",
+   "GHSA-gv3w-m57p-3wc4(CVE-2024-31457,high)",
+   "GHSA-7gc4-r5jr-9hxv(CVE-2022-39345,medium)",
+   "GHSA-wrmq-4v4c-gxp2(CVE-2022-39305,critical)"
+  ],
+  "contrib_n": 216,
+  "lang": {
+   "Go": 50,
+   "Vue": 38,
+   "JavaScript": 6,
+   "Go Template": 5,
+   "SCSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "amusi/CVPR2026-Papers-with-Code": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "NirDiamant/agents-towards-production": {
+  "commit_90d": 19,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 25,
+  "lang": {
+   "Jupyter Notebook": 94,
+   "HTML": 5,
+   "Python": 1,
+   "Kotlin": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "flashlight/wav2letter": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v0.2",
+  "rel_pub": "2020-12-28",
+  "rel_days": 2118,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 38,
+  "lang": {
+   "C++": 51,
+   "Python": 24,
+   "Jupyter Notebook": 17,
+   "Shell": 4,
+   "CMake": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "aisingapore/TagUI": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v6.110.0",
+  "rel_pub": "2022-06-20",
+  "rel_days": 1579,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "JavaScript": 32,
+   "C#": 29,
+   "PHP": 23,
+   "Batchfile": 6,
+   "Shell": 6
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "timeseriesAI/tsai": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-05-27",
+  "rel_days": 142,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "modelscope/ms-agent": {
+  "commit_90d": 58,
+  "commit_7d": 0,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-03-23",
+  "rel_days": 207,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 45,
+  "lang": {
+   "Python": 86,
+   "TypeScript": 13,
+   "CSS": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "LosaLosSantos/aurelio-finance": {
+  "commit_90d": 94,
+  "commit_7d": 68,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "TypeScript": 20,
+   "CSS": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

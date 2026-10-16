@@ -1,0 +1,52 @@
+{
+ "thedaviddias/Front-End-Checklist": {
+  "commit_90d": 44,
+  "commit_7d": 0,
+  "rel_ver": "v2.0",
+  "rel_pub": "2026-05-30",
+  "rel_days": 139,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 112,
+  "lang": {
+   "MDX": 59,
+   "TypeScript": 38,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ombharatiya/ai-system-design-guide": {
+  "commit_90d": 30,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

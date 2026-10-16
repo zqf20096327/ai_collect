@@ -1,0 +1,177 @@
+{
+ "google/gvisor": {
+  "commit_90d": 1305,
+  "commit_7d": 177,
+  "rel_ver": "release-20261005.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 8,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 355,
+  "lang": {
+   "Go": 76,
+   "C++": 18,
+   "Starlark": 3,
+   "Assembly": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "adongwanai/AgentGuide": {
+  "commit_90d": 33,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "MDX": 36,
+   "Astro": 20,
+   "Python": 13,
+   "CSS": 11,
+   "TypeScript": 8
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "google-deepmind/alphafold3": {
+  "commit_90d": 56,
+  "commit_7d": 8,
+  "rel_ver": "v3.0.4",
+  "rel_pub": "2026-07-28",
+  "rel_days": 80,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 84,
+   "C++": 15,
+   "Shell": 1,
+   "CMake": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "kvcache-ai/Mooncake": {
+  "commit_90d": 819,
+  "commit_7d": 84,
+  "rel_ver": "v0.3.14-rc1",
+  "rel_pub": "2026-09-07",
+  "rel_days": 39,
+  "rel_n90": 5,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 368,
+  "lang": {
+   "C++": 62,
+   "Rust": 20,
+   "Python": 12,
+   "Shell": 2,
+   "Cuda": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "TarrySingh/Artificial-Intelligence-Deep-Learning-Machine-Learning-Tutorials": {
+  "commit_90d": 33,
+  "commit_7d": 2,
+  "rel_ver": "2026-w42",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "C": 1,
+   "C++": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "lemony-ai/cascadeflow": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-04-02",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 57,
+   "TypeScript": 38,
+   "MDX": 4,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

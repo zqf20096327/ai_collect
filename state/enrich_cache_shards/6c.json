@@ -1,0 +1,149 @@
+{
+ "Snailclimb/JavaGuide": {
+  "commit_90d": 79,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 416,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "bojieli/ai-agent-book": {
+  "commit_90d": 1553,
+  "commit_7d": 0,
+  "rel_ver": "latest",
+  "rel_pub": "2026-07-21",
+  "rel_days": 87,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 89,
+  "lang": {
+   "Python": 87,
+   "JavaScript": 7,
+   "TeX": 1,
+   "HTML": 1,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "janhq/jan": {
+  "commit_90d": 1050,
+  "commit_7d": 48,
+  "rel_ver": "v0.8.6",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 161,
+  "lang": {
+   "Rust": 56,
+   "TypeScript": 39,
+   "Python": 1,
+   "JavaScript": 1,
+   "Swift": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Avaiga/taipy": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "4.2.0.dev9-templates",
+  "rel_pub": "2026-04-30",
+  "rel_days": 169,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": null,
+  "sec_last": "2024-08-27",
+  "sec_ids": [
+   "GHSA-pp84-v3mw-gg4w(CVE-2024-5629,medium)",
+   "GHSA-r3jq-4r5c-j9hp(CVE-2024-47833,medium)"
+  ],
+  "contrib_n": 78,
+  "lang": {
+   "Python": 76,
+   "TypeScript": 23,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Jupyter Notebook": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "iflytek/astron-agent": {
+  "commit_90d": 93,
+  "commit_7d": 10,
+  "rel_ver": "v1.1.2",
+  "rel_pub": "2026-09-07",
+  "rel_days": 39,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-07",
+  "sec_ids": [
+   "GHSA-mh3w-4q3f-2fg5(CVE-2026-108263,critical)"
+  ],
+  "contrib_n": 61,
+  "lang": {
+   "Java": 35,
+   "Python": 26,
+   "TypeScript": 25,
+   "JavaScript": 8,
+   "SCSS": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

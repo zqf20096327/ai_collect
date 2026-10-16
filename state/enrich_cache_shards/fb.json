@@ -1,0 +1,113 @@
+{
+ "emcie-co/parlant": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v3.3.2",
+  "rel_pub": "2026-04-28",
+  "rel_days": 171,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 43,
+  "lang": {
+   "Python": 92,
+   "Gherkin": 5,
+   "TypeScript": 3,
+   "CSS": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "yzhao062/pyod": {
+  "commit_90d": 61,
+  "commit_7d": 3,
+  "rel_ver": "v3.6.7",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 71,
+  "lang": {
+   "Python": 94,
+   "Jupyter Notebook": 6
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "PawanOsman/OpenCursor": {
+  "commit_90d": 129,
+  "commit_7d": 0,
+  "rel_ver": "0.2.0",
+  "rel_pub": "2026-09-25",
+  "rel_days": 21,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "TypeScript": 92,
+   "JavaScript": 5,
+   "CSS": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "fspecii/ace-step-ui": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 64,
+   "TypeScript": 30,
+   "HTML": 2,
+   "CSS": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

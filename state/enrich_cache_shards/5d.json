@@ -1,0 +1,273 @@
+{
+ "openclaw/openclaw": {
+  "commit_90d": 41966,
+  "commit_7d": 5443,
+  "rel_ver": "v2026.10.10-beta.1",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 30,
+  "sec_worst": "high",
+  "sec_last": "2026-09-11",
+  "sec_ids": [
+   "GHSA-rx8p-qcpv-c7vr(-,medium)",
+   "GHSA-xvwp-wmh2-fq48(-,medium)",
+   "GHSA-5j57-84cx-r295(-,medium)",
+   "GHSA-m78m-7h3q-q938(-,medium)",
+   "GHSA-vhpg-cq3w-v8p9(-,medium)",
+   "GHSA-7jfq-rmfm-29wp(-,medium)",
+   "GHSA-3mq7-q27j-mq7q(-,high)",
+   "GHSA-v7hh-7676-rg67(-,medium)"
+  ],
+  "contrib_n": 379,
+  "lang": {
+   "TypeScript": 90,
+   "Swift": 4,
+   "Kotlin": 2,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "AUTOMATIC1111/stable-diffusion-webui": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.10.1",
+  "rel_pub": "2025-02-09",
+  "rel_days": 614,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 429,
+  "lang": {
+   "Python": 87,
+   "JavaScript": 8,
+   "CSS": 2,
+   "HTML": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "langchain-ai/langchain": {
+  "commit_90d": 551,
+  "commit_7d": 20,
+  "rel_ver": "langchain-core==1.6.11",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 9,
+  "sec_worst": "critical",
+  "sec_last": "2026-06-12",
+  "sec_ids": [
+   "GHSA-gr75-jv2w-4656(CVE-2026-55443,medium)",
+   "GHSA-pjwx-r37v-7724(CVE-2026-44843,high)",
+   "GHSA-r7w7-9xr2-qq2r(CVE-2026-41488,low)",
+   "GHSA-926x-3r5x-gfhw(CVE-2026-40087,medium)",
+   "GHSA-qh6h-p6c9-ff54(CVE-2026-34070,high)",
+   "GHSA-fv5p-p927-qmxr(CVE-2026-41481,medium)",
+   "GHSA-2g6r-c272-w58r(CVE-2026-26013,low)",
+   "GHSA-c67j-w6g6-q2cm(CVE-2025-68664,critical)"
+  ],
+  "contrib_n": 467,
+  "lang": {
+   "Python": 99,
+   "Makefile": 0,
+   "Shell": 0,
+   "XSLT": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ConardLi/easy-dataset": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "1.7.3",
+  "rel_pub": "2026-04-09",
+  "rel_days": 190,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {
+   "JavaScript": 100,
+   "HTML": 0,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "modelscope/FunClip": {
+  "commit_90d": 45,
+  "commit_7d": 0,
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2026-09-01",
+  "rel_days": 45,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/deep-rl-class": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 107,
+  "lang": {
+   "MDX": 59,
+   "Jupyter Notebook": 41
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "dataelement/Clawith": {
+  "commit_90d": 226,
+  "commit_7d": 0,
+  "rel_ver": "v1.11.4-fix.1",
+  "rel_pub": "2026-08-24",
+  "rel_days": 53,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 34,
+  "lang": {
+   "Python": 76,
+   "TypeScript": 20,
+   "CSS": 2,
+   "Shell": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "kagent-dev/kagent": {
+  "commit_90d": 441,
+  "commit_7d": 59,
+  "rel_ver": "v1.0.0-alpha14",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 208,
+  "lang": {
+   "Go": 52,
+   "TypeScript": 32,
+   "Python": 14,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "liujuntao123/smart-excalidraw-next": {
+  "commit_90d": 2,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

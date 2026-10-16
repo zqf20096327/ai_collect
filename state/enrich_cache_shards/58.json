@@ -1,0 +1,89 @@
+{
+ "CarterPerez-dev/Cybersecurity-Projects": {
+  "commit_90d": 262,
+  "commit_7d": 7,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 22,
+   "Python": 20,
+   "Rust": 17,
+   "TypeScript": 12,
+   "Zig": 6
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "stanfordnlp/stanza": {
+  "commit_90d": 95,
+  "commit_7d": 0,
+  "rel_ver": "v1.15.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 15,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "high",
+  "sec_last": "2026-10-01",
+  "sec_ids": [
+   "GHSA-gh9r-c94j-cmp5(-,high)",
+   "GHSA-2fwf-f686-7p34(CVE-2026-59974,high)",
+   "GHSA-c9h2-qmqw-qf6h(-,high)",
+   "GHSA-v5jw-96jm-7h2c(CVE-2026-54499,high)"
+  ],
+  "contrib_n": 63,
+  "lang": {
+   "Python": 99,
+   "JavaScript": 1,
+   "Jinja": 0,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "sgl-project/mini-sglang": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 36,
+  "lang": {
+   "Python": 81,
+   "C": 7,
+   "Cuda": 6,
+   "C++": 6,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

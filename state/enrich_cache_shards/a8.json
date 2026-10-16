@@ -1,0 +1,183 @@
+{
+ "openai/CLIP": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "go-kratos/kratos": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-06-26",
+  "rel_days": 112,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 289,
+  "lang": {
+   "Go": 98,
+   "Go Template": 1,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "langchain-ai/langchainjs": {
+  "commit_90d": 194,
+  "commit_7d": 11,
+  "rel_ver": "langchain@1.5.18",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": "high",
+  "sec_last": "2026-10-05",
+  "sec_ids": [
+   "GHSA-m6rx-h84q-8r95(CVE-2026-106119,medium)",
+   "GHSA-5x6v-p487-7qh2(CVE-2026-105799,high)",
+   "GHSA-mphv-75cg-56wg(CVE-2026-27795,medium)",
+   "GHSA-gf3v-fwqg-4vh7(CVE-2026-26019,medium)",
+   "GHSA-r399-636x-v7f6(CVE-2025-68665,high)"
+  ],
+  "contrib_n": 441,
+  "lang": {
+   "TypeScript": 98,
+   "HTML": 2,
+   "JavaScript": 0,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "uditgoenka/autoresearch": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": "v2.2.2",
+  "rel_pub": "2026-08-12",
+  "rel_days": 65,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Shell": 77,
+   "JavaScript": 23
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "fixie-ai/ultravox": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.6",
+  "rel_pub": "2025-08-18",
+  "rel_days": 424,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 99,
+   "Just": 1,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Jinja": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "haris-musa/excel-mcp-server": {
+  "commit_90d": 113,
+  "commit_7d": 51,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 16,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-10",
+  "sec_ids": [
+   "GHSA-mvpx-mwxr-g2f5(-,low)",
+   "GHSA-w7wm-p57p-8q22(-,medium)",
+   "GHSA-wgvf-cmgr-7573(-,medium)",
+   "GHSA-jf2g-fjwq-rjr6(-,medium)",
+   "GHSA-99mr-c7r6-xhrc(-,medium)",
+   "GHSA-frr9-2j4w-q923(-,low)",
+   "GHSA-69rc-6f6g-43xj(-,medium)",
+   "GHSA-wxp4-xc9x-vpxj(-,medium)"
+  ],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

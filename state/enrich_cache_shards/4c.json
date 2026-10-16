@@ -1,0 +1,121 @@
+{
+ "Mintplex-Labs/anything-llm": {
+  "commit_90d": 318,
+  "commit_7d": 32,
+  "rel_ver": "v1.18.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 25,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-21",
+  "sec_ids": [
+   "GHSA-3f4c-xj8r-h4cr(-,medium)",
+   "GHSA-p9pc-ccw4-fxc5(-,low)",
+   "GHSA-8wh8-3v68-whwj(-,medium)",
+   "GHSA-rh3m-xv7m-9jhf(CVE-2026-88055,medium)",
+   "GHSA-vv8w-wg6r-hq56(CVE-2026-72917,medium)",
+   "GHSA-r872-gr59-vf5w(CVE-2026-55611,low)",
+   "GHSA-j4m9-wwcq-m868(CVE-2026-48789,medium)",
+   "GHSA-6hrp-7mw6-8v59(CVE-2026-48116,high)"
+  ],
+  "contrib_n": 264,
+  "lang": {
+   "JavaScript": 99,
+   "CSS": 1,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "srbhr/Resume-Matcher": {
+  "commit_90d": 752,
+  "commit_7d": 484,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-09-06",
+  "rel_days": 40,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 96,
+  "lang": {
+   "Python": 50,
+   "TypeScript": 48,
+   "CSS": 1,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Human-Agent-Society/reef": {
+  "commit_90d": 481,
+  "commit_7d": 54,
+  "rel_ver": "v0.1.3",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "Python": 96,
+   "C++": 2,
+   "TypeScript": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "hijkzzz/Awesome-LLM-Strawberry": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

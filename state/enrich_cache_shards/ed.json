@@ -1,0 +1,239 @@
+{
+ "jacobgil/pytorch-grad-cam": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 53,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "jeecgboot/jimureport": {
+  "commit_90d": 36,
+  "commit_7d": 3,
+  "rel_ver": "v2.5.0_springbooot3",
+  "rel_pub": "2026-08-09",
+  "rel_days": 68,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-11",
+  "sec_ids": [
+   "GHSA-388c-gvgp-vc5v(-,critical)",
+   "GHSA-67x5-p75f-jmmm(-,critical)"
+  ],
+  "contrib_n": 2,
+  "lang": {
+   "Java": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "PaddlePaddle/Paddle-Lite": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.14-rc",
+  "rel_pub": "2024-07-19",
+  "rel_days": 819,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 170,
+  "lang": {
+   "C++": 82,
+   "Python": 8,
+   "C": 4,
+   "CMake": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "mylxsw/aidea": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "2.0.0",
+  "rel_pub": "2025-02-20",
+  "rel_days": 603,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Dart": 83,
+   "JavaScript": 14,
+   "C++": 1,
+   "CMake": 1,
+   "Inno Setup": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "filipecalegario/awesome-vibe-coding": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "rasbt/mlxtend": {
+  "commit_90d": 17,
+  "commit_7d": 0,
+  "rel_ver": "v0.25.0",
+  "rel_pub": "2026-06-06",
+  "rel_days": 132,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 115,
+  "lang": {
+   "Python": 100,
+   "TeX": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "WeThinkIn/AIGC-Interview-Book": {
+  "commit_90d": 486,
+  "commit_7d": 22,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/smollm": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 25,
+  "lang": {
+   "Python": 76,
+   "Shell": 15,
+   "Jupyter Notebook": 9,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "NVIDIA/TransformerEngine": {
+  "commit_90d": 297,
+  "commit_7d": 27,
+  "rel_ver": "v2.20.2",
+  "rel_pub": "2026-10-05",
+  "rel_days": 11,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 220,
+  "lang": {
+   "Python": 60,
+   "Cuda": 25,
+   "C++": 13,
+   "C": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

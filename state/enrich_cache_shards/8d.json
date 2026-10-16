@@ -1,0 +1,219 @@
+{
+ "vllm-project/vllm": {
+  "commit_90d": 4331,
+  "commit_7d": 442,
+  "rel_ver": "v0.31.0",
+  "rel_pub": "2026-10-05",
+  "rel_days": 11,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 30,
+  "sec_worst": "high",
+  "sec_last": "2026-10-06",
+  "sec_ids": [
+   "GHSA-6cxc-2vcg-w5qc(-,low)",
+   "GHSA-p92p-rxj5-7p2x(-,medium)",
+   "GHSA-4xqp-c3mv-qff7(-,medium)",
+   "GHSA-x6mc-67gf-chw4(CVE-2026-105758,medium)",
+   "GHSA-823j-m4cj-hmjf(-,high)",
+   "GHSA-5fj9-pfhr-6j48(CVE-2026-105759,medium)",
+   "GHSA-25q3-v2hm-8vpf(CVE-2026-93592,high)",
+   "GHSA-58v5-2m8f-94pr(CVE-2026-105760,medium)"
+  ],
+  "contrib_n": 453,
+  "lang": {
+   "Python": 85,
+   "Rust": 6,
+   "Cuda": 4,
+   "C++": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "meilisearch/meilisearch": {
+  "commit_90d": 354,
+  "commit_7d": 16,
+  "rel_ver": "v1.55.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 229,
+  "lang": {
+   "Rust": 100,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "electerm/electerm": {
+  "commit_90d": 416,
+  "commit_7d": 31,
+  "rel_ver": "v5.6.10",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 23,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-04",
+  "sec_ids": [
+   "GHSA-jwgc-9rwh-325v(-,critical)",
+   "GHSA-jp2c-9hxg-79qr(-,high)",
+   "GHSA-qwpx-vcx2-m683(-,high)",
+   "GHSA-8hxx-fgj4-fwjj(-,high)",
+   "GHSA-qc8j-6jr2-qr32(-,high)",
+   "GHSA-xm7f-7cg5-2jc3(-,high)",
+   "GHSA-8chw-jwc5-8587(CVE-2026-73226,high)",
+   "GHSA-4cgc-4vgf-q55c(CVE-2026-73223,high)"
+  ],
+  "contrib_n": 50,
+  "lang": {
+   "JavaScript": 95,
+   "Stylus": 3,
+   "Shell": 2,
+   "Pug": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "thesysdev/openui": {
+  "commit_90d": 400,
+  "commit_7d": 61,
+  "rel_ver": "@openuidev/vue-lang@0.4.2",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 53,
+  "lang": {
+   "TypeScript": 91,
+   "SCSS": 8,
+   "JavaScript": 1,
+   "CSS": 0,
+   "Vue": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "mlpack/mlpack": {
+  "commit_90d": 21,
+  "commit_7d": 1,
+  "rel_ver": "4.8.0",
+  "rel_pub": "2026-06-09",
+  "rel_days": 129,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 269,
+  "lang": {
+   "C++": 89,
+   "C": 8,
+   "CMake": 2,
+   "Python": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Tencent-Hunyuan/HunyuanVideo-1.5": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "deta/surf": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "1.4.7-beta.0",
+  "rel_pub": "2026-04-29",
+  "rel_days": 170,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 44,
+   "Svelte": 38,
+   "Rust": 16,
+   "JavaScript": 1,
+   "SCSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

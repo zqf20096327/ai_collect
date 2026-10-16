@@ -1,0 +1,140 @@
+{
+ "sansan0/TrendRadar": {
+  "commit_90d": 14,
+  "commit_7d": 11,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 97,
+   "HTML": 2,
+   "Batchfile": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "iOfficeAI/OfficeCLI": {
+  "commit_90d": 335,
+  "commit_7d": 22,
+  "rel_ver": "v1.0.157",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "C#": 95,
+   "Shell": 4,
+   "JavaScript": 1,
+   "Python": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "UFund-Me/Qbot": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "qbot-pro_v1.2.1",
+  "rel_pub": "2024-06-16",
+  "rel_days": 852,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 68,
+   "HTML": 18,
+   "Python": 8,
+   "C": 2,
+   "Go": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "spring-projects/spring-ai": {
+  "commit_90d": 259,
+  "commit_7d": 48,
+  "rel_ver": "v2.1.0-M1",
+  "rel_pub": "2026-09-25",
+  "rel_days": 21,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 410,
+  "lang": {
+   "Java": 100,
+   "Kotlin": 0,
+   "Smalltalk": 0,
+   "ANTLR": 0,
+   "CQL": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "swyxio/ai-notes": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 33,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

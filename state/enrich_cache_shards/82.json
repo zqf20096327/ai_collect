@@ -1,0 +1,238 @@
+{
+ "headroomlabs-ai/headroom": {
+  "commit_90d": 1013,
+  "commit_7d": 95,
+  "rel_ver": "v0.41.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-08-27",
+  "sec_ids": [
+   "GHSA-h46j-26q3-rggf(CVE-2026-71416,high)"
+  ],
+  "contrib_n": 332,
+  "lang": {
+   "Python": 82,
+   "Rust": 12,
+   "TypeScript": 2,
+   "JavaScript": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "yamadashy/repomix": {
+  "commit_90d": 356,
+  "commit_7d": 19,
+  "rel_ver": "v1.18.1",
+  "rel_pub": "2026-09-21",
+  "rel_days": 25,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": "high",
+  "sec_last": "2026-09-21",
+  "sec_ids": [
+   "GHSA-4p5g-gh74-q524(-,high)",
+   "GHSA-w8cw-mgw9-74h7(-,medium)",
+   "GHSA-rpmv-562j-qxrv(-,low)",
+   "GHSA-hwpp-h97w-2h3j(CVE-2026-49988,medium)",
+   "GHSA-9mm9-rqhj-j5mx(CVE-2026-49987,high)"
+  ],
+  "contrib_n": 78,
+  "lang": {
+   "TypeScript": 95,
+   "Vue": 4,
+   "JavaScript": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "cmusatyalab/openface": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "0.2.2",
+  "rel_pub": "2024-10-04",
+  "rel_days": 742,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 29,
+  "lang": {
+   "Lua": 47,
+   "Python": 46,
+   "Makefile": 2,
+   "Shell": 2,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "josStorer/RWKV-Runner": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v1.9.12",
+  "rel_pub": "2026-07-07",
+  "rel_days": 101,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "TypeScript": 44,
+   "Python": 37,
+   "Cuda": 8,
+   "Go": 6,
+   "HIP": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ashishps1/learn-ai-engineering": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ant-design/x": {
+  "commit_90d": 74,
+  "commit_7d": 1,
+  "rel_ver": "2.7.0",
+  "rel_pub": "2026-04-30",
+  "rel_days": 169,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 90,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "CSS": 1,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "xianyu110/awesome-openclaw-tutorial": {
+  "commit_90d": 4,
+  "commit_7d": 0,
+  "rel_ver": "v2026.10",
+  "rel_pub": "2026-10-04",
+  "rel_days": 12,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Shell": 56,
+   "Python": 31,
+   "HTML": 13,
+   "Ruby": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "snap-stanford/Biomni": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.0.8",
+  "rel_pub": "2025-10-27",
+  "rel_days": 354,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "Python": 82,
+   "Jupyter Notebook": 16,
+   "Shell": 2,
+   "R": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

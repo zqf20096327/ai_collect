@@ -1,0 +1,204 @@
+{
+ "tirth8205/code-review-graph": {
+  "commit_90d": 557,
+  "commit_7d": 34,
+  "rel_ver": "v2.3.9",
+  "rel_pub": "2026-09-18",
+  "rel_days": 28,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 128,
+  "lang": {
+   "Python": 97,
+   "TypeScript": 3,
+   "Shell": 0,
+   "Tape": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openai/symphony": {
+  "commit_90d": 16,
+  "commit_7d": 0,
+  "rel_ver": "v0.0.3",
+  "rel_pub": "2026-09-15",
+  "rel_days": 31,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Elixir": 97,
+   "Python": 2,
+   "CSS": 1,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "theonedev/onedev": {
+  "commit_90d": 555,
+  "commit_7d": 38,
+  "rel_ver": "v16.9.2",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 24,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-12",
+  "sec_ids": [
+   "GHSA-c296-25jw-hc2x(-,high)",
+   "GHSA-4g92-hmfv-3f9h(-,critical)",
+   "GHSA-f544-q7fq-359r(-,high)",
+   "GHSA-p3rv-f672-8x57(-,medium)",
+   "GHSA-55g8-94r5-cj37(CVE-2026-49248,high)",
+   "GHSA-59wq-74xg-w85v(CVE-2026-44647,critical)",
+   "GHSA-7wg5-6864-v489(CVE-2024-45309,critical)",
+   "GHSA-jf5c-9r77-3j5j(CVE-2023-24828,high)"
+  ],
+  "contrib_n": 34,
+  "lang": {
+   "Java": 80,
+   "JavaScript": 16,
+   "HTML": 2,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "nidhinjs/prompt-master": {
+  "commit_90d": 8,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ChatAnyTeam/ChatAny": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v3.5.0",
+  "rel_pub": "2024-10-30",
+  "rel_days": 716,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "TypeScript": 89,
+   "SCSS": 9,
+   "JavaScript": 1,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "kyegomez/tree-of-thoughts": {
+  "commit_90d": 12,
+  "commit_7d": 0,
+  "rel_ver": "0.3.6",
+  "rel_pub": "2023-07-29",
+  "rel_days": 1175,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "lululxvi/deepxde": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "v1.15.0",
+  "rel_pub": "2025-12-05",
+  "rel_days": 315,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 84,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

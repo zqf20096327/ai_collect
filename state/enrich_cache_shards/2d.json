@@ -1,0 +1,160 @@
+{
+ "paperclipai/paperclip": {
+  "commit_90d": 2165,
+  "commit_7d": 376,
+  "rel_ver": "v2026.1012.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 12,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-22",
+  "sec_ids": [
+   "GHSA-gqqj-85qm-8qhf(-,high)",
+   "GHSA-vr7g-88fq-vhq3(-,critical)",
+   "GHSA-47wq-cj9q-wpmp(-,critical)",
+   "GHSA-p7mm-r948-4q3q(-,medium)",
+   "GHSA-fpw4-p57j-hqmq(-,medium)",
+   "GHSA-3xx2-mqjm-hg9x(-,critical)",
+   "GHSA-xfqj-r5qw-8g4j(-,high)",
+   "GHSA-68qg-g8mg-6pr7(CVE-2026-41679,critical)"
+  ],
+  "contrib_n": 217,
+  "lang": {
+   "TypeScript": 93,
+   "JavaScript": 3,
+   "Rust": 3,
+   "PLpgSQL": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "vercel/ai": {
+  "commit_90d": 1490,
+  "commit_7d": 93,
+  "rel_ver": "ai@7.0.142",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 6,
+  "sec_worst": "high",
+  "sec_last": "2026-10-01",
+  "sec_ids": [
+   "GHSA-g3x3-7q3h-gmhj(-,medium)",
+   "GHSA-4mqq-99j3-3hmv(-,high)",
+   "GHSA-222v-gj5h-ff73(-,high)",
+   "GHSA-vmqp-7rwf-cq3w(-,medium)",
+   "GHSA-g48p-5rr5-8rgq(CVE-2026-64651,medium)",
+   "GHSA-qw9h-448j-6rph(CVE-2026-64650,medium)"
+  ],
+  "contrib_n": 469,
+  "lang": {
+   "TypeScript": 84,
+   "MDX": 15,
+   "JavaScript": 1,
+   "Vue": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Lightning-AI/litgpt": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": "v0.5.13",
+  "rel_pub": "2026-06-29",
+  "rel_days": 109,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 133,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "bentoml/OpenLLM": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.30",
+  "rel_pub": "2025-04-21",
+  "rel_days": 543,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 32,
+  "lang": {
+   "Python": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/LLMLingua": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2024-04-09",
+  "rel_days": 920,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

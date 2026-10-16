@@ -1,0 +1,149 @@
+{
+ "Tencent/WeKnora": {
+  "commit_90d": 1142,
+  "commit_7d": 118,
+  "rel_ver": "v0.8.3",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 10,
+  "sec_worst": "critical",
+  "sec_last": "2026-03-06",
+  "sec_ids": [
+   "GHSA-ccj6-79j6-cq5q(CVE-2026-30855,high)",
+   "GHSA-67q9-58vj-32qx(CVE-2026-30856,medium)",
+   "GHSA-8rf9-c59g-f82f(CVE-2026-30857,medium)",
+   "GHSA-h6gw-8f77-mmmp(CVE-2026-30858,medium)",
+   "GHSA-2f4c-vrjq-rcgv(CVE-2026-30859,medium)",
+   "GHSA-8w32-6mrw-q5wv(CVE-2026-30860,critical)",
+   "GHSA-r55h-3rwj-hcmg(CVE-2026-30861,critical)",
+   "GHSA-595m-wc8g-6qgc(CVE-2026-30247,medium)"
+  ],
+  "contrib_n": 249,
+  "lang": {
+   "Go": 66,
+   "TypeScript": 14,
+   "Vue": 14,
+   "Python": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "xai-org/grok-build": {
+  "commit_90d": 48,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 98,
+   "Swift": 1,
+   "Kotlin": 0,
+   "Python": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "xberg-io/xberg": {
+  "commit_90d": 3128,
+  "commit_7d": 134,
+  "rel_ver": "v1.3.10",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-06",
+  "sec_ids": [
+   "GHSA-c4x7-6j89-m6gj(-,high)"
+  ],
+  "contrib_n": 65,
+  "lang": {
+   "Rust": 93,
+   "Python": 2,
+   "MDX": 1,
+   "Shell": 1,
+   "C": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Netflix/maestro": {
+  "commit_90d": 13,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Java": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "sdv-dev/SDV": {
+  "commit_90d": 90,
+  "commit_7d": 9,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

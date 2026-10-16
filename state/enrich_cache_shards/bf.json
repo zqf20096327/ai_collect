@@ -1,0 +1,117 @@
+{
+ "RSSNext/Folo": {
+  "commit_90d": 563,
+  "commit_7d": 413,
+  "rel_ver": "mobile/v0.6.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 4,
+  "sec_worst": "critical",
+  "sec_last": "2025-07-09",
+  "sec_ids": [
+   "GHSA-h87r-5w74-qfm4(CVE-2025-53546,critical)",
+   "GHSA-9ww3-5wg4-f7g6(-,low)",
+   "GHSA-fp79-w2v3-2q9w(-,medium)",
+   "GHSA-j2h9-qmxq-49vc(-,medium)"
+  ],
+  "contrib_n": 153,
+  "lang": {
+   "TypeScript": 96,
+   "Swift": 2,
+   "CSS": 1,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ai-collection/ai-collection": {
+  "commit_90d": 109,
+  "commit_7d": 10,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 45,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "google/agents-cli": {
+  "commit_90d": 14,
+  "commit_7d": 1,
+  "rel_ver": "v1.10.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 80,
+   "HCL": 10,
+   "Go": 6,
+   "Makefile": 1,
+   "Java": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "SeldonIO/seldon-core": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.19.0",
+  "rel_pub": "2026-01-23",
+  "rel_days": 266,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "Go": 55,
+   "Jupyter Notebook": 20,
+   "Kotlin": 13,
+   "JavaScript": 3,
+   "Go Template": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

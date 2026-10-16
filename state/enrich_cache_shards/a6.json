@@ -1,0 +1,87 @@
+{
+ "roboflow/supervision": {
+  "commit_90d": 260,
+  "commit_7d": 36,
+  "rel_ver": "0.30.9",
+  "rel_pub": "2026-10-08",
+  "rel_days": 8,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 209,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ifixai-ai/iFixAi": {
+  "commit_90d": 232,
+  "commit_7d": 86,
+  "rel_ver": "v4.2.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 100,
+   "HTML": 0,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "oceanbase/oceanbase": {
+  "commit_90d": 572,
+  "commit_7d": 0,
+  "rel_ver": "v4.4.2_CE_BP3",
+  "rel_pub": "2026-09-15",
+  "rel_days": 31,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 374,
+  "lang": {
+   "C++": 97,
+   "Python": 2,
+   "Yacc": 0,
+   "C": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

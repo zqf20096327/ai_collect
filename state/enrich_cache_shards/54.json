@@ -1,0 +1,233 @@
+{
+ "ageron/handson-ml": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 36,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0,
+   "Dockerfile": 0,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "xming521/WeClone": {
+  "commit_90d": 53,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.03",
+  "rel_pub": "2026-01-04",
+  "rel_days": 285,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 87,
+   "TypeScript": 9,
+   "CSS": 4,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "DataTalksClub/mlops-zoomcamp": {
+  "commit_90d": 55,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 113,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 2,
+   "HCL": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "trailhq/Trail-Code": {
+  "commit_90d": 473,
+  "commit_7d": 14,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 36,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 1,
+   "Tree-sitter Query": 1,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "GetBindu/Bindu": {
+  "commit_90d": 4,
+  "commit_7d": 0,
+  "rel_ver": "2026.22.4",
+  "rel_pub": "2026-05-28",
+  "rel_days": 141,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 74,
+  "lang": {
+   "Python": 67,
+   "TypeScript": 32,
+   "Kotlin": 0,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "activeloopai/deeplake": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v4.5.2",
+  "rel_pub": "2026-02-11",
+  "rel_days": 247,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 109,
+  "lang": {
+   "C++": 52,
+   "Python": 39,
+   "PLpgSQL": 5,
+   "CMake": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Osmantic/ODS": {
+  "commit_90d": 4368,
+  "commit_7d": 186,
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-09-24",
+  "rel_days": 22,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-05",
+  "sec_ids": [
+   "GHSA-69cg-cxxf-jc6m(-,medium)",
+   "GHSA-7jvf-39fc-rwr6(-,medium)",
+   "GHSA-4rpc-g4mc-jm9c(-,high)",
+   "GHSA-v3hj-52g2-2hmc(-,high)",
+   "GHSA-vqpg-pvjj-4cmq(-,critical)"
+  ],
+  "contrib_n": 68,
+  "lang": {
+   "Python": 48,
+   "JavaScript": 28,
+   "Shell": 18,
+   "PowerShell": 5,
+   "CSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "FareedKhan-dev/all-agentic-architectures": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-05-28",
+  "rel_days": 141,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 62,
+   "Python": 38,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

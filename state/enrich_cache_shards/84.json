@@ -1,0 +1,172 @@
+{
+ "OtterMind/Chat2DB": {
+  "commit_90d": 1208,
+  "commit_7d": 23,
+  "rel_ver": "v5.3.8",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 58,
+  "lang": {
+   "Java": 57,
+   "TypeScript": 30,
+   "ANTLR": 7,
+   "TSQL": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openai/math": {
+  "commit_90d": 5,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Lean": 92,
+   "TeX": 8,
+   "Python": 0,
+   "C++": 0,
+   "Mermaid": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "cocoindex-io/cocoindex": {
+  "commit_90d": 177,
+  "commit_7d": 45,
+  "rel_ver": "v1.0.25",
+  "rel_pub": "2026-10-06",
+  "rel_days": 10,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-02-28",
+  "sec_ids": [
+   "GHSA-59g6-v3vg-f7wc(CVE-2026-28438,medium)"
+  ],
+  "contrib_n": 98,
+  "lang": {
+   "Rust": 53,
+   "Python": 47,
+   "Shell": 0,
+   "Astro": 0,
+   "Handlebars": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "wonderwhy-er/DesktopCommanderMCP": {
+  "commit_90d": 354,
+  "commit_7d": 40,
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 37,
+  "lang": {
+   "JavaScript": 55,
+   "TypeScript": 41,
+   "CSS": 1,
+   "PowerShell": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Open-Less/openless": {
+  "commit_90d": 280,
+  "commit_7d": 41,
+  "rel_ver": "v2.0.1-tauri",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 52,
+  "lang": {
+   "Rust": 65,
+   "TypeScript": 21,
+   "Kotlin": 5,
+   "JavaScript": 4,
+   "CSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "polyaxon/polyaxon": {
+  "commit_90d": 72,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 88,
+  "lang": {
+   "MDX": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

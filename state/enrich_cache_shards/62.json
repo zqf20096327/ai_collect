@@ -1,0 +1,72 @@
+{
+ "onyx-dot-app/onyx": {
+  "commit_90d": 1718,
+  "commit_7d": 220,
+  "rel_ver": "helm/onyx-0.9.16",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 5,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-20",
+  "sec_ids": [
+   "GHSA-7f48-vgpj-h95m(CVE-2026-63178,medium)",
+   "GHSA-q62f-rv3h-f822(CVE-2026-71424,critical)",
+   "GHSA-rw6w-hp62-gc8w(CVE-2026-42276,medium)",
+   "GHSA-vg3h-35f7-7w6r(CVE-2026-42277,medium)",
+   "GHSA-xr9w-3ggr-hr6j(CVE-2024-32881,critical)"
+  ],
+  "contrib_n": 195,
+  "lang": {
+   "Python": 65,
+   "TypeScript": 26,
+   "Go": 6,
+   "HCL": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tbphp/gpt-load": {
+  "commit_90d": 914,
+  "commit_7d": 28,
+  "rel_ver": "v2.0.0-rc.51",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "high",
+  "sec_last": "2026-10-11",
+  "sec_ids": [
+   "GHSA-9p2w-p42p-7c95(-,medium)",
+   "GHSA-v6w2-mrg5-vc9r(-,medium)",
+   "GHSA-wqp8-rrm7-f5w5(-,high)"
+  ],
+  "contrib_n": 23,
+  "lang": {
+   "Go": 67,
+   "Vue": 20,
+   "TypeScript": 12,
+   "Python": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

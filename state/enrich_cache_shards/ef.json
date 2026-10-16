@@ -1,0 +1,128 @@
+{
+ "arc53/DocsGPT": {
+  "commit_90d": 1884,
+  "commit_7d": 198,
+  "rel_ver": "1.0.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 8,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 12,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-07",
+  "sec_ids": [
+   "GHSA-73g6-pg2w-xvpf(-,high)",
+   "GHSA-949x-3mqg-5xfr(-,medium)",
+   "GHSA-2q66-89mh-pjfr(-,high)",
+   "GHSA-q463-hvr7-49m3(-,critical)",
+   "GHSA-46rm-v974-c7gw(-,critical)",
+   "GHSA-pjj3-xfwm-h5fq(-,high)",
+   "GHSA-666p-752v-j875(-,medium)",
+   "GHSA-6gxj-6hq5-hqcj(-,medium)"
+  ],
+  "contrib_n": 245,
+  "lang": {
+   "Python": 73,
+   "TypeScript": 26,
+   "Shell": 0,
+   "PowerShell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Canner/WrenAI": {
+  "commit_90d": 161,
+  "commit_7d": 9,
+  "rel_ver": "wren-v0.16.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 86,
+  "lang": {
+   "Python": 65,
+   "Rust": 32,
+   "HTML": 2,
+   "JavaScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Anil-matcha/open-dots": {
+  "commit_90d": 63,
+  "commit_7d": 35,
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 74,
+   "JavaScript": 14,
+   "TypeScript": 12,
+   "Shell": 1,
+   "Mako": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/nanoVLM": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.2",
+  "rel_pub": "2025-06-04",
+  "rel_days": 499,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 32,
+  "lang": {
+   "Python": 85,
+   "Shell": 15
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

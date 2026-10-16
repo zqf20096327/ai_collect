@@ -1,0 +1,293 @@
+{
+ "microsoft/VibeVoice": {
+  "commit_90d": 26,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 22,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "thuml/Time-Series-Library": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 54,
+  "lang": {
+   "Python": 54,
+   "Shell": 40,
+   "Jupyter Notebook": 6,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "skypilot-org/skypilot": {
+  "commit_90d": 504,
+  "commit_7d": 48,
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-10-05",
+  "rel_days": 11,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-26",
+  "sec_ids": [
+   "GHSA-97rf-2jrp-2m59(-,critical)"
+  ],
+  "contrib_n": 277,
+  "lang": {
+   "Python": 90,
+   "JavaScript": 7,
+   "Jinja": 1,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "AAswordman/Operit": {
+  "commit_90d": 437,
+  "commit_7d": 0,
+  "rel_ver": "v1.12.2",
+  "rel_pub": "2026-09-18",
+  "rel_days": 28,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 34,
+  "lang": {
+   "Kotlin": 82,
+   "JavaScript": 10,
+   "C++": 2,
+   "TypeScript": 2,
+   "Python": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "EvoMap/evolver": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": "v2.0.44",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 6,
+  "sec_worst": "critical",
+  "sec_last": "2026-04-27",
+  "sec_ids": [
+   "GHSA-7xp7-m392-h92c(-,medium)",
+   "GHSA-jxh8-jh77-xh6g(-,high)",
+   "GHSA-cfcj-hqpf-hccf(-,high)",
+   "GHSA-2cjr-5v3h-v2w4(CVE-2026-42077,medium)",
+   "GHSA-r466-rxw4-3j9j(CVE-2026-42075,high)",
+   "GHSA-j5w5-568x-rq53(CVE-2026-42076,critical)"
+  ],
+  "contrib_n": 7,
+  "lang": {
+   "JavaScript": 100,
+   "Shell": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ymcui/Chinese-LLaMA-Alpaca-2": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v4.1",
+  "rel_pub": "2024-01-23",
+  "rel_days": 997,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/PyRIT": {
+  "commit_90d": 715,
+  "commit_7d": 144,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-09-04",
+  "rel_days": 42,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 204,
+  "lang": {
+   "Python": 84,
+   "TypeScript": 16,
+   "Shell": 0,
+   "JavaScript": 0,
+   "Bicep": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "CaviraOSS/LongMemory": {
+  "commit_90d": 36,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2025-12-20",
+  "rel_days": 300,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "TypeScript": 98,
+   "Python": 1,
+   "JavaScript": 0,
+   "Dockerfile": 0,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "nyldn/claude-octopus": {
+  "commit_90d": 333,
+  "commit_7d": 7,
+  "rel_ver": "v11.14.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 31,
+  "lang": {
+   "Shell": 88,
+   "Python": 6,
+   "TypeScript": 3,
+   "Go Template": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "xororz/local-dream": {
+  "commit_90d": 26,
+  "commit_7d": 0,
+  "rel_ver": "v3.0.0-alpha.5",
+  "rel_pub": "2026-10-07",
+  "rel_days": 9,
+  "rel_n90": 5,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Kotlin": 65,
+   "C++": 34,
+   "CMake": 0,
+   "C": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

@@ -1,0 +1,112 @@
+{
+ "speedyapply/2027-AI-College-Jobs": {
+  "commit_90d": 90,
+  "commit_7d": 8,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "FlorianBruniaux/claude-code-ultimate-guide": {
+  "commit_90d": 378,
+  "commit_7d": 4,
+  "rel_ver": "v3.44.1",
+  "rel_pub": "2026-10-06",
+  "rel_days": 10,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 50,
+   "JavaScript": 14,
+   "Typst": 12,
+   "TypeScript": 12,
+   "Shell": 10
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "aurelio-labs/semantic-router": {
+  "commit_90d": 107,
+  "commit_7d": 29,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-05-23",
+  "sec_ids": [
+   "GHSA-98x5-vq43-vc5p(-,critical)"
+  ],
+  "contrib_n": 57,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "yvgude/lean-ctx": {
+  "commit_90d": 5414,
+  "commit_7d": 105,
+  "rel_ver": "v3.11.4",
+  "rel_pub": "2026-10-11",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 53,
+  "lang": {
+   "Rust": 87,
+   "Python": 4,
+   "C": 3,
+   "JavaScript": 2,
+   "TypeScript": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

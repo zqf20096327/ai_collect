@@ -1,0 +1,231 @@
+{
+ "LibreChat-AI/LibreChat": {
+  "commit_90d": 1396,
+  "commit_7d": 0,
+  "rel_ver": "v0.8.8",
+  "rel_pub": "2026-10-01",
+  "rel_days": 15,
+  "rel_n90": 5,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 29,
+  "sec_worst": "critical",
+  "sec_last": "2026-06-02",
+  "sec_ids": [
+   "GHSA-3phr-62qf-cxf3(CVE-2026-54025,medium)",
+   "GHSA-gc9r-88c3-7qhq(CVE-2026-54033,high)",
+   "GHSA-gvpj-vm2f-2m23(CVE-2026-54030,high)",
+   "GHSA-f8jg-v856-mf6q(CVE-2026-44654,medium)",
+   "GHSA-qrm5-r67f-6692(CVE-2026-34371,medium)",
+   "GHSA-6vqg-rgpm-qvf9(CVE-2026-44653,medium)",
+   "GHSA-4pcc-j6m6-wcwx(CVE-2026-32625,critical)",
+   "GHSA-52f6-fqwv-jccf(CVE-2026-54024,medium)"
+  ],
+  "contrib_n": 410,
+  "lang": {
+   "TypeScript": 84,
+   "JavaScript": 15,
+   "CSS": 0,
+   "Go": 0,
+   "Handlebars": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ty4z2008/Qix": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "Qix",
+  "rel_pub": "2014-09-26",
+  "rel_days": 4403,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "nmap/nmap": {
+  "commit_90d": 214,
+  "commit_7d": 14,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "C": 36,
+   "Lua": 27,
+   "C++": 20,
+   "Shell": 5,
+   "Python": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "PaddlePaddle/PaddleNLP": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "rl-v1.0.0",
+  "rel_pub": "2025-05-21",
+  "rel_days": 513,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 368,
+  "lang": {
+   "Python": 84,
+   "Cuda": 7,
+   "C++": 4,
+   "Shell": 4,
+   "Jupyter Notebook": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openvinotoolkit/openvino": {
+  "commit_90d": 997,
+  "commit_7d": 96,
+  "rel_ver": "2026.4.1",
+  "rel_pub": "2026-10-01",
+  "rel_days": 15,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 409,
+  "lang": {
+   "C++": 88,
+   "Python": 7,
+   "C": 3,
+   "CMake": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "vas3k/TaxHacker": {
+  "commit_90d": 14,
+  "commit_7d": 0,
+  "rel_ver": "v0.8.5",
+  "rel_pub": "2026-07-20",
+  "rel_days": 88,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 0,
+   "Dockerfile": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "lmstudio-ai/lms": {
+  "commit_90d": 18,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "SylphAI-Inc/AdalFlow": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.1.3",
+  "rel_pub": "2025-09-25",
+  "rel_days": 386,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 37,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

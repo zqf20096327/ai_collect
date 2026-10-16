@@ -1,0 +1,219 @@
+{
+ "Unstructured-IO/unstructured": {
+  "commit_90d": 52,
+  "commit_7d": 12,
+  "rel_ver": "0.27.27",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-27",
+  "sec_ids": [
+   "GHSA-v5mq-3xhg-98m9(CVE-2026-104250,medium)",
+   "GHSA-4mvj-m6j5-pmf7(CVE-2026-71428,critical)",
+   "GHSA-gm8q-m8mv-jj5m(CVE-2025-64712,critical)"
+  ],
+  "contrib_n": 160,
+  "lang": {
+   "HTML": 88,
+   "Python": 11,
+   "Shell": 1,
+   "Rich Text Format": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "jujumilk3/leaked-system-prompts": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 45,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Portkey-AI/gateway": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.15.2",
+  "rel_pub": "2026-01-12",
+  "rel_days": 277,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2025-12-01",
+  "sec_ids": [
+   "GHSA-hhh5-2cvx-vmfp(CVE-2025-66405,medium)"
+  ],
+  "contrib_n": 102,
+  "lang": {
+   "TypeScript": 96,
+   "HTML": 4,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "deepseek-ai/FlashMLA": {
+  "commit_90d": 6,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "C++": 55,
+   "Cuda": 28,
+   "Python": 16,
+   "C": 0,
+   "AGS Script": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "louisfb01/start-machine-learning": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "JohnSnowLabs/spark-nlp": {
+  "commit_90d": 49,
+  "commit_7d": 0,
+  "rel_ver": "7.0.0",
+  "rel_pub": "2026-09-24",
+  "rel_days": 22,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 93,
+  "lang": {
+   "Scala": 60,
+   "Python": 22,
+   "HTML": 16,
+   "Java": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "astroautomata/PySR": {
+  "commit_90d": 102,
+  "commit_7d": 0,
+  "rel_ver": "v2.7.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 47,
+  "lang": {
+   "Python": 98,
+   "Dockerfile": 1,
+   "Jupyter Notebook": 1,
+   "Shell": 0,
+   "HCL": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "avinashkranjan/Amazing-Python-Scripts": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 305,
+  "lang": {
+   "Jupyter Notebook": 96,
+   "Python": 4,
+   "HTML": 0,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

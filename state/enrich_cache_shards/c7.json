@@ -1,0 +1,59 @@
+{
+ "TEN-framework/ten-framework": {
+  "commit_90d": 69,
+  "commit_7d": 5,
+  "rel_ver": "0.11.73",
+  "rel_pub": "2026-09-22",
+  "rel_days": 24,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 88,
+  "lang": {
+   "Python": 35,
+   "C": 21,
+   "C++": 15,
+   "TypeScript": 12,
+   "Rust": 11
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "epoko77-ai/im-not-ai": {
+  "commit_90d": 205,
+  "commit_7d": 13,
+  "rel_ver": "v2.3.2",
+  "rel_pub": "2026-08-18",
+  "rel_days": 59,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Python": 94,
+   "Shell": 6
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

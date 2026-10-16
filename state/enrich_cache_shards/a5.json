@@ -1,0 +1,113 @@
+{
+ "morluto/rea": {
+  "commit_90d": 2937,
+  "commit_7d": 1651,
+  "rel_ver": "rea-agents-6.5.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 223,
+  "lang": {
+   "TypeScript": 84,
+   "JavaScript": 9,
+   "HTML": 2,
+   "Python": 2,
+   "Java": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "PaddlePaddle/PaddleSpeech": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "r1.5.0",
+  "rel_pub": "2025-03-05",
+  "rel_days": 590,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 143,
+  "lang": {
+   "Python": 71,
+   "C++": 22,
+   "Shell": 3,
+   "Perl": 2,
+   "C": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "anus-dev/ANUS": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-09-29",
+  "rel_days": 17,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ginobefun/BestBlogs": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 59,
+   "MDX": 32,
+   "JavaScript": 7,
+   "Shell": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}

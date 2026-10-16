@@ -1,0 +1,356 @@
+{
+ "chatboxai/chatbox": {
+  "commit_90d": 506,
+  "commit_7d": 0,
+  "rel_ver": "v1.23.5",
+  "rel_pub": "2026-09-24",
+  "rel_days": 22,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 71,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "CSS": 0,
+   "EJS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "decolua/9router": {
+  "commit_90d": 459,
+  "commit_7d": 38,
+  "rel_ver": "v0.5.35",
+  "rel_pub": "2026-07-16",
+  "rel_days": 92,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 19,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-16",
+  "sec_ids": [
+   "GHSA-32gc-64m7-hj7v(CVE-2026-56682,medium)",
+   "GHSA-5mj8-gf6m-fhw8(CVE-2026-56681,high)",
+   "GHSA-8g4w-4ffg-8vgx(CVE-2026-56677,high)",
+   "GHSA-6mwv-4mrm-5p3m(CVE-2026-56678,medium)",
+   "GHSA-63p9-g54h-prrp(CVE-2026-62312,high)",
+   "GHSA-vmjq-hvgq-2wv4(CVE-2026-56679,high)",
+   "GHSA-x5c9-v98j-722r(CVE-2026-56675,high)",
+   "GHSA-cmhj-wh2f-9cgx(CVE-2026-56676,high)"
+  ],
+  "contrib_n": 333,
+  "lang": {
+   "JavaScript": 100,
+   "CSS": 0,
+   "PowerShell": 0,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "huggingface/lerobot": {
+  "commit_90d": 274,
+  "commit_7d": 18,
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-08-03",
+  "rel_days": 74,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 274,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "vercel/chatbot": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 75,
+  "lang": {
+   "TypeScript": 96,
+   "JavaScript": 2,
+   "CSS": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "MiniMax-AI/skills": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "C#": 69,
+   "Python": 24,
+   "Shell": 4,
+   "HTML": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/sql-server-samples": {
+  "commit_90d": 112,
+  "commit_7d": 3,
+  "rel_ver": "sql-ml-language-extensions-tutorials",
+  "rel_pub": "2024-05-01",
+  "rel_days": 898,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 216,
+  "lang": {
+   "PowerShell": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/TypeChat": {
+  "commit_90d": 26,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 39,
+  "lang": {
+   "TypeScript": 50,
+   "Python": 32,
+   "JavaScript": 12,
+   "Jupyter Notebook": 5,
+   "Nunjucks": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "MariaDB/server": {
+  "commit_90d": 672,
+  "commit_7d": 57,
+  "rel_ver": "mariadb-13.0.2",
+  "rel_pub": "2026-09-15",
+  "rel_days": 31,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 27,
+  "sec_worst": "critical",
+  "sec_last": "2026-09-21",
+  "sec_ids": [
+   "GHSA-m5gf-432r-g5jw(CVE-2026-107814,high)",
+   "GHSA-89ph-64cf-gqcc(CVE-2026-107817,medium)",
+   "GHSA-wfqg-88r5-55f6(CVE-2026-107816,medium)",
+   "GHSA-4wgx-ffg9-jrwq(CVE-2026-107815,high)",
+   "GHSA-mhvc-vqcq-7vq5(CVE-2026-107818,high)",
+   "GHSA-fmq9-qjxj-qpf7(CVE-2026-107819,medium)",
+   "GHSA-c4gx-34mg-95q5(CVE-2026-107821,high)",
+   "GHSA-2m85-2x26-36rf(CVE-2026-107822,medium)"
+  ],
+  "contrib_n": 83,
+  "lang": {
+   "C++": 58,
+   "C": 36,
+   "Perl": 2,
+   "Shell": 1,
+   "Yacc": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "GoogleCloudPlatform/agent-starter-pack": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.41.3",
+  "rel_pub": "2026-04-25",
+  "rel_days": 174,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Python": 66,
+   "Jupyter Notebook": 12,
+   "HCL": 10,
+   "TypeScript": 5,
+   "Makefile": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Xtremilicious/projectlearn-project-based-learning": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 22,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 3,
+   "SCSS": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "cloudflare/agents": {
+  "commit_90d": 307,
+  "commit_7d": 24,
+  "rel_ver": "agents@0.28.1",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": null,
+  "sec_last": "2026-02-13",
+  "sec_ids": [
+   "GHSA-r7x9-8ph7-w8cg(CVE-2026-1664,medium)",
+   "GHSA-w5cr-2qhr-jqc5(CVE-2026-1664,medium)"
+  ],
+  "contrib_n": 78,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 0,
+   "CSS": 0,
+   "Shell": 0,
+   "Astro": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "areal-project/AReaL": {
+  "commit_90d": 137,
+  "commit_7d": 13,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-08-25",
+  "rel_days": 52,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 108,
+  "lang": {
+   "Python": 90,
+   "Jupyter Notebook": 10,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ }
+}
