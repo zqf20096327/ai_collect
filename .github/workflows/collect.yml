@@ -39,34 +39,38 @@ jobs:
 
       # 池采集:断点续采(collect_state 按单元记完成)+ 墙钟预算,
       # 预算截断夜 s5 门控拒合并,明晚自动续齐(防假 out)
+      # 预算依据 10-16 实测:s1 全量 ~163 分钟(搜索 30 次/分钟硬顶,~4400 查询),
+      # 给 175 分钟保证单窗跑完——门控要求单元当日全齐,池阶段超时=池冻结
       - name: s4 新项目窗口(最先跑:45 天窗口每天在流失,最易腐烂)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python s4_collect_new.py
+        run: python s4_collect_new.py --max-minutes 20
 
       - name: s1 topic 通道(>1000 自动拆分)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python s1_collect_topics.py
+        run: python s1_collect_topics.py --max-minutes 175
 
       - name: s2 org 通道 + s3 watch 白名单
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python s2_collect_orgs.py
+          python s2_collect_orgs.py --max-minutes 15
           python s3_collect_watch.py
 
       - name: s5 合并(完成门控/分片/事件/瘦身快照)
         run: python s5_merge_pool.py
 
       # 顺序即配额策略(对齐 dbhub):富集慢节奏先行吃满滚动小时窗;
-      # README 放最后,Core 触保底线睡到下一小时窗再续,不被挤成 0 完成
+      # README 放最后,Core 触保底线睡到下一小时窗再续,不被挤成 0 完成。
+      # 富集 100 分钟 = 6h 窗扣除池阶段(~195min)与 README 后的余量,
+      # 首轮 ~17 万调用按 ~7k/晚铺,约 25 晚;稳态 ~30 分钟收工
       - name: s7 富集(分层增量:未到期零调用,到期才采)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           python s7_enrich.py --tier all
-          --max-calls 5000 --max-minutes 220 --wait-windows 8
+          --max-calls 5000 --max-minutes 100 --wait-windows 8
 
       - name: s6 README(weekly;每月 1 号自动转月度全量校准)
         env:

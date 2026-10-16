@@ -57,8 +57,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--topics", help="逗号分隔,覆盖配置")
     ap.add_argument("--max-pages", type=int, default=10)
-    ap.add_argument("--max-minutes", type=float, default=15,
-                    help="墙钟预算,超线收工靠断点次日续采,默认 15 分钟")
+    ap.add_argument("--max-minutes", type=float, default=20,
+                    help="墙钟预算,超线收工靠断点次日续采,默认 20 分钟")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 

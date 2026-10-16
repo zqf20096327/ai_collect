@@ -144,8 +144,10 @@ def main():
     ap.add_argument("--limit", type=int, help="只跑前 N 个 topic(抽样)")
     ap.add_argument("--max-pages", type=int, default=10,
                     help="每条查询最多翻页数,默认 10(=1000 条)")
-    ap.add_argument("--max-minutes", type=float, default=60,
-                    help="墙钟预算,超线收工靠断点次日续采,默认 60 分钟")
+    ap.add_argument("--max-minutes", type=float, default=175,
+                    help="墙钟预算,超线收工靠断点次日续采。默认 175 分钟"
+                         "(=10-16 实测 163min + 余量;门控要求当日全齐,"
+                         "给小了池会冻结)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
