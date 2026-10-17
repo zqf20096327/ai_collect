@@ -17,7 +17,7 @@
     <img alt="DeepSeek Harness" src="https://img.shields.io/badge/DeepSeek_Harness-plugin-4D6BFE" />
     <img alt="Python" src="https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white" />
     <img alt="MongoDB" src="https://img.shields.io/badge/MongoDB-memory-47A248?logo=mongodb&logoColor=white" />
-    <img alt="Release" src="https://img.shields.io/badge/Release-v0.2.0-6f42c1" />
+    <img alt="Release" src="https://img.shields.io/badge/Release-v1.0.0-6f42c1" />
     <img alt="License" src="https://img.shields.io/badge/License-GPL--3.0--only-blue" />
   </p>
 </div>
@@ -126,7 +126,7 @@ The repository is split the same way:
 
 ## Getting started
 
-You need DeepSeek Harness 0.2.1-alpha.2, Python 3.12+, MongoDB with vector search, a model server for each brain (both brains may share
+You need DeepSeek Harness 0.2.1-rc.2, Python 3.12+, MongoDB with vector search, a model server for each brain (both brains may share
 one), and a persona package. Optional: NapCat for QQ. Commands run under DSH's own sandbox, on Windows, Linux or
 macOS.
 

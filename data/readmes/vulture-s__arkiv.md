@@ -110,6 +110,7 @@ Designed for solo DITs and small crews who own their data: local-first, self-hos
 - **DaVinci Resolve metadata CSV** — `/api/export/metadata-csv` endpoint exports clip metadata (Camera/Lens/ISO/Shutter/Aperture/GPS/CreateDate) ready for Resolve's `File → Import Metadata from CSV`. Plugin auto-prompts after import
 - **ExifTool integration** — auto-extracts 12 fields per clip (Make/Model/LensModel/GPS/ColorSpace/ISO/Shutter/Aperture/FocalLength/CreateDate). Sidecar-aware for Sony XAVC `.XML`, iPhone Keys group, Blackmagic Cam app per-vendor lens tags. Auto-detects exiftool binary on Windows (winget/scoop/chocolatey/Program Files)
 - **EDL reel name** — uses ExifTool ReelName with safe fallback to filename stem (8-char CMX3600 compat, control-char sanitized)
+- **EDL frame-rate limit** — CMX3600 only covers 23.976 / 24 / 25 / 29.97 / 30. High-fps clips (50 / 59.94 / 119.88p …) still export, with a `* WARNING` comment in the EDL header; if Resolve's conform TC drifts, use FCPXML (it carries the exact rational frame rate)
 - **HEVC/ProRes browser proxy** — auto-builds H.264 proxy on demand for browser playback
 - **Tauri native app** — desktop app with native file/folder dialogs
 - **DaVinci Resolve plugin** — search, import with clip color, add frame markers
@@ -221,7 +222,7 @@ brew install python ffmpeg ollama
 git clone https://github.com/vulture-s/arkiv.git
 cd arkiv
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt -c constraints.txt
 pip install mlx-whisper          # Apple Silicon (Metal GPU)
 ollama pull bge-m3 && ollama pull qwen2.5vl:7b && ollama pull qwen2.5:14b
 python health.py
@@ -234,7 +235,7 @@ sudo apt install python3 python3-venv ffmpeg
 git clone https://github.com/vulture-s/arkiv.git
 cd arkiv
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt -c constraints.txt
 pip install faster-whisper torch  # NVIDIA CUDA GPU
 # pip install faster-whisper      # CPU fallback
 ollama pull bge-m3 && ollama pull qwen2.5vl:7b && ollama pull qwen2.5:14b
@@ -249,7 +250,7 @@ git clone https://github.com/vulture-s/arkiv.git
 cd arkiv
 python -m venv .venv
 .\.venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements.txt -c constraints.txt
 pip install faster-whisper torch  # NVIDIA CUDA GPU
 # pip install faster-whisper      # CPU fallback
 ollama pull bge-m3; ollama pull qwen2.5vl:7b; ollama pull qwen2.5:14b

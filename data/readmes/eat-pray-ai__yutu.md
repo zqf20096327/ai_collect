@@ -126,7 +126,11 @@ There are two actions available for yutu, one is for general purpose and the oth
 <summary>Docker</summary>
 
 ```shell
+# GitHub Container Registry (GHCR)
 ❯ docker pull ghcr.io/eat-pray-ai/yutu:latest
+# or Docker Hub
+❯ docker pull eatprayai/yutu:latest
+
 ❯ docker run --rm ghcr.io/eat-pray-ai/yutu:latest
 # make sure client_secret.json is in the current directory
 ❯ docker run --rm -it -u $(id -u):$(id -g) -v $(pwd):/app -p 8216:8216 ghcr.io/eat-pray-ai/yutu:latest
@@ -183,6 +187,7 @@ Verify the integrity and provenance of `yutu` using its associated cryptographic
 ```shell
 # Docker
 ❯ gh attestation verify oci://ghcr.io/eat-pray-ai/yutu:latest --repo eat-pray-ai/yutu
+❯ gh attestation verify oci://docker.io/eatprayai/yutu:latest --repo eat-pray-ai/yutu
 
 # Linux and macOS(if installed using shell script)
 ❯ gh attestation verify $(which yutu) --repo eat-pray-ai/yutu

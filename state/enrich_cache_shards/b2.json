@@ -587,5 +587,86 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "paulpierre/markdown-crawler": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.0.9",
+  "rel_pub": "2026-06-26",
+  "rel_days": 113,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "BOTCAHX/RTXZY-MD": {
+  "commit_90d": 35,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 97,
+   "Python": 3,
+   "Dockerfile": 0,
+   "Procfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Pratiyush/llm-wiki": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.82",
+  "rel_pub": "2026-04-30",
+  "rel_days": 170,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 97,
+   "Gherkin": 1,
+   "TypeScript": 1,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

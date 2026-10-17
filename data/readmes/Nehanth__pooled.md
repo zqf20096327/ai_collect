@@ -23,7 +23,7 @@ https://github.com/user-attachments/assets/5142d877-e4d5-4f6b-9b5e-0ef48dcb73f6
 
 <p align="center"><sub>Demo, recorded September 27, 2026 (2:29, with voice and subtitles): Qwen 3.6 35B MoE across a Mac and an iPhone in browser tabs. The phone chats with it, then Code mode builds a Tetris game, fixes its own bug and restyles it. <a href="https://github.com/Nehanth/pooled/releases/download/v1.0.0/pooled-demo-2026-09-27.mp4">Download</a> · <a href="https://github.com/Nehanth/pooled/releases/download/v0.2.0/swarmllm-demo-2026-09-07.mp4">the September 7 demo</a>.</sub></p>
 
-Pooled runs one open model across the devices in a room. Your laptop, a friend's desktop and a phone each hold some of the model's layers, and together they run a model none of them could run alone. You can chat with it, or switch to Code mode and let it build and fix a small app right in the tab. There is nothing to install and no account, and no server does any of the thinking.
+Pooled runs one open model across the devices in a room. Your laptop, a friend's desktop and a phone each hold some of the model's layers, and together they run a model none of them could run alone. A model bigger than a device's GPU memory keeps most of itself on the SSD and streams what each token needs into the GPU (Qwen3.8 Flash, 125B, experimental; [SSD demo](https://pooled.run/docs/media/flash-demo.mp4)), and every device that joins holds more of it in memory, so it gets faster. You can chat with it, or switch to Code mode and let it build and fix a small app right in the tab. There is nothing to install and no account, and no server does any of the thinking.
 
 ## How it works
 
@@ -43,11 +43,31 @@ Models in the room today:
 
 | Model | Size | Notes |
 |---|---|---|
-| Qwen 3.8 27B | Q4_0, needs ~17 GB across the room | hybrid Gated DeltaNet + attention, built-in draft layer for speculative decoding, 16K context (up to 64K) |
-| Qwen 3.6 35B MoE | Q4_0, needs ~22.5 GB across the room | 256 experts, 8 active per token, so it decodes several times faster than the 27B; 32K context (up to 128K) |
+| Qwen 3.8 27B | Q4_0, needs ~17 GB across the room | hybrid Gated DeltaNet + attention, built-in draft layer for speculative decoding; opens at the longest context the room holds at full speed, up to 64K (16K at ~17 GB, 64K at ~20 GB) |
+| Qwen 3.6 35B MoE | Q4_0, needs ~22.5 GB across the room | 256 experts, 8 active per token, so it decodes several times faster than the 27B; opens at the longest context the room holds at full speed, up to 128K (32K at ~22.5 GB, 128K at ~23.5 GB) |
 | Qwen3 1.7B | Q8_0, needs ~5.6 GB across the room for 16K context, ~4 GB for 8K | small and quick, for rooms of phones and light laptops; 16K context, 8K when the room is short of memory |
+| Qwen3.8 Flash (**experimental**) | Q4_0, 125B (6B active), ~99 GB on disk | 512 experts, 10 active per token; keeps most of itself on disk, so it needs far less GPU memory than its size; 64K context. See below |
 
 Every device downloads only its own layers, from Hugging Face or from another device in the room that already has them, and keeps them cached for next time. If a device leaves, the room says so and the host deals its layers out again with one click. Speculative decoding, batched prefill and every kernel trick are checked by golden tests, so the speculative stream is the same as plain decoding.
+
+### Qwen3.8 Flash (experimental)
+
+Qwen3.8 Flash is a 125B mixture-of-experts model that uses about 6B of its parameters per token. It is far bigger than the GPU memory of most computers, so Pooled keeps most of it on disk: each device stores its share of the model's experts on its SSD (in the browser's storage for a tab), keeps the experts it used recently in a GPU cache, and reads the rest from disk as a token needs them. A single computer can run it on its own this way.
+
+Pooling makes it faster. Reading from disk is the slow part, and each device that joins holds part of the model in its own memory, so less of it has to come from disk. The room deals the model out again as devices join or leave.
+
+Measured in October 2026: a Mac Studio running it alone in a Chrome tab decodes about 8 tokens/s. With a PC with an RTX 5070 joined (`pooled join`), the pair decodes about 10-12 tokens/s, depending on the network between them.
+
+It is **experimental**:
+
+- Context goes up to 64K tokens, tested against llama.cpp. 128K is in progress.
+- It is slower than the other models, most of all on one computer, where much of it comes from disk.
+- The first run downloads about 99 GB and asks before storing it on the device.
+- How it loads and what it needs may change between releases.
+
+Demo video: [Qwen3.8 Flash in a Chrome tab on a Mac Studio, then an RTX 5070 PC joins](https://pooled.run/docs/media/flash-demo.mp4) (recorded October 13, 2026, 2:02, voice and subtitles; the room gets 1.4x faster when the PC joins).
+
+Pick it in the room's model picker. To lend a computer from the command line: `npx @pooled/cli join <ROOM CODE>` ([cli/README.md](cli/README.md#qwen38-flash-experimental-from-the-terminal)).
 
 Details: [docs/architecture.md](docs/architecture.md), [docs/kernels.md](docs/kernels.md), [docs/protocol.md](docs/protocol.md), [docs/models.md](docs/models.md).
 
@@ -124,6 +144,22 @@ More in [docs/architecture.md](docs/architecture.md).
 
 All numbers use greedy decoding, and the output matches plain one-device decoding. Full history, with commits and caveats, is in [docs/bench-log.md](docs/bench-log.md).
 
+### From disk: Qwen3.8 Flash (experimental)
+
+A Mac Studio running Flash in a Chrome tab, lending 20 GB of GPU memory and reading the rest of the experts from its SSD, then an RTX 5070 PC joining the room with `pooled join` (10 GB of GPU memory, most of its experts parked in RAM). Both on WiFi, October 13-14, 2026. Answers match llama.cpp's greedy output on the golden prompts, exactly or at near ties within the test's rule.
+
+| Setup | Decode | 8K-token prompt read | 32K-token prompt read |
+|---|---|---|---|
+| Mac Studio alone | ~8 tok/s | 45.7 s | |
+| Mac Studio + RTX 5070 PC | 10-12 tok/s (9.4 median on one WiFi night) | 35.9 s | 82 s |
+
+- A short question gets its first token in about 5 s on the Mac alone.
+- Decode is slower at long context: with the room open at 64K, about 5 tok/s on the Mac alone and 6-7 on the pair. The context's memory comes out of the GPU's expert cache, so more experts come from disk.
+- The expert cache works because routing repeats: on recorded traces, caching 17% of a layer's experts serves about 77% of lookups.
+- WiFi stalls make single answers vary; a wired link is steadier.
+
+Details: [docs/long-context-and-sessions.md](docs/long-context-and-sessions.md), [docs/bench-log.md](docs/bench-log.md). Demo: [SSD demo video](https://pooled.run/docs/media/flash-demo.mp4).
+
 ### One device
 
 NVIDIA GB10 (DGX Spark), Chrome, 2026-09-26, coding prompts, speculative decoding with the model's own draft layer.
@@ -133,7 +169,9 @@ NVIDIA GB10 (DGX Spark), Chrome, 2026-09-26, coding prompts, speculative decodin
 | Qwen 3.6 35B MoE | 40–46 tok/s | 65–84 tok/s | 85.5 tok/s decode, 2520 tok/s prefill |
 | Qwen 3.8 27B | 10.1–10.8 tok/s | 20–27 tok/s | 13.8 tok/s decode |
 
-Native llama.cpp is still ahead on plain decode (about 2x on the MoE, 1.3x on the 27B). Speculative decoding closes most of that on code, where 70–85% of drafts are accepted. Prefill is the biggest gap: the first token of a 172-token prompt takes about 1.0 s on the MoE and 2.5 s on the 27B, against roughly 0.07 s and 0.5 s native. Faster prefill is the top item on the roadmap.
+Since this table (main as of 2026-10-02, same GB10, see docs/bench-log.md): MoE prompt processing is about 2x faster (Deno, 2048 tokens: 402 -> 861 tok/s, #314) and MoE plain decode in Chrome on a chat prompt is 63.9 tok/s at 1K context, 59.6 at 8K and 50.1 at 32K (#315). DP4a prefill is now the default on NVIDIA for both the dense models and the MoE. The rows above are kept as measured on their date; the prompts differ, so don't compare them directly with the newer numbers.
+
+Native llama.cpp is still ahead on plain decode (in this table about 2x on the MoE and 1.3x on the 27B; on the MoE's 2026-10-02 numbers, 63.9 against 85.2 tok/s, about 1.3x). Speculative decoding closes most of that on code, where 70–85% of drafts are accepted. Prefill is the biggest gap (MoE prefill is now ~861 tok/s against llama.cpp's ~2,400): in this table the first token of a 172-token prompt takes about 1.0 s on the MoE and 2.5 s on the 27B, against roughly 0.07 s and 0.5 s native. Faster prefill is the top item on the roadmap.
 
 ### Across devices, with emulated network latency
 
@@ -163,7 +201,7 @@ Other projects split models across machines or run models in a browser tab. Each
 
 | Project | Runs in | Pools several devices | Install per device | Published speed (source, hardware) | Coding agent built in |
 |---|---|---|---|---|---|
-| **Pooled** | browser tab (WebGPU) | yes, layers split across laptops, desktops and phones over WebRTC | none, open a URL | 35B MoE: 40–46 tok/s plain, 65–84 speculative on one GB10; 13 / 21 on two devices at 20 ms emulated latency ([Performance](#performance)) | yes, Code mode runs in the tab |
+| **Pooled** | browser tab (WebGPU) | yes, layers split across laptops, desktops and phones over WebRTC | none, open a URL | 35B MoE: 40–46 tok/s plain, 65–84 speculative on one GB10 (2026-09-26, coding prompts; 64 plain at 1K context on 2026-10-02); 13 / 21 on two devices at 20 ms emulated latency ([Performance](#performance)) | yes, Code mode runs in the tab |
 | [exo](https://github.com/exo-explore/exo) | native (MLX); macOS app, Linux CPU only for now | yes, with RDMA over Thunderbolt 5 on Macs | macOS app (DMG or `brew install --cask exo`) or build from source | 31.9 tok/s Qwen3 235B and 32.5 tok/s DeepSeek V3.1 671B, both on 4x M3 Ultra Mac Studio ([Jeff Geerling](https://www.jeffgeerling.com/blog/2025/15-tb-vram-on-mac-studio-rdma-over-thunderbolt-5/)) | no |
 | [llama.cpp RPC](https://github.com/ggml-org/llama.cpp/tree/master/tools/rpc) | native | yes, remote ggml devices | build with `-DGGML_RPC=ON` on every host; the docs call it fragile and insecure, never for open networks | Qwen3 235B: 20.4 tok/s on 1 node, 15.2 tok/s on 4 nodes, 4x M3 Ultra ([Jeff Geerling](https://www.jeffgeerling.com/blog/2025/15-tb-vram-on-mac-studio-rdma-over-thunderbolt-5/)) | no |
 | [distributed-llama](https://github.com/b4rtaz/distributed-llama) | native (CPU, experimental Vulkan) | yes, tensor parallel, power-of-2 node counts | C++ build plus Python launcher | Llama 3.2 3B Q40: 5.95 tok/s on 1 Pi 5, 13.68 tok/s on 4 Pi 5 ([#165](https://github.com/b4rtaz/distributed-llama/discussions/165)); Qwen3 30B A3B: 13.04 tok/s on 4 Pi 5 ([#255](https://github.com/b4rtaz/distributed-llama/discussions/255)) | no |

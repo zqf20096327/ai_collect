@@ -28,7 +28,7 @@
 D-FINE-seg is a framework for real-time **object detection**, **instance segmentation**, and **semantic segmentation** - one codebase, one config flag (`task: detect | segment | sem_seg`), five model sizes (N -> X).
 
 - End-to-end workflow - dataset prep -> training (DDP, EMA, AMP, mosaic) -> export (ONNX, TensorRT, OpenVINO, CoreML, LiteRT) -> benchmarked multi-backend inference
-- Accuracy - Cityscapes semantic segmentation at native 1024x2048: D-FINE-X reaches 84.84 mIoU at 14.6 ms end-to-end, the highest of 28 models - +1.26 mIoU over YOLO26-x, and +1.5 mIoU over Mask2Former Swin-L with 6.4x lower latency and a quarter of the params - and D-FINE-L matches or beats YOLO26-x on every axis; also beats YOLO26 and RF-DETR on 640 Cityscapes detection & instance-seg F1, and YOLO26 on TACO and VisDrone (TensorRT FP16, end-to-end protocol)
+- Accuracy - Cityscapes semantic segmentation at native 1024x2048: D-FINE-seg-X reaches 84.84 mIoU at 14.6 ms end-to-end, the highest of [28 models](https://github.com/ArgoHA/cityscapes-benchmark/blob/main/results/RESULTS_SEMSEG_NATIVE.csv) - +1.26 mIoU over YOLO26-x, and +1.5 mIoU over Mask2Former Swin-L with 6.4x lower latency and a quarter of the params - and D-FINE-seg-L matches or beats YOLO26-x on every axis; also beats YOLO26 and RF-DETR on 640 Cityscapes detection & instance-seg F1, and YOLO26 on TACO and VisDrone (TensorRT FP16, end-to-end protocol)
 - Paper - [D-FINE-seg: Object Detection and Instance Segmentation Framework with Multi-Backend Deployment](https://arxiv.org/abs/2602.23043)
 - Not a fork: the detection core follows the [D-FINE paper](https://github.com/Peterande/D-FINE); segmentation heads, training, export and inference are implemented from scratch.
 
@@ -306,18 +306,19 @@ It serves on `0.0.0.0:7860` (LAN-reachable) and prints a warning on startup: the
 
 | model | params (M) | mIoU | pixel acc | engine ms | e2e ms |
 |---|---:|---:|---:|---:|---:|
-| **D-FINE-N** | 3.36 | 77.99 | 96.03 | 3.02 | 4.21 |
-| **D-FINE-S** | 7.99 | 81.12 | 96.47 | 5.38 | 6.37 |
-| **D-FINE-M** | 15.95 | 81.41 | 96.55 | 7.42 | 8.26 |
-| **D-FINE-L** | 24.97 | 83.80 | 96.93 | 8.98 | 9.77 |
-| **D-FINE-X** | 56.3 | **84.84** | **97.10** | 14.18 | 14.64 |
+| **D-FINE-seg-N** | 3.36 | 77.99 | 96.03 | 3.02 | 4.21 |
+| **D-FINE-seg-S** | 7.99 | 81.12 | 96.47 | 5.38 | 6.37 |
+| **D-FINE-seg-M** | 15.95 | 81.41 | 96.55 | 7.42 | 8.26 |
+| **D-FINE-seg-L** | 24.97 | 83.80 | 96.93 | 8.98 | 9.77 |
+| **D-FINE-seg-X** | 56.3 | **84.84** | **97.10** | 14.18 | 14.64 |
 | YOLO26x-sem | 40.13 | 83.58 | 96.79 | 10.37 | 13.58 |
 | EfficientViT-L2 | 52.61 | 83.20 | 96.87 | 9.56 | 19.87 |
 | Mask2Former-Swin-L | 215.46 | 83.33 | 96.91 | 64.51 | 94.07 |
 | SegFormer-B5 | 84.61 | 81.41 | 96.62 | 38.81 | 42.12 |
 
-- **D-FINE-X vs Mask2Former-Swin-L** (the most accurate Mask2Former checkpoint): +1.51 mIoU, 4.5x lower engine latency, 6.4x lower end-to-end latency, about a quarter of the parameters. X has the highest mIoU and pixel accuracy of the 28 models.
-- **D-FINE-L vs YOLO26x-sem** (the most accurate YOLO26-sem checkpoint): +0.22 mIoU, +0.14 pixel acc, 13% lower engine latency, 28% lower end-to-end latency, 38% fewer parameters. One training seed and a small margin, so read it as "matches or beats".
+- **D-FINE-seg-X vs Mask2Former-Swin-L** (the most accurate Mask2Former checkpoint): +1.51 mIoU, 4.5x lower engine latency, 6.4x lower end-to-end latency, about a quarter of the parameters. X has the highest mIoU and pixel accuracy of the 28 models.
+- **D-FINE-seg-L vs YOLO26x-sem** (the most accurate YOLO26-sem checkpoint): +0.22 mIoU, +0.14 pixel acc, 13% lower engine latency, 28% lower end-to-end latency, 38% fewer parameters. One training seed and a small margin, so read it as "matches or beats".
+- **Cityscapes test** (held-out 1525 images, official evaluation server): D-FINE-seg-X 83.23 vs YOLO26x-sem 82.10 mIoU - the val margin holds on test.
 
 ### Cityscapes - vs YOLO26 and RF-DETR (fine-tuning)
 

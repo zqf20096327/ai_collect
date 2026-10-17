@@ -635,5 +635,170 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "bmadone/senior-software-engineer": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "OschAI/VisioFirm": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.2",
+  "rel_pub": "2026-08-20",
+  "rel_days": 58,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 42,
+   "JavaScript": 36,
+   "HTML": 17,
+   "CSS": 5
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "agentclientprotocol/registry": {
+  "commit_90d": 789,
+  "commit_7d": 107,
+  "rel_ver": "v2026.10.17-6d5f988",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 68,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "facefusion/facefusion-pinokio": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "yihaosun1124/OfflineRL-Kit": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "nuxt-ui-templates/chat": {
+  "commit_90d": 27,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Vue": 56,
+   "TypeScript": 43,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "google-deepmind/ai-foundations": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Jupyter Notebook": 84,
+   "Python": 16
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

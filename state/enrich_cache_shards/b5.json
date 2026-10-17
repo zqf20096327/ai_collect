@@ -613,5 +613,168 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "codesstar/loci": {
+  "commit_90d": 62,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-10-08",
+  "rel_days": 9,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 81,
+   "JavaScript": 18,
+   "Shell": 0,
+   "Python": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "esrrhs/majiang_algorithm": {
+  "commit_90d": 25,
+  "commit_7d": 10,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 20,
+   "JavaScript": 18,
+   "Lua": 14,
+   "C++": 13,
+   "Java": 12
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "SHAdd0WTAka/Zen-Ai-Pentest": {
+  "commit_90d": 98,
+  "commit_7d": 0,
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-02-19",
+  "rel_days": 240,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-03-20",
+  "sec_ids": [
+   "GHSA-f67f-hcr6-94mf(-,critical)"
+  ],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 92,
+   "TypeScript": 6,
+   "Shell": 1,
+   "HTML": 0,
+   "HCL": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "maitbayev/the-elements-of-statistical-learning": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ML4ITS/mtad-gat-pytorch": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2023-05-19",
+  "rel_days": 1247,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "sophgo/LLM-TPU": {
+  "commit_90d": 40,
+  "commit_7d": 4,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "C++": 67,
+   "Python": 29,
+   "C": 2,
+   "Shell": 1,
+   "CMake": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

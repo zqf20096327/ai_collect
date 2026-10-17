@@ -18,9 +18,18 @@ Morning, workout preparation and daily reflection; larger readiness lamps with a
 
 Reviewed time-budget variants, confirmed training experiences, recorded 1/5/20-minute best efforts, calendar-draft load checks and a route briefing with climbs, sustained fast passages, personal GPS notes and timed-plan orientation. All calculations use available recorded data; no extra AI calls or API keys are required. See [calculation rules and workflow](docs/LOCAL_TRAINING_FEATURES.md).
 
+
+**Alpha.66 maintenance update:** strengthens generation-time schemas for requested session counts, local week numbers, executable/repeat steps and strength targets. Segmented-plan technical details now retain every validation reason and show total/retry time, plus separate native Ollama loading, input and generation timings when provided. Live progress identifies retries. These changes aim to reduce unnecessary regeneration; actual savings depend on the model. Existing saved plans remain compatible. Includes the Alpha.64/65 Sparky GPS, numeric-input and training-format fixes. See [SparkyFitness setup](docs/SPARKYFITNESS.md).
+
 ## Current alpha scope
 
-`v0.1.0-alpha.60` is the current end-to-end alpha baseline:
+`v0.1.0-alpha.65` is the current end-to-end alpha baseline:
+
+- **Sparky recording times and readings:** separate local clocks and recording zones, historical timestamp correction on sync, explicit time-unknown display, better minimum-HR/telemetry extraction and missing values shown as missing. See [SparkyFitness](docs/SPARKYFITNESS.md).
+
+- **Reliable mobile number entry:** freely clear and retype weeks, training days, token limits and other numbers without jumping to a minimum. Decimal commas, optional empty values and cursor edits work consistently across the app. Failed plan generation also clears stale progress text. See [Number entry](docs/NUMBER_INPUT.md).
+
+- **Train, review, improve:** recorded interval-level plan execution, optional ±4-hour matching, manual activity assignment, AI session reviews and reviewed adjustments for a comparable future session. Evidence also informs future AI plans. Explicit +8,000-token continuation preserves partial text and valid plan segments. See [Execution review and continuation](docs/TRAINING_EXECUTION.md).
 
 - **OpenRouter:** native provider selection, key verification without a model request, searchable model discovery and imported context/output limits for chat, activity analysis and training plans. See [OpenRouter setup](docs/OPENROUTER.md).
 

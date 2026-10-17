@@ -2,11 +2,11 @@
 
 A desktop app that teaches you how modern AI works by letting you play with it.
 
-There are 51 small hands-on labs. In each one you move a slider, click a word, or train a tiny model, and you watch what changes. Next to every lab there is a short lesson that explains what you just saw. You can read it in plain everyday words or in the more technical version.
+There are 51 small hands-on labs. In each one you move a slider, click a word, or train a tiny model, and you watch what changes. Next to every lab there is a short lesson that explains what you just saw. You can read it in short, simple sentences, in plain everyday words, or in the more technical version.
 
 **[Try it in your browser](https://fazmin.github.io/AILearningGuide/)**. There's nothing to install.
 
-![A tour of Discover AI: the welcome tour, dragging sliders in the single neuron lab, answering checkpoint questions, marking a lab complete, stepping gradient descent and backpropagation, the glossary, searching with Cmd+K, clicking words in the attention lab, training a tiny language model, Plain and Standard modes, text size and accessibility options, AI guide settings, the connections map, and dark theme](docs/screenshots/demo.gif)
+![A tour of Discover AI: picking Simple, Plain or Standard in the welcome tour, dragging sliders in the single neuron lab, answering checkpoint questions, marking a lab complete, stepping gradient descent and backpropagation, the glossary, searching with Cmd+K, clicking words in the attention lab, training a tiny language model, switching between Simple, Plain and Standard, text size and accessibility options, AI guide settings, the connections map, and dark theme](docs/screenshots/demo.gif)
 
 [Watch the tour as a video](docs/screenshots/demo.mp4) for a sharper version.
 
@@ -49,14 +49,14 @@ The 51 labs are split into six groups. You can go in order or jump to whatever y
 
 ![The connections map](docs/screenshots/connections.jpg)
 
-**Plain or Standard.** The welcome tour shows the same idea written both ways, so you can pick the one that suits you.
+**Simple, Plain or Standard.** The welcome tour shows the same idea written all three ways, so you can pick the one that suits you.
 
-![Choosing between Plain and Standard explanations](docs/screenshots/explanation-modes.jpg)
+![Choosing between Simple, Plain and Standard explanations](docs/screenshots/explanation-modes.jpg)
 
 ## Features
 
 - **51 interactive labs.** Each lab is split into a few short steps with a "Try this" hint, so you always know what to do next.
-- **Two ways to read.** Plain mode uses everyday words. Standard mode uses the proper technical terms. Switch at any time from the top bar.
+- **Three ways to read.** Simple mode uses short sentences an 8th grader can follow. Plain mode uses everyday words. Standard mode uses the proper technical terms. Switch at any time from the top bar.
 - **Real models where it matters.** The attention lab runs a small trained transformer in the app. The training labs train a tiny language model live while you watch.
 - **Checkpoints.** Short quizzes at the end of each lab to check what stuck.
 - **Progress and snapshots.** Your progress is saved. You can save the state of any lab as a snapshot and come back to it later, or copy a link that opens the lab exactly as you left it.
@@ -68,6 +68,8 @@ The 51 labs are split into six groups. You can go in order or jump to whatever y
 ## Getting started
 
 The quickest way to try Discover AI is to open [fazmin.github.io/AILearningGuide](https://fazmin.github.io/AILearningGuide/) in your browser. All the labs and lessons work there.
+
+To install the desktop app, download it from the [latest release](https://github.com/Fazmin/AILearningGuide/releases/latest). Get the `.dmg` for macOS, the `-setup.exe` or `.msi` for Windows, or the `.AppImage`, `.deb`, or `.rpm` for Linux. The app isn't signed yet, so your computer will warn you the first time you open it. On a Mac, go to **System Settings > Privacy & Security** and click **Open Anyway**. On Windows, click **More info**, then **Run anyway**.
 
 To run it on your own computer, you can use the web version or the desktop app. The desktop app gives you everything, including the local AI guide.
 
@@ -115,7 +117,7 @@ You'll find the result in `src-tauri/target/release/bundle/`.
 
 ## How to use it
 
-1. **Pick a reading mode.** The welcome tour asks if you want Plain or Standard. You can change it any time with the switch at the top.
+1. **Pick a reading mode.** The welcome tour asks if you want Simple, Plain or Standard. You can change it any time with the switch at the top.
 2. **Open a lab.** Start at lab 1 from the home screen, or pick any lab from the sidebar.
 3. **Follow the steps.** Each lab has a few steps at the bottom. Read the "Try this" hint, play with the controls, and see what happens.
 4. **Read along.** The Learn panel on the right explains what you're seeing. Open the Glossary to look up key words, or use "Read out loud" to listen instead.
@@ -156,7 +158,7 @@ npm run check
 cd src-tauri && cargo test
 ```
 
-`npm run check` checks every lab's files and content, the reading level of the Plain lessons, the search index, the license list, the model files, types, and the tests. It needs `python3` for the model file check.
+`npm run check` checks every lab's files and content, the reading level of the Simple and Plain lessons, the search index, the license list, the model files, types, and the tests. It needs `python3` for the model file check.
 
 ### Add a new lab
 

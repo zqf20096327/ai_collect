@@ -572,5 +572,121 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "dirge-code/dirge": {
+  "commit_90d": 307,
+  "commit_7d": 0,
+  "rel_ver": "v0.25.7",
+  "rel_pub": "2026-09-27",
+  "rel_days": 20,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Rust": 95,
+   "Janet": 2,
+   "Shell": 1,
+   "JavaScript": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "lab-v2/pyreason": {
+  "commit_90d": 14,
+  "commit_7d": 0,
+  "rel_ver": "v4.0.0b3",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "facex-engine/facex": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "facex-nano-1.0",
+  "rel_pub": "2026-05-14",
+  "rel_days": 156,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C": 44,
+   "Python": 22,
+   "C++": 16,
+   "HTML": 15,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "azorng/goose.nvim": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.5",
+  "rel_pub": "2026-01-06",
+  "rel_days": 284,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Lua": 97,
+   "Shell": 2,
+   "Go Template": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

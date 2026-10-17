@@ -4753,4 +4753,5 @@ solid threews_avatar
  facet normal -0.87 0.50 -0.06
   outer loop
    vertex 16.93 2.01 36.18
-   vertex 19.67 6.58 34.
+   vertex 19.67 6.58 34.61
+   vertex 18

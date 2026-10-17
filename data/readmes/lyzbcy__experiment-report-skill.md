@@ -1,0 +1,130 @@
+# 🧪 Experiment Report Skill
+
+一个通用的 AI 实验报告生成工作流。你只需要描述实验内容，它帮你完成：
+
+**实验实现 → 前端可视化 → 截图 → 实验报告（md + docx 双交付）**
+
+> 和"你给我素材我帮你写"的论文 skill 不同——这个 skill 的第一原则是：**实验必须真实跑通、数据不许编造、失败要如实写**。
+
+## ✨ 它能做什么
+
+- 🔬 **自动实现实验** — 描述你的实验，AI 帮你跑通，产出可复查的原始数据
+- 🖥️ **生成前端展示** — 学术简洁风可视化页面（策略图、曲线图、对比图），先给你确认效果
+- 📸 **规范截图入库** — 按 screenshot-manifest 截图，前端截图直接进报告，真实数据不造假
+- 📝 **双格式实验报告** — 同时产出 `实验报告.md` 和 `实验报告.docx`
+- 🔍 **多轮自检** — 交付前强制 ≥3 轮自检修复循环，报告里的每个数字都与原始数据交叉校验
+
+## 📐 docx 三大硬性要求
+
+产出的 docx 不是 md 的简单导出，而是用 Node + `docx` 库按规范重新构建，自检逐项验证：
+
+| 要求 | 说明 |
+|------|------|
+| **原生公式** | 用 OMML（`OoxmlMath`/分数/上下标/根号）构造，**禁止用图片** |
+| **正文宋体五号** | 五号 = 10.5pt，字体三属性齐全（ascii/hAnsi/**eastAsia**，只设 ascii 是最常见的坑） |
+| **活序号** | 用 Word 自动编号（`numbering`），增删条目自动重排，**禁止手敲 1.2.3.** |
+
+外加：封面页 + 自动目录（TOC）+ 正文页码从 1 重计。
+
+## 🚀 怎么用
+
+1. 在你的 AI 工具中安装这个 Skill（ZCode / Claude Code / Codex / Cursor 等）
+2. 告诉它你要做什么实验（比如："我要做 SARSA 和 Q-learning 的对比实验"）
+3. 等它跑完实验 → 生成前端 → **你确认效果** → 自动写 md + docx 报告 → 自检
+
+就这么简单。
+
+## 🔧 核心原则
+
+| 原则 | 说明 |
+|------|------|
+| **数据真实** | 所有图表必须来自实际运行结果，不许伪造；失败案例如实记录 |
+| **前端先行** | 先做可视化页面让你确认，确认后才写报告 |
+| **双格式交付** | 同时产出 md + docx，docx 满足三大硬性要求 |
+| **多轮自检** | ≥3 轮自检修复，报告数字与原始数据逐一交叉校验 |
+| **去 AI 味** | 前端走学术简洁风，心得感悟去套话、去模板腔 |
+| **截图规范** | 按 screenshot-manifest 规划 DOM id，每张截图自检无截断 |
+
+## 📁 文件结构
+
+```
+experiment-report-skill/
+├── README.md                             ← 说明文档（本文件）
+├── SKILL.md                              ← 主技能文件（工作流 + docx 交付规范）
+├── VERSION                               ← 版本号（自更新依据，发版必 bump）
+├── .update/
+│   ├── silent-update.sh                  ← 静默自更新脚本
+│   └── updater.cjs                       ← 跨平台更新、失败恢复与手动回滚
+└── references/
+    ├── checklist.md                      ← 交付检查清单
+    ├── math-formulas.md                  ← LaTeX → OMML 公式映射参考
+    └── templates/
+        ├── report_template.md            ← 实验报告（md）模板
+        └── report_template_docx.js       ← 实验报告（docx）生成器模板 ⭐
+```
+
+`report_template_docx.js` 封装了宋体五号、自动章节编号、独立列表编号、OMML 公式、封面和自动目录。复制到实验项目并填写 `REPORT`，或调用 `writeReport(report, output, baseDir)`。模板不会预填实验参数和结果；缺少正文或不足四张有效 PNG 截图会报错，防止交付空报告。图号与生成的引用按展示顺序统一计算。
+
+完整流程保持一致：真实实验 → 前端确认 → 至少四张真实截图 → md/docx 双交付 → 至少三轮自检。AI 不自行选择简化报告。
+
+## 🔄 静默自更新
+
+本 skill 在任务开始时每天最多检查一次更新，任务执行期间固定已加载的版本。Node 18+ 更新器把版本文件和 ZIP 固定到同一个 GitHub 提交，校验包内容后备份旧文件，再逐文件替换；替换失败自动恢复。进程中断时保留恢复记录，下次检查先恢复旧版。只接受更高版本，Git 开发副本不自动覆盖；网络失败静默继续使用本地版本。
+
+跨平台入口（包括原生 Windows，不需要 Git Bash）：
+
+```sh
+node "<skill目录>/.update/updater.cjs"
+```
+
+Git Bash / Linux / macOS 的旧入口 `bash "<skill目录>/.update/silent-update.sh"` 仍可使用。更新成功输出 `UPDATED x.y.z`。可用 `--force` 立即检查，忽略每日检查时间；不会绕过版本比较和包校验。
+
+最近一次成功更新前的文件保存在 `.update/backup-*`。需要恢复时执行：
+
+```sh
+node "<skill目录>/.update/updater.cjs" --rollback
+```
+
+手动回滚会恢复上一版并移除该次更新新增的文件，不触碰用户自建的无关文件。请保留 `.update/` 中的备份和恢复记录；如输出 `Rollback incomplete`，自动恢复尚未完成，不应继续声称安装完整。普通自动更新失败不打断使用，手动回滚失败则明确报错。
+
+从 1.0.0 迁移的首次更新仍由旧脚本执行；旧脚本无法获得新版的事务保护。建议先备份原安装目录后完整安装 1.0.1，之后的更新与回滚使用新更新器。
+
+开发者发版只需一步：**改完代码 → 更新根目录 `VERSION`（如 `1.0.0` → `1.0.1`）→ push**。忘了 bump 版本号，用户端就不会拉到新代码。
+
+## 📦 环境依赖
+
+- 任何支持 Skill 的 AI 工具（ZCode / Claude Code / Codex / Cursor / Gemini CLI 等）
+- 自更新和 docx 生成需要：**Node ≥ 18**。仓库内运行 `npm ci` 安装锁定版本；复制模板到其他项目时运行 `npm install docx@9.6.1 image-size@2.0.4`。
+- 产出截图需要：Playwright（或本机 Edge/Chromium）
+
+开发验证：Node 18+、Python 3.12+，运行 `npm ci` 后 `npm test`。回归覆盖原生公式内容、编号、图号、更新失败恢复、进程中断恢复、手动回滚和包完整性。GitHub Actions 分别在 Windows 与 Linux 上运行。Word 的实际分页仍须按交付清单渲染逐页检查。
+
+## 📄 报告模板结构（十章）
+
+1. 实验名称　2. 实验目的　3. 实验环境与任务定义　4. 算法/方法原理
+5. 实验实现　6. 实验结果　7. 结果分析　8. 实验结论　9. 心得感悟　10. 附录
+
+## 🎯 适用场景
+
+- 强化学习实验报告（SARSA / Q-learning / DQN 等）
+- 机器学习算法对比实验
+- 多模态 / 深度学习实验
+- 数据分析报告
+- 任何需要"跑实验 + 展示结果 + 写规范报告"的作业
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 PR！
+
+- 如果你用了这个 Skill 完成了某个实验报告，欢迎分享你的体验
+- 如果你有改进建议，直接提 PR
+
+## 📜 License
+
+MIT License
+
+## Skill Release包
+
+[最新可安装ZIP](https://github.com/lyzbcy/experiment-report-skill/releases/latest/download/experiment-report-skill.zip)可由捞鱼软件中心一键安装到用户目录 .agents/skills/experiment-report-skill。完整包包含SKILL.md、引用资料和必要的配套代码，安装不自动运行任务。
+
+示例：请用experiment-report-skill完成SARSA与Q-learning的真实对比实验，先给我可视化确认，再交付md和docx报告。

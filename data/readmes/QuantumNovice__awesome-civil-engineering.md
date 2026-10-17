@@ -266,6 +266,7 @@
 
 - [BeamGuru Beam Calculator](https://beamguru.com/beam/) - Interactive beam analysis for reactions and axial-force, shear-force, and bending-moment diagrams.
 - [Xarpis 2D Frame & Beam FEA](https://www.xarpis.com/calculators/frame-fea-2d) - Free browser-based first-order linear analysis of 2D frames, beams, columns, braces, and trusses, with reactions, force diagrams, deflections, and load-combination envelopes.
+- [Calculadora Estructuras](https://www.calculadoraestructuras.es/) - Free browser-based structural calculators in Spanish: section properties, continuous beams, column buckling (EC3/CTE), 2D trusses and frames, Spanish CTE loads and timber beams (DB SE-M), with steel section tables; no login.
 
 ### Concrete and Construction
 
@@ -277,6 +278,7 @@
 - [BuildRefs](https://buildrefs.com) - Free construction calculators for concrete, framing, electrical (NEC), HVAC (Manual J), structural, and earthwork, plus steel section-property tables and code guides. Each tool cites the standard it implements; no login.
 - [Concrete Network Calculator](https://www.concretenetwork.com/concrete/howmuch/calculator.htm) - Concrete quantity calculator for slabs, footings, columns, cubic yards, metric volume, and premix bags.
 - [Build Quantities](https://buildquantities.com/calculators/) - Free construction quantity calculators for concrete, gravel, sand, rebar, earthwork, drainage, and landscaping, with accepted units, formulas, checked examples, and planning limitations.
+- [Libre Calculator](https://librecalculator.com/calculators/concrete/) - Free concrete slab volume calculator using dimensions and an adjustable allowance, with worked steps and a diagram.
 
 ## Drafting
 

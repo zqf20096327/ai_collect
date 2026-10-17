@@ -25,11 +25,9 @@ Read the [AWS Open Source Blog introduction](https://aws.amazon.com/blogs/openso
 
 ## Architecture
 
-![Data ingestion pipeline](./assets/ingestion-pipeline.drawio.png)
+![Architecture at a glance](./assets/architecture-overview.drawio.png)
 
 Ingestion is a resumable 12-stage pipeline: parse, load, chunk, optionally translate, extract entities and relationships with an LLM, optionally glean, resolve duplicates, optionally extract claims, compute graph metrics, detect Leiden communities with LLM-written reports, and index into the search and graph stores (OpenSearch and Neptune on AWS; embedded SQLite or containers in local mode). Stage checkpoints are cached locally and can be synced to S3.
-
-![Retrieval pipeline](./assets/retrieval-pipeline.drawio.png)
 
 Every strategy runs through the same hybrid scorer and token budget. Pick one with `--search-strategy` (CLI) or `RAGInput.search_strategy` (Python):
 
@@ -42,9 +40,9 @@ Every strategy runs through the same hybrid scorer and token budget. Pick one wi
 | `drift` | GraphRAG | Complex questions that need iterative exploration |
 | `mix` | LightRAG | General LightRAG use; entity and relationship keyword retrieval plus chunk retrieval |
 | `hybrid` | LightRAG | Keyword-driven graph questions, without the extra chunk retrieval |
-| `naive` | LightRAG | A fast vector-only baseline and comparison runs |
+| `naive` | LightRAG | A fast chunk-only baseline (BM25 + vector, no graph) and comparison runs |
 
-See the [User Guide §4](./docs/user-guide.md#4-querying-run-rag) for per-strategy behavior and the [Design Doc](./docs/design.md) for the layer map, algorithms, and data model.
+See the [User Guide §4](./docs/user-guide.md#4-querying-run-rag) for per-strategy behavior and the [Design Doc](./docs/design.md) for the layer map, algorithms, data model and the detailed [ingestion](./docs/design.md#4-ingestion-pipeline), [incremental](./docs/design.md#5-incremental-indexing) and [retrieval](./docs/design.md#6-retrieval-two-methodologies) diagrams.
 
 ## Quickstart
 
@@ -94,11 +92,11 @@ uv run run-rag --query "How are Alice and Acme related?" --search-strategy mix -
 uv run run-rag --interactive --use-memory --conversation-id my-session --config-path config.yaml
 
 # Evaluate (LangChain + RAGAS + graph-aware coverage, retrieval and answer-match metrics)
-uv run run-eval --eval-data-path eval_data.json --config-path config.yaml
+uv run run-eval --data-path eval_data.json --config-path config.yaml
 
 # Optional: render an exported graph, or tune prompts to your domain
-uv run run-visualization --data-path visualization_data.json --output-dir ./viz --config-path config.yaml
-uv run run-prompt-tuning --source-directory ./source --output tuned_prompts.yaml --config-path config.yaml
+uv run run-visualization --data-path visualization_data.json --output-directory ./viz --config-path config.yaml
+uv run run-prompt-tuning --source-directory ./source --output-path tuned_prompts.yaml --config-path config.yaml
 ```
 
 The graph-aware evaluator reports entity and relationship coverage (recall) against `expected_entities` / `expected_relationships`, without an LLM. It matches on word boundaries for space-delimited scripts and falls back to substring matching for CJK text. Two more LLM-free evaluators make runs comparable: `retrieval` scores hit@k, recall@k and MRR of the reported sources against `reference_sources`, and `answer_match` scores exact match and token F1 against `answer` (plus optional `metadata.answer_aliases`). The [User Guide](./docs/user-guide.md) covers every configuration section, CLI flag, and the evaluation data format.

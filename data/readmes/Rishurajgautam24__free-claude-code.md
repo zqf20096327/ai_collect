@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Python 3.14](https://img.shields.io/badge/python-3.14-3776ab.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json&style=for-the-badge)](https://github.com/astral-sh/uv)
-[![Tested with Pytest](https://img.shields.io/badge/testing-Pytest-00c0ff.svg?style=for-the-badge)](https://github.com/Alishahryar1/free-claude-code/actions/workflows/tests.yml)
+[![Tested with Pytest](https://img.shields.io/badge/testing-Pytest-00c0ff.svg?style=for-the-badge)](https://github.com/Rishurajgautam24/free-claude-code/actions/workflows/tests.yml)
 [![Type checking: Ty](https://img.shields.io/badge/type%20checking-ty-ffcc00.svg?style=for-the-badge)](https://pypi.org/project/ty/)
 [![Code style: Ruff](https://img.shields.io/badge/code%20formatting-ruff-f5a623.svg?style=for-the-badge)](https://github.com/astral-sh/ruff)
 [![Logging: Loguru](https://img.shields.io/badge/logging-loguru-4ecdc4.svg?style=for-the-badge)](https://github.com/Delgan/loguru)
@@ -31,13 +31,18 @@ A lightweight proxy that routes Claude Code's Anthropic API calls to **NVIDIA NI
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | **Zero Cost**              | 40 req/min free on NVIDIA NIM. Free models on OpenRouter. Fully local with LM Studio                                 |
 | **Drop-in Replacement**    | Set 2 env vars. No modifications to Claude Code CLI or VSCode extension needed                                       |
-| **3 Providers**            | NVIDIA NIM, OpenRouter (hundreds of models), LM Studio (local & offline)                                             |
+| **10 Providers**           | NVIDIA NIM, OpenRouter, LM Studio, Ollama, Groq, Gemini, Cerebras, Mistral, DeepSeek, Together + any OpenAI-compatible API |
 | **Per-Model Mapping**      | Route Opus / Sonnet / Haiku requests to different models and providers. Mix providers freely per model               |
+| **Model Picker**           | Your configured models appear in Claude Code’s `/model` picker; switch backend models mid-session without restarting |
 | **Thinking Token Support** | Parses `<think>` tags and `reasoning_content` into native Claude thinking blocks                                     |
-| **Heuristic Tool Parser**  | Models outputting tool calls as text are auto-parsed into structured tool use                                        |
+| **Robust Tool Calls**      | Native and text-written tool calls become real tool use, even when providers stream ids and names in pieces          |
+| **Image Input**            | Pasted screenshots reach vision models; text-only models automatically get the request without images                |
 | **Request Optimization**   | 5 categories of trivial API calls intercepted locally, saving quota and latency                                      |
 | **Discord Bot**            | Remote autonomous coding with tree-based threading, session persistence, and live progress (Telegram also supported) |
-| **Smart Rate Limiting**    | Proactive rolling-window throttle + reactive 429 exponential backoff + optional concurrency cap across all providers |
+| **Fallback Chains**        | `MODEL_SONNET="a,b,c"`: if a model fails before answering, the next one takes over, seamlessly                       |
+| **Smart Rate Limiting**    | Rolling-window throttle, 429 backoff and a concurrency cap, separately per provider                                  |
+| **Stream Keepalive**       | SSE pings while a slow model thinks, so Claude Code never drops a quiet stream                                       |
+| **Secure by Default**      | Listens on localhost only; optional `PROXY_AUTH_TOKEN`; bots ignore everyone not on the allowlist                    |
 | **Subagent Control**       | Task tool interception forces `run_in_background=False`. No runaway subagents                                        |
 | **Extensible**             | Clean `BaseProvider` and `MessagingPlatform` ABCs. Add new providers or platforms easily                             |
 
@@ -56,7 +61,7 @@ A lightweight proxy that routes Claude Code's Anthropic API calls to **NVIDIA NI
 ### Clone & Configure
 
 ```bash
-git clone https://github.com/Alishahryar1/free-claude-code.git
+git clone https://github.com/Rishurajgautam24/free-claude-code.git
 cd free-claude-code
 cp .env.example .env
 ```
@@ -104,9 +109,36 @@ MODEL="lmstudio/unsloth/GLM-4.7-Flash-GGUF"         # fallback
 </details>
 
 <details>
+<summary><b>Groq, Gemini, Ollama & any OpenAI-compatible API</b></summary>
+
+Built-in presets only need an API key; use the provider name as the `MODEL` prefix:
+
+```dotenv
+GROQ_API_KEY="gsk_..."            # also: CEREBRAS_, GEMINI_, MISTRAL_, DEEPSEEK_, TOGETHER_API_KEY
+MODEL="groq/llama-3.3-70b-versatile"
+MODEL_HAIKU="gemini/gemini-2.5-flash"   # needs GEMINI_API_KEY
+```
+
+Local Ollama needs no key (`OLLAMA_BASE_URL` defaults to `http://localhost:11434/v1`):
+
+```dotenv
+MODEL="ollama/qwen3-coder"
+```
+
+Anything else that speaks the OpenAI chat API (vLLM, llama.cpp server, a company gateway, ...):
+
+```dotenv
+CUSTOM_BASE_URL="https://llm.example.com/v1"
+CUSTOM_API_KEY="..."              # optional
+MODEL="custom/my-model"
+```
+
+</details>
+
+<details>
 <summary><b>Mix providers</b> (use multiple providers together)</summary>
 
-Each `MODEL_*` variable can use a different provider. `MODEL` is the fallback for unrecognized Claude models.
+Each `MODEL_*` variable can use a different provider. `MODEL` is the default for Claude models without their own setting.
 
 ```dotenv
 NVIDIA_NIM_API_KEY="nvapi-your-key-here"
@@ -115,8 +147,23 @@ OPENROUTER_API_KEY="sk-or-your-key-here"
 MODEL_OPUS="nvidia_nim/moonshotai/kimi-k2.5"
 MODEL_SONNET="open_router/deepseek/deepseek-r1-0528:free"
 MODEL_HAIKU="lmstudio/unsloth/GLM-4.7-Flash-GGUF"
-MODEL="nvidia_nim/z-ai/glm4.7"                      # fallback
+MODEL="nvidia_nim/z-ai/glm4.7"                      # default
 ```
+
+</details>
+
+<details>
+<summary><b>Fallback chains</b> (never get stuck on a down or rate-limited model)</summary>
+
+Any `MODEL*` variable can list several models, separated by commas. They are tried in order: if a model fails **before it sends any output** (server error, rate limit after retries, timeout, connection error), the request is replayed on the next one. Claude Code just sees a normal answer.
+
+```dotenv
+MODEL_SONNET="nvidia_nim/z-ai/glm4.7,open_router/arcee-ai/trinity-large-preview:free,lmstudio/qwen3-coder"
+```
+
+- Mix providers freely: each one keeps its own rate limits, so a 429 on NIM doesn't slow down OpenRouter.
+- An error after the answer has started, or on the last model, is shown as usual.
+- The proxy logs every switch as `MODEL_FALLBACK` in `server.log`.
 
 </details>
 
@@ -125,7 +172,7 @@ MODEL="nvidia_nim/z-ai/glm4.7"                      # fallback
 **Terminal 1:** Start the proxy server:
 
 ```bash
-uv run uvicorn server:app --host 0.0.0.0 --port 8082
+uv run uvicorn server:app --port 8082
 ```
 
 **Terminal 2:** Run Claude Code:
@@ -135,6 +182,55 @@ ANTHROPIC_AUTH_TOKEN="freecc" ANTHROPIC_BASE_URL="http://localhost:8082" claude
 ```
 
 That's it! Claude Code now uses your configured provider for free.
+
+**Something not working?** Run the doctor. It checks your `.env`, that every configured model's provider has a key, is reachable and really offers that model, that Claude Code is installed, that the proxy is running, and common security mistakes:
+
+```bash
+uv run python doctor.py
+```
+
+```
+ ✓ .env found
+ ✓ nvidia_nim/z-ai/glm4.7 is available
+ ✗ groq: GROQ_API_KEY is not set. Add it to your .env file. Get a key at https://console.groq.com/keys
+ ✓ Claude Code 2.1.292 (Claude Code)
+ ✓ proxy is running on port 8082
+ ✓ no security issues found
+```
+
+<details>
+<summary><b>Run with Docker</b></summary>
+
+With your `.env` in place:
+
+```bash
+docker compose up -d --build
+```
+
+The proxy is then at `http://localhost:8082`, published on this machine only. Point Claude Code at it as above.
+
+- LM Studio or Ollama running on your machine (not in Docker) is reached through `host.docker.internal`, e.g. `LM_STUDIO_BASE_URL="http://host.docker.internal:1234/v1"`.
+- The image runs the proxy only; the Discord/Telegram bot needs the Claude Code CLI and runs outside Docker.
+
+</details>
+
+<details>
+<summary><b>Remote access & security</b> (WSL, Docker, another machine)</summary>
+
+By default the proxy only accepts connections from this machine. To reach it from elsewhere:
+
+```dotenv
+PROXY_AUTH_TOKEN="pick-a-long-random-string"
+```
+
+```bash
+uv run uvicorn server:app --host 0.0.0.0 --port 8082
+ANTHROPIC_AUTH_TOKEN="pick-a-long-random-string" ANTHROPIC_BASE_URL="http://<proxy-ip>:8082" claude
+```
+
+When `PROXY_AUTH_TOKEN` is set, every API call must send it (`Authorization: Bearer` or `x-api-key`); `/health` stays open. Never expose the proxy without it: anyone who can reach it could spend your provider quota.
+
+</details>
 
 <details>
 <summary><b>VSCode Extension Setup</b></summary>
@@ -158,13 +254,26 @@ To switch back to Anthropic models, comment out the added block and reload exten
 </details>
 
 <details>
+<summary><b>Switch models inside Claude Code</b> (<code>/model</code> picker)</summary>
+
+The proxy lists every model from your `MODEL*` settings (fallback chains included) at `/v1/models`. Turn on Claude Code's gateway model discovery and they show up in `/model`, labelled with the setting that uses them:
+
+```bash
+CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1 ANTHROPIC_AUTH_TOKEN="freecc" ANTHROPIC_BASE_URL="http://localhost:8082" claude
+```
+
+Picking one (its ID looks like `claude-fcc/groq/llama-3.3-70b-versatile`) sends that session's requests straight to that model; you can also start with it: `claude --model claude-fcc/<provider>/<model>`. Claude Code refreshes the list at each startup.
+
+</details>
+
+<details>
 <summary><b>Multi-Model Support (Model Picker)</b></summary>
 
-`claude-pick` is an interactive model selector that lets you choose any model from your active provider each time you launch Claude, without editing `MODEL` in `.env`.
+`claude-pick` lets you choose any model a provider offers, its full catalog, each time you launch Claude, without editing `MODEL` in `.env`. It works with every provider (NIM, OpenRouter, LM Studio, Ollama, Groq, Gemini, …): the running proxy fetches the list with the key from your `.env`.
 
 https://github.com/user-attachments/assets/9a33c316-90f8-4418-9650-97e7d33ad645
 
-**1. Install [fzf](https://github.com/junegunn/fzf)** (highly recommended for the interactive picker):
+**1. Install [fzf](https://github.com/junegunn/fzf)** (required for the interactive picker):
 
 ```bash
 brew install fzf        # macOS/Linux
@@ -177,12 +286,20 @@ brew install fzf        # macOS/Linux
 alias claude-pick="/absolute/path/to/free-claude-code/claude-pick"
 ```
 
-Then reload your shell (`source ~/.zshrc` or `source ~/.bashrc`) and run `claude-pick` to pick a model and launch Claude.
+Then reload your shell (`source ~/.zshrc` or `source ~/.bashrc`), start the proxy, and run:
+
+```bash
+claude-pick              # models of the provider in your MODEL setting
+claude-pick groq         # or name a provider: groq, gemini, open_router, ollama, ...
+claude-pick gemini -c    # extra arguments go to claude
+```
+
+It launches `claude --model claude-fcc/<provider>/<model>`, which the proxy routes to that model.
 
 **Skip the picker with a fixed model** (no picker needed):
 
 ```bash
-alias claude-kimi='ANTHROPIC_BASE_URL="http://localhost:8082" ANTHROPIC_AUTH_TOKEN="freecc:moonshotai/kimi-k2.5" claude'
+alias claude-kimi='ANTHROPIC_BASE_URL="http://localhost:8082" ANTHROPIC_AUTH_TOKEN="freecc:nvidia_nim/moonshotai/kimi-k2.5" claude'
 ```
 
 </details>
@@ -211,26 +328,42 @@ alias claude-kimi='ANTHROPIC_BASE_URL="http://localhost:8082" ANTHROPIC_AUTH_TOK
 - **Transparent proxy**: Claude Code sends standard Anthropic API requests to the proxy server
 - **Per-model routing**: Opus / Sonnet / Haiku requests are resolved to their model-specific backend and provider, with the default `MODEL` as fallback
 - **Request optimization**: 5 categories of trivial requests (quota probes, title generation, prefix detection, suggestions, filepath extraction) are intercepted and responded to instantly without using API quota
-- **Format translation**: real requests are translated from Anthropic format to the provider's OpenAI-compatible format and streamed back
-- **Thinking tokens**: `<think>` tags and `reasoning_content` fields are converted into native Claude thinking blocks so Claude Code renders them correctly
+- **Format translation**: real requests are translated from Anthropic format to the provider's OpenAI-compatible format and streamed back. Mid-conversation `system` messages that current Claude Code sends become user turns, since many models only accept a leading system prompt
+- **Thinking tokens**: `<think>` tags and `reasoning_content` fields are converted into native Claude thinking blocks so Claude Code renders them correctly. Reasoning is only switched on (NIM, OpenRouter) when Claude Code asks for thinking (`adaptive` or `enabled`), so side requests like compaction don't spend reasoning tokens
+- **Output limits**: Claude Code asks for up to 128k output tokens, more than many models allow. When a provider rejects that and states its limit (Groq, DeepSeek, OpenAI-style errors), the request is retried with that limit and the model is remembered. To pick a lower value yourself, set `CLAUDE_CODE_MAX_OUTPUT_TOKENS` when starting Claude Code
+- **Images**: pasted images are sent as OpenAI `image_url` parts. If a model rejects them, the request is retried once without images and that model is remembered as text-only. Images inside tool results (e.g. `Read` on a PNG) become a short placeholder instead of raw base64
+- **Tool calls**: native tool calls and tool calls a model writes as text become Anthropic `tool_use` blocks; a turn with tool calls always ends with `stop_reason: tool_use`
+- **Fallback chains**: a model that fails before answering is skipped for the next model in its `MODEL*` chain
+- **Errors**: provider failures reach Claude Code as real Anthropic errors (an SSE `error` event, or an HTTP error status for `stream: false`), so Claude Code's own retries kick in instead of the error being shown as model output
+- **Keepalive**: the stream carries an SSE `ping` every 15s, so Claude Code's idle watchdog never cuts off a slow model
 
 ---
 
 ## Providers
 
-| Provider       | Cost         | Rate Limit | Models                            | Best For                             |
-| -------------- | ------------ | ---------- | --------------------------------- | ------------------------------------ |
-| **NVIDIA NIM** | Free         | 40 req/min | Kimi K2, GLM5, Devstral, MiniMax  | Daily driver, generous free tier     |
-| **OpenRouter** | Free / Paid  | Varies     | 200+ (GPT-4o, Claude, Step, etc.) | Model variety, fallback options      |
-| **LM Studio**  | Free (local) | Unlimited  | Any GGUF model                    | Privacy, offline use, no rate limits |
+| Provider                                                | Cost              | Rate Limit | Models                            | Best For                             |
+| ------------------------------------------------------- | ----------------- | ---------- | --------------------------------- | ------------------------------------ |
+| **NVIDIA NIM**                                          | Free              | 40 req/min | Kimi K2, GLM5, Devstral, MiniMax  | Daily driver, generous free tier     |
+| **OpenRouter**                                          | Free / Paid       | Varies     | 200+ (GPT-4o, Claude, Step, etc.) | Model variety, fallback options      |
+| **LM Studio**                                           | Free (local)      | Unlimited  | Any GGUF model                    | Privacy, offline use, no rate limits |
+| **Ollama**                                              | Free (local)      | Unlimited  | Any Ollama model                  | Local models with a simple CLI       |
+| **Groq, Gemini, Cerebras, Mistral, DeepSeek, Together** | Free tiers / Paid | Varies     | Each provider's catalog           | Fast inference, fallback chains      |
 
-Switch providers by changing `MODEL` in `.env`. Use the prefix format `provider/model/name`. Invalid prefix causes an error.
+Switch providers by changing `MODEL` in `.env`. Use the prefix format `provider/model/name`. Invalid prefix causes an error. A provider whose key is missing answers with a clear error naming the variable to set.
 
-| Provider   | MODEL prefix      | API Key Variable     | Base URL                      |
-| ---------- | ----------------- | -------------------- | ----------------------------- |
-| NVIDIA NIM | `nvidia_nim/...`  | `NVIDIA_NIM_API_KEY` | `integrate.api.nvidia.com/v1` |
-| OpenRouter | `open_router/...` | `OPENROUTER_API_KEY` | `openrouter.ai/api/v1`        |
-| LM Studio  | `lmstudio/...`    | (none)               | `localhost:1234/v1`           |
+| Provider              | MODEL prefix      | API Key Variable            | Base URL                                          |
+| --------------------- | ----------------- | --------------------------- | ------------------------------------------------- |
+| NVIDIA NIM            | `nvidia_nim/...`  | `NVIDIA_NIM_API_KEY`        | `integrate.api.nvidia.com/v1`                     |
+| OpenRouter            | `open_router/...` | `OPENROUTER_API_KEY`        | `openrouter.ai/api/v1`                            |
+| LM Studio             | `lmstudio/...`    | (none)                      | `localhost:1234/v1` (`LM_STUDIO_BASE_URL`)        |
+| Ollama                | `ollama/...`      | (none)                      | `localhost:11434/v1` (`OLLAMA_BASE_URL`)          |
+| Groq                  | `groq/...`        | `GROQ_API_KEY`              | `api.groq.com/openai/v1`                          |
+| Cerebras              | `cerebras/...`    | `CEREBRAS_API_KEY`          | `api.cerebras.ai/v1`                              |
+| Google Gemini         | `gemini/...`      | `GEMINI_API_KEY`            | `generativelanguage.googleapis.com/v1beta/openai` |
+| Mistral               | `mistral/...`     | `MISTRAL_API_KEY`           | `api.mistral.ai/v1`                               |
+| DeepSeek              | `deepseek/...`    | `DEEPSEEK_API_KEY`          | `api.deepseek.com/v1`                             |
+| Together AI           | `together/...`    | `TOGETHER_API_KEY`          | `api.together.xyz/v1`                             |
+| Any OpenAI-compatible | `custom/...`      | `CUSTOM_API_KEY` (optional) | `CUSTOM_BASE_URL`                                 |
 
 LM Studio runs locally. Start the server in the Developer tab or via `lms server start`, load a model, and set `MODEL` to the model identifier.
 
@@ -243,9 +376,9 @@ Control Claude Code remotely from Discord. Send tasks, watch live progress, and 
 **Capabilities:**
 
 - Tree-based message threading: reply to a message to fork the conversation
-- Session persistence across server restarts
+- Session persistence across server restarts, crash-safe: `sessions.json` (in `CLAUDE_WORKSPACE`) is written atomically, and an unreadable file is kept as `sessions.json.corrupt-<time>` instead of being overwritten
 - Live streaming of thinking tokens, tool calls, and results
-- Unlimited concurrent Claude CLI sessions (provider concurrency controlled by `PROVIDER_MAX_CONCURRENCY`)
+- Many conversations in parallel; at most `MAX_CONCURRENT_CLI` Claude Code processes run at once (default 4), further tasks wait for a free slot
 - **Voice notes**: send voice messages; they are transcribed and processed like regular prompts (see [Voice Notes](#voice-notes))
 - Commands: `/stop` (cancel tasks; reply to a message to stop only that task), `/clear` (standalone: reset all sessions; reply to a message to clear that branch downwards), `/stats`
 
@@ -273,7 +406,7 @@ ALLOWED_DIR="C:/Users/yourname/projects"
 4. **Start the server:**
 
 ```bash
-uv run uvicorn server:app --host 0.0.0.0 --port 8082
+uv run uvicorn server:app --port 8082
 ```
 
 5. **Invite the bot** (OAuth2 URL Generator, scopes: `bot`, permissions: Read Messages, Send Messages, Manage Messages, Read Message History). Send a task to an allowed channel and Claude responds with live thinking tokens and tool calls. Use commands above to cancel or clear.
@@ -398,38 +531,46 @@ Browse: [model.lmstudio.ai](https://model.lmstudio.ai)
 
 ## Configuration
 
-| Variable                          | Description                                                                        | Default                                           |
-| --------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------- |
-| `MODEL`                           | Fallback model (prefix format: `provider/model/name`; invalid prefix causes error) | `nvidia_nim/stepfun-ai/step-3.5-flash`            |
-| `MODEL_OPUS`                      | Model for Claude Opus requests (optional, falls back to `MODEL`)                   | `nvidia_nim/z-ai/glm4.7`                          |
-| `MODEL_SONNET`                    | Model for Claude Sonnet requests (optional, falls back to `MODEL`)                 | `open_router/arcee-ai/trinity-large-preview:free` |
-| `MODEL_HAIKU`                     | Model for Claude Haiku requests (optional, falls back to `MODEL`)                  | `open_router/stepfun/step-3.5-flash:free`         |
-| `NVIDIA_NIM_API_KEY`              | NVIDIA API key (NIM provider)                                                      | required                                          |
-| `OPENROUTER_API_KEY`              | OpenRouter API key (OpenRouter provider)                                           | required                                          |
-| `LM_STUDIO_BASE_URL`              | LM Studio server URL                                                               | `http://localhost:1234/v1`                        |
-| `PROVIDER_RATE_LIMIT`             | LLM API requests per window                                                        | `40`                                              |
-| `PROVIDER_RATE_WINDOW`            | Rate limit window (seconds)                                                        | `60`                                              |
-| `PROVIDER_MAX_CONCURRENCY`        | Max simultaneous open provider streams                                             | `5`                                               |
-| `HTTP_READ_TIMEOUT`               | Read timeout for provider API requests (seconds)                                   | `120`                                             |
-| `HTTP_WRITE_TIMEOUT`              | Write timeout for provider API requests (seconds)                                  | `10`                                              |
-| `HTTP_CONNECT_TIMEOUT`            | Connect timeout for provider API requests (seconds)                                | `2`                                               |
-| `FAST_PREFIX_DETECTION`           | Enable fast prefix detection                                                       | `true`                                            |
-| `ENABLE_NETWORK_PROBE_MOCK`       | Enable network probe mock                                                          | `true`                                            |
-| `ENABLE_TITLE_GENERATION_SKIP`    | Skip title generation                                                              | `true`                                            |
-| `ENABLE_SUGGESTION_MODE_SKIP`     | Skip suggestion mode                                                               | `true`                                            |
-| `ENABLE_FILEPATH_EXTRACTION_MOCK` | Enable filepath extraction mock                                                    | `true`                                            |
-| `MESSAGING_PLATFORM`              | Messaging platform: `discord` or `telegram`                                        | `discord`                                         |
-| `DISCORD_BOT_TOKEN`               | Discord Bot Token                                                                  | `""`                                              |
-| `ALLOWED_DISCORD_CHANNELS`        | Comma-separated channel IDs (empty = none allowed)                                 | `""`                                              |
-| `TELEGRAM_BOT_TOKEN`              | Telegram Bot Token                                                                 | `""`                                              |
-| `ALLOWED_TELEGRAM_USER_ID`        | Allowed Telegram User ID                                                           | `""`                                              |
-| `VOICE_NOTE_ENABLED`              | Enable voice note handling                                                         | `true`                                            |
-| `WHISPER_MODEL`                   | Local Whisper model size                                                           | `base`                                            |
-| `WHISPER_DEVICE`                  | `cpu` \| `cuda`                                                                    | `cpu`                                             |
-| `MESSAGING_RATE_LIMIT`            | Messaging messages per window                                                      | `1`                                               |
-| `MESSAGING_RATE_WINDOW`           | Messaging window (seconds)                                                         | `1`                                               |
-| `CLAUDE_WORKSPACE`                | Directory for agent workspace                                                      | `./agent_workspace`                               |
-| `ALLOWED_DIR`                     | Allowed directories for agent                                                      | `""`                                              |
+| Variable                            | Description                                                                                     | Default                                           |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `MODEL`                             | Default model (`provider/model/name`); comma-separate a chain to fall back on errors            | `nvidia_nim/stepfun-ai/step-3.5-flash`            |
+| `MODEL_OPUS`                        | Model for Claude Opus requests (optional, falls back to `MODEL`)                                | `nvidia_nim/z-ai/glm4.7`                          |
+| `MODEL_SONNET`                      | Model for Claude Sonnet requests (optional, falls back to `MODEL`)                              | `open_router/arcee-ai/trinity-large-preview:free` |
+| `MODEL_HAIKU`                       | Model for Claude Haiku requests (optional, falls back to `MODEL`)                               | `open_router/stepfun/step-3.5-flash:free`         |
+| `NVIDIA_NIM_API_KEY`                | NVIDIA API key (NIM provider)                                                                   | required                                          |
+| `OPENROUTER_API_KEY`                | OpenRouter API key (OpenRouter provider)                                                        | required                                          |
+| `LM_STUDIO_BASE_URL`                | LM Studio server URL                                                                            | `http://localhost:1234/v1`                        |
+| `OLLAMA_BASE_URL`                   | Ollama server URL                                                                               | `http://localhost:11434/v1`                       |
+| `GROQ_API_KEY` … `TOGETHER_API_KEY` | Keys for the Groq, Cerebras, Gemini, Mistral, DeepSeek and Together presets                     | `""`                                              |
+| `CUSTOM_BASE_URL`                   | Any OpenAI-compatible endpoint, used as `custom/<model>`                                        | `""`                                              |
+| `CUSTOM_API_KEY`                    | API key for `CUSTOM_BASE_URL` (optional)                                                        | `""`                                              |
+| `HOST`                              | Interface the proxy listens on (`python server.py`); use `0.0.0.0` only with `PROXY_AUTH_TOKEN` | `127.0.0.1`                                       |
+| `PROXY_AUTH_TOKEN`                  | Token clients must send as `ANTHROPIC_AUTH_TOKEN` (empty = no check)                            | `""`                                              |
+| `LOG_LEVEL`                         | `server.log` level; `DEBUG` also logs full request payloads (prompts, files)                    | `INFO`                                            |
+| `PROVIDER_RATE_LIMIT`               | LLM API requests per window, per provider                                                       | `40`                                              |
+| `PROVIDER_RATE_WINDOW`              | Rate limit window (seconds)                                                                     | `60`                                              |
+| `PROVIDER_MAX_CONCURRENCY`          | Max simultaneous open streams, per provider                                                     | `5`                                               |
+| `HTTP_READ_TIMEOUT`                 | Read timeout for provider API requests (seconds)                                                | `120`                                             |
+| `HTTP_WRITE_TIMEOUT`                | Write timeout for provider API requests (seconds)                                               | `10`                                              |
+| `HTTP_CONNECT_TIMEOUT`              | Connect timeout for provider API requests (seconds)                                             | `2`                                               |
+| `FAST_PREFIX_DETECTION`             | Enable fast prefix detection                                                                    | `true`                                            |
+| `ENABLE_NETWORK_PROBE_MOCK`         | Enable network probe mock                                                                       | `true`                                            |
+| `ENABLE_TITLE_GENERATION_SKIP`      | Skip title generation                                                                           | `true`                                            |
+| `ENABLE_SUGGESTION_MODE_SKIP`       | Skip suggestion mode                                                                            | `true`                                            |
+| `ENABLE_FILEPATH_EXTRACTION_MOCK`   | Enable filepath extraction mock                                                                 | `true`                                            |
+| `MESSAGING_PLATFORM`                | Messaging platform: `discord` or `telegram`                                                     | `discord`                                         |
+| `DISCORD_BOT_TOKEN`                 | Discord Bot Token                                                                               | `""`                                              |
+| `ALLOWED_DISCORD_CHANNELS`          | Comma-separated channel IDs (empty = none allowed)                                              | `""`                                              |
+| `TELEGRAM_BOT_TOKEN`                | Telegram Bot Token                                                                              | `""`                                              |
+| `ALLOWED_TELEGRAM_USER_ID`          | Allowed Telegram User ID (empty = nobody allowed)                                               | `""`                                              |
+| `VOICE_NOTE_ENABLED`                | Enable voice note handling                                                                      | `true`                                            |
+| `WHISPER_MODEL`                     | Local Whisper model size                                                                        | `base`                                            |
+| `WHISPER_DEVICE`                    | `cpu` \                                                                                         | `cuda`                                            |
+| `MESSAGING_RATE_LIMIT`              | Messaging messages per window                                                                   | `1`                                               |
+| `MESSAGING_RATE_WINDOW`             | Messaging window (seconds)                                                                      | `1`                                               |
+| `MAX_CONCURRENT_CLI`                | Claude Code processes the bot runs at once; more tasks wait                                     | `4`                                               |
+| `CLAUDE_WORKSPACE`                  | Directory for agent workspace                                                                   | `./agent_workspace`                               |
+| `ALLOWED_DIR`                       | Allowed directories for agent                                                                   | `""`                                              |
 
 See [`.env.example`](.env.example) for all supported parameters.
 
@@ -525,7 +666,7 @@ class MyPlatform(MessagingPlatform):
 
 ## Contributing
 
-- Report bugs or suggest features via [Issues](https://github.com/Alishahryar1/free-claude-code/issues)
+- Report bugs or suggest features via [Issues](https://github.com/Rishurajgautam24/free-claude-code/issues)
 - Add new LLM providers (Groq, Together AI, etc.)
 - Add new messaging platforms (Slack, etc.)
 - Improve test coverage

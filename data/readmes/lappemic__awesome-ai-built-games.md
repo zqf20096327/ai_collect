@@ -41,6 +41,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 
 ### Racing & Vehicles
 
+- [backroad rally](https://jason-c-dev.github.io/backroad-rally/) - Top-down rally game with a diorama look: race five cars from four eras over six stages through rain, snow and different times of day, in a short career against ghost rivals. Built with Claude Code · Three.js.
 - [Draw Line Racing](https://drawlineracing.chyuang.com/) - Draw a racing line around country-shaped circuits, then watch your car drive it against the clock. Built with HTML5 Canvas.
 - [Fanto's Mega-Mart](https://fantos-megamart.vercel.app/) - Multiplayer shopping race at rocket speed through a haunted grocery store, with ghost replays. Vibe Jam 2026 2nd place. Built with Codex · Three.js.
 - [Flight Simulator 2025](https://fly.pieter.com/) - Multiplayer flight sim where you take off, fly over a shared world and dogfight other players. Built with Cursor, Grok 3 · Three.js.
@@ -56,6 +57,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 ### Adventure & Open Worlds
 
 - [A Game About Capybaras Delivering Food](https://capybara-vibejam26.leocoout.dev/) - Cozy multiplayer open world where capybaras deliver food orders around a city by scooter. Vibe Jam 2026 winner. Built with Claude Code · Three.js.
+- [Concordia](https://concordia.davidveksler.com/explore/) - Walk through a full-scale rotating space city, from a family kitchen to the metro, the shipyard and the launch track, with real physics underneath. Desktop browser needed for the 3D. Built with Claude Code · Three.js.
 - [Forest Escape](https://www.escape.alexandre-grisey.fr/) - Search a dark forest by flashlight for seven blue flowers while spirits hunt you. Built with Cursor, Claude · Three.js.
 - [Halcyon](https://halcyon.billpwchan.art) - Walk, swim, sail and fly around a tropical atoll from sunrise to bioluminescent night, with an FFT ocean, a peak from real lidar and 43,000 scanned plants. Built with Claude Code · Three.js.
 - [HALDANE-4](https://haldane4.denisbondare.com/) - Short ASCII horror story about a solo descent beneath the Antarctic ice shelf. Vibe Jam 2026 Most Original award. Built with Cursor · HTML5 Canvas.

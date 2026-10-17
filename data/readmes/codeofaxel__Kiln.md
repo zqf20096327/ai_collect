@@ -7,7 +7,7 @@
   <a href="https://pypi.org/project/kiln3d/"><img src="https://img.shields.io/pypi/v/kiln3d" alt="PyPI"></a>
   <a href="https://pepy.tech/projects/kiln3d"><img src="https://img.shields.io/pepy/dt/kiln3d" alt="PyPI Downloads"></a>
   <a href="https://pypi.org/project/kiln3d/"><img src="https://img.shields.io/pypi/pyversions/kiln3d" alt="Python"></a>
-  <a href="https://github.com/codeofaxel/Kiln/blob/main/LICENSE"><img src="https://img.shields.io/github/license/codeofaxel/Kiln" alt="License"></a>
+  <a href="https://github.com/codeofaxel/Kiln/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License"></a>
   <a href="https://github.com/codeofaxel/Kiln/blob/main/policies/SIGNING.md"><img src="https://img.shields.io/badge/verified%20by-sigstore%20%2B%20SLSA-0f6fdc?logo=sigstore&logoColor=white" alt="Verified by Sigstore + SLSA"></a>
   <a href="https://glama.ai/mcp/servers/codeofaxel/kiln"><img src="https://glama.ai/mcp/servers/codeofaxel/kiln/badge?v=2" alt="Kiln MCP server" width="120"></a>
 </p>
@@ -175,7 +175,7 @@ kiln agent --model openai/gpt-4o
 kiln agent --model meta-llama/llama-3.1-70b-instruct --tier essential
 ```
 
-Tool tiers auto-match model capability: **essential** (15 tools) for smaller models, **standard** (60 tools) for mid-range, **full** (135 tools) for stronger models. All <!-- KILN_MCP_TOOL_COUNT:OLD --> 919 tools are available over MCP via `kiln serve`.
+Tool tiers auto-match model capability: **essential** (15 tools) for smaller models, **standard** (60 tools) for mid-range, **full** (135 tools) for stronger models. All <!-- KILN_MCP_TOOL_COUNT:OLD --> 914 tools are available over MCP via `kiln serve`.
 </details>
 
 <details>
@@ -251,13 +251,13 @@ Paid tiers ([kiln3d.com/pricing](https://kiln3d.com/pricing?utm_source=github&ut
 
 - **One control plane, any printer** — compatible with OctoPrint, Moonraker, Creality, Bambu Lab, Prusa Link, Elegoo, Serial. Manage a mixed fleet from one place.
 - **No printer? No problem** — Outsource jobs to Craftcloud's 150+ manufacturing services through the hosted proxy, or use direct mode with your own provider credentials.
-- **AI-native** — <!-- KILN_MCP_CAPABILITY_COUNT:OLD --> 926 MCP capabilities and <!-- KILN_CLI_COUNT:OLD --> 245 CLI commands built for AI agents. Not a web UI with an API bolted on.
+- **AI-native** — <!-- KILN_MCP_CAPABILITY_COUNT:OLD --> 921 MCP capabilities and <!-- KILN_CLI_COUNT:OLD --> 245 CLI commands built for AI agents. Not a web UI with an API bolted on.
 - **Describe it, print it** — Natural-language to physical object pipeline: text or sketch → AI generation → validation → slice → print.
 - **Decorate anything** — QR codes, photos, logos, text, SVGs, and procedural textures (tiger stripe, marble, camo, wood grain, honeycomb) embossed or debossed onto any model with one command.
 - **Manuals included** — Multi-part prints can generate printable PDF assembly manuals with Bill of Materials, isometric step renders, mating arrows, and pause-and-check verification gates. (Business)
 - **Resume, don't restart** — Cancelled or failed print? Resume from the exact layer it stopped on any supported FDM printer. No filament wasted. (Pro)
 - **Modify mid-print** — Add decorations, append features, or swap materials on a live print with atomic revert if anything goes wrong. (Pro)
-- **Smart material routing** — 25 materials, 45 brand-specific filament profiles (Bambu, Prusament, Polymaker, and more) across 11 material families. Intent-based recommendations with printer capability awareness.
+- **Smart material routing** — 38 materials and brand filament profiles for 69 brands and lines (the per-brand tune is part of Kiln Pro). Intent-based recommendations with printer capability awareness.
 - **Prints don't fail silently** — Cross-printer learning, automatic failure recovery, closed-loop AI generation feedback (failed prints auto-improve future generations), preflight safety checks on every job.
 - **Doomed prints stopped early** — Too big for the build plate, or a material your hotend can't melt? Caught before filament is wasted, rotated to fit when possible, one-command override. Pro shows the fix: true usable area, cleanest split, or the material to switch to.
 - **Search → Slice → Print** — Search and download 3D models from MyMiniFactory and Cults3D (search only), auto-slice with PrusaSlicer, OrcaSlicer, or BambuStudio, print — all from one agent conversation.
@@ -380,7 +380,7 @@ Patent pending across semantic mesh merge, outcome-correlated branching, and sig
 
 ## Tools
 
-The Kiln MCP server (`kiln serve`) exposes **<!-- KILN_MCP_TOOL_COUNT:OLD --> 919 tools** to agents, plus prompts and resources for **<!-- KILN_MCP_CAPABILITY_COUNT:OLD --> 926 total MCP capabilities**. Rather than list them all here, agents browse the live catalog with `get_skill_manifest` and ToolSearch-style discovery. A representative slice, in the order a print actually happens:
+The Kiln MCP server (`kiln serve`) exposes **<!-- KILN_MCP_TOOL_COUNT:OLD --> 914 tools** to agents, plus prompts and resources for **<!-- KILN_MCP_CAPABILITY_COUNT:OLD --> 921 total MCP capabilities**. Rather than list them all here, agents browse the live catalog with `get_skill_manifest` and ToolSearch-style discovery. A representative slice, in the order a print actually happens:
 
 - **design_session**
   - Talk to Kiln about what you're making and get back a design that matches what you asked for
@@ -591,7 +591,6 @@ Entry-point plugins are **default-deny** in production (`KILN_PLUGIN_POLICY=stri
 | `consumer.py` | Consumer workflow for non-printer users (address validation, material recommendations, timeline/price estimation, onboarding) |
 | `cost_estimator.py` | Print cost estimation from G-code analysis |
 | `materials.py` | Multi-material and spool tracking |
-| `material_catalog.py` | Material brand catalog, properties, and purchase-link metadata |
 | `material_inventory.py` | Fleet material inventory and assignment tracking |
 | `bed_leveling.py` | Automated bed leveling trigger system |
 | `streaming.py` | MJPEG webcam streaming proxy |

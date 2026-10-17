@@ -471,4 +471,4 @@ Create, manage, and chat with [Telnyx AI Assistants](https://telnyx.com/ai-assis
 | [chargeback-adjudication](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chargeback-adjudication/README.md) | Typescript | A durable actor that adjudicates payment chargebacks using Telnyx Decision Models, manages regulatory deadlines, and maintains an append-only audit ledger. |
 | [chat-with-ai-assistant-csharp](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-csharp/README.md) | C# | --- |
 | [chat-with-ai-assistant-go](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-assistant-go/README.md) | Go | Send messages to a Telnyx AI assistant and maintain multi-turn context with a conversation id, using a Go + Gin server. |
-| [chat-with-ai-assistant-java](https://raw.githubusercontent.com/team-telnyx/
+| [chat-with-ai-assistant-java](https://raw.githubusercontent.com/team-telnyx/telnyx-code-examples/main/chat-with-ai-a

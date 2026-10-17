@@ -463,5 +463,91 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "AaronGIG/pdf2zh-desktop": {
+  "commit_90d": 58,
+  "commit_7d": 2,
+  "rel_ver": "v2.3.36",
+  "rel_pub": "2026-10-15",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 84,
+   "C++": 4,
+   "QML": 3,
+   "SIP": 2,
+   "Cython": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "jeffheaton/app_deep_learning": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": "pre_summer_2026",
+  "rel_pub": "2026-04-20",
+  "rel_days": 180,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "TeX": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "AmusementClub/vs-mlrt": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": "v16.3.test1",
+  "rel_pub": "2026-09-23",
+  "rel_days": 24,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "C++": 78,
+   "Python": 20,
+   "CMake": 2,
+   "C": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

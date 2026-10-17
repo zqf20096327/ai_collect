@@ -22,7 +22,7 @@
 
 JumpServer is an open-source Privileged Access Management (PAM) platform with AI-powered capabilities. It gives DevOps and IT teams a unified workspace for secure access to SSH, RDP, Kubernetes, databases, websites, RemoteApp, VirtualApp, and more.
 
-<img alt="JumpServer architecture diagram" src="readmes/assets/jumpserver-architecture.png" />
+<img alt="JumpServer architecture diagram" src="readmes/assets/jumpserver-architecture.gif" />
 
 ## Quickstart
 
@@ -32,7 +32,7 @@ Prepare a clean 64-bit Linux server with at least 4 CPU cores and 8 GB of RAM.
 curl -sSL https://github.com/jumpserver/jumpserver/releases/latest/download/quick_start.sh | bash
 ```
 
-Open JumpServer in your browser at `http://your-jumpserver-ip/`
+Open `https://<jumpserver-host>/` in your browser, replacing `<jumpserver-host>` with the IP address or domain name of the host running JumpServer.
 
 - Username: `admin`
 - Password: `ChangeMe`

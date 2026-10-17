@@ -123,7 +123,7 @@ Check it's alive, and which build it is:
 
 ```bash
 curl http://localhost:8080/v1/health
-# {"status":"ok","service":"equalify-iris","version":"1.1.0"}
+# {"status":"ok","service":"equalify-iris","version":"1.2.0"}
 ```
 
 Or just open the **accessible browser app** at `http://localhost:8080/` for a no-API walkthrough — no
@@ -293,6 +293,7 @@ change:
 | an endpoint, response field, or run-log event | [docs/API.md](docs/API.md) | what fires a line, what its fields hold, and the remedy — a reference for API consumers, not the rationale |
 | which model runs an agent | [docs/models.md](docs/models.md) | **suggested** models. Every model is declared in config, never in the code, so no doc may say Iris "uses" one |
 | the price of a step | [docs/cost.md](docs/cost.md) | prices with the round each came from. Iris costs nothing per token on self-hosted open-weight models; only a suggested config has a price |
+| accessibility reporting, testing, or support information | [ACCESSIBILITY.md](ACCESSIBILITY.md) | reporting and triage guidance, contributor checks, and testing limitations |
 | a workflow in `.github/` | [docs/ci.md](docs/ci.md) | the five workflows, including the bot that reviews your PR |
 | the gate, or what a 401 means | [docs/access.md](docs/access.md) | who may call the API, and an older database |
 | a config key | [`config.example.yaml`](config.example.yaml) | the key list, documented inline. This README states decisions, not keys |

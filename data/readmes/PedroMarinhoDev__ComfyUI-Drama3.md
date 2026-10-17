@@ -23,6 +23,12 @@ is routed experts and each audio frame uses only 8 of the 256 in a layer, so the
 GPU keeps a cache of the ones in use. The pack also brings a native **Qwen3-ASR** that writes a voice clip's
 transcript for you, and nodes to save a cloned voice and load it again. Built with Fish Audio.
 
+> [!NOTE]
+> **3× faster since 2026-10-17.** The pack's own CUDA kernels read the experts the cache misses straight from RAM while
+> the CPU computes others, and every layer replays as a CUDA graph: one RTX 3090 now speaks a 9 s line in 6.7 s instead
+> of 16.7 s, about twice as fast as real time, two GPUs take 2.8 s, and an 8 GB card keeps pace with real time.
+> Nothing new to install. [Numbers](#performance).
+
 <a href="https://pedromarinhodev.github.io/ComfyUI-Drama3/#samples"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/samples-dark.png">
   <img alt="Six samples: voice cloning, inline cues, two speakers, five speakers, singing and Portuguese" src="assets/samples-light.png" width="100%">
@@ -39,7 +45,7 @@ cloned: the clones copy voices the model made up, the rest are voices it invents
   </tr>
   <tr>
     <td><img src="assets/icons/long.svg" width="24" alt=""><br><b>Long texts in one go</b><br>Read in chunks the way Fish Audio's server does, each chunk hearing the ones before it.</td>
-    <td><img src="assets/icons/ram.svg" width="24" alt=""><br><b>Experts in RAM</b><br>About 6 GB of the model stays on the GPU; the 32 GB of experts stream from RAM through a VRAM cache.</td>
+    <td><img src="assets/icons/ram.svg" width="24" alt=""><br><b>Faster than real time, experts in RAM</b><br>About 6 GB of the model stays on the GPU; custom CUDA kernels read the 32 GB of experts from RAM through a VRAM cache.</td>
     <td><img src="assets/icons/asr.svg" width="24" alt=""><br><b>Transcripts by Qwen3-ASR</b><br>Native 1.7B and 0.6B speech recognition in 30 languages, no extra packages.</td>
   </tr>
 </table>
@@ -54,7 +60,7 @@ cloned: the clones copy voices the model made up, the rest are voices it invents
    git clone https://github.com/PedroMarinhoDev/ComfyUI-Drama3
    ```
 
-2. **Download three files** from [PedroMarinhoDev/Drama-3-ComfyUI](https://huggingface.co/PedroMarinhoDev/Drama-3-ComfyUI)
+2. **Download the files** from [PedroMarinhoDev/Drama-3-ComfyUI](https://huggingface.co/PedroMarinhoDev/Drama-3-ComfyUI)
    and [PedroMarinhoDev/Qwen3-ASR-ComfyUI](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI):
 
    | File | Folder | Size |
@@ -62,11 +68,13 @@ cloned: the clones copy voices the model made up, the rest are voices it invents
    | `drama3_fp8experts_bf16.safetensors` | `models/diffusion_models` | 38.6 GB |
    | `drama3_codec.safetensors` | `models/vae` | 1.6 GB |
    | `qwen3_asr_1.7b_bf16.safetensors` | `models/asr` | 4.1 GB |
+   | `qwen3_forced_aligner_0.6b_bf16.safetensors` (optional: word timing in Drama 3 Editor) | `models/asr` | 1.8 GB |
 
    ```bash
    hf download PedroMarinhoDev/Drama-3-ComfyUI drama3_fp8experts_bf16.safetensors --local-dir ComfyUI/models/diffusion_models
    hf download PedroMarinhoDev/Drama-3-ComfyUI drama3_codec.safetensors --local-dir ComfyUI/models/vae
    hf download PedroMarinhoDev/Qwen3-ASR-ComfyUI qwen3_asr_1.7b_bf16.safetensors --local-dir ComfyUI/models/asr
+   hf download PedroMarinhoDev/Qwen3-ASR-ComfyUI qwen3_forced_aligner_0.6b_bf16.safetensors --local-dir ComfyUI/models/asr
    ```
 
 3. **Open the workflow and queue.** Drag [`example_workflows/drama3_voice_clone.json`](example_workflows/drama3_voice_clone.json)
@@ -87,7 +95,7 @@ The full syntax is Appendix C of their [Drama 3 technical report](https://github
 
 | Control | How to write it | Examples |
 |---|---|---|
-| Speaker | `<\|speaker:N\|>` at the start of a line, N from 0 to 15; the voice for speaker N has the same tag at the start of its transcript (no tag means speaker 0) | `<\|speaker:0\|> Ready?` `<\|speaker:1\|> Always.` |
+| Speaker | `<\|speaker:N\|>` at the start of a line, N from 0 to 15; the voice in Generate's slot `voiceN` speaks for speaker N, unless its transcript starts with a tag of its own. The lines reach the model joined by `<\|audio_separator\|>`, the dialogue layout of Fish's report (Figure 11) | `<\|speaker:0\|> Ready?` `<\|speaker:1\|> Always.` |
 | Point tag | `[tag]` where the sound should land | `Well [sighs] fine, you win. [laughs]` `[pause]` `[gasps]` `[clears throat]` |
 | Scoped tag | `<tag>...</tag>` around the words it shapes | `Promise me <whisper>you won't tell her</whisper>.` `<slow>...</slow>` `<emphasis>...</emphasis>` |
 | Style prefix | `[style]` at the start of a line | `[with bright eager excitement] We won!` |
@@ -104,49 +112,61 @@ before") need that take in the prompt, which these nodes don't send.
 |---|---|---|
 | GPU | NVIDIA, 8 GB of VRAM with experts in RAM | RTX 4090 and RTX 3090 (24 GB); 12 GB and 8 GB simulated on the 3090 |
 | System RAM | the model file plus ~8 GB: ~32 GB for W4A8, ~48 GB for FP8 | 188 GB |
-| CPU | any; decoding speed follows its single-core speed | Intel Core i9-14900K |
+| CPU | any; with int8 experts in RAM it computes part of the experts, so more cores help on small cards | Intel Core i9-14900K |
 | Disk | 26 GB (W4A8 and the codec) | NVMe |
-| ComfyUI | v0.40 | v0.40.0 |
+| ComfyUI | v0.40 | v0.41.0 and master after v0.41.2 |
 
 ## Choosing a file
 
 **Start with FP8**: it holds Fish Audio's own expert weights, byte for byte, next to the checkpoint's bf16 layers.
-The int8 file is the same size, measured as close to the original, and ran 14–17% faster than FP8 on an RTX 3090:
-the nodes turn FP8 experts into bf16 each time they run, while int8 experts run as int8. Take a smaller file when your
-RAM is short of the FP8 file's ~48 GB.
+**On a card under 24 GB take int8**: it is the same size and measured as close to the original, and only int8 experts
+are computed by the CPU when the VRAM cache misses them, which makes it twice as fast as FP8 with a 4 GB cache. Take a
+smaller file when your RAM is short of the FP8 file's ~48 GB; on a 24 GB card they are also the fastest.
 
 | File | Size | Experts | RAM with experts in RAM | Notes |
 |---|---|---|---|---|
 | `drama3_fp8experts_bf16` | 38.6 GB | FP8, as Fish Audio ships them | ~48 GB | the original weights |
-| `drama3_int8experts_bf16` | 38.7 GB | int8 ConvRot | ~48 GB | faster than FP8 on the 3090; no silent take in 12 cloned test takes |
+| `drama3_int8experts_bf16` | 38.7 GB | int8 ConvRot | ~48 GB | the fastest on cards under 24 GB; no silent take in 12 cloned test takes |
 | `drama3_w6a8experts_bf16` | 32.7 GB | W6A8 | ~40 GB | no silent take in 16 cloned test takes |
 | `drama3_w4a8experts_bf16` | 24.6 GB | W4A8 | ~32 GB | falls silent more often with real voice clips |
 
 Qwen3-ASR comes in two sizes, `qwen3_asr_1.7b_bf16` (4.1 GB) and `qwen3_asr_0.6b_bf16` (1.6 GB). In our tests both
-wrote nearly the same transcripts of clean speech, and the 0.6B took half the time.
+wrote nearly the same transcripts of clean speech, and the 0.6B took half the time. `qwen3_forced_aligner_0.6b_bf16`
+(1.8 GB, also on [Qwen3-ASR-ComfyUI](https://huggingface.co/PedroMarinhoDev/Qwen3-ASR-ComfyUI)) gives Drama 3 Editor the time of every word; on a 40 s
+take its times match Qwen's own aligner within 0.16 s, 121 of 131 words exactly.
 
 ## Performance
 
-Drama 3 makes 21.5 audio frames per second of speech, so **46 ms per frame is real time**. Experts in RAM, a cloned
-voice, ~9 s of speech, measured on 2026-10-15 with an Intel Core i9-14900K (the held rows on 2026-10-14); the time
-includes the prompt pass. One frame at a time, decoding waits on the CPU (one core launching many small GPU kernels):
-int8 runs at the same 69 ms per frame on the RTX 3090 and the RTX 4090, and a CPU with slower cores adds to these times.
+Drama 3 makes 21.5 audio frames per second of speech, so **46 ms per frame is real time**. Since 2026-10-17 one 24 GB
+card decodes 2–4× faster than real time, and a 9 s line takes 4–8 s in all on one GPU, under 3 s on two. Measured on
+2026-10-17 as ComfyUI runs the nodes (dynamic VRAM), a cloned voice, a 9 s line, the mean of two seeds (five for int8
+with a 4 GB cache on the 3090), with an Intel Core i9-14900K and ComfyUI v0.41; *before* is the pack of 2026-10-16
+measured the same way. The line's time includes the prompt pass.
 
-| GPU | File | Expert cache | ms per frame | Peak VRAM |
-|---|---|---|---|---|
-| RTX 4090 (PCIe 4.0 ×8) | W4A8 | 16 GB | 52 | 21.3 GB |
-| RTX 4090 (PCIe 4.0 ×8) | W4A8 | 4 GB | 67 | 11.7 GB |
-| RTX 4090 (PCIe 4.0 ×8) | int8 | 16 GB | 69 | 21.5 GB |
-| RTX 4090 (PCIe 4.0 ×8) | int8 | 4 GB | 103 | 11.9 GB |
-| RTX 3090 (PCIe 4.0 ×8) | int8 | 16 GB | 69 | 21.6 GB |
-| RTX 3090 (PCIe 4.0 ×8) | int8 | 4 GB | 102 | 11.9 GB |
-| RTX 3090 (PCIe 4.0 ×8) | FP8 | 16 GB | 84 | 21.6 GB |
-| RTX 3090 (PCIe 4.0 ×8) | FP8 | 4 GB | 119 | 11.9 GB |
-| RTX 3090 held to 12 GB | FP8 | automatic | 137 | 9.8 GB |
-| RTX 3090 held to 8 GB | FP8 | automatic | 214 | 6.5 GB |
+| GPU | File | Expert cache | ms per frame, before → now | 9 s line, before → now | Peak VRAM |
+|---|---|---|---|---|---|
+| RTX 4090 (PCIe 4.0 ×8) | W4A8 | 16 GB | 56.9 → **11.7** | 13.6 → **3.9 s** | 21.8 GB |
+| RTX 4090 (PCIe 4.0 ×8) | int8 | 16 GB | 67.0 → **20.2** | 16.4 → **6.1 s** | 21.8 GB |
+| RTX 4090 (PCIe 4.0 ×8) | W4A8 | 4 GB | 75.3 → **29.5** | 16.9 → **6.9 s** | 10.7 GB |
+| RTX 4090 (PCIe 4.0 ×8) | int8 | 4 GB | 102.9 → **32.7** | 23.0 → **7.6 s** | 10.8 GB |
+| RTX 3090 (PCIe 4.0 ×8) | W4A8 | 16 GB | 56.7 → **14.4** | 13.3 → **4.7 s** | 21.8 GB |
+| RTX 3090 (PCIe 4.0 ×8) | W6A8 | 16 GB | 61.5 → **19.2** | 14.7 → **6.2 s** | 21.8 GB |
+| RTX 3090 (PCIe 4.0 ×8) | int8 | 16 GB | 68.8 → **23.2** | 16.7 → **6.7 s** | 21.8 GB |
+| RTX 3090 (PCIe 4.0 ×8) | FP8 | 16 GB | 67.6 → **24.8** | 16.6 → **7.7 s** | 21.8 GB |
+| RTX 3090 (PCIe 4.0 ×8) | int8 | 4 GB | 104.2 → **34.4** | 22.9 → **8.0 s** | 10.6 GB |
+| RTX 3090 (PCIe 4.0 ×8) | W4A8 | 4 GB | 76.2 → **31.7** | 16.7 → **7.7 s** | 10.6 GB |
+| RTX 3090 (PCIe 4.0 ×8) | FP8 | 4 GB | 107.5 → **58.0** | 23.4 → **13.5 s** | 10.6 GB |
+| RTX 3090 held to 12 GB | int8 | automatic | 110.1 → **37.5** | 24.0 → **8.4 s** | 9.6 GB |
+| RTX 3090 held to 12 GB | FP8 | automatic | 115.1 → **63.9** | 24.8 → **14.5 s** | 9.6 GB |
+| RTX 3090 held to 8 GB | int8 | automatic | 145.2 → **45.8** | 30.6 → **9.9 s** | 6.7 GB |
+| RTX 3090 held to 8 GB | FP8 | automatic | 148.6 → **97.3** | 30.7 → **20.7 s** | 6.7 GB |
+| RTX 3090 + RTX 4090, experts in VRAM | int8 | – | 56.7 → **13.2** | 12.6 → **2.8 s** | 18.8 + 18.7 GB |
+| RTX 3090 + RTX 4090, experts in VRAM | FP8 | – | 48.9 → **12.9** | 10.7 → **2.9 s** | 18.7 + 18.5 GB |
 
-The held rows ran with the rest of the 3090's memory taken by another process, as on a 12 GB or 8 GB card. Qwen3-ASR transcribes a 6.6 s clip in ~2 s with the 1.7B model and ~1 s with the 0.6B (RTX 3090,
-model load included).
+The held rows ran with the rest of the 3090's memory taken by another process, as on a 12 GB or 8 GB card. With int8
+experts the CPU computes part of the experts the cache misses, so int8 holds up on small cards where FP8 slows down: a
+CPU with fewer or slower cores gets less of that help. ComfyUI after v0.41.2 decodes about 2% faster again. Qwen3-ASR
+transcribes a 6.6 s clip in ~2 s with the 1.7B model and ~1 s with the 0.6B (RTX 3090, model load included).
 
 <details>
 <summary><b>Nodes</b></summary>
@@ -157,9 +177,11 @@ model load included).
 | **Load Drama 3 Codec** | Loads the codec from `models/vae`. |
 | **Drama 3 Encode Voice** | A voice to clone: an audio clip and its exact transcript. |
 | **Save Drama 3 Voice** / **Load Drama 3 Voice** | Keep an encoded voice (codes and transcript, a few KB) in `output/drama3_voices` and use it again without the codec. |
-| **Drama 3 Generate** | Text and any number of voices to audio codes. Long text is generated in chunks, each continuing from the first and the latest chunk. |
-| **Drama 3 Decode** | Codes to 44.1 kHz audio. |
-| **Load Qwen3-ASR** | Loads a Qwen3-ASR file from `models/asr`. |
+| **Drama 3 Generate** | Text and any number of voices to audio codes. Long text is generated in chunks, each continuing from the first and the latest chunk; `speakers` can generate each speaker on their own (per line or per speaker). |
+| **Save Drama 3 Codes** / **Load Drama 3 Codes** | Keep a generated take (codes and line timing, a few hundred KB) in `output/drama3_codes` and decode or edit it again without generating it again. |
+| **Drama 3 Decode** | Codes to 44.1 kHz audio; separately generated takes are joined with 0.3 s of silence. |
+| **Drama 3 Editor** | Codes to audio, with captions that follow the voice word by word (with Qwen3-ForcedAligner on `aligner`) and one track per voice. *Edit* opens the editor over ComfyUI: pick how the silences sound (as generated, natural, tight, or your own values), check the lines it flags (a line short or long for its words, long silences), cut, add silence, name the voices and set their volume. *Use these edits* runs the node again with them; they stay in the workflow. |
+| **Load Qwen3-ASR** | Loads a Qwen3-ASR or Qwen3-ForcedAligner file from `models/asr`. |
 | **Qwen3-ASR Transcribe** | Audio to text and its language; `language` detects it or forces one of 30; `context` takes names and terms that help recognition. |
 
 The codec runs only before and after generation, so it never sits in VRAM next to the model.
@@ -171,23 +193,40 @@ The codec runs only before and after generation, so it never sits in VRAM next t
 
 Drama 3 is a Qwen3.5-style mixture of experts: 40 layers, each with 256 routed experts of which 8 run per frame,
 plus attention or DeltaNet, a shared expert and a 13-layer codebook decoder. Everything except the routed experts is
-about 6 GB and stays on the GPU. With **experts in RAM** the 32 GB of experts stay in pinned system memory: each frame
-copies the 8 experts per layer it needs, and a least-recently-used cache in the VRAM left free keeps the ones that
-come back (85–95% of reads hit a 13 GB cache). The prompt uses nearly every expert, so its pass streams each layer's
-experts once and keeps the ones the prompt used most. Decoding one frame at a time is CPU-bound, so the cache size
-moves the speed less than you would expect.
+about 6 GB and stays on the GPU. With **experts in RAM** the 32 GB of experts stay in pinned system memory and the VRAM
+left free caches the most used ones (83% of reads hit a 15 GB cache); the cache lasts a whole Generate run.
 
-With **experts in VRAM** the whole file sits on the GPU; two 24 GB cards can split the layers (`second_gpu`).
+The pack's CUDA kernels, compiled at run time by PyTorch's NVRTC (no compiler or package to install), look each expert up
+in the cache on the GPU, run the cached ones in place and read the missed ones straight from RAM over PCIe, filling
+free cache slots as they go. With int8 experts the CPU computes part of the misses at the same time, and the most used
+of them are copied into the cache between frames. Since nothing in a frame waits on the CPU, every layer and the
+codebook decoder replay as CUDA graphs. The prompt pass groups its rows by expert and splits the experts between the
+GPU and the CPU the same way. Where PyTorch can't compile the kernels the nodes copy the experts instead, at the
+previous version's speed.
+
+With **experts in VRAM** the whole file sits on the GPU and the same kernels read the experts in place; two 24 GB
+cards can split the layers (`second_gpu`).
 
 </details>
 
 <details>
 <summary><b>Settings</b></summary>
 
-- **temperature 1.0, top_p 0.9, top_k 30** are the defaults of Fish Audio's own Drama 3 server. Lower values make
-  takes slower, flatter and more likely to fall silent.
+- **temperature 1.0, top_p 0.9, top_k 0** (no cap) are the defaults of Fish Audio's Drama 3 Space. Their server's
+  top_k 30 makes takes fall silent at pauses: 11 of 40 takes in Fish Audio's test, 2 of 4 cloned takes here, each
+  losing a sentence. Lower temperature or top_p make takes slower, flatter and more likely to fall silent.
 - The model copies the reference's delivery: a flat clip gives a flat take, a lively one a lively take.
 - **max_frames** caps each chunk (21.5 frames per second); generation stops earlier at the end of speech.
+- **speakers** sets how a dialogue is generated. *one take per line* (default) generates each line on its own, with
+  only its speaker's voices and earlier takes in the prompt, as Fish Audio's Space voices a scene: voices cannot bleed
+  into each other, but lines do not hear each other. *one take per line, hearing the line before* adds the take before
+  as context, so lines react again but that voice can bleed in. *one take per speaker* says all of a speaker's lines in
+  one take (in 300-byte chunks with `split_long_text`), cuts it at the line breaks it says and puts the lines back in
+  script order. *together* is one script in which every line hears the others. Decode joins separate takes with 0.3 s
+  of silence. Pause cues are riskier in a solo take: a line that opens with `[long pause]` can stay silent.
+- As in Fish Audio's Space: **Encode Voice** trims the clip's silent edges and normalizes its peak; **Generate** takes a
+  chunk once more when it has no sound or stalls in its first 2.5 s; **Decode**'s `shorten_long_pauses` (on) shortens
+  pauses over 0.75 s to 0.75 s, cuts the silence before the first sound and keeps 0.15 s at the end.
 
 </details>
 
@@ -204,6 +243,7 @@ python tools/convert.py model <drama-3 folder> drama3_w4a8experts_bf16.safetenso
 python tools/convert.py codec <drama-3 folder>/codec.pth drama3_codec.safetensors
 python tools/convert.py asr <Qwen3-ASR-1.7B folder> qwen3_asr_1.7b_bf16.safetensors
 python tools/convert.py asr <Qwen3-ASR-0.6B folder> qwen3_asr_0.6b_bf16.safetensors
+python tools/convert.py asr <Qwen3-ForcedAligner-0.6B folder> qwen3_forced_aligner_0.6b_bf16.safetensors
 ```
 
 </details>
@@ -226,10 +266,21 @@ python tools/convert.py asr <Qwen3-ASR-0.6B folder> qwen3_asr_0.6b_bf16.safetens
 <details>
 <summary><b>A take falls silent after a second, or speaks only part of the text</b></summary>
 
-Check the voice first: the transcript must cover every word of the clip, and the clip should be clean speech cut
-between sentences. Then queue again for a new seed. Some clips make the model fall silent in Fish Audio's own code
-too (known issue); try another stretch of the recording. A take that goes silent is stopped and its silent tail cut,
-with a warning in the console.
+Set `top_k` to 0: workflows saved before this fix keep the old 30, which makes takes fall silent at pauses. Then check
+the voice: the transcript must cover every word of the clip, and the clip should be clean speech cut between
+sentences. Some clips make the model fall silent in Fish Audio's own code too (known issue); try another stretch of the
+recording. A take that goes silent is stopped and its silent tail cut, with a warning in the console; a new seed
+usually helps.
+
+</details>
+
+<details>
+<summary><b>Speakers swap voices in a dialogue</b></summary>
+
+Give every speaker a voice. A long dialogue is generated in chunks, and an earlier chunk's take in the prompt hands the
+voice it ends in to the next chunk: with two cloned voices, 6 of 16 lines after the first chunk came out in the other
+voice. When every speaker has a voice, Generate leaves earlier takes out of dialogue chunks and the references keep
+the voices apart (1 of 18). A speaker without a voice still needs them to keep the voice the model made up.
 
 </details>
 

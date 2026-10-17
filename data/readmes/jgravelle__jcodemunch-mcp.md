@@ -158,10 +158,10 @@ That's the highlight reel. The complete tour of 90+ tools, the MUNCH compact wir
 <!-- WHATSNEW:START -->
 #### What's new
 
-- **[v1.108.370](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.370)** (2026-10-16) — seven import forms record the names they import
-- **[v1.108.369](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.369)** (2026-10-15) — indexing a drive root keeps its files, and LSP enrichment runs no Rust build scripts
-- **[v1.108.368](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.368)** (2026-10-15) — a context provider that runs out of time runs again on the next index
-- **[v1.108.367](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.367)** (2026-10-15) — a session lists only its own workspace's indexes by default
+- **[v1.108.376](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.376)** (2026-10-17) — install-pack honours every savings opt-out
+- **[v1.108.375](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.375)** (2026-10-17) — a typo can no longer switch off a protective setting
+- **[v1.108.374](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.374)** (2026-10-16) — a Python virtualenv is skipped whatever its folder is called
+- **[v1.108.373](https://github.com/jgravelle/jcodemunch-mcp/releases/tag/v1.108.373)** (2026-10-16) — claude-md --refresh can write the policy your server uses
 <!-- WHATSNEW:END -->
 
 ---

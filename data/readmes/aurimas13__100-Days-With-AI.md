@@ -8,7 +8,7 @@ A public learning log of modern Artificial Intelligence - transformers, LLMs,
 agentic AI, RAG, fine-tuning, evals, MLOps and the rest of it.
 
 <!-- Day badge: bumped by the daily run. If this is stale, the run said so in its log. -->
-[![Day](https://img.shields.io/badge/Day-97%20of%20100-1F6FEB?style=for-the-badge&labelColor=0D1117)](#-progress)
+[![Day](https://img.shields.io/badge/Day-99%20of%20100-1F6FEB?style=for-the-badge&labelColor=0D1117)](#-progress)
 [![Streak](https://img.shields.io/badge/Streak-unbroken-2EA043?style=for-the-badge&labelColor=0D1117)](#-progress)
 [![Level mix](https://img.shields.io/badge/Sources-Advanced%20%2B%20Medium-8957E5?style=for-the-badge&labelColor=0D1117)](#-progress)
 
@@ -18,7 +18,7 @@ agentic AI, RAG, fine-tuning, evals, MLOps and the rest of it.
 
 **[📈 Progress](#-progress)** · **[📚 Day Notes](#-day-notes)** · **[🤝 AI Collaboration](#-ai-collaboration)** · **[🔗 Connect](#-connect)**
 
-`2026-07-12` ──────────── **Day 97 of 100** ────────────► `2026-10-19`
+`2026-07-12` ──────────── **Day 99 of 100** ────────────► `2026-10-19`
 
 </div>
 
@@ -193,6 +193,8 @@ for the shape of the progress table.
 | 95 | 2026-10-14 | "Harness Engineering: Anatomy, Architecture, and Evolution of Coding Agents - A Source-Code Study of Eleven Systems" - Paul Barbaste, Tristan Darrigol, Germain Vu and Tom Wiltberger | Advanced | A source-code anatomy of eleven production coding-agent harnesses pinned to July 2026 releases - Claude Code, Codex CLI, Gemini CLI, Mistral Vibe, OpenHands, Aider, Mini-SWE-Agent, Hermes, Pi, OpenCode and OpenClaw - plus the Databricks meta-harness Omnigent as a contrast; it defines an agent as a model plus a harness, maps seven canonical subsystems (agent loop, LLM integration, tools and actions, memory and context, safety and permissions, orchestration, extensibility) with the minimal and maximal form of each, and reports 13 cross-cutting observations and 29 recurring design patterns; across roughly four million lines no runtime imports a general-purpose agentic framework and none retrieves code with vector embeddings, SKILL.md skills lead MCP in adoption (9/11 vs 8/11), a 90-day re-audit of eight systems shows convergence turning into imitation and behavioural policy moving from prompt prose to configuration, and it closes with 18 design recommendations and a 90-line minimum-viable-harness scaffold; it describes and compares, and does not benchmark or rank | [arXiv](https://arxiv.org/abs/2609.00006) |
 | 96 | 2026-10-15 | "Get started with Claude Managed Agents" - Anthropic, Claude Platform docs | Medium | The quickstart for Claude Managed Agents, Anthropic's hosted agent harness (beta, header `managed-agents-2026-04-01`); it builds the runtime from four objects - an agent (model, system prompt, tools, MCP servers and skills, created once and referenced by ID), an environment (an Anthropic-managed cloud sandbox or a self-hosted one, here with `limited` networking that only reaches package registries), a session that binds the two, and events streamed over SSE - then sends one user message and watches the agent write a Fibonacci script, run it in the sandbox and check its output until `session.status_idle`; the companion overview positions it against the Messages API as the choice for long-running and asynchronous work, lists the built-in toolset (bash, file operations, web search and fetch, MCP) and notes that, being stateful, it is not currently eligible for Zero Data Retention | [Docs](https://platform.claude.com/docs/en/managed-agents/quickstart) |
 | 97 | 2026-10-16 | "Get started with the desktop app" - Claude Code documentation | Medium | The quickstart for Claude Code inside the Claude desktop app, which "gives you Claude Code with a graphical interface, so you can ask Claude to work on the code in a folder on your computer and review its changes without using a terminal"; it separates the app's three tabs (Chat with no file access, Cowork as an autonomous background agent, Code with direct access to local files), states that the app bundles Claude Code so no Node.js or CLI install is needed, offers four places a session can run (Local, Cloud, SSH, and WSL on Windows), and makes the permission mode the real setting - Auto, where "a classifier reviews actions in the background and blocks the risky ones", Manual, Accept edits, and Plan - with every change reviewable in a diff view whose line comments Claude reads and acts on | [code.claude.com](https://code.claude.com/docs/en/desktop-quickstart) |
+| 98 | 2026-10-17 | "Redesigning source control at Anthropic" - Nick G. and the Anthropic source control team | Medium | An engineering post (13 October 2026, updated 15 October) on why Anthropic replaced git for its monorepo: merges grew from about 2,500 a day in May 2026 to over 30,000 by September, against a main-branch history near 100 GB, compressed working copies over 25 GB and about 25 million CI checkouts a day; a team of seven built Scion, an in-house version control system, in five months, on the premise that nearly every client is an always-online agent or job, so history, commits, merges and rebases move to the server, clients fetch trees and blobs on demand, refs update by compare-and-swap on a single Spanner row, and blame and path history become derived data; the authors report cache hit rates above 99%, a footprint 200x smaller than the old git mirrors and checkouts in seconds rather than minutes, credit Google's Piper and Meta's Sapling as prior art, and say plainly that Scion is not a general replacement for git | [anthropic.com](https://www.anthropic.com/engineering/redesigning-source-control) |
+| 99 | 2026-10-18 | "Next-Concept Modeling: Fast, Parallel Coarse-to-Fine Text Generation" - Kumbong, Khare et al., Stanford | Advanced | A preprint (v1, 9 October 2026, not peer reviewed) that generates text the way image models generate pictures: a multiscale residual VQ-VAE encodes text into K levels of discrete codes, short and coarse first, longer and finer after, and a transformer predicts every code within a level in one forward pass, so generation takes K steps rather than one per token; at roughly 100M parameters the authors report better generative perplexity than the strongest diffusion baseline on LM1B while running 21× faster, matching its ROUGE-L on XSum at 31× the speed, Sudoku solved at 99.5 / 96.5 / 86.1% (easy / medium / hard) with 12 function evaluations, and about 4.9× fewer training tokens on LM1B; code at HazyResearch/ncm, nothing run | [arxiv.org](https://arxiv.org/abs/2610.14162) |
 
 ---
 
@@ -217,40 +219,4 @@ grounded in the post's full text.)*
   body - that can gradually take on arbitrarily general tasks.
 - The result is a *mixed-autonomy* world: humans become high-level
   supervisors of low-level automation, like a driver monitoring the
-  Autopilot. It arrives in the digital world first, because flipping
-  bits is roughly 1000× cheaper than moving atoms.
-- Sequencing beats vision: early OpenAI already attempted this
-  (Universe, World of Bits) and it failed because LLMs had to happen
-  first. A right idea at the wrong layer of the stack is still a wrong
-  bet.
-- Even in 2025, the stack wasn't obviously ready - multimodality was
-  freshly bolted on via adapters, and very long task horizons remain
-  unexplored territory. Karpathy suspected stuffing everything into
-  context windows won't be enough; a breakthrough or two was needed.
-- Hence the reframe: not "2025 was the year of agents" but **2025 – 2035
-  is the decade of agents** - ending in a picture where you spin up
-  organizations of agents and act as a CEO monitoring ten of them,
-  dropping into the trenches to unblock.
-
-**Why it matters:** this post sets the honest timescale for everything
-this campaign covers - agent-building is a decade of engineering work
-(context, evals, guardrails, orchestration), not a hype cycle to catch.
-
-**What I learned/tried:** I picked this as Day 1 deliberately - it
-recalibrated my expectations from "agents any month now" to a
-decade-long build, and the next 99 days of sources (context
-engineering, evals, guardrails, safety, multi-agent design, etc.) all live inside
-that decade. Day 1 of 100 starts where the decade does.
-
-<sub>🤝 <b>AI collaboration:</b> researched, drafted and illustrated with Claude Code; reviewed, edited and approved by me before publishing - see <a href="#-ai-collaboration">AI Collaboration</a>.</sub>
-
-### Day 2 - "Harness Design for Long-Running Application Development" (Prithvi Rajasekaran, Anthropic Engineering, 2026-03-24)
-
-<img src="assets/cards/day-002.png" width="420" alt="Day 2 card">
-
-Source: [anthropic.com/engineering/harness-design-long-running-apps](https://www.anthropic.com/engineering/harness-design-long-running-apps)
-
-**Takeaways:**
-
-- Models exhibit **"context anxiety"** - they "begin wrapping up work
-  prematurely as they approach what they b
+  Autopilot. It

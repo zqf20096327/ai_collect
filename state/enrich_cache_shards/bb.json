@@ -698,5 +698,199 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "inseq-team/inseq": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-02-02",
+  "rel_days": 257,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 99,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "danilobatson/ai-trading-agent-gemini": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "canyonroad/agentsh": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v0.20.5",
+  "rel_pub": "2026-06-23",
+  "rel_days": 116,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Go": 96,
+   "Swift": 1,
+   "C": 1,
+   "Shell": 1,
+   "C++": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "buildingjoshbetter/TrueMemory": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "v0.7.6.2",
+  "rel_pub": "2026-06-11",
+  "rel_days": 128,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 99,
+   "Shell": 0,
+   "PowerShell": 0,
+   "JavaScript": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Fractal-Compute-Orchestrations/FractalWorkspace": {
+  "commit_90d": 22,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "upgini/upgini": {
+  "commit_90d": 21,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2024-09-04",
+  "rel_days": 773,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 72,
+   "Jupyter Notebook": 26,
+   "HTML": 2,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Azornes/Comfyui-LayerForge": {
+  "commit_90d": 130,
+  "commit_7d": 0,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-08-20",
+  "rel_days": 58,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "JavaScript": 45,
+   "TypeScript": 42,
+   "Python": 8,
+   "CSS": 3,
+   "HTML": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

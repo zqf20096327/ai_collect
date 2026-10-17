@@ -673,15 +673,54 @@ The following table benchmarks the **Quillan-Ronin v5.3.1 Quantum** architecture
 ### References:
  [1] GPT-4o OOTB ARC-AGI-1 Score: 9 % (ARC Prize “o1” blog) [2] GPT-4.1 OOTB ARC-AGI-1 Score: 5.5 % (semi-private eval on X) [3] GPT-4.5 & o4-mini OOTB ARC-AGI-1 Scores: 10.3 % and 35 % (ARC Prize 2025 announcement) [4] o3 OOTB ARC-AGI-1 Scores: 82.8 % (high-eff) / 91.5 % (low-eff) (ARC Prize “o3” breakthrough blog)
 ```
-## Testing notes: 
+## 🧪 Testing & Benchmark Reproducibility
 
-Included both public training and eval datasets:
+Run local evaluation against the public frontier datasets below. All links verified live as of v5.4.0-ONI.
 
-([leeex1/Quillan-v5.3.1/testing/ARC-AGI-master.zip](https://github.com/leeex1/Quillan-v5.3.1/blob/ccc27e54448a8d0d445bcb1c59d20598e74eba7d/testing/ARC-AGI-master.zip)),
+| Benchmark | Focus | Source | Live Link |
+|-----------|-------|--------|-----------|
+| **MMLU** (Massive Multitask Language Understanding) | 57 tasks across STEM, humanities, social sciences | Hendrycks et al. (ICLR 2021) | https://github.com/hendrycks/test |
+| **HLE** (Humanity's Last Exam) | 2,500 expert-level frontier questions (multi-modal) | Center for AI Safety | https://github.com/centerforaisafety/hle |
+| **ARC-AGI-1 & ARC-AGI-2** | Abstraction & Reasoning Corpus (training + eval JSON grids) | F. Chollet | https://github.com/fchollet/ARC-AGI |
+| **ARC-AGI-3** | Interactive agentic benchmark (eval vs ARC Prize API) | ARC Prize | https://github.com/arcprize/ARC-AGI-3-Agents |
 
-( https://github.com/leeex1/Quillan-v5.3.1/blob/ccc27e54448a8d0d445bcb1c59d20598e74eba7d/testing/ARC-AGI-2-main.zip),
+### Reproducible local testing
 
-For reproducibility and local testing on the public datasets of Arc AGI 1 and Arc AGI 2, as well as native multi-modal spatio-temporal evaluations. These datasets, combined with our open-source 3B parameter model weights, provide essential resources for researchers and developers aiming to validate their findings, experiment with the model's 34-expert routing in various scenarios, and test the efficacy of our Modality-Isolated Diffusion core. These resources are crucial for ensuring consistent results and fostering collaboration within the community by allowing others to build upon existing quantized H-NMoE work.
+```bash
+# 1. MMLU (hendrycks/test)
+git clone https://github.com/hendrycks/test.git
+cd test
+# evaluate.py runs OpenAI-compatible completion against the test set
+
+# 2. HLE (centerforaisafety/hle)
+git clone https://github.com/centerforaisafety/hle.git
+cd hle/hle_eval
+pip install -r requirements.txt
+python run_model_predictions.py --dataset cais/hle --model <your-model> --max_completion_tokens 8192 --num_workers 100
+python run_judge_results.py --dataset cais/hle --predictions hle_<your-model>.json --num_workers 100
+
+# 3. ARC-AGI-1 & ARC-AGI-2 (fchollet/ARC-AGI)
+git clone https://github.com/fchollet/ARC-AGI.git
+cd ARC-AGI/data
+# training/ contains 400 tasks; evaluation/ contains 400 held-out tasks
+# Format: {"train": [{"input": [...], "output": [...]}], "test": [{"input": [...]}]}
+
+# 4. ARC-AGI-3 (arcprize/ARC-AGI-3-Agents)
+git clone https://github.com/arcprize/ARC-AGI-3-Agents.git
+cd ARC-AGI-3-Agents
+cp .env.example .env
+export ARC_API_KEY="your_api_key_here"
+uv run main.py --agent=random --game=ls20
+```
+
+### What these validate in Quillan-Ronin
+
+- **MMLU / HLE** → Knowledge breadth & frontier reasoning (Council C6-OMNIS, C7-LOGOS, C25-PROMETHEUS)
+- **ARC-AGI-1/2** → Abstraction & program-synthesis fluid intelligence (34-expert H-NMoE routing, Gumbel pull)
+- **ARC-AGI-3** → Interactive agentic generalization (C31-NEXUS orchestration, C32-AEON world-model simulation)
+- **Native multi-modal spatio-temporal evals** → Vision/audio/video grounding via the Modality-Isolated Diffusion core and shared 1024D latent space
+
+> ⚠️ Note: The previous local zip mirrors (`Quillan-v5.3.1/testing/ARC-AGI-master.zip` and `ARC-AGI-2-main.zip`) have been moved/deleted and return 404. Use the canonical upstream links above instead. The Hugging Face model repo (`CrashOverrideX/Quillan-Ronin`) currently hosts only Codeium/Obsidian cache and mismatched `.pt` weights — it is **not** a clean model artifact source. Use GitHub (`leeex1/Quillan-Ronin`) as the canonical repo.
 
 ## Leading Contemporary Architectures (2026):
 
@@ -1115,41 +1154,4 @@ class quillanSonic(nn.Module):
         start_time = time.time()
         encoded = self.text_encoder(text_embedding)
         waveform = self.audio_decoder(encoded)
-        if apply_spectral:
-            waveform = waveform.unsqueeze(1)
-            spectral = self.spectral_conv(waveform)
-            spectral = self.spectral_norm(spectral.transpose(1, 2)).transpose(1, 2)
-            waveform = F.interpolate(spectral, size=self.num_samples, mode='linear', align_corners=False)
-            waveform = waveform.squeeze(1)
-        generation_time = time.time() - start_time
-        tokens_per_sec = (waveform.numel() / generation_time) if generation_time > 0 else 0
-        result = {
-            'waveform': waveform,
-            'generation_time': generation_time,
-            'tokens_per_sec': tokens_per_sec,
-            'sample_rate': self.sample_rate,
-            'duration': self.duration,
-            'modality': 'audio',
-            'head': 'quillan-Sonic'
-        }
-        self.generation_history.append({'timestamp': time.time(), 'performance': tokens_per_sec, 'input_hash': hash(text_embedding.data_ptr())})
-        if len(self.generation_history) > 100: self.generation_history.pop(0)
-        return result
-
-class quillanMotion(nn.Module):
-    def __init__(self, hidden_dim: int = 2560, frames: int = 16, frame_size: Tuple[int, int] = (256, 256)):
-        super().__init__()
-        self.hidden_dim = hidden_dim
-        self.frames = frames
-        self.frame_size = frame_size
-        self.channels = 3
-        self.text_encoder = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim * 2), nn.ReLU(), nn.Dropout(0.1),
-            nn.Linear(hidden_dim * 2, hidden_dim * 4), nn.ReLU(), nn.Dropout(0.1)
-        )
-        self.temporal_encoder = nn.LSTM(input_size=hidden_dim * 4, hidden_size=hidden_dim * 2, num_layers=2, batch_first=True, dropout=0.1)
-        self.video_decoder = nn.Sequential(
-            nn.Linear(1024, 2048), nn.ReLU(),
-            nn.Linear(2048, 4096), nn.ReLU(),
-            nn.Unflatten(1, (64, 8, 8)),
-         
+        if apply_spec

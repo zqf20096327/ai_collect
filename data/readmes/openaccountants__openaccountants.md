@@ -1,17 +1,17 @@
 # OpenAccountants
 
-**Tax Guides your AI can cite, with sources and published review status.**
+**Free AI skills (tax rules your AI follows) your AI can cite, with sources and published review status.**
 
-This library includes accountant-reviewed Guides and source-cited drafts. Check each Guide version's review record before relying on it; a named author is distinct from a professional reviewer. Guide content is source-available under the terms in [LICENSING.md](LICENSING.md).
+This library includes accountant-reviewed skills and source-cited drafts. Check each skill version's review record before relying on it; a named author is distinct from a professional reviewer. Skill content is source-available under the terms in [LICENSING.md](LICENSING.md).
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-047857)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/openaccountants-mcp?label=openaccountants-mcp&color=047857)](https://pypi.org/project/openaccountants-mcp/)
 [![GitHub stars](https://img.shields.io/github/stars/openaccountants/openaccountants?style=social)](https://github.com/openaccountants/openaccountants/stargazers)
 
 <!-- oa-stats:start -->
-**1,903 Guides** across **229 jurisdictions** · **53 accountant-reviewed** · **44 named accountants** · **19,756 questions answered** through connected AIs
+**1,903 AI skills** across **230 jurisdictions** · **51 accountant-reviewed** · **44 named accountants** · **19,965 questions answered** through connected AIs
 
-<sub>Live from openaccountants.com — updated 2026-10-16 by the nightly sync.</sub>
+<sub>Live from openaccountants.com — updated 2026-10-17 by the nightly sync.</sub>
 <!-- oa-stats:end -->
 
 ---
@@ -30,15 +30,15 @@ Then ask a question your AI would otherwise guess at:
 
 > *"What's the combined sales tax rate in Manatee County, Florida for 2026?"*
 
-Without OpenAccountants, models answer from training data. With it, the answer can cite the fetched Guide and its review status. Name a professional reviewer only when that Guide version has a published review record.
+Without OpenAccountants, models answer from training data. With it, the answer can cite the fetched skill and its review status. Name a professional reviewer only when that skill version has a published review record.
 
 ```
-You:    "I'm a freelancer in South Africa. What do I owe?"
-          ↓  loads za-income-tax, za-provisional-tax
-AI:     ITR12 working paper · IRP6 provisional schedule
-        Medical credits · Retirement annuity deduction
+You:    "I'm moving to Malta and selling my company next year. What tax do I face?"
+          ↓  loads moving-to-malta-tax-residence, selling-a-company-in-malta
+AI:     Residence and domicile · Remittance basis on foreign income
+        Gain on the share sale · Participation exemption check
         ─────────────────────────────────────────
-        Reviewed by Werner Britz CA(SA)
+        Authored by Michael Cutajar CPA, ACCA (Malta)
 ```
 
 <details>
@@ -53,14 +53,14 @@ AI:     ITR12 working paper · IRP6 provisional schedule
 
 ## Two states, greppable honesty
 
-Every Guide is in exactly one state — and the repo greps honestly:
+Every skill is in exactly one state — and the repo greps honestly:
 
 | State | Meaning |
 |---|---|
-| **Accountant-reviewed** | A named, licensed accountant reviewed the complete Guide. Their name is in the frontmatter (`reviewed_by:`) and on [the public roster](VERIFIERS.md) |
+| **Accountant-reviewed** | A named, licensed accountant reviewed the complete skill. Their name is in the frontmatter (`reviewed_by:`) and on [the public roster](VERIFIERS.md) |
 | **Source-cited draft** | Written from primary legislation, every figure cited to its source — not yet professionally reviewed |
 
-⚠️ **General reference, not advice.** Guides may be incomplete, outdated, or wrong for your facts. Have a qualified professional review outputs before filing, payment, or action.
+⚠️ **General reference, not advice.** skills may be incomplete, outdated, or wrong for your facts. Have a qualified professional review outputs before filing, payment, or action.
 
 ---
 
@@ -68,8 +68,8 @@ Every Guide is in exactly one state — and the repo greps honestly:
 
 Your name on the tax knowledge AI actually uses — with attribution built in:
 
-1. **Build a Guide** for the work you know cold: [openaccountants.com/skills/new](https://www.openaccountants.com/skills/new). It publishes credited to you, and lands in this repo under your name.
-2. **Review a Guide** in your jurisdiction — your name, credential and review date go on it, here and on every AI answer that cites it.
+1. **Build a skill** for the work you know cold: [openaccountants.com/skills/new](https://www.openaccountants.com/skills/new). It publishes credited to you, and lands in this repo under your name.
+2. **Review a skill** in your jurisdiction — your name, credential and review date go on it, here and on every AI answer that cites it.
 3. **Set your GitHub username** in [your profile](https://www.openaccountants.com/profile) and your platform edits are committed to this repo as *you* — your contribution graph reflects your work.
 
 The current roster: **[VERIFIERS.md](VERIFIERS.md)** (generated nightly from the platform).
@@ -112,7 +112,7 @@ Edit **`skills/**` only** — everything else regenerates automatically:
 
 | What | Where |
 |---|---|
-| Guide source (per jurisdiction) | [`skills/`](skills/) |
+| Skill source (per jurisdiction) | [`skills/`](skills/) |
 | Per-country bundles (generated) | [`packages/`](packages/) |
 | Machine-readable inventory | [`index.json`](index.json) |
 | LLM entry point | [`llms.txt`](llms.txt) |
@@ -139,6 +139,6 @@ Independent, open-source review aids and calculation tools that complement the O
 ## License
 
 - **Code** (mcp/, scripts/, tools/): [AGPL-3.0](LICENSE)
-- **Guide content**: OpenAccountants Guide License v1.0 — see [LICENSING.md](LICENSING.md); commercial options in [COMMERCIAL-LICENSING.md](COMMERCIAL-LICENSING.md)
+- **skill content**: OpenAccountants Guide License v1.0 — see [LICENSING.md](LICENSING.md); commercial options in [COMMERCIAL-LICENSING.md](COMMERCIAL-LICENSING.md)
 
 **Contact:** info@openaccountants.com · [Security policy](SECURITY.md) · [Cite this repo](CITATION.cff)

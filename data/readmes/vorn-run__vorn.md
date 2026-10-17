@@ -87,11 +87,6 @@ when you restart. Terminals survive the restart on macOS and Linux. The .deb doe
 itself; Vorn says when a new one is out. Windows builds are signed only when the release has a
 code-signing certificate, so SmartScreen may ask before the first run.
 
-Coming from 0.8.0-beta.8 or earlier, the update arrives the usual way: the app is the same
-`com.vorn.app`, so permissions, the Dock, login items and the `vorn://` scheme carry over. If you
-installed beta.8 on Windows for all users rather than just yourself, install this version once
-with the setup file and uninstall the old one from Settings → Apps.
-
 ## Command line
 
 Installing Vorn also puts a `vorn` command on your PATH. It talks to the same server the app
@@ -153,8 +148,7 @@ server's events and never polls.
 `vorn session read <target>` prints the output the server kept. `--lines N` keeps the last N
 lines. `--scrollback`, `--unwrap` and `--format vt|html` read the terminal itself, with its
 soft-wrapped rows joined: `vt` keeps colours as SGR escapes and `html` draws them as spans in a
-`<pre>`. `--trim` drops trailing spaces and trailing blank lines. `session logs` is the same
-command.
+`<pre>`. `--trim` drops trailing spaces and trailing blank lines.
 
 `vorn events --json` streams the server's public events, one JSON object per line, until
 stopped: `{"v":1,"event":"session.exited","at":1760000000000,"session":"…","data":{…}}`. The
@@ -170,12 +164,17 @@ A layout is a TOML file in `~/.vorn/layouts/` (the server's data directory), or 
 extension offers with `[[contributes.layouts]]` and `file = "layouts/dev.toml"`. It is a tree:
 a split (`split = "horizontal"|"vertical"`, `ratio`, `[[children]]`) or one thing to open: a
 session (`agent = "claude"`, `command = ["tail", "-f", "app.log"]` or `shell = true`, with
-`cwd` and `label`) or `pane = "browser"` with a `url`.
+`cwd` and `label`) or `pane = "browser"` with a `url`. Beside `name` and `project`, `view` is
+how the grid shows them: `"flexible"` (cards laid out as the tree, each split's direction and
+ratio as written), `"grid"` (rows of `columns`, 1 to 4, automatic without it) or `"tabs"`.
+Without `view`, a tree with splits opens flexible.
 
 ```toml
 name = "dev"
 project = "vorn"
+view = "flexible"
 split = "horizontal"
+ratio = 0.6
 
 [[children]]
 agent = "claude"
@@ -186,14 +185,15 @@ command = ["tail", "-f", "app.log"]
 cwd = "logs"
 ```
 
-`vorn layout list` shows them, `vorn layout open <name> [--project X]` starts the sessions
-through the same calls the app makes and prints their ids (3 when the name is ambiguous),
-`vorn layout save <name>` writes the project's open sessions, and `vorn layout check <file>`
-reports every mistake as `file:line: message`. The app lists layouts under Open Layout › in the
-command palette. Sessions start in tree order, which is the order the grid and tabs show them in.
-Split direction and ratio are kept in the file but the server does not size cards, so they do not
-change what opens; a `command` runs in a shell, which stays open when it ends; a `pane` opens
-beside the session before it and needs the app to be open.
+`vorn layout list` shows them, `vorn layout open <name> [--project X]` starts the sessions through
+the same calls the app makes and prints their ids (3 when the name is ambiguous), `vorn layout save
+<name>` writes the project's open sessions in the view the grid shows them (the flexible grid's
+splits and ratios included), and `vorn layout check <file>` reports every mistake as `file:line:
+message`. The app lists layouts under Open Layout › in the command palette. Sessions start in tree
+order. In the app, Columns › Flexible in the view menu splits the grid into panes: drag a divider
+to resize (double-click evens them), ⌘⌥ arrows move between panes and ⌘⌥⇧ arrows move the divider.
+A `command` runs in a shell, which stays open when it ends; a `pane` opens beside the session
+before it and needs the app to be open.
 
 Workflows run in the server, so a run started here keeps going with nothing open — and a
 scheduled one happens whether or not the app is running.
@@ -273,7 +273,7 @@ A minimal always-on-top overlay that stays visible while you work in other apps.
 ### More
 
 - **Web Client** — the same app in a browser or on your phone, compiled to WebAssembly and served by vornd (`vornd --web`); pair a phone or another computer with a code from the desktop app
-- **Extensions** — add sidebar sections, card badges and footers, panes, windows, palette commands, settings pages and more, drawn from KDL templates on the desktop, in the browser and in the terminal alike; see [`examples/extensions/turns`](examples/extensions/turns)
+- **Extensions** — add sidebar sections, card badges and footers, panes, windows, palette commands, settings pages and more, drawn on the desktop, in the browser and in the terminal alike; see [`examples/extensions/turns`](examples/extensions/turns). An extension runs as a program in any language, or as a sandboxed Wasm component written in Rust with `vorn-extension-sdk` (`vorn ext new --wasm`); see [docs/wasm-extensions.md](docs/wasm-extensions.md)
 - **Remote Hosts** — launch terminals on remote machines via SSH
 - **Terminal Panel** — lightweight shell tabs for quick operations
 - **Project Management** — organize sessions by project with custom icons, colors, and preferred agents

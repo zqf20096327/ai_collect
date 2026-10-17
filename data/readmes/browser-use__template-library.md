@@ -8,6 +8,7 @@ Template collection for the `browser-use` CLI init command.
 .
 ├── templates.json               # Template registry and metadata
 ├── gitignore.template           # Shared .gitignore for complex templates
+├── AGENTS.md.template           # Shared AGENTS.md for coding agents (every template)
 │
 ├── Simple Templates (single Python files)
 ├── default_template.py          # Example: Minimal setup
@@ -38,6 +39,16 @@ uvx browser-use init --template job-application
 uvx browser-use init --template agentmail
 ```
 
+## Browser Use Cloud starters
+
+[`cloud-starters/`](cloud-starters) has small examples that run on Browser Use Cloud browsers ($0.02 per browser-hour, billed per second): Playwright over CDP (TypeScript and Python), Puppeteer over CDP (TypeScript), the browser-use `Agent` with `Browser(use_cloud=True)`, the hosted v4 agent API, 50 parallel browsers, a password + TOTP 2FA login saved to a profile, and scraping through proxies.
+
+```bash
+uvx browser-use init --template cloud-playwright
+```
+
+The two TypeScript starters are plain npm projects in the same folder (not installed by `init`, which writes Python files).
+
 ## Testing Templates Locally
 
 To test your templates before submitting a PR, you can modify the browser-use CLI to use your fork/branch:
@@ -63,6 +74,15 @@ This allows you to verify:
 - ✓ Variable substitution works (`{template}`, `{output}`)
 
 ## Adding New Templates
+
+Every template ships `AGENTS.md.template` as `AGENTS.md`, so coding agents that read AGENTS.md (Codex, Cursor and others) see how to run locally vs on Browser Use Cloud. Add this to the template's `files` array:
+
+```json
+{
+    "source": "AGENTS.md.template",
+    "dest": "AGENTS.md"
+}
+```
 
 ### Simple Template (Single File)
 

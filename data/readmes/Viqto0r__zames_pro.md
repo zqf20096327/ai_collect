@@ -374,8 +374,8 @@ Codex CLI:
   runtime.
 - /add-dir <path> — validate an extra directory (the sandbox is fixed at
   startup; relaunch with --dir to write there).
-- /resume <n> (after /chats) and /resume-id <id> — open a chat and PRINT its
-  dialogue into the terminal, so the restored context is visible. Only the
+- /resume-id <id> (or picking a chat in the /chats list) — open a chat and
+  PRINT its dialogue into the terminal, so the restored context is visible. Only the
   last 20 messages are shown (`RESTORED_HISTORY_LIMIT`). /last reopens the last
   chat of the current directory with no lookup step; /sessions shows the saved
   sessions with their relative age.
@@ -400,7 +400,9 @@ Codex CLI:
 tests`). /cron "<min> <hour> <dom> <month> <dow>" <task> — run on a schedule.
   /jobs [rm <id>|clear] lists and stops them. A fired job is put into the same
   message queue you type into, so it runs when the agent is free (never mid-
-  generation) and still respects the send throttle.
+  generation) and still respects the send throttle. The FIRST run of a `/loop`
+  is due at once (and runs as soon as the agent is idle); a `/cron` job waits
+  for its schedule.
 - /thinking [on|off] and /web [on|off] — toggle the reasoning / web-search
   behaviour. On **DeepSeek** these are the "Deep thinking" / "Smart search"
   toggles; on **Qwen** they drive its thinking MODE (Thinking / Fast) and the
@@ -959,8 +961,8 @@ zames --task "..." --output-format jsonl \
   модель Qwen на лету.
 - /add-dir <path> — проверить дополнительную директорию (песочница
   фиксируется при старте; для записи туда перезапустите с --dir).
-- /resume <n> (после /chats) и /resume-id <id> — открыть чат и НАПЕЧАТАТЬ его
-  диалог в терминал, чтобы восстановленный контекст был виден. Показываются
+- /resume-id <id> (или выбор чата в списке /chats) — открыть чат и
+  НАПЕЧАТАТЬ его диалог в терминал, чтобы восстановленный контекст был виден. Показываются
   только последние 20 сообщений (`RESTORED_HISTORY_LIMIT`). /last открывает
   последний чат текущей директории без поиска; /sessions показывает сохранённые
   сессии с их относительным возрастом.
@@ -987,7 +989,8 @@ zames --task "..." --output-format jsonl \
   запуск по расписанию. /jobs [rm <id>|clear] перечисляет и останавливает их.
   Сработавшая задача попадает в ту же очередь сообщений, что и ваш ввод, так
   что выполняется, когда агент свободен (никогда посреди генерации), и всё
-  равно соблюдает троттлинг отправки.
+  равно соблюдает троттлинг отправки. ПЕРВЫЙ запуск `/loop` — сразу же (как
+  только агент свободен); задача `/cron` ждёт своего расписания.
 - /thinking [on|off] и /web [on|off] — переключить режим размышления /
   веб-поиска. В **DeepSeek** это тумблеры «Deep thinking» / «Smart search»;
   в **Qwen** — это режим размышления (Thinking / Fast) и пункт «Web search»

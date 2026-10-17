@@ -702,6 +702,7 @@ General-purpose tools supporting Japanese language processing
  * [sanoTTS-jp](https://github.com/ayutaz/sanoTTS-jp) - 559 K パラメータの日本語 TTS を ESP32-S3 で実時間合成。漢字かな交じり文の形態素解析・アクセント推定まで端末内で走る（M5Stack CoreS3 実機で確認）。推論は依存ゼロの C99、ブラウザ demo あり。arXiv:2608.21378 sanoTTS の日本語 clean-room 再実装。⚠️ コードは MIT ですが、配布モデルの重みは MIT ではありません（LICENSE-MODEL.md。出力に用途制限が伝播します）
  * [jev-auto-ime](https://github.com/kzkhykw/jev-auto-ime) - 打っている言葉が日本語か英語かをJevに聞いて、Macの入力モードを切り替える道具。個人利用のみ。
  * [yomiyasu](https://github.com/nanaism/yomiyasu) - AI生成の日本語を自然な日本語へ推敲するAgent Skill / Agent Skill for Refining AI-Generated Japanese into Natural Japanese
+ * [natural-japanese-writing](https://github.com/kojikojikojikoji/natural-japanese-writing) - An agent skill for Claude Code, Codex and Cursor that rewrites AI-sounding Japanese into natural Japanese without changing the facts.
 
 
 |Name|downloads/week|total downloads|stars|last commit|
@@ -1017,4 +1018,102 @@ Crates for script and character conversion in Japanese text
  * [kana](https://github.com/gbrlsnchs/kana) - [Mirror] CLI program for transliterating romaji text to either hiragana or katakana
  * [kanaria](https://github.com/samunohito/kanaria) - このライブラリは、ひらがな・カタカナ、半角・全角の相互変換や判別を始めとした機能を提供します。
  * [japanese-address-parser](https://github.com/yuukitoriyama/japanese-address-parser) - 日本の住所を都道府県/市区町村/町名/その他に分割するライブラリです
- * [yosina](https://github.com/yosina-lib/yosina) - Yos
+ * [yosina](https://github.com/yosina-lib/yosina) - Yosina is a transliteration library deals with the letters and symbols used in Japanese writing.
+ * [mojimoji-rs](https://github.com/europeanplaice/mojimoji-rs) - Rust implementation of a fast converter between Japanese hankaku and zenkaku characters, mojimoji.
+ * [haqumei](https://github.com/o24s/haqumei) - A Japanese Grapheme-to-Phoneme (G2P) library.
+ * [ja-furigana](https://github.com/RyuuNeko1107/ja-furigana) - 日本語フリガナ (ルビ) を扱う Rust 製ライブラリ + ローカル HTTP サーバー。ルールはすべてデータ駆動 (TOML)。
+ * [jpnorm](https://github.com/yoshitakaoyama/jpnorm) - 日本語テキスト正規化ライブラリ (Rust core + Python)。neologdn 互換・用途別プリセット・URL 保護・カスタム辞書 / Fast, configurable Japanese text normalization
+
+
+|Name|downloads/week|total downloads|stars|last commit|
+-|-|-|-|-
+| 🔗 [wana_kana_rust](https://github.com/PSeitz/wana_kana_rust) | - | 📦 655k | ⭐ 91 | 🟡 may|
+| 🔗 [unicode-jp-rs](https://github.com/gemmarx/unicode-jp-rs) | - | 📦 70k | ⭐ 19 | 🔴 april 2020|
+| 🔗 [kana](https://github.com/gbrlsnchs/kana) | - | - | ⭐ 12 | 🔴 january 2023|
+| 🔗 [kanaria](https://github.com/samunohito/kanaria) | - | - | ⭐ 21 | 🟡 february|
+| 🔗 [japanese-address-parser](https://github.com/yuukitoriyama/japanese-address-parser) | - | - | ⭐ 14 | 🟡 june|
+| 🔗 [yosina](https://github.com/yosina-lib/yosina) | - | - | ⭐ 27 | 🟡 april|
+| 🔗 [mojimoji-rs](https://github.com/europeanplaice/mojimoji-rs) | - | - | ⭐ 4 | 🔴 november 2022|
+| 🔗 [haqumei](https://github.com/o24s/haqumei) | - | - | ⭐ 10 | 🟢 yesterday|
+| 🔗 [ja-furigana](https://github.com/RyuuNeko1107/ja-furigana) | - | - | ⭐ 21 | 🟢 today|
+| 🔗 [jpnorm](https://github.com/yoshitakaoyama/jpnorm) | - | - | ⭐ 1 | 🟢 yesterday|
+
+
+### Search engine library
+Libraries for Japanese full-text search and indexing
+
+ * [lindera-tantivy](https://github.com/lindera-morphology/lindera-tantivy) - Lindera tokenizer for Tantivy.
+ * [tantivy-vibrato](https://github.com/akr4/tantivy-vibrato) - A Tantivy tokenizer using Vibrato.
+ * [sqlite-vaporetto](https://github.com/hotchpotch/sqlite-vaporetto) - SQLite FTS5 extension for fast Japanese full-text search with 🛥Vaporetto / Vaporetto による高速な日本語全文検索を SQLite FTS5 で実現する拡張機能
+ * [duckdb-vaporetto](https://github.com/hotchpotch/duckdb-vaporetto) - DuckDB extension for Japanese full-text search with 🛥Vaporetto / Vaporetto による DuckDB + 日本語全文検索拡張機能
+ * [lindera-sqlite](https://github.com/lindera/lindera-sqlite) - Lindera for SQLite FTS5 extention
+
+
+|Name|downloads/week|total downloads|stars|last commit|
+-|-|-|-|-
+| 🔗 [lindera-tantivy](https://github.com/lindera-morphology/lindera-tantivy) | - | 📦 234k | ⭐ 70 | 🟢 august|
+| 🔗 [tantivy-vibrato](https://github.com/akr4/tantivy-vibrato) | - | 📦 1.6k | ⭐ 3 | 🟡 april|
+| 🔗 [sqlite-vaporetto](https://github.com/hotchpotch/sqlite-vaporetto) | - | - | ⭐ 21 | 🟡 april|
+| 🔗 [duckdb-vaporetto](https://github.com/hotchpotch/duckdb-vaporetto) | - | - | ⭐ 12 | 🟡 april|
+| 🔗 [lindera-sqlite](https://github.com/lindera/lindera-sqlite) | - | - | ⭐ 23 | 🟢 august|
+
+
+### Others
+Supplementary crates for Japanese text and IME processing
+
+<details markdown="1">
+<summary>Show 26 items</summary>
+
+ * [daachorse](https://github.com/daac-tools/daachorse) - A fast implementation of the Aho-Corasick algorithm using the compact double-array data structure in Rust.
+ * [find-simdoc](https://github.com/legalforce-research/find-simdoc) - Finding all pairs of similar documents time- and memory-efficiently
+ * [crawdad](https://github.com/daac-tools/crawdad) - Rust library of natural language dictionaries using character-wise double-array tries.
+ * [tokenizer-speed-bench](https://github.com/legalforce-research/tokenizer-speed-bench) -  Comparison code of various tokenizers
+ * [stringmatch-bench](https://github.com/legalforce-research/stringmatch-bench) - Here provides benchmark tools to compare the performance of data structures for string matching.
+ * [vime](https://github.com/algon-320/vime) - Using Vim as an input method for X11 apps
+ * [voicevox_core](https://github.com/VOICEVOX/voicevox_core) - 無料で使える中品質なテキスト読み上げソフトウェア、VOICEVOXのコア
+ * [akaza](https://github.com/akaza-im/akaza) - Yet another Japanese IME for IBus/Linux
+ * [Jotoba](https://github.com/WeDontPanic/Jotoba) - A free online, self-hostable, multilang Japanese dictionary.
+ * [dvorakjp-romantable](https://github.com/shinespark/dvorakjp-romantable) - Google 日本語入力用DvorakJPローマ字テーブル / DvorakJP Roman Table for Google Japanese Input
+ * [niinii](https://github.com/Netdex/niinii) -  Japanese glossator for assisted reading of text using Ichiran
+ * [cskk](https://github.com/naokiri/cskk) - SKK (Simple Kana Kanji henkan) library
+ * [japanki](https://github.com/tysonwu/japanki) - Learn Japanese vocabs 🇯🇵 by doing quizzes on CLI!
+ * [jpreprocess](https://github.com/jpreprocess/jpreprocess) - Japanese text preprocessor for Text-to-Speech applications (OpenJTalk rewrite in rust language)
+ * [listup_precedent](https://github.com/japanese-law-analysis/listup_precedent) - 裁判例のデータ一覧を裁判所のホームページ(https://www.courts.go.jp/index.html) をスクレイピングして生成するソフトウェア
+ * [jisho](https://github.com/eagleflo/jisho) - Jisho is a CLI tool & Rust library that provides a Japanese-English dictionary.
+ * [kanalizer](https://github.com/voicevox/kanalizer) - 英単語から読みを推測するライブラリ。
+ * [koharu](https://github.com/mayocream/koharu) - Automated manga translation tool with LLM, written in Rust.
+ * [yomine](https://github.com/mcgrizzz/yomine) - A Japanese vocabulary mining tool designed to help language learners mine new words and expressions.
+ * [matsuba](https://github.com/mrpicklepinosaur/matsuba) - lightweight japanese ime written in rust
+ * [hujiang_dictionary](https://github.com/asutorufa/hujiang_dictionary) - 日本語辞書 by Rust, support Telegram bot, AWS Lambda and Cloudflare Workers. Support LLM and search RAG.
+ * [mecab-dic-converter](https://github.com/tomokane/mecab-dic-converter) - MeCab 用のコンパイル済み辞書を読み取り、解析・再構成し、最終的に Vibrato や Lindera のようなMecab互換 tokenizer が使える辞書へ変換するための Rust crate です。
+ * [jp-deinflector](https://github.com/btrkeks/jp-deinflector) - A high-performance Rust crate for deinflecting Japanese words using perfect hash tables
+ * [mikke](https://github.com/kimushun1101/mikke) - 日本語 Markdown ノートのローカル検索 CLI 👀 — BM25 全文検索 (SQLite FTS5) + optional なローカル semantic/hybrid。単一バイナリ・外部 API 不使用、AI コーディングエージェント向け。
+ * [suiko](https://github.com/nwiizo/suiko) - 日本語文書の自然さと読みやすさを再現可能に診断するRust CLI / Deterministic diagnostics for natural and readable Japanese writing
+ * [daac-bpe](https://github.com/vbkaisetsu/daac-bpe) - Fast incremental BPE tokenizer based on daachorse
+
+
+|Name|downloads/week|total downloads|stars|last commit|
+-|-|-|-|-
+| 🔗 [daachorse](https://github.com/daac-tools/daachorse) | - | 📦 7.8M | ⭐ 284 | 🟢 august|
+| 🔗 [find-simdoc](https://github.com/legalforce-research/find-simdoc) | - | 📦 29k | ⭐ 62 | 🔴 march 2025|
+| 🔗 [crawdad](https://github.com/daac-tools/crawdad) | - | 📦 194k | ⭐ 39 | 🟢 august|
+| 🔗 [tokenizer-speed-bench](https://github.com/legalforce-research/tokenizer-speed-bench) | - | - | ⭐ 4 | 🔴 march 2023|
+| 🔗 [stringmatch-bench](https://github.com/legalforce-research/stringmatch-bench) | - | - | ⭐ 3 | 🔴 september 2022|
+| 🔗 [vime](https://github.com/algon-320/vime) | - | - | ⭐ 228 | 🔴 november 2022|
+| 🔗 [voicevox_core](https://github.com/VOICEVOX/voicevox_core) | - | - | ⭐ 1.1k | 🟢 yesterday|
+| 🔗 [akaza](https://github.com/akaza-im/akaza) | - | - | ⭐ 265 | 🟡 june|
+| 🔗 [Jotoba](https://github.com/WeDontPanic/Jotoba) | - | - | ⭐ 210 | 🔴 january 2024|
+| 🔗 [dvorakjp-romantable](https://github.com/shinespark/dvorakjp-romantable) | - | - | ⭐ 58 | 🟢 october|
+| 🔗 [niinii](https://github.com/Netdex/niinii) | - | - | ⭐ 16 | 🟢 october|
+| 🔗 [cskk](https://github.com/naokiri/cskk) | - | - | ⭐ 85 | 🟢 yesterday|
+| 🔗 [japanki](https://github.com/tysonwu/japanki) | - | - | ⭐ 4 | 🔴 october 2023|
+| 🔗 [jpreprocess](https://github.com/jpreprocess/jpreprocess) | - | - | ⭐ 60 | 🟡 june|
+| 🔗 [listup_precedent](https://github.com/japanese-law-analysis/listup_precedent) | - | - | ⭐ 7 | 🟢 july|
+| 🔗 [jisho](https://github.com/eagleflo/jisho) | - | - | ⭐ 18 | 🟡 april|
+| 🔗 [kanalizer](https://github.com/voicevox/kanalizer) | - | - | ⭐ 31 | 🟡 may|
+| 🔗 [koharu](https://github.com/mayocream/koharu) | - | - | ⭐ 6k | 🟢 last thursday|
+| 🔗 [yomine](https://github.com/mcgrizzz/yomine) | - | - | ⭐ 64 | 🟢 october|
+| 🔗 [matsuba](https://github.com/mrpicklepinosaur/matsuba) | - | - | ⭐ 19 | 🔴 march 2023|
+| 🔗 [hujiang_dictionary](https://github.com/asutorufa/hujiang_dictionary) | - | - | ⭐ 72 | 🟢 october|
+| 🔗 [mecab-dic-converter](https://github.com/tomokane/mecab-dic-converter) | - | - | ⭐ 1 | 🟡 may|
+| 🔗 [jp-deinflector](https://github.com/btrkeks/jp-deinflector) | -

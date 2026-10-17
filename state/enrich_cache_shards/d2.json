@@ -520,5 +520,216 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "paulrobello/parllama": {
+  "commit_90d": 82,
+  "commit_7d": 81,
+  "rel_ver": "v0.10.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "zuisong/gemini-openai-proxy": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2025-01-24",
+  "rel_days": 631,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 100,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "darkdevil3610/100-AI-Machine-learning-Deep-learning-Computer-vision-NLP": {
+  "commit_90d": 50,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ageerle/ruoyi-web": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-08-04",
+  "rel_days": 74,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Vue": 55,
+   "TypeScript": 33,
+   "SCSS": 9,
+   "JavaScript": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ghostsecurity/skills": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 90,
+   "Shell": 10
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "JackismyShephard/ultimate-rvc": {
+  "commit_90d": 5,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 98,
+   "Shell": 1,
+   "Jupyter Notebook": 1,
+   "PowerShell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "sepivip/SeekerClaw": {
+  "commit_90d": 19,
+  "commit_7d": 0,
+  "rel_ver": "v2.3.1",
+  "rel_pub": "2026-09-10",
+  "rel_days": 37,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 66,
+   "Kotlin": 33,
+   "Shell": 0,
+   "C++": 0,
+   "CMake": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Narwhal-Lab/MagicSkills": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.1",
+  "rel_pub": "2026-03-22",
+  "rel_days": 209,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100,
+   "C": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

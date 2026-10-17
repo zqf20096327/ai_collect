@@ -266,7 +266,7 @@ SGLang is a fast serving framework for large language models and vision language
 an OpenAI API-compatible speech server (formerly `faster-whisper-server`), both TTS and STT
 
 #### <img src="https://github.com/huggingface.png?size=200" width="14" height="14" style="vertical-align: middle;"> **[Speech To Speech](https://github.com/huggingface/speech-to-speech)**<br>
-<img src="./assets/rocket.svg" width="16" height="16" style="vertical-align: middle;"> 72% &nbsp; <img src="./assets/star-b3.svg" width="16" height="16" style="vertical-align: middle;"> 13.4k &nbsp; <img src="./assets/circle-dot.svg" width="16" height="16" style="vertical-align: middle;"> issues 228 (34 open, 194 closed) &nbsp; <img src="./assets/git-commit-horizontal.svg" width="16" height="16" style="vertical-align: middle;"> 2026-10-09<br>
+<img src="./assets/rocket.svg" width="16" height="16" style="vertical-align: middle;"> 74% &nbsp; <img src="./assets/star-b3.svg" width="16" height="16" style="vertical-align: middle;"> 13.5k &nbsp; <img src="./assets/circle-dot.svg" width="16" height="16" style="vertical-align: middle;"> issues 242 (34 open, 208 closed) &nbsp; <img src="./assets/git-commit-horizontal.svg" width="16" height="16" style="vertical-align: middle;"> 2026-10-14<br>
 <a href="https://github.com/huggingface/speech-to-speech"><img src="https://img.shields.io/github/v/release/huggingface/speech-to-speech?style=flat&label=release&color=7d8590" alt="huggingface/speech-to-speech release"></a> <a href="https://github.com/huggingface/speech-to-speech"><img src="https://img.shields.io/github/license/huggingface/speech-to-speech?style=flat&label=license&color=7d8590" alt="huggingface/speech-to-speech license"></a> &nbsp; <img src="https://img.shields.io/badge/Backend-000000?style=flat" alt="Backend"> <img src="https://img.shields.io/badge/Audio-000000?style=flat" alt="Audio"> <img src="https://img.shields.io/badge/API-000000?style=flat" alt="API"><br>
 Modular realtime voice pipeline (VAD, STT, LLM, TTS) exposing an OpenAI Realtime-compatible WebSocket API.
 
@@ -431,4 +431,4 @@ Harbor's own tool to evaluate LLMs and inference backends against custom tasks.
 
 #### <img src="https://github.com/av.png?size=200" width="14" height="14" style="vertical-align: middle;"> **[Harbor Boost](https://github.com/av/harbor/tree/main/boost)**<br>
 <img src="./assets/rocket.svg" width="16" height="16" style="vertical-align: middle;"> 55% &nbsp; <img src="./assets/star-b2.svg" width="16" height="16" style="vertical-align: middle;"> 3.2k &nbsp; <img src="./assets/circle-dot.svg" width="16" height="16" style="vertical-align: middle;"> issues 190 (39 open, 151 closed) &nbsp; <img src="./assets/git-commit-horizontal.svg" width="16" height="16" style="vertical-align: middle;"> 2026-09-25<br>
-<a href="https://github.com/av/harbor/tree/main/boost"><img sr
+<a href="https://github.com/av/harbor/tree/main/boost"><img src=

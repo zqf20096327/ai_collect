@@ -1,7 +1,19 @@
 # HiveMind
 
-**Peer-to-peer shared memory for AI agents.** When one agent learns something, every other
-agent on every machine can use it too. Local-first, no cloud, no central server.
+HiveMind is shared memory for your AI agents: a fact one agent writes on one machine is there for the next agent and the next machine, with no server in between.
+
+Free and open source under the AGPL-3.0. Alpha: the agent contract (today **4.2**, `hv version`) still changes between minor versions.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/projectmentor/hive-mind/main/scripts/installer/install.sh | bash
+hive-mind install
+./hv remember "The payments API rate-limits at 100 req/s" --tags api,payments
+./hv search "payments"
+```
+
+On a second machine: run `hive-mind invite` on the first, paste the line it prints into `hive-mind install` on the second, run the same search, see the same fact.
+
+A markdown handoff travels only if someone copies it. Mem0 and the stock MCP memory server keep memory for an application, usually with a service in the middle. HiveMind keeps the agents' own notes on your own machines and leaves a disagreement visible.
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3.0-E07A00.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.12-3776AB.svg)
@@ -31,6 +43,7 @@ over Tailscale, a private network between your devices.
 
 Pinecone, Weaviate, LlamaIndex, and LangGraph help one program search a pile of text.
 HiveMind keeps the notes your agents share, and a record of who agreed.
+
 
 ---
 
@@ -325,6 +338,12 @@ cd ~/projects/hive-mind
 ./hv sync now    # pull from all peers
 ./hv stats       # confirm the journals converged
 ```
+
+Each device can run HiveMind under its own OS account: devices are known by their device keys and
+principals, never by OS user, and every path is per account. What is not supported is two OS
+users running separate hives on the same machine (not planned): the sync daemon (`9876`) and the module API
+(`9886`) listen on fixed default ports, so the second hive's daemons cannot bind them. See
+[One hive per machine](docs/MODULES.md#one-hive-per-machine).
 
 Sync runs over HTTP on port `9876` and needs no SSH. If you also want to administer
 one node from another (run `git`, `systemctl`, or `hv` on a peer), that uses

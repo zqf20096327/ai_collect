@@ -959,7 +959,7 @@ no train/test split, no proxy removal.
 It ships in two forms that share one analysis spec ([faircode/SPEC.md](faircode/SPEC.md)), so the
 same CSV produces the same numbers in both:
 
-**Web - drop in a CSV, TSV, JSON, or Excel file, audit it in your browser.** Open
+**Web - drop in a CSV, TSV, JSON, JSON Lines, or Excel file, audit it in your browser.** Open
 **[profiler.html](profiler.html)** (linked from the site nav, live at
 [thefaircode.xyz](https://www.thefaircode.xyz)). All analysis runs client-side - **your file never
 leaves your browser** - which matters for health data; `.xlsx` parsing uses
@@ -1047,7 +1047,7 @@ provenance) instead of being tested; raise `--max-categorical-card` to test it a
 For CI, `--fail-under N` returns exit code `1` and explains the failing score
 on stderr when the overall representation score is below `N`; report output,
 including `--json`, remains on stdout. A score at or above the threshold exits
-successfully.
+successfully. `N` must be between 0 and 100; any other value exits `2` with an error.
 
 `--json` output carries a `provenance` block recording the SHA-256 of the input
 file, the `faircode` version, and the thresholds actually resolved for the run,
@@ -1135,7 +1135,14 @@ pip install -e ".[benchmark]"                      # scikit-learn + pyyaml + fai
 faircode benchmark                                  # discovers every */audit.yaml, writes results/
 faircode benchmark --out results/ --n-resamples 2000 --n-permutations 2000
 faircode benchmark COMPAS/audit.yaml                # run a subset explicitly
+faircode benchmark --root ~/audits                  # search ~/audits/*/audit.yaml instead of the current directory
+faircode benchmark --no-plots                       # CSVs only: no figures/ and matplotlib is not needed
 ```
+
+`--root PATH` is the directory searched for `*/audit.yaml` (one level down; default: the current
+directory), so the harness can run from outside the repository. It is ignored when you pass manifest
+paths. `--no-plots` skips the `figures/*.png` files; `results_fairness.csv`, `results_performance.csv`
+and `summary.csv` are still written.
 
 Writes `results_fairness.csv`, `results_performance.csv`, `summary.csv`, and one
 `figures/<audit>_strategies.png` per audit (300 dpi, rendered by `faircode/figures.py` straight from
@@ -1300,7 +1307,7 @@ The full public roadmap - with phases, completion status, and content schedule -
 |--------|------:|
 | GitHub Stars | 51 |
 | External Contributors | 52 |
-| Forks | 57 |
+| Forks | 58 |
 | Watching | 8 |
 | Combined Social Reach (Instagram + LinkedIn) | 30K+ |
 | Countries Reached (Website Visitors) | 20 |

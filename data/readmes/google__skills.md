@@ -17,6 +17,17 @@ configure, and the installation scope (project or global).
 If `npx` is not available in your environment, install
 [Node.js](https://nodejs.org/en/download), which includes `npm` and `npx`.
 
+## Updating Skills
+
+To update previously installed skills to the latest versions, run the following
+command.
+
+```bash
+npx skills update
+```
+
+This command gives you an option to also remove obsolete skills.
+
 ## Available Skills
 
 <!-- BEGIN SKILLS -->

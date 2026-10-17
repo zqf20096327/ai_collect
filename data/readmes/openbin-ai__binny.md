@@ -93,12 +93,15 @@ go build -o binny .
 go test ./...
 ```
 
-Releases are cut by pushing a `v*` tag. The workflow cross-compiles for Linux, macOS and Windows, publishes the release here, and mirrors it to [openbin-ai/binny-releases](https://github.com/openbin-ai/binny-releases) for the installers.
+Releases are cut by tagging `v*` (see `.github/workflows/release.yml`) or
+with `scripts/release-local.sh <tag>`. The workflow cross-compiles for Linux,
+macOS and Windows. Binaries are published to the public
+`openbin-ai/binny-releases` repo for the installers; this repo stays private.
 
 ## Contributing
 
-Pull requests are welcome. Every contributor signs the [CLA](CLA.md) once; it lets the project stay AGPL while OpenBin can offer the same code under a commercial licence to teams that cannot use AGPL.
+Pull requests are welcome. Contributors must sign the [Contributor License Agreement](CLA.md) once; it lets the project stay AGPL while OpenBin can offer the same code under a commercial licence to teams that cannot use AGPL. The CLA Assistant bot will prompt you on your first pull request.
 
 ## License
 
-[AGPL-3.0](LICENSE). The platform BINNY talks to is [openbin-ai/platform](https://github.com/openbin-ai/platform), under the same licence.
+BINNY is licensed under the [GNU Affero General Public License v3.0 or later](LICENSE). The platform BINNY talks to is [openbin-ai/platform](https://github.com/openbin-ai/platform), under the same licence.

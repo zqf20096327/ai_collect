@@ -17,7 +17,7 @@ No sign-up, no tracking, no build step. Open the link and start reading.
 
 <br>
 
-<img src="docs/screenshots/hero-light.png" alt="Learn AI home page: the headline 'Understand how machines learn — from first principles to real systems' next to a diagram of a single artificial neuron" width="100%">
+<img src="docs/screenshots/hero-light.png" alt="Learn AI home page: the headline 'Understand how machines learn, from first principles to real systems' next to a diagram of a single artificial neuron, set over a rotating 3D neural network" width="100%">
 
 </div>
 
@@ -51,7 +51,7 @@ It is written for students, career switchers, teachers and anyone who wants to s
 <td width="50%"><img src="docs/screenshots/contents.png" alt="Learning dashboard with progress stats above a numbered list of modules"></td>
 </tr>
 <tr>
-<td><img src="docs/screenshots/quiz.png" alt="Quiz question about LLM sampling temperature with four lettered options"></td>
+<td><img src="docs/screenshots/quiz.png" alt="Quiz question about why accuracy misleads on a fraud dataset with few positive cases, with four lettered options"></td>
 <td><img src="docs/screenshots/hero-dark.png" alt="The home page in dark mode"></td>
 </tr>
 </table>
@@ -110,7 +110,7 @@ To deploy, publish the folder as-is to GitHub Pages or Netlify. `netlify.toml` i
 | | |
 |---|---|
 | **Stack** | Vanilla HTML, CSS and JavaScript. No framework, bundler or package.json |
-| **Type** | Newsreader for reading, IBM Plex Sans for the interface, IBM Plex Mono for metadata |
+| **Type** | Fraunces for reading and headlines, Geist for the interface, Geist Mono for metadata |
 | **Storage** | `localStorage` under the key `belajarAI_v2` |
 | **Security** | Strict Content Security Policy, with all user input escaped before rendering |
 | **Accessibility** | Keyboard-navigable tabs and quiz, focus-trapped dialogs, live regions, reduced-motion support |

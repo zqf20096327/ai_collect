@@ -542,5 +542,135 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "sdadas/polish-nlp-resources": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "gpt-2",
+  "rel_pub": "2021-06-21",
+  "rel_days": 1944,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "CheMiguel23/MemoryMesh": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 74,
+   "HTML": 25,
+   "JavaScript": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "healkeiser/fxhoudinimcp": {
+  "commit_90d": 402,
+  "commit_7d": 48,
+  "rel_ver": "v2.27.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "shiimizu/ComfyUI_smZNodes": {
+  "commit_90d": 13,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 64,
+   "JavaScript": 36
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "magicapple123/ResumeForge": {
+  "commit_90d": 452,
+  "commit_7d": 91,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 62,
+   "TypeScript": 31,
+   "JavaScript": 2,
+   "PowerShell": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

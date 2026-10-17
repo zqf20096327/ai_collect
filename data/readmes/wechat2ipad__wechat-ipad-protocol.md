@@ -96,9 +96,9 @@
 Latest Wechat iPad Protocol Version 859  
 QQ: 408449830 — Free interface address available
 
-💰 Price: ~~3000~~ 5000 CNY per package (deployment 800), no additional fees  (协议更新之后都是5k了, 别再来说什么外国佬3千国人5千[是我忘了改], 大家都是5千, 要讲价找我就行了 😊)
+💰 Price: 10000 CNY per package, no additional fees
 
-🆓 Rental: 10 CNY/day/account (for testing), 100 CNY/month/account, on-demand usage
+🆓 Rental: 10 CNY/day/account (for testing), 200 CNY/month/account, on-demand usage
 
 ---
 
@@ -880,6 +880,9 @@ AI 大模型 / 数据库 / CRM / 工单系统
 # 一句话介绍
 
 **Wechat-iPad-Protocol 是一套适合 AI 客服、私域运营、微信机器人和 SCRM 系统接入的微信 iPad 协议接口能力，支持源码交付、私有化部署、多账号接入和二次开发。**
+ 
+ 
+ 
  
  
  

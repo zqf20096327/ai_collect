@@ -88,7 +88,7 @@ How claude-mem-lite differs from the major neighbors in the LLM-memory space (ve
 - **Observation relations** -- Bidirectional links between related observations based on file overlap
 - **User prompt capture** -- Records user prompts via UserPromptSubmit hook for intent tracking
 - **Read file tracking** -- Tracks files read during sessions for richer episode context
-- **Degraded fallback when the LLM fails** -- An episode the deterministic rules already rate notable (an error fixed, a config or schema file changed) is saved with inferred metadata instead of being discarded. A routine edit the rules rate as noise (`Modified a.js, b.js` with no lesson) is dropped — as it is when the model answers without a lesson — so a failing provider loses those episodes; `claude-mem-lite doctor` warns when the `claude` CLI it would call does not resolve
+- **Degraded fallback when the LLM fails** -- An episode that fixed an error is saved with inferred metadata (as an activity event) instead of being discarded, when a command that exited 0 printed the error (`npm test 2>&1 | tail`): a command Claude Code reports as failed does not enter the episode, so a fix that follows one counts as edit-only. An edit-only episode, config and schema changes included, is summarised from raw tool output, which the noise rules drop in most cases (`Modified a.js, b.js` with no lesson; only a short single-file summary survives) — as they do when the model answers without a lesson — so a failing provider loses those episodes unless `CLAUDE_MEM_KEEP_LOW_SIGNAL=1` is set; `claude-mem-lite doctor` warns when the `claude` CLI it would call does not resolve
 - **Two-tier dedup** -- Jaccard similarity (5-minute window) + MinHash signatures (7-day cross-session window) prevent duplicates
 - **Synonym expansion** -- Abbreviations like `K8s`, `DB`, `auth` automatically expand to full forms in FTS5 search (100+ pairs including CJK↔EN cross-language mappings)
 - **CJK synonym extraction** -- Unsegmented Chinese text is scanned for known vocabulary words (数据库→database, 搜索→search, etc.) enabling cross-language memory recall
@@ -236,6 +236,65 @@ rm -rf ~/claude-mem-lite/   # pre-v0.5 unhidden (if not auto-moved)
   managed/
     repos/               # Shallow-cloned source repos
 ```
+
+## Upgrading to 6.29.0
+
+**Chinese text in lessons, facts, concepts and aliases becomes searchable, and the database opens
+after the update fill that in without holding up a hook.** No schema-version change: 6.28.1 still
+opens, searches and writes the database after this release has. Go back only after the fill
+finishes: rows it has not reached stay without the Latin identifiers glued to Chinese under 6.28.1.
+
+- **What it costs.** Each database open spends about 250 ms filling the index terms of existing
+  observations, newest first, each batch committed, until all are done. On a copy of the
+  maintainer's store (516 observations, most already filled by an earlier build of this pass)
+  the pass walked every row in one open of 48–49 ms. On a synthetic v6.27.0 store of 250,000
+  observations and 200,000 events (mostly CJK) the first open takes about 1 s (6.28.1: about 9 s,
+  and a 5 s hook opening it first was killed), and the fill then takes 105 opens of about 0.5 s;
+  an open after it takes 3 ms.
+- **A lesson a model writes onto one of your explicit saves starts with `🤖`**, and `get` says
+  "🤖 lesson auto-written". A lesson you write is never marked.
+- **Exit codes.** A flag that takes no value (`--force`, `--json`, `--confirm`, `--or`,
+  `--dry-run`, …) no longer swallows the next word: `delete --confirm 12` now deletes #12, and
+  `recent --json 5` prints JSON. `maintain`, `compress`, `optimize`, `delete`, `activity promote` /
+  `delete`, `import-jsonl`, `defer drop` and `fts-check rebuild`, which never read `--dry-run`,
+  refuse it with exit 1 on a run that would write, instead of running; `activity save`, `import-jsonl` and `restore` refuse a mistyped
+  `--project`; `uninstall` exits 3 when the MCP registration is left. CHANGELOG.md lists the
+  rest; a script that relied on the old behaviour needs a look.
+- **Also in this release:** the database waits of a hook that opens through `ensureDb` all end by
+  its deadline, the first open's migration, the prompt search and the Agent injection included;
+  the unattended re-enrich raises importance to 2 at most; three more background prompts send
+  stored rows to the model as data, and smart-compress and cluster merge act only on an explicit
+  yes. Details in CHANGELOG.md.
+
+## Upgrading to 6.28.1
+
+**After the update, events are re-indexed so Chinese text in them is searchable** (the Han ranges
+U+4E00–9FFF and U+3400–4DBF; kana, Hangul and the rarer Han extensions are not segmented). No
+schema-version change: 6.27.0 still opens, searches and writes the database after this release has,
+and an event it writes is filled the next time this release opens the database.
+
+- **What it costs.** The first open adds a column, rebuilds the events index and adds the Latin
+  identifiers glued to Chinese text to existing observations' index text. Existing events are then
+  filled newest first, about 250 ms per database open (checked after each row), each batch
+  committed, so a killed open keeps its progress; with nothing left an open takes 3–4 ms. On the
+  maintainer's store (6963 events) the first three opens took 295–327, 80–102 and 4 ms, and the file
+  grew from 14 to 15 MB; on a CJK-heavy synthetic store of 200,000 events the first open takes 964
+  ms, the fill 79 opens, and the file grows from 93 to 273 MB. Until an event is filled, a Chinese
+  query misses it as before.
+- **The MCP server waits out another writer's lock at startup** (up to 15 s of retries) instead of
+  exiting with "database is locked".
+- **Exit codes.** Some commands that exited 0 now exit 1, among them `save`, `update`, `defer add`
+  and `activity save` given a flag they do not take, `save` and `defer add` given a mistyped
+  project, `delete` given an id list with a malformed part (`1,abc`), `self-update` when it checked
+  nothing, and `import-jsonl` on lines none of which is a transcript event (an empty file still
+  exits 0); CHANGELOG.md lists the rest. `install` exits 3 when only the MCP registration failed. A
+  script that relied on exit 0 there needs a look.
+- **Also in this release:** `install` no longer empties the marketplace clone's `hooks/hooks.json`
+  (it puts back, with `git checkout`, one an earlier install emptied); four MCP tool texts say what
+  the tools do; a hook under a long write lock exits instead of being killed (UserPromptSubmit and
+  SessionStart with their context), and a lock that ends between 3.5 s and the 5 s kill, which
+  6.27.0 waited out, now drops the write the hook was waiting to make (UserPromptSubmit's prompt
+  row, for one). Details in CHANGELOG.md.
 
 ## Upgrading to 6.25.0
 
@@ -824,7 +883,7 @@ Episodes are batched related operations (edits to the same file group) that get 
 Episode buffer -> Flush to JSON -> claude -p --model haiku -> Structured observation -> SQLite
 ```
 
-Each observation includes type, title, narrative, concepts, facts, importance (1-3), and is automatically deduplicated via two tiers: Jaccard similarity (>70% within 5 minutes) and MinHash signatures (>80% within 7 days across sessions). If the LLM call fails, an episode the rules rate notable is saved with inferred metadata; a routine edit the rules rate as noise is dropped. Related observations are linked via `related_ids` based on FTS5 title similarity and file overlap.
+Each observation includes type, title, narrative, concepts, facts, importance (1-3), and is automatically deduplicated via two tiers: Jaccard similarity (>70% within 5 minutes) and MinHash signatures (>80% within 7 days across sessions). If the LLM call fails, an episode that fixed an error a successful command printed is saved with inferred metadata (a command reported as failed does not enter the episode); an edit-only episode (config and schema changes included) is usually dropped as noise. Related observations are linked via `related_ids` based on FTS5 title similarity and file overlap.
 
 ## Management Commands
 
@@ -1184,18 +1243,4 @@ benchmark and A/B harness are calibrated against — changing them invalidates t
 | `CLAUDE_MEM_UPS_FLOOR_REF_CORPUS` | Reference corpus size the score floors are normalized against, so a fresh install with few rows is not silently gated to zero injections. Shared by every floor-bearing surface, including error-recall below. | `584` |
 | `CLAUDE_MEM_ERROR_RECALL_BM25_MIN` | Relevance floor for the error-recall surface (memories injected after a failed Bash command). **Off by default.** Setting it to `10.5` (the calibrated value) makes the surface stay silent when its best-matching memory is not actually about the failure — the whole set is dropped, never trimmed row-by-row. **It is a real trade, not a free win:** measured on a live database at that threshold, injections fall ~37% and ~39% of firings go silent, concentrated in projects with few memories. Off by default because nothing shows the dropped rows were noise. Explore with `node benchmark/error-recall-suite.mjs --sweep`. | `0` (off) |
 | `CLAUDE_MEM_ERROR_RECALL_RERANK` | `off` restores the flat keyword ordering of the error-recall surface. **On by default**, and unlike the floor above it removes nothing: memories that share only the failed command's vocabulary are demoted below memories that mention the failure itself, and when a project has none of the latter the result is unchanged. Measured on a live database over 52 real failing commands × 15 projects: the lead memory matched no error term in 42.3% of firings before, 21.5% after, with the injected row count identical. | _(on)_ |
-| `CLAUDE_MEM_ERROR_RECALL_ON_FAILURE` | `off` stops the plugin from recalling memories when a Bash command **fails at the host level**. On by default. Claude Code delivers failed tool calls to a separate `PostToolUseFailure` hook event, so before this the surface only ever saw commands that exited `0` while printing error-ish text — a genuinely failing build recalled nothing. Denials from your own guardrails (sandbox, policy hooks, declined permission prompts) and commands you interrupted are never recalled for. | _(on)_ |
-| `CLAUDE_MEM_UPS_IDENTIFIER_BYPASS` | `0` disables the bypass that lets an exact identifier match skip the score floors. | _(on)_ |
-| `CLAUDE_MEM_UPS_PROMPT_FALLBACK_LIMIT` | How many past-prompt rows the fallback arm may return. | `1` |
-| `MEM_COVERAGE_THRESHOLD` | Fraction of query terms a memory must cover to qualify (∈ [0,1]). | `0.4` |
-| `MEM_CROSS_PROJECT_BOOST` | Multiplier for matches from other projects (∈ [0,1]); raise it for installs that want more cross-project sharing. | `0.4` |
-| `MEM_OR_FALLBACK_MAX_TOKENS` | Max query tokens allowed into the OR fallback (∈ [0,50]). | `8` |
-| `CLAUDE_MEM_CJK_PREC_MIN` | Precision floor for CJK segmentation candidates. | `0.2` |
-| `CLAUDE_MEM_AUTO_DEEP` | `0` disables automatic deep-search escalation (one Haiku call rewriting a weak query into keyword/concept/HyDE variants). Explicit `deep: true` still works. | _(auto)_ |
-| `CLAUDE_MEM_DEEP_DISCLOSURE` | `off` suppresses the one-line caveat appended to a multi-variant deep result. The caveat exists because deep search fills the page even when the corpus cannot answer — measured at 10 of 10 slots on queries whose answers had been removed (`benchmark/deep-search-holdout.mjs`) — and `deep` is AUTO by default on the MCP surface, i.e. it escalates precisely when the honest answer is "nothing". It does not change retrieval, ranking, or which rows are returned. | _(on)_ |
-| `CLAUDE_MEM_REACH_DISCLOSURE` | `off` suppresses the one-line note that fires when a search's reported `total` exceeds what its pagination can hand back. The candidate pool is sized from `limit` alone and deliberately does not grow with `offset` (D#30 — an offset-scaled pool re-ranks its own prefix under RRF, so pages overlapped and gapped), while `total` is the full match count. Measured on a 128-row corpus: at the default limit of 20 the last non-empty offset is 59, so 60 of 128 rows are unreachable at any offset. The note reports that; it does not change retrieval, ranking, or which rows are returned. It stays **silent** when a filter you asked for (`tier`, or the CJK precision gate on prompts) removed rows after the count was taken — that gap is your filter, not the pool, and raising the limit would not recover it. | _(on)_ |
-| `CLAUDE_MEM_NORMALIZE_CROSS_PROJECT` | `1` restores the pre-fix behaviour where the daily unattended `normalize` runs ONCE over every project's concepts at the same time. That is how one project's stored content could steer synonym groups applied to another project's rows, so the default is now one scoped pass per project (bounded to 8 per run). The cost of the default is that `k8s` in one project and `kubernetes` in another are no longer unified automatically. Note that EVERY unscoped run fans out, including an explicit `optimize --run --task normalize` with no `--project` — this variable is the only route back to the single cross-project pass. A foreground `optimize` run prints a warning when it is set; the daily unattended pass cannot (its worker is spawned with stderr closed), so `claude-mem-lite doctor` reports it as a ⚠ instead. | _(off)_ |
-| `CLAUDE_MEM_AUTO_DEEP_CLI` | `0` disables the same auto-escalation on the CLI path only. | _(auto)_ |
-| `CLAUDE_MEM_UPS_PROMPT_ECHO` | `0` lets the "Past similar questions" fallback show a stored question identical (or nearly) to the prompt just typed, from an earlier session. The current session's own prompts stay excluded either way: showing the prompt just typed was a bug. | _(on)_ |
-| `CLAUDE_MEM_SCOPE_FILTER` | `1` stops environment-scoped observations from firing on file-triggered recall. They stay reachable via search. **Leave it off**: on the face it gates, `environment` is not the low-relevance class its premise assumes — it cites at least as well as `project` (47.5% vs 44.3%, intervals overlapping), and an earlier measurement left 173 recall groups empty with it on. | _(off)_ |
-| `CLAUDE_MEM_READS_CARRY` | An episode flush collects `reads-<project>.txt` only when it will actually save an observation, so a flush that records nothing no longer discards the Read paths it swept up (42.2% of the paths a flush consumed, measured over 1122 transcript
+| `CLAUDE_MEM_ERROR_RECALL_ON_FAILURE` | `off` stops the plugin from recalling memories when a Bash command **fails at the host level**. On by default. Claude Code delivers fa

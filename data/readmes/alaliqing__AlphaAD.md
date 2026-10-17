@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--16-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1419-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--10--17-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1418-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,7 +20,7 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1419 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1418 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
@@ -30,7 +30,7 @@ All 1419 papers remain in this README. For full-text search, filters, and sortin
 | Control & Vehicle Dynamics | 56 | 2026-10-13 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 54 | 2026-10-10 | [View papers](#category-mapping-localization) |
 | End-to-End & VLA | 156 | 2026-10-14 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 235 | 2026-10-14 | [View papers](#category-safety-security-verification) |
+| Safety, Security & Verification | 234 | 2026-10-14 | [View papers](#category-safety-security-verification) |
 | Systems, Deployment & Connectivity | 161 | 2026-10-15 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 31 | 2026-10-12 | [View papers](#category-human-factors-policy) |
 | Cross-cutting / Other | 305 | 2026-10-15 | [View papers](#category-cross-cutting-other) |
@@ -47,7 +47,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 |:--|--:|:--|
 | Dataset | 107 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 187 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Simulation | 186 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 38 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 117 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 90 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
@@ -171,7 +171,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-13077"></a>
 
-### Towards Safer Cities: A Design Process for Perception Datasets in Urban Driving Scenarios ![New](https://img.shields.io/badge/New-red)
+### Towards Safer Cities: A Design Process for Perception Datasets in Urban Driving Scenarios ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Alexander Kroth, Cristian Martinez, Steven Peters<br>
 **Published:** 2026-10-09<br>
@@ -432,7 +432,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-19358"></a>
 
-### Open-vocabulary 3D object detection with promptable segmentation ![Recent](https://img.shields.io/badge/Recent-orange)
+### Open-vocabulary 3D object detection with promptable segmentation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Ömer Faruk Deniz, Mustafa Taha Koçyiğit<br>
 **Published:** 2026-09-16<br>
@@ -442,7 +442,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-19216"></a>
 
-### 4D Radar Perception Algorithms for Autonomous Driving: A Review ![Recent](https://img.shields.io/badge/Recent-orange)
+### 4D Radar Perception Algorithms for Autonomous Driving: A Review ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Xumin Wu, Jun Zhou, Jilin Mei, Chen Min, Yu Hu<br>
 **Published:** 2026-09-16<br>
@@ -453,7 +453,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2609-18542"></a>
 
-### Accuracy- and Real-Time-Aware 4D Radar Preprocessing for Autonomous Driving Perception Systems ![Recent](https://img.shields.io/badge/Recent-orange)
+### Accuracy- and Real-Time-Aware 4D Radar Preprocessing for Autonomous Driving Perception Systems ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Woo-Jin Jung, Dong-Hee Paek, Jeong-Su Park, Seung-Hyun Kong<br>
 **Published:** 2026-09-16<br>
@@ -1121,7 +1121,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-22698"></a>
 
-### FogDrive: A Multi-Modal Synthetic Driving Dataset for Perception under Graded Fog ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### FogDrive: A Multi-Modal Synthetic Driving Dataset for Perception under Graded Fog
 
 **Authors:** Vansh Panwar<br>
 **Published:** 2026-07-18<br>
@@ -1671,4 +1671,6 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 **Abstract:** The selection of an appropriate 3D representation is a fundamental design decision that dictates the efficiency, quality, and capabilities of modern computer vision and graphics pipelines for tasks...
 
-<a id="paper-2606-0
+<a id="paper-2606-04656"></a>
+
+### Instance-Level Post Hoc Uncertain

@@ -710,5 +710,207 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "zereight/gitlab-mcp": {
+  "commit_90d": 626,
+  "commit_7d": 128,
+  "rel_ver": "v2.3.2",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 23,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-15",
+  "sec_ids": [
+   "GHSA-g4cw-m236-q72h(-,low)",
+   "GHSA-2jv7-p2g4-9f2h(-,medium)",
+   "GHSA-3gfg-wh5g-cf74(-,medium)",
+   "GHSA-64g9-hrwx-9g6m(-,medium)",
+   "GHSA-ffr3-5f57-gf93(-,medium)",
+   "GHSA-vhp9-2xfv-rrfv(-,high)",
+   "GHSA-5w3p-qj7g-79v5(-,high)",
+   "GHSA-qcj2-qcc2-5fg4(-,high)"
+  ],
+  "contrib_n": 129,
+  "lang": {
+   "TypeScript": 98,
+   "Shell": 1,
+   "JavaScript": 1,
+   "Python": 0,
+   "Nix": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Tencent-Hunyuan/Prism": {
+  "commit_90d": 18,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 94,
+   "Shell": 6
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Unclecheng-li/DeepSec": {
+  "commit_90d": 34,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-08-12",
+  "rel_days": 66,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 65,
+   "TypeScript": 24,
+   "Rust": 7,
+   "JavaScript": 4,
+   "Java": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "linghungegeg/Linghun": {
+  "commit_90d": 46,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 79,
+   "JavaScript": 16,
+   "Rust": 4,
+   "Python": 0,
+   "Go": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "deepagent-ltd/deepagent-code": {
+  "commit_90d": 113,
+  "commit_7d": 22,
+  "rel_ver": "app-v2.0.4-main.83",
+  "rel_pub": "2026-10-14",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 85,
+   "MDX": 12,
+   "Rust": 1,
+   "JavaScript": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "inclusionAI/AReno": {
+  "commit_90d": 81,
+  "commit_7d": 9,
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 85,
+   "C++": 6,
+   "Cuda": 4,
+   "JavaScript": 4,
+   "CSS": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "tinygeeker/aiManagerPrompter": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Vue": 71,
+   "JavaScript": 29,
+   "HTML": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

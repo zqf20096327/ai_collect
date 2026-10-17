@@ -752,5 +752,158 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "Pierrad/obsidian-github-copilot": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "1.2.4",
+  "rel_pub": "2026-05-03",
+  "rel_days": 167,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "TypeScript": 90,
+   "CSS": 9,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "x1xhlol/better-clawd": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 100,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "swytchcodehq/swytchcode-examples": {
+  "commit_90d": 27,
+  "commit_7d": 0,
+  "rel_ver": "latest",
+  "rel_pub": "2026-07-03",
+  "rel_days": 106,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 57,
+   "Python": 34,
+   "Go": 5,
+   "JavaScript": 2,
+   "CSS": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Beliavsky/Fortran-code-on-GitHub": {
+  "commit_90d": 12,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "MelihGulum/Comprehensive-Data-Science-AI-Project-Portfolio": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100,
+   "Python": 0,
+   "HTML": 0,
+   "CSS": 0,
+   "TSQL": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "SikandarJODD/ai-elements": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Svelte": 72,
+   "TypeScript": 24,
+   "JavaScript": 4,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

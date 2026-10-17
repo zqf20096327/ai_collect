@@ -570,5 +570,122 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "SamirPaulb/real-time-voice-translator": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2023-11-02",
+  "rel_days": 1080,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Tcl": 88,
+   "HTML": 6,
+   "Shell": 4,
+   "PLSQL": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "moly-ai/moly-ai": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.5-rc1",
+  "rel_pub": "2026-03-27",
+  "rel_days": 204,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Rust": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "zeraix/zeraix": {
+  "commit_90d": 198,
+  "commit_7d": 2,
+  "rel_ver": "v2.3.3",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 40,
+   "JavaScript": 35,
+   "Rust": 20,
+   "HTML": 2,
+   "Python": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "sebattfg/ZeroScript-Free": {
+  "commit_90d": 18,
+  "commit_7d": 0,
+  "rel_ver": "v1.5.5",
+  "rel_pub": "2026-09-10",
+  "rel_days": 37,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 80,
+   "Python": 13,
+   "CSS": 6,
+   "Batchfile": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

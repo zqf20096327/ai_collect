@@ -633,6 +633,7 @@ Reading list and comments/short reviews around reasoning models, training techni
 - [PANINI-DR: Controlled Deep Research through Generative Semantic Workspaces](https://arxiv.org/abs/2610.15208)
 - [Tev: Scaling Long-Horizon Agentic Environments with Dense Progress Rewards](https://arxiv.org/abs/2610.18868)
 - [Hybrid Reasoning Agents](https://arxiv.org/abs/2610.18861)
+- [Athanor: An Agent-Native System for Autonomous Post-Training Research](https://arxiv.org/abs/2610.21055)
 
 #### Topic - Audio Reasoning
 
@@ -663,5 +664,3 @@ Start with the first-linked survey.
 
 - [Learning to Reason without External Rewards](https://arxiv.org/abs/2505.19590) - "We propose Intuitor, an RLIF method that uses a model's own confidence, termed self-certainty, as its sole reward signal. Intuitor replaces external rewards in Group Relative Policy Optimization (GRPO) with self-certainty scores, enabling fully unsupervised learning. Experiments demonstrate that Intuitor matches GRPO's performance on mathematical benchmarks while achieving superior generalization to out-of-domain tasks like code generation, without requiring gold solutions or test cases."
 - [NOVER: Incentive Training for Language Models via Verifier-Free Reinforcement Learning](https://arxiv.org/abs/2505.16022)
-- [Reinforcing General Reasoning without Verifiers](https://arxiv.org/abs/2505.21493)
-- [RLPR: Extrapolatin

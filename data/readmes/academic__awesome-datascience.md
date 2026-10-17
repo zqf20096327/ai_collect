@@ -160,6 +160,7 @@ This section contains agent frameworks and tools that are useful for data scienc
 - [Synthetic Hospital](https://github.com/sparkcpark/synthetic_hospital) - A Medical Benchmark & EHR Simulation Platform
 - [Amazon Bestsellers Tracker](https://github.com/huynhtanan/amazon-bestsellers-tracker) - Open-source Python + SQLite tracker that snapshots Amazon Best Sellers across 17 country stores daily, with example SQL diff queries for rank jumps and new entries.
 - [Walmart Deals Tracker](https://github.com/huynhtanan/walmart-deals-tracker) - Open-source Python + SQLite watcher for Walmart Rollback-only deals, with example SQL queries for price drops and first-party vs marketplace filtering.
+- [VulnState](https://github.com/corifeo/VulnState) - Open-source Python library that joins NVD, EPSS and CISA KEV vulnerability data and analyzes each CVE's disclosure timeline with NumPy and pandas.
 
 ## Training Resources
 **[`^        back to top        ^`](#awesome-data-science)**
@@ -190,6 +191,8 @@ How do you learn data science? By doing data science, of course! Okay, okay - th
 - [Data Analytics Interview Questions (Beginner to Advanced)](https://www.appliedaicourse.com/blog/data-analytics-interview-questions/)
 - [Top 100+ Data Science Interview Questions and Answers](https://www.appliedaicourse.com/blog/data-science-interview-questions/)
 - [DataDriven - SQL, Python, and Data Modeling Interview Questions](https://www.datadriven.io/)
+- [Skillancy SQL Compiler](https://skillancy.in/tools/sql-compiler) - A browser-based PostgreSQL playground with a sample schema and interview-style practice queries.
+- [Skillancy Python Compiler](https://skillancy.in/tools/python-compiler) - A browser-based Python environment with NumPy and Pandas for data analysis practice.
 - [StepByStepML](https://www.stepbystepml.com) - Interactive calculator that visualizes the step-by-step manual math behind machine learning algorithms for exam prep.
 - [How to Build Optimal AI Agents That Actually Work](https://www.freecodecamp.org/news/how-to-build-optimal-ai-agents-that-actually-work-a-handbook-for-devs/) - A developer handbook on designing and building effective AI agents.
 - [Train LLM From Scratch](https://github.com/FareedKhan-dev/train-llm-from-scratch) - A straightforward method for training your LLM, from downloading data to generating text.
@@ -563,6 +566,7 @@ These are some Machine Learning and Data Mining algorithms and models help you t
 | [Data Science Lifecycle Template Repo](https://github.com/dslp/dslp-repo-template) | Template repository for data science lifecycle project  |
 | [TabGAN](https://github.com/Diyago/Tabular-data-generation) | Synthetic tabular data generation using GANs, Diffusion Models, and LLMs with adversarial filtering and privacy metrics. |
 | [RexMex](https://github.com/AstraZeneca/rexmex) | A general purpose recommender metrics library for fair evaluation.  |
+| [OpenBacktesting](https://github.com/lucidcog/openbacktesting) | Single-asset historical strategy simulation with inspectable trades, pandas statistics, and parameter optimization. |
 | [ChemicalX](https://github.com/AstraZeneca/chemicalx) | A PyTorch based deep learning library for drug pair scoring.  |
 | [FileShot.io](https://github.com/FileShot/FileShotZKE) | Secure zero-knowledge encrypted file sharing (AES-256-GCM in-browser). No account required, MIT licensed, self-hostable, optional link expiry. |
 | [CorpusExplorer](https://corpusexplorer.de/) | Software for corpus linguists and text/data mining enthusiasts. Build your own corpora in over 60 languages. Use over 50 tools/visualizations.  |
@@ -1032,15 +1036,4 @@ Below are some Social Media links. Connect with other data scientists!
 - [Big Data, Data Science, Data Mining & Statistics](https://www.facebook.com/groups/bigdatastatistics/)
 - [BigData/Hadoop Expert](https://www.facebook.com/groups/BigDataExpert/)
 - [Data Mining / Machine Learning / AI](https://www.facebook.com/groups/machinelearningforum/)
-- [Data Mining/Big Data - Social Network Ana](https://www.facebook.com/groups/dataminingsocialnetworks/)
-- [Vademecum of Practical Data Science](https://www.facebook.com/datasciencevademecum)
-- [Veri Bilimi Istanbul](https://www.facebook.com/groups/veribilimiistanbul/)
-- [The Data Science Blog](https://www.facebook.com/theDataScienceBlog/)
-
-
-### Twitter Accounts
-**[`^        back to top        ^`](#awesome-data-science)**
-
-| Twitter | Description |
-| --- | --- |
-| [Big Data Combine](https://twitter.com/BigDataCombine) | Rapid-fire, live tryouts for data scientists seeking to monetize their models as trading strategi
+- [Dat

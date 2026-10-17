@@ -337,5 +337,222 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "fmind/cookiecutter-mlops-package": {
+  "commit_90d": 6,
+  "commit_7d": 1,
+  "rel_ver": "v6.1.1",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 81,
+   "Dockerfile": 19
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "OpenRouterTeam/openrouter-examples": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 95,
+   "Shell": 4,
+   "Makefile": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "analyticalrohit/llms-from-scratch": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Dodelidoo-Labs/sonobarr": {
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": "0.13.0",
+  "rel_pub": "2026-09-09",
+  "rel_days": 38,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 74,
+   "HTML": 13,
+   "JavaScript": 10,
+   "CSS": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "IBM/AutoMLPipeline.jl": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v0.4.7",
+  "rel_pub": "2025-10-09",
+  "rel_days": 373,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Julia": 93,
+   "Python": 3,
+   "Shell": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "tencent-quantum-lab/tensorcircuit": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.12.0",
+  "rel_pub": "2024-03-15",
+  "rel_days": 946,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 29,
+  "lang": {
+   "Python": 92,
+   "Jupyter Notebook": 8,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "wisent-ai/ster": {
+  "commit_90d": 269,
+  "commit_7d": 0,
+  "rel_ver": "v0.11.43",
+  "rel_pub": "2026-05-18",
+  "rel_days": 152,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Rust": 95,
+   "Shell": 5,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "opgginc/laravel-mcp-server": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.0.6",
+  "rel_pub": "2026-04-05",
+  "rel_days": 195,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "PHP": 95,
+   "Shell": 3,
+   "Python": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

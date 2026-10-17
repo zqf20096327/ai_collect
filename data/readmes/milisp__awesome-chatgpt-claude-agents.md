@@ -5,12 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-<p align="center">
-  🚀 <strong>New:</strong> <a href="https://www.producthunt.com/products/mcp-linker?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=awesome-chatgpt-claude-agents">MCP Linker</a> — sync MCP servers between Claude Code, Codex, Cursor &amp; more — is live on Product Hunt!<br>
-  <a href="https://www.producthunt.com/products/mcp-linker?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=awesome-chatgpt-claude-agents" target="_blank" rel="noopener noreferrer"><img alt="MCP Linker on Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1281069&amp;theme=light"></a>
-</p>
-
-> A curated collection of awesome ChatGPT & Claude agents, subagents, and AI-powered development tools for 2025
+> A curated collection of awesome ChatGPT & Claude agents, subagents, and AI-powered development tools
 
 ## 📋 Contents
 
@@ -45,12 +40,10 @@
 ### Business & Productivity
 
 - **[TaskWeaver](https://github.com/microsoft/TaskWeaver)** ⭐ 5k+ - A code-first agent framework for seamlessly planning and executing data analytics tasks
-- **[ChatGPT-Business](https://github.com/garyvalue/chatgpt-business)** - Business applications and use cases for ChatGPT
 - **[GPT-Researcher](https://github.com/assafelovic/gpt-researcher)** ⭐ 14k+ - GPT based autonomous agent that does online comprehensive research
 
 ### Creative & Content
 
-- **[ChatGPT-Writer](https://github.com/gpt-writer/ChatGPT-Writer)** - Browser extension to write emails, messages, and more using ChatGPT
 - **[AI-Commit](https://github.com/guanguans/ai-commit)** - Automagically generate conventional commit messages with AI
 - **[Storyteller](https://github.com/jaketae/storyteller)** - Generate stories using GPT models
 - **[CreatorSkills](https://creatorskills.co)** - Marketplace of 30+ downloadable AI skills for content creators covering YouTube scripting, sponsorship analysis, and audience growth. Works with Claude and ChatGPT.
@@ -59,7 +52,7 @@
 
 - **[GPT Researcher](https://github.com/assafelovic/gpt-researcher)** - Autonomous agent for comprehensive online research
 - **[ChatGPT-Academic](https://github.com/binary-husky/gpt_academic)** ⭐ 65k+ - Optimize paper reading/writing experience for researchers
-- **[Paper-QA](https://github.com/whitead/paper-qa)** - LLM Chain for answering questions from documents
+- **[Paper-QA](https://github.com/Future-House/paper-qa)** - LLM Chain for answering questions from documents
 
 ### Security & DevOps
 
@@ -100,6 +93,7 @@
 ## 🛠️ Frameworks & Platforms
 
 ### Multi-Agent Orchestration
+- **[Continuum-AI-Corp/OrcaReplay](https://github.com/Continuum-AI-Corp/OrcaReplay)** ⭐ 250 - Records the traffic between an agent and the model provider into a local trace, then replays it offline to reproduce a failed run without calling the provider again.
 
 - **[CrewAI](https://github.com/joaomdmoura/crewAI)** ⭐ 20k+ - Framework for orchestrating role-playing, autonomous AI agents
 - **[Swarm](https://github.com/openai/swarm)** - Educational framework for lightweight multi-agent orchestration by OpenAI
@@ -115,12 +109,16 @@
 - **[Lobe Chat](https://github.com/lobehub/lobe-chat)** ⭐ 63k+ - Open-source UI framework for building ChatGPT/LLM-based chat applications
 - **[OpenDevin](https://github.com/OpenDevin/OpenDevin)** ⭐ 61k+ - Open-source initiative replicating autonomous AI software engineer Devin
 - **[E2B](https://github.com/e2b-dev/e2b)** - Open platform for AI agents & AI apps
+- **[Codexia](https://github.com/milisp/codexia)** ⭐ 900+ - Lightweight agent workstation for Codex and Claude Code with a task scheduler, git worktrees and remote control
+- **[keke-agent](https://github.com/milisp/keke-agent)** ⭐ 6 - Lightweight coding agent harness built in Rust for zero vendor lock-in; bring your own key, with Codex and Grok subscription support
+- **[MCP Linker](https://github.com/milisp/mcp-linker)** ⭐ 340+ - MCP store and configuration manager that discovers, adds and syncs MCP servers across Claude Code, Codex, Cursor and more
 
 ## 🔄 Multi-Agent Systems
 
 - **[MetaGPT](https://github.com/geekan/MetaGPT)** ⭐ 44k+ - Multi-agent framework that turns one line requirement into PRD, design, tasks, and code
 - **[ChatDev](https://github.com/OpenBMB/ChatDev)** ⭐ 25k+ - Communicative agents for software development
 - **[CAMEL](https://github.com/camel-ai/camel)** ⭐ 5k+ - Communicative agents for "mind" exploration of large language model society
+- **[Hivekeep](https://github.com/MarlBurroW/hivekeep)** ⭐ 70 - Self-hosted platform to run a team of specialized AI agents with persistent memory and a web UI; agents collaborate, build their own tools and mini-apps, and are reachable over Telegram, Slack, Discord and Matrix
 - **[Orkas](https://github.com/Orkas-AI/Orkas)** ⭐ 2,002 - Open-source, local-first desktop AI workforce coordinated by a Commander through one chat.
 
 ## 📚 Educational Resources
@@ -133,7 +131,6 @@
 
 ### Research & Papers
 
-- **[Agent Papers](https://github.com/thunlp/AgentPapers)** - Must-read papers on LLM-based agents
 - **[LLM-Agent-Survey](https://github.com/Paitesanshi/LLM-Agent-Survey)** - Survey of LLM-based agents
 - **[Agent-Bench](https://github.com/THUDM/AgentBench)** - Evaluating LLMs as agents
 
@@ -156,12 +153,11 @@ For more, explore Reddit threads like [Massive list of 1500+ AI Agent Tools](htt
 ### Cybersecurity
 
 - **[Awesome GPT Agents (Security)](https://github.com/fr0gger/Awesome-GPT-Agents)** - GPT agents specifically for cybersecurity applications
-- **[CyberGPT](https://github.com/pentestgpt/PentestGPT)** - GPT-empowered penetration testing tool
+- **[PentestGPT](https://github.com/GreyDGL/PentestGPT)** ⭐ 15k+ - Automated penetration testing agentic framework powered by large language models
 
 ### Finance & Trading
 
 - **[FinGPT](https://github.com/AI4Finance-Foundation/FinGPT)** ⭐ 13k+ - Open-source financial large language models
-- **[TradingGPT](https://github.com/ValyrianTech/TradingGPT)** - AI-powered trading assistant
 
 ## 🚀 Getting Started
 
@@ -193,13 +189,6 @@ model: "claude-3-5-sonnet-20241022"
 tools: ["read", "write", "bash"]
 ```
 
-## 📈 Trending in 2025
-
-- **Model Context Protocol (MCP)**: Standardizing AI model connections with external tools
-- **Multi-modal agents**: Combining text, image, and audio processing
-- **Autonomous coding**: Self-improving and self-correcting code agents
-- **Domain-specific specialization**: Industry-focused AI agents
-
 ## 🤝 Contributing
 
 We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) before submitting.
@@ -229,5 +218,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **[⬆ Back to Top](#awesome-chatgpt--claude-agents-)**
-
-*Last updated: August 2025*

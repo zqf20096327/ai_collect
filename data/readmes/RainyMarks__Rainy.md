@@ -4,7 +4,7 @@
 
 # Rainy
 
-**A lightweight AI coding workbench for Windows. An agent that edits your project and runs commands, an editor with AI built in, and the same workbench on any Linux server over SSH.**
+**A lightweight AI workbench for Windows, for office work, research and coding. An agent that edits your files and runs commands, previews of Word, Excel, PowerPoint and PDF, an editor with AI built in, and the same workbench on any Linux server over SSH.**
 
 [![Release](https://img.shields.io/github/v/release/RainyMarks/Rainy?label=release&color=3b82f6)](https://github.com/RainyMarks/Rainy/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/RainyMarks/Rainy/total?color=10b981)](https://github.com/RainyMarks/Rainy/releases)
@@ -20,17 +20,17 @@ English | [中文](README.zh.md)
 
 ![Rainy connected to a Linux server over SSH: the agent ran a script on the server](assets/workbench.png)
 
-Rainy puts an AI coding agent, a real editor and debugger with AI suggestions and Ctrl+K edits, a project map, search, Git and a terminal in one small desktop app. The agent reads and edits your project and runs commands, asking first by default, and you review every file it changed: keep or undo each change. Work in native Windows, in WSL2, or on a remote Linux server over SSH, where the agent, terminals and debugger run next to your code while the window stays on your PC. Bring any model: DeepSeek, Claude, any OpenAI- or Anthropic-compatible API, a local server, or Strata local inference on an NVIDIA GPU. Free for personal use. Developed by RainyMarks.
+Rainy puts an AI agent, previews of Word, Excel, PowerPoint and PDF, a real editor and debugger with AI suggestions and Ctrl+K edits, a project map, search, Git and a terminal in one small desktop app, so papers, reports and code live in one window. The agent reads and edits your project and runs commands, asking first by default, and you review every file it changed: keep or undo each change. Work in native Windows, in WSL2, or on a remote Linux server over SSH, where the agent, terminals and debugger run next to your code while the window stays on your PC. Bring any model: DeepSeek, Claude, any OpenAI- or Anthropic-compatible API, a local server, or Strata local inference on an NVIDIA GPU. Free for personal use. Developed by RainyMarks.
 
 ## Why Rainy
 
 | | |
 |---|---|
-| **An agent you stay in control of** | The assistant reads, searches and edits project files, runs commands, and remembers the project across chats. Each chat runs read-only, asks before commands (the default), or runs fully automatically. Every file it changes is listed for review in the editor, where you keep or undo each change. Add skills in `.rainy/skills` and MCP servers in Settings. |
+| **An agent you stay in control of** | The assistant reads, searches and edits project files, runs commands, searches the web and reads pages through DeepSeek, and remembers the project across chats. Each chat runs read-only, asks before commands (the default), or runs fully automatically. Every file it changes is listed for review in the editor, where you keep or undo each change. Add skills in `.rainy/skills` and MCP servers in Settings. |
 | **Remote development over SSH** | Pick a host from `~/.ssh/config` or add `user@host`, and Rainy runs its backend on the server: the agent, terminals, run and debug, and language services work on the server's files, while the interface stays here. It uses the OpenSSH client built into Windows, so your keys, agent and ProxyJump settings just work. |
 | **See the whole project** | The project map draws a project's parts and the imports between them, or every file as a block sized by its lines. It names the stack, explains each part with AI on request, and highlights the files the agent is reading or changing. |
 | **A real editor and debugger** | AI suggestions as you type (Tab accepts) and Ctrl+K to rewrite a selection, reviewed line by line before you keep it. Search and replace across the project, a command palette, and Git with AI-written commit messages. CodeMirror 6 with completion, hover, go to definition, rename, diagnostics, diffs and recovery of unsaved work. Run and debug Python, JavaScript/TypeScript and C/C++; run PHP. |
-| **Preview any file** | Images with zoom and pixel colors, Markdown, PDF, audio and video in place; binaries in a hex view with a data inspector; GBK and UTF-16 text decoded correctly. |
+| **Preview any file** | Word documents as paginated paper; Excel and OpenDocument spreadsheets as tables with a tab per sheet; PowerPoint and legacy .doc files converted by the Office on your PC, so they look exactly as in PowerPoint and Word. Markdown opens formatted and is edited right there; PDF (including Chinese papers that do not embed their fonts), images, audio and video in place; images with zoom and pixel colors; other binaries in a hex view; GBK and UTF-16 text decoded correctly. |
 | **Windows, WSL2 or SSH** | Start in native Windows; move a project to WSL2 or to a Linux server whenever it needs one. |
 | **Your model, your keys** | Keys stay on your machine, encrypted with Windows data protection. Model requests follow the system proxy or one you set. There is no telemetry; crash reports stay local. |
 | **Light** | A 174 MB installer. The Strata engine, PHP and the Linux runtime download only when you need them. |
@@ -61,6 +61,34 @@ Rainy puts an AI coding agent, a real editor and debugger with AI suggestions an
 ![Ctrl+K adding an empty-key check to a function, with the new lines in green](assets/ai-edit.png)
 
 <a id="whats-new"></a>
+## What's new in 3.4
+
+Notes and documents are easier to work on.
+
+- **WYSIWYG Markdown**: a .md file opens formatted, and you type on it as in Typora; headings, lists, task lists, tables, code blocks and LaTeX math take shape as you write, and `/` inserts any of them. Source, Preview and Split are one click away. Saving changes only the lines you edited, so escapes, blank lines and table spelling elsewhere in the file stay as they were.
+- **Chinese PDFs no longer come out blank**: PDFs that do not embed their Chinese fonts, as many papers and official documents do not, used to show only their English text; now the Chinese shows too.
+- **Password-protected Office files** say that they need their password and offer Open in default app, instead of hanging on a password prompt nobody can see.
+
+## What's new in 3.3
+
+The AI can go online: look up current documentation, papers, version numbers and error messages, then read the pages it needs in full.
+
+- **Search the web** with DeepSeek's own search engine: titles, links, dates and summaries, with `site:`, `"exact phrase"`, `lang:zh` and `after:2025` syntax. Links in the result card open in your browser.
+- **Read a web page** as Markdown. Reading a site for the first time asks you first, and you can remember the site; fully automatic chats do not ask.
+- **DeepSeek only**: it uses the API key of the DeepSeek model you added, and your DeepSeek account pays (5 yuan per 1,000 searches or page reads; failed and empty requests are free). Without a DeepSeek key the two tools do not appear. Turn it off in **Settings → Models → Web search**.
+
+## What's new in 3.2
+
+Rainy turns from CTF to office work, research and coding. Open a folder of papers, reports and spreadsheets and click a file to read it, instead of a screen of hex.
+
+![A PowerPoint deck converted by PowerPoint on this PC and shown in Rainy](assets/office.png)
+
+- **Word**: Rainy draws .docx files itself as paginated paper with headings, tables, pictures, headers and footers, no Office needed. For the exact Word layout, click **Office layout**.
+- **PowerPoint and legacy Word**: .pptx, .ppt and .doc files are turned into PDF by the Microsoft Office (or WPS) installed on your PC, so charts, tables and fonts match the original and the text can be extracted. Without Office, Rainy lists the text of each slide.
+- **Excel**: .xlsx, .xls and .ods files show as tables with fixed row and column headings, merged cells and a tab per sheet.
+- **Open in default app**: one click hands a document to Word, PowerPoint, Excel or WPS for editing (documents only; programs are never started).
+- **Small files explained**: a `~$` file says it is an Office lock file and who has which document open; a `.lnk` shortcut shows where it points.
+
 ## What's new in 3.1
 
 Rainy now looks like its name.
@@ -133,10 +161,10 @@ git clone https://github.com/RainyMarks/Rainy.git
 cd Rainy
 pnpm install --frozen-lockfile
 node scripts/bootstrap-release-inputs.mjs --manifest toolpacks/build-inputs.v1.json
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1 -Distribution Ubuntu -ComponentSource release/offline-3.1.1/environment-components
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package.ps1 -Distribution Ubuntu -ComponentSource release/offline-3.4.0/environment-components
 ```
 
-Replace `Ubuntu` only when your WSL build distribution has another name, and `3.1.1` with the version in `package.json`. [Validation](docs/validation.md) records the build, installation and runtime checks completed for each release.
+Replace `Ubuntu` only when your WSL build distribution has another name, and `3.4.0` with the version in `package.json`. [Validation](docs/validation.md) records the build, installation and runtime checks completed for each release.
 
 For development, `pnpm run dev` builds the app and starts a Host without Electron, then prints a URL you can open in a browser; `pnpm run start` runs Electron on the built files.
 

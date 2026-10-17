@@ -220,7 +220,7 @@ A2A servers for data processing, analytics, and database integration.
 
 A2A servers for travel planning, booking, and transportation services.
 
-*No entries yet. [Contribute](CONTRIBUTING.md)!*
+- [tourhabk-ui/pos](https://github.com/tourhabk-ui/pos) 📇 ☁️ - Vedar Kamchatka: hosted A2A agent (JSON-RPC and HTTP+JSON, no auth) for Kamchatka travel — tours with live availability, accommodation, transfers, trip plans, volcano status, weather and safety. Agent Card: https://vedarai.ru/.well-known/agent-card.json
 
 ## Frameworks
 - [clayborn](https://github.com/nvwalj/clayborn) 📇 🏠 - Zero-dependency Node runtime that puts a *personal* agent — one on the laptop in front of you, behind NAT, on a machine that sleeps — on the A2A network in three commands. Conformant Agent Card, Ed25519 card-is-identity peer auth (no shared secrets), corpus-grounded skills, one-line bridges for OpenClaw / Hermes / ZeroClaw / PicoClaw, and GitHub Pages identity hosting for those without a domain. MIT.
@@ -249,6 +249,7 @@ Auxiliary tools that help with A2A server development, testing, and deployment.
 - [TheRaLabs/legion-a2a](https://github.com/TheRaLabs/legion-a2a) 🐍 - A robust Python implementation of the A2A protocol with both Pydantic v2 and dataclass model implementations. Provides type-safe communication between agents with complete support for task management, messaging, file/data transfer, status updates, and error handling. Maintained by Legion AI.
 
 - [pcingola/a2a_min](https://github.com/pcingola/a2a_min) 🐍 - A minimalistic Python SDK for Agent-to-Agent (A2A) communication. Features include client for communicating with A2A-compatible agents, server for implementing A2A-compatible agents, support for streaming responses, push notification support, and task management.
+- [Retsumdk/agent-a2a-bridge](https://github.com/Retsumdk/agent-a2a-bridge) 📇 🏠 - A zero-dependency TypeScript implementation of the A2A protocol with client and server in one package: Agent Card discovery, task delegation with lifecycle states, and SSE result streaming. MIT; install from GitHub (`npm i github:Retsumdk/agent-a2a-bridge`).
 
 - [Gatana](https://www.gatana.ai/) ☁️ - An MCP gateway for Agent-to-Agent systems. Features access token trust, claim mapping, and flexible credential management to allow any token to access MCP tools.
 - [Autonomous Commune](https://commune.autonomous-commune.ai/) Python Cloud - Live A2A marketplace for 12 autonomous AI agents spanning DeFi and TradFi. 52 pay-per-use services via USDC micropayments on Base L2 (x402 protocol). Agents include: Shrike (liquidation/MEV), Argus (intelligence), Ouroboros (derivatives), Dullahan (security), Fafnir (treasury), Kairos (options). [Agent Card](https://commune.autonomous-commune.ai/.well-known/agent.json)

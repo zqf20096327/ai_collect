@@ -21,7 +21,23 @@
 
 官方仓库地址：https://github.com/JGRFW/comfyui-AICG3D
 
-## 🆕 v1.1.9 更新摘要
+## 🆕 v1.1.11 更新摘要
+
+完整说明见 [RELEASE_NOTES_v1.1.11.md](RELEASE_NOTES_v1.1.11.md)。
+
+- **接入 Comfy Registry**：补齐官方节点管理器要求的项目名称、Publisher、显示名称、图标、关键词、仓库和问题反馈地址。
+- **官方管理器可检索**：发布后可搜索 `AICG3D`、`短剧工作台` 或 `MiniMax H3` 找到本插件。
+- **自动发布流程**：配置 Registry API Key 后，更新 `pyproject.toml` 版本即可通过 GitHub Actions 自动发布新版本。
+
+## v1.1.10 更新摘要
+
+完整说明见 [RELEASE_NOTES_v1.1.10.md](RELEASE_NOTES_v1.1.10.md)。
+
+- **彻底取消上游 Easy 依赖**：单独安装本插件即可使用资源库，不需要另外安装 `ComfyUI-MiniMaxH3-Easy`。
+- **修复干净环境启动失败**：移除启动日志中的 Emoji 输出，避免 Windows GBK 控制台无法编码导致整个插件被误判为加载失败。
+- **资源库面板内置注册**：只加载 `ComfyUI-AICG3D-Integrated` 时，`MiniMax H3 Aicg资源库` 也会正常显示上传区、图片、音频和视频面板。
+
+## v1.1.9 更新摘要
 
 完整说明见 [RELEASE_NOTES_v1.1.9.md](RELEASE_NOTES_v1.1.9.md)。
 

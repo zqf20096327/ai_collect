@@ -49,13 +49,13 @@ because it is not code-signed yet; see [installation and safety notes](#install)
 **Choose one channel:** Store and installer builds keep separate settings, chats and keys.
 [Scoop, portable ZIP and CLI](#install) · [Update guide](docs/UPDATING.md)
 
-## Aetox Mobile — Android preview
+## Aetox Mobile 0.3.1 — Android
 
-[**Download the Android test APK**](https://github.com/Mikedev115/Aetox-Harness/releases/download/mobile-v0.1.0-test/Aetox-Mobile-Android-Test.apk) · [Preview release and setup requirements](https://github.com/Mikedev115/Aetox-Harness/releases/tag/mobile-v0.1.0-test)
+[**Download the Android APK**](https://github.com/Mikedev115/Aetox-Harness/releases/download/mobile-v0.3.1/Aetox-Mobile-Android-Test.apk) · [Release notes and setup requirements](https://github.com/Mikedev115/Aetox-Harness/releases/tag/mobile-v0.3.1)
 
-Continue conversations, follow work, review files, and answer requests from your phone while **Windows does the work**. The Android companion requires Android 10 or later; it does not ask you to copy provider keys to your phone.
+A phone chat for the Aetox on your PC: chats, models, files and the agent stay on **Windows**, the phone is the screen. Pick the model and thinking level, attach photos or files, answer approvals, and open delivered files. **Talk to it:** dictate into the box, or hold a voice conversation that is answered aloud sentence by sentence, using the speech engine and voice set in Aetox on Windows. Answers stream in as they are written, with each tool step shown; every chat on the PC is there, grouped by project; files the agent hands over open full screen (documents, images, video, pages and slides). The app tells you when the PC carries a newer version and updates in one tap. It wears the same themes as the desktop app. Android 10 or later; provider keys never leave the PC.
 
-> **Testing preview, not a production mobile release.** You need a Windows development build with **Aetox Link** and trusted Tailscale HTTPS. The current stable Windows release does not include this new Link integration yet. Windows and Aetox must stay running; physical-device end-to-end verification is still pending.
+> **Preview, test-signed, not from the Play Store.** You need Aetox for Windows **1.9.28 or later** (it includes **Aetox Link**) and trusted Tailscale HTTPS. Windows and Aetox must stay running. Voice, camera and installation have not yet been checked on a physical phone.
 
 **iPhone:** a removable full-screen Web Clip is supported, **not a native IPA**. Its profile is generated for your Windows HTTPS address; personal profiles are not published as universal public installers.
 
@@ -180,7 +180,8 @@ Much of what people assume has to come from a bigger model is, in Aetox, the sys
    frontier one, and not a byte leaves your machine → [Which models it works with](#which-models-it-works-with)
 4. **Same model, different result** — on GPT-6 Luna (`gpt-6-luna`, through the same ChatGPT (Codex) account for
    every harness), code passing the security tests (CWEval func-sec@1): Aetox 91.1% · OpenCode 66.7% ·
-   Codex CLI 66.7% · omp 68.9% · pi 64.4%, over 461 runs judged by hidden tests (1.9.7). The method and where Aetox
+   Codex CLI 66.7% · omp 68.9% · pi 64.4%, over 527 runs judged by hidden tests (1.9.27). The lead comes from the
+   bundled security skill: with it off, Aetox lands in the same range as the others. The method and where Aetox
    loses are in [Measured results](#measured-results)
 5. **Many tools do not mean a full context** — an MCP server with 212 tools costs a 135-token index, and the
    definitions load when they are actually used → [How the system works](#how-the-system-works)
@@ -404,9 +405,11 @@ is out. This CLI is the build the coding benchmark measures.
 
 ### Coding results
 
-On the same models against OpenCode · Codex CLI · omp · pi (1.9.7, 461 runs), Aetox leads on secure code on both
-models and passes the most checkpoints in long multi-turn coding on GPT-5.6 Terra; on hard tasks with GPT-6 Sol it
-ties Codex CLI. It trails on Web-Bench, and the price is more time and more tokens — see [Measured results](#measured-results).
+On the same models against OpenCode · Codex CLI · omp · pi (1.9.27, 527 runs), Aetox leads on secure code on both
+models (the lead comes from its bundled security skill) and has the highest share of tests passed in long
+multi-turn coding on both GPT-6 Luna and GPT-5.6 Terra; on hard tasks with GPT-6 Sol it ties Codex CLI (1.9.7). It
+trails on Web-Bench on Terra and on the single SWE-bench bug on Luna, and the price is more tokens — see
+[Measured results](#measured-results).
 
 ## Teams from Assistant and Code
 
@@ -526,25 +529,32 @@ their overview shows separate model choices. Each chat keeps its own selected mo
 The rules are in [BENCHMARK.md](docs/reports/BENCHMARK.md), and the one rule it enforces is that a number that
 has not passed them does not appear here or on the website.
 
-**Coding, 1.9.7 (4 October 2026).** Same models and byte-identical tasks as OpenCode · Codex CLI · omp · pi:
+**Coding, 1.9.27 (17 October 2026).** Same models and byte-identical tasks as OpenCode · Codex CLI · omp · pi:
 11 tasks × 2 models (`gpt-6-luna`, `gpt-5.6-terra`, medium reasoning) × 3 rounds, every task judged by hidden
 tests, no user skills or settings anywhere. The other harnesses were measured on 27–28 September with the same
-account. What held in every set of rounds:
+account.
 
 - **Secure code** — Aetox leads on both models: CWEval func-sec@1 91.1% against 68.9% for the next harness on
-  Luna, 93.3% against 77.8% on Terra
-- **Long multi-turn coding** — second in % tests passed on both models (Luna 90.1%, Terra 92.0%; OpenCode 90.8%
-  and 92.8%) and the most checkpoints fully passed on Terra (7.0 of 14)
-- **Hard tasks on GPT-6 Sol** — DeepSWE 1.1 and Terminal-Bench 2.1 hard, 12 tasks at high reasoning: Aetox 7 ·
-  Codex CLI 7 · OpenCode 6
-- **The price** — more time and more tokens than the others (Terra 76 min against 46–71; about 90% of the tokens
-  are cached input). Against 1.9.3, Terra is faster and cheaper (81 → 76 min, cost −11%). The benchmark is
+  Luna, 93.3% against 77.8% on Terra. Switching parts off (5 rounds each) shows where it comes from: with only the
+  security skill off, Aetox secures 10.2 of 15 functions on Luna and 11.6 on Terra, the same range as the other
+  harnesses; with every skill off, 10.6 and 11.2. The lead is the knowledge in that skill, which ships switched on
+- **Long multi-turn coding** — the highest % tests passed on both models (Luna 92.4%, Terra 93.8%; OpenCode 90.8%
+  and 92.8%). Checkpoints fully passed: Luna 3.7 of 14, tied with OpenCode; Terra 6.0, behind OpenCode's 6.7
+- **Against 1.9.7** — Luna is better in nearly every column and about a third faster (SlopCodeBench 90.1 → 92.4%,
+  47 → 31 min); Terra is slightly better and faster on multi-turn work (92.0 → 93.8%, 76 → 70 min) but lost a
+  checkpoint and a Web-Bench task
+- **Hard tasks on GPT-6 Sol** (1.9.7) — DeepSWE 1.1 and Terminal-Bench 2.1 hard, 12 tasks at high reasoning:
+  Aetox 7 · Codex CLI 7 · OpenCode 6
+- **The price** — more tokens than the others (Luna 6.1M against 0.8–4.5M, Terra 8.8M against 1.8–7.5M; about 90%
+  is cached input). Against 1.9.7 the total rose (Luna +27%, Terra +13%) from more tool calls, while the
+  full-price part barely moved; cost per round +16% on Luna, +10% on Terra. Time: Luna 31 min, close to Codex CLI
+  and pi; Terra 70 min against 46–71. The benchmark is
   one-shot, so the main agent does nearly all of it (helpers called in 1 of 78 runs); in a real session helpers
   kept the main context at 107k instead of 190k and cut cost by about 6% on OpenAI prices, 18–30% on other providers
   ([session report](docs/reports/LIVING-REALM-DELEGATION-TOKENS-20261004.md) ·
   [cost report](docs/reports/MODEL-COST-SIMULATION-LIVING-REALM-20261004.md))
-- **Where it trails** — Web-Bench, where pi passes more on both models and omp on Terra · the single SWE-bench
-  bug on Luna
+- **Where it trails** — Web-Bench on Terra (4.7 of 6, the lowest; in every round the last task left the planets
+  off their orbits) · the single SWE-bench bug on Luna (fixed in 1 of 3 rounds)
 
 Rounds swing by 1.5–2.5 points on SlopCodeBench, so a gap of a few points reads as a tie. The tables, every
 round, the method and where Aetox loses are in the reports — start at [the reports page](docs/reports/README.md).
@@ -552,7 +562,8 @@ round, the method and where Aetox loses are in the reports — start at [the rep
 | Other reports | What they measure |
 |:---|:---|
 | [Reports page](docs/reports/README.md) | Every report, and the latest edition of each subject |
-| [coding-harness-1.9.7](docs/reports/coding-harness-1.9.7/README.md) | The 1.9.7 edition against the same four harnesses, with two sets of rounds and the swing between them |
+| [coding-harness-1.9.27](docs/reports/coding-harness-1.9.27/README.md) | The 1.9.27 edition against the same four harnesses, with what makes Aetox lead on CWEval and a GPT-6 Sol run |
+| [coding-harness-1.9.7](docs/reports/coding-harness-1.9.7/README.md) | The 1.9.7 edition, with two sets of rounds and the swing between them |
 | [HARD-SOL-1.9.7](docs/reports/HARD-SOL-1.9.7-20261004.md) | Hard tasks on GPT-6 Sol: DeepSWE 1.1 and Terminal-Bench 2.1 hard, Aetox against Codex CLI and OpenCode |
 | [HARD5-1.9.7](docs/reports/HARD5-1.9.7-20261004.md) | Five mid-level tasks across releases 1.9.0 → 1.9.7 and three model sizes |
 | [MODEL-COST-SIMULATION](docs/reports/MODEL-COST-SIMULATION-LIVING-REALM-20261004.md) | One real session re-priced on eight other models, and what helpers save |
@@ -564,18 +575,18 @@ round, the method and where Aetox loses are in the reports — start at [the rep
 | [PUBLISHED-NUMBERS.md](docs/reports/PUBLISHED-NUMBERS.md) | Where every published number appears, and where it was measured |
 
 <details>
-<summary>The app's own numbers — 1.9.26 package sizes and dated runtime figures</summary>
+<summary>The app's own numbers — 1.9.27 package sizes and dated runtime figures</summary>
 
-**1.9.26 packages, measured 16 October 2026.** Built locally; `relcheck` verified the release signature with the app's key and checked every uploaded artifact's digest. The app size was read from the published portable archive; the Store figure is the local package, not a completed Store submission. MiB is bytes / 1,048,576. Sizes are rounded separately; the total is calculated from bytes before rounding.
+**1.9.27 packages, measured 17 October 2026.** Built locally; `relcheck` verified the release signature with the app's key and checked every uploaded artifact's digest. The app size was read from the published portable archive; the Store figure is the local package, not a completed Store submission. MiB is bytes / 1,048,576. Sizes are rounded separately; the total is calculated from bytes before rounding.
 See the [package measurement history](docs/reports/BENCHMARK.md#13-ประวัติการวัด).
 
 | Package | Size |
 |:---|---:|
-| App on disk, two executables | **113.0 MiB** (window 67.1 + engine 45.9) |
-| App installer | **45.3 MiB** |
-| Portable app | 44.5 MiB |
-| CLI installer / portable | 29.2 / 39.6 MiB |
-| Microsoft Store package | 46.0 MiB · version 1.9.26.0 · not submitted |
+| App on disk, two executables | **114.6 MiB** (window 68.1 + engine 46.5) |
+| App installer | **46.0 MiB** |
+| Portable app | 45.2 MiB |
+| CLI installer / portable | 29.5 / 40.0 MiB |
+| Microsoft Store package | 46.6 MiB · version 1.9.27.0 · not submitted |
 
 **Historical measurements below.**
 
@@ -903,7 +914,23 @@ mistake turns an agent into a chat box.
 
 </details>
 
-## Status — v1.9.26
+## Status — v1.9.28
+
+[Version 1.9.28](docs/release-notes/v1.9.28.md), 17 October 2026, brings:
+
+- **Answers on your phone as they happen**: a live stream carries the answer, what the agent said before each tool and every tool step, drawn at a steady pace instead of jumping once a second.
+- **Every chat and every file on the phone**: a paired phone can reach all main chats, grouped by project, and files the agent hands over appear as cards that open full screen.
+- **Aetox Mobile 0.3.1 rides along**: the phone app checks this PC for a newer APK and updates in one tap; the model list follows the stars and switches you set on Windows.
+
+### Previously — v1.9.27
+
+[Version 1.9.27](docs/release-notes/v1.9.27.md), 17 October 2026, brings:
+
+- **Aetox Link for your phone**: a Mobile page in Settings sets up Tailscale HTTPS itself and shows a pairing QR, so Aetox Mobile can chat, talk and answer approvals with the agent on this PC.
+- **Install from the normal chat**: the assistant reads what is installed, searches, compares and places MCP servers and skills on cards in your chat; MCP tools can now hand back images and structured data.
+- **Clearer desks and a smoother start**: the start pages show what is waiting, web tabs wear their site icons, updates download in the background, and the engine starts before the window.
+
+### Previously — v1.9.26
 
 [Version 1.9.26](docs/release-notes/v1.9.26.md), 16 October 2026, brings:
 
@@ -1004,14 +1031,9 @@ Architecture notes, decision records and design standards are not in this reposi
 
 ## Source, licence and who makes it
 
-**Source.** The source published in this repository stops at v1.7.0 (15 September 2026), a complete release that
-can be read and studied under the [LICENSE](LICENSE); the code here is the real v1.7.0, unmodified. The source was
-open through v1.8.0 for one day (20–21 September 2026) and was then rolled back to v1.7.0. Every release since is
-still published here in full — tags, installers, the portable zip, the Linux engine, checksums, release notes and
-measurement reports — and the in-app update check, scoop and the Microsoft Store work exactly as before. The
-architectural layer that arrived after v1.7.0 — the MCP shelf, the editor with language servers behind it, the
-session context handed back on reopen, and a window nearly half as heavy at rest — is the most valuable part of the
-work, and the author, who builds it alone, has chosen to keep it in order to keep developing it.
+**Source.** The source in this repository stops at v1.7.0 (15 September 2026) and can be read and audited under
+the [LICENSE](LICENSE). Later releases ship here as binaries: installers, the portable zip, the Linux engine,
+checksums and release notes. Their source is not published.
 
 **Licence.** Aetox is free to use and is not open source. From v1.3.0 it is under a [proprietary licence](LICENSE):
 install it on as many machines as you like, use it for commercial work, and read and audit the source published in

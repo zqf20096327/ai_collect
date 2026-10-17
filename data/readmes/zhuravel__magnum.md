@@ -90,9 +90,10 @@ release cannot keep) is a finding, or one `Description: ✗ <claim>: <why>` line
 [The judge skill](#the-judge-skill) has the full format.
 
 With `[pipeline] status_comment = true` the PR also gets one comment, edited in place, that says whether
-its review is queued (and why it waits), in progress or posted, and ends on a true line when the PR is
-closed, merged or turned into a draft first, so nobody merges before it by accident (see [Review status
-comment](#review-status-comment)).
+its review is queued (and why it waits), in progress or posted (with its verdict in a few words), says when
+Magnum's own failure stopped it, answers a review request on a PR Magnum leaves out, and ends on a true
+line when the PR is closed, merged or turned into a draft first, so nobody merges before it by accident
+(see [Review status comment](#review-status-comment)).
 
 ## How it works
 
@@ -252,7 +253,11 @@ keeps them in the checkout's `state/` instead, for development.
 Besides those, Magnum reads `MAGNUM_MYSQL_DSN` (the MySQL server, see [Quick start](#quick-start)) and
 `HERDR_BIN_PATH` (the herdr executable that `magnum open`, `reveal_on_attention` and the plugin commands run;
 herdr sets it inside plugin actions, else `herdr` on `PATH`), and hands `[herdr] socket` to the herdr
-commands it runs and to the LaunchAgent as `HERDR_SOCKET_PATH`. Every role's pane gets the round's context
+commands it runs and to the LaunchAgent as `HERDR_SOCKET_PATH`. `MAGNUM_BIN` names the `magnum` binary that
+the herdr plugin's commands run (else the plugin's own `bin/magnum`, then the installed one),
+`MAGNUM_PICK_QUERY` is the initial filter of `magnum pick` (as `--query`), and `MAGNUM_TUI_TRACE=<file>`
+makes a live screen append one line per message to the file, with how long its Update and View took, to
+diagnose a frozen or spinning screen (off unless set). Every role's pane gets the round's context
 in its environment, next to the identity's gh selection (an App's `GH_CONFIG_DIR`, with `GH_TOKEN` and
 `GITHUB_TOKEN` blanked) and the slot's env: `MAGNUM_PR_URL`, `MAGNUM_IDENTITY` (`gh` or `app`),
 `MAGNUM_REVIEWER_LOGIN` (the login that posts), `MAGNUM_SELF_LOGIN` (the watch's poll login),
@@ -305,10 +310,17 @@ A push that lands while a round's reviewers still run restarts them on the new h
 short are interrupted and their roles prompted again on the new head: an agent reviewer with esc, a shell
 role's command with ctrl+c, and the judge's own pass with one ctrl+c, which aborts Codex's turn and keeps
 the session with its context (two quit Codex, as for a judge that timed out). All of them get their keys
-at once, before Magnum waits for any of them; a shell role's command that still runs 10 seconds after its
-ctrl+c gets another, three in all, and a warning names the role when it runs on, since the restart's line
-would find its pane busy. When a refusal or a lost judge ends the round instead, the turns still at work
-are stopped the same way.
+at once, before Magnum waits for any of them, and then Magnum waits for all of them side by side, so the
+restart waits for the slowest turn, not for each in turn. A shell role's command that still runs 10 seconds
+after its ctrl+c gets another, three in all, and a warning names the role when it runs on, since the
+restart's line would find its pane busy. An agent gets up to a minute after its interrupt to go idle, and a
+warning names it when it does not. A claude reviewer still at work 10 seconds after its esc whose
+transcript shows background work it started still running (a test run in the background keeps it at work
+after an interrupt) is told then to stop that work, which is what ends it, rather than at the end of the
+minute; one idle within the 10 seconds gets no message then, only the one about work its transcript still
+shows once it is idle. A stop that worked is an info event (`round.cut_settled`, with the seconds the agent
+took to go idle), not a warning. When a refusal or a lost judge ends the round instead, the turns still at
+work are stopped the same way.
 A push that lands while the judge works lets the round finish: Magnum appends "Reviewed <sha>; N commits arrived during
 the review, re-review follows" (or, for a small delta, "a short check of those commits follows") to the
 posted review and queues the re-review without waiting for `min_rereview_interval`. A PR whose head changed `burst_pushes` times (default 3) within `burst_window`
@@ -614,6 +626,20 @@ stays pinned (magnum unpin)", `magnum status` lists every pin with the PR's stat
 age; `pins` in the JSON), and the board's summary pill adds how many of its pins hold a closed PR
 ("📌 4 pinned · 2 on closed PRs", only when there is one).
 
+A slot its guard holds (`head_drift`: a commit made in it or a moved HEAD, `unpushed_commits`: commits on
+no remote, `dirty_worktree`: a person's changes) keeps its PR waiting, and every sentence that says so names
+the way back with the slot in quotes: "waiting: slot talkable/talkable-integration#867 is held: head_drift
+(magnum unpin "talkable/talkable-integration#867")" in the reply of `magnum review`, in the PR's wait on the
+board and the card, and in the refusal of `magnum fix`; the attention line of `magnum status` says
+"check the folder, then `magnum unpin "<slot>"`"; and the skipped line of a release plan says "held:
+head_drift (acknowledge it with magnum unpin "<slot>")" (its JSON keeps `reason: hold_reason` and the
+`detail`, and adds `slot`). `magnum unpin <PR or slot>` hands the slot back whether or not anything is
+pinned: for a `head_drift` or `unpushed_commits` hold it takes the folder's current HEAD as the checkout
+Magnum expects, so the next release resets the slot, and answers "acknowledged the head_drift hold of slot
+talkable/talkable-integration#867: HEAD 3e8c5b6 is now the checkout magnum expects; the next release resets
+it" (a `dirty_worktree` hold comes back at the next guard while the changes are there). `magnum release`
+never acknowledges a hold: a release must not take a HEAD it did not check out.
+
 A round that fails three times on one head (a timeout, an error, a setup failure charged to the PR) parks
 its PR in needs attention. When the cause was Magnum's own (an unknown role, a launch line that broke), the
 fix is a new build, config or prompts, so the attention records what the daemon ran (the build's commit
@@ -630,7 +656,7 @@ A fetch, clone, checkout or dependency step that fails for a reason outside the 
 agent lost, DNS, a network timeout or refusal, TLS, or the same dependency error on two PRs within ten
 minutes) pauses dispatch for everything once, with one toast, and is never charged to the PR. Magnum
 probes `git ls-remote` of a watched clone (over HTTPS through gh, like its fetches) after 2 minutes, then after twice as long each time it still
-fails (up to 30), and resumes by itself when it answers; `magnum resume` lifts the pause at once.
+fails (up to 30 minutes), and resumes by itself when it answers; `magnum resume` lifts the pause at once.
 
 A logged-out agent CLI pauses its kind: the login check before a round (`[kinds.*] login_check`) skips a
 logged-out reviewer and ends a round whose judge is logged out, and a run that fails with the login error
@@ -671,7 +697,11 @@ twice as long as the last wait: two ticks after the first failure, then four, ei
 hours. A new round of the PR or a change in its sessions starts the wait over. The first failure of each
 cause records a `pr.park_failed` warning with the cause's class (`quit_timeout`, `busy`, `herdr` or
 `error`) and the wait. Later failures of the same cause record nothing, and a park that works records
-`pr.parked` as usual.
+`pr.parked` as usual. A park that cannot quit one agent still quits the PR's others and reports the
+failures together. When the failure was an agent that did not quit (`quit_timeout`), the idle park's next
+try, once the wait has passed, parks in the hard mode described below, and its `pr.parked` event says
+"(hard: an agent did not quit at the plain park)". A failure of another class keeps the plain park, and a
+restart forgets the record, so the first try after it is plain again.
 
 A fresh start (`magnum review --fresh`, a full or audit pass, a new identity) parks every agent of the PR
 first. When an agent stays in its pane through ctrl+c, that park waits like any busy agent: a minute at a
@@ -680,15 +710,18 @@ try parks in the hard mode. Magnum sends the kind's `exit_keys` (Claude: `/exit`
 closes that pane alone, never the workspace, whose other panes may be yours. The session is closed, not
 parked, and a `pr.park_forced` event names the role and the pane. A park that waits for a run of the PR (a
 fixer or another round at work) is never forced, and `magnum abort` parks the same hard way on its last of
-three tries. The idle park and the release of a Codex-flagged PR keep the plain park and its backoff.
+three tries. The release of a Codex-flagged PR keeps the plain park and its backoff.
 Once any park worked (the idle park, a fresh start's, a hard one, `magnum abort`, `magnum release`, the
 release of a Codex-flagged PR, an eviction), magnum closes the panes of the sessions it parked or closed, so
 the workspace keeps one pane per role of the round plus the panes magnum does not own. The pane of a session
 that was lost (its agent exited) is closed at the tick that sees it, unless a round holds the PR, and the
 reconcile closes what is left for every PR, at the daemon's start and every `reconcile_interval`. A pane is
-closed only when it shows an idle shell, and never when a starting or live session of the PR still uses it,
-so a shell you opened in the workspace stays, and a workspace left with no pane at all is closed. A
-`pr.panes_closed` event says how many and of which roles; a reconcile with nothing to close records nothing.
+closed only when a parked, closed or lost session of the PR recorded it, it shows an idle shell and no
+starting or live session of the PR still uses it, so a shell you opened in the workspace, which no session
+recorded, stays, and a workspace left with no pane at all is closed. A
+`pr.panes_closed` event says how many and of which roles, and, of a lost session's pane, the error line the
+CLI printed before it died (`last_lines`, by role; a line that starts at column 0 with error, fatal or panic,
+redacted), read before the pane closes; a reconcile with nothing to close records nothing.
 A parked or lost conversation is kept: the role's next start resumes it in a new pane.
 
 An agent CLI that dies as it starts can leave herdr listing the launch under the role's agent name
@@ -699,6 +732,21 @@ the role, the pane and the CLI's own error line. A pane whose agent works or is 
 foreground is anything but the shell, is never touched. When the launch held the very pane the role was
 about to start in, magnum first splits a replacement from it, with the same environment and label, and the
 agent starts there.
+
+A new CLI version is the first suspect when launches start failing, so the daemon reads the version of each
+agent kind its roles use, as `magnum doctor` does (`<kind> --version` through its PATH), when it starts and
+at every tick's health check, and keeps it in the registry with the binary (the kind's command with its
+links resolved; for a mise shim, which links to mise itself, the binary `mise which <kind>` names) and its
+modification time. The version command runs again only once the binary changes. Another version than the
+one recorded is a `kind.version_changed` warning and one toast ("codex-cli 0.162.1 → 0.163.0 at 11:24"),
+and `magnum status` shows the versions on its `clis:` line, with "(changed at 11:24)" for a day after a
+change. For that day a PR that goes to needs attention because a role of that kind did not start (the
+"failed 3× … start codex-judge" line, a dead launch's line among them) ends its line with "; the codex CLI
+changed at 11:24". When two or more PRs' agents end with the same pane error line within 30 minutes (the
+line of a `pr.launch_cleared`, of a prompt herdr refused because the agent was gone, or of a lost agent's pane
+in `pr.panes_closed`), the daemon records an `agents.shared_failure` warning naming the PRs, the roles, the
+line and a CLI change of the day, with one toast ("2 PRs' codex-judge launches end the same way"), once per
+line a day. Nothing is paused and no version is pinned: you decide, and mise owns the versions.
 
 The judge is the exception to resuming. Codex's prompt cache lasts about an hour and a half, so a judge
 resumed later re-reads its whole conversation uncached on its first turn (25 of 39 resumed judge turns did,
@@ -761,19 +809,37 @@ link that turned up, your note) leaves it. The first line says where the review 
   result recorded earlier findings it kept open, "The last review recorded 2 earlier findings still open."
   (that review's count, not a live one).
 - **In progress since 18:47 UTC** once the round started.
-- **Posted**: the list collapses to one line, "Review of `54fc258` posted 18:52 UTC: <link>", without the
-  sentences or your note. The comment stays, and the next review of the PR starts the list again in it. A
-  round on the reviewed head that nobody asked for (a reply round, a judge check of red CI, a re-decision of
-  the replies) leaves the posted line. A review that held its approval (`approve_after_full_pass`, under
-  Re-reviews) reads "Review of `54fc258` posted 18:52 UTC: <link>. A full pass follows before approval."
-  while its full pass waits; the full pass then shows as "Full pass before approval of `54fc258`" with
-  "In progress (full pass) since 18:53 UTC", and its posted line replaces it.
+- **Posted**: the list collapses to one line, "Review of `54fc258` posted 18:52 UTC: Fix 1 problem before
+  merging, 4 optional. <link>", without the sentences or your note. The words before the link are the
+  review's verdict line, rebuilt from the result its round stored: "Blocking: 2 problems must be fixed
+  before merging" (a P0 or P1, new or still open), "Fix 1 problem before merging" (P2), "No blocking
+  problems" (optional ones only) or "No problems found", the optional ones (P3s and simplifications)
+  counted after it, never a score; a review no round of Magnum's posted (a manual verdict) has only the
+  link. The comment stays, and the next review of the PR starts the list again in it. A round on the
+  reviewed head that nobody asked for (a reply round, a judge check of red CI, a re-decision of the
+  replies) leaves the posted line. A review that held its approval (`approve_after_full_pass`, under
+  Re-reviews) reads "Review of `54fc258` posted 18:52 UTC: No problems found. <link>. A full pass follows
+  before approval." while its full pass waits; the full pass then shows as "Full pass before approval of
+  `54fc258`" with "In progress (full pass) since 18:53 UTC", and its posted line replaces it.
 - A [fix loop](#fixing-your-own-prs) shows as its own line: "Applying automatic fixes, cycle 1 of 3"
   under the posted line while the fixer works, and "Reviewing the fixes in `b2c3d4e`" for its re-review of
   what the fixer pushed, from the loop's state (never the fixer's words).
 - One line replaces the list when Magnum will not review the head: "Magnum will not review this head. The
-  operator was told." for a PR muted, ignored, flagged by Codex (with no fallback judge) or parked for you
-  (needs_attention), with no word of the cause.
+  operator was told." for a PR muted, ignored, flagged by Codex (with no fallback judge) or parked by a
+  fix loop for your call, with no word of the cause. A PR Magnum's own failure parked for you
+  (needs_attention: a setup or round that failed on every attempt, the agent API overloaded, a judge that
+  reported a blocker or stopped without a review, an identity problem) reads "Magnum failed to finish the
+  review of `54fc258`. The fault is on its side, not in your PR. The operator was told. A new push starts
+  a new review." (a push queues it again); muted, it reads as muted.
+- A review request that comes while the PR is muted or the watch's filters leave it out (a baseline PR
+  included) gets "Magnum is not reviewing this PR. The operator was told.": it opens the comment where none
+  stands, or turns the one there, and names no reason (the repositories are public, and a mute's reason or a
+  filter could tell who is reviewed). The request is someone's, yours included; a draft marked ready is
+  not one. You get one info toast per request that names the reason ("magnum: talkable/example#12: review
+  requested by alice (not reviewed: muted)"; a manual repository's own toast stands for it) and a
+  `pr.request_declined` event. The line holds while that request is the newest and no round served it; an
+  unmute, or a filter change that queues the PR, hands the comment back to its review, and a mute or unmute
+  drops the request (kv `pr.<id>.request_declined`).
 
 Every comment ends on a true line, written at once (the 2-minute spacing below does not hold it) and only
 once: "Closed before the review of `54fc258` posted." for a PR closed without a merge, "Merged before the
@@ -783,11 +849,13 @@ false`) while its review was queued. A tick writes it whatever the PR's state, a
 PRs of the last 24 hours are read for it). After it nothing is written until a new head, a new review
 request, `magnum review`, a reopen or, for a draft, ready for review.
 
-A draft, a post-merge review, an eval replay, a dry run (`magnum daemon --dry-run`, `magnum review
---no-post`) and a watch with the key off get none (a draft only keeps one it had), and a PR of a manual
-repository gets one once a review request queues it. The daemon brings the comment in line with the
-registry at every tick, after it recorded the waits, and edits only a changed text, at most once per PR
-every 2 minutes and 10 comments a tick, so In progress and Posted can follow the round by a tick or two. The
+A post-merge review, an eval replay, a dry run (`magnum daemon --dry-run`, `magnum review --no-post`) and a
+watch with the key off get none. A draft gets one only for a review someone asked for (a review request, or
+`magnum review`), which opens it as on a ready PR, and otherwise only keeps one it had; a PR of a manual
+repository gets one once `magnum review` queues it, or the not-reviewing line for a review request. The
+daemon brings the comment in line with the registry at every tick, after it recorded the waits, and edits
+only a changed text, at most once per PR every 2 minutes and 10 comments a tick, so In progress and Posted
+can follow the round by a tick or two. The
 comment never holds a round: a write GitHub refuses records a `pr.status_comment_failed` warning (at most
 one per PR an hour) and a later tick tries again, and each comment posted or edited records a
 `pr.status_comment` event with its stage. A comment someone deleted is posted once more at its next change
@@ -833,7 +901,7 @@ and says so in a `review.former_dismiss_failed` warning. `magnum review --as <id
 identity, and a pinned PR never migrates.
 
 `dismiss_own_stale_change_requests` says what happens to an identity's own earlier REQUEST_CHANGES review
-once a newer review of the PR has nothing blocking: `true` dismisses it ("Superseded by the newer magnum
+once a newer review of the PR has nothing blocking: `true` dismisses it ("Superseded by the newer Magnum
 review"), `false` leaves it standing, and a standing change request keeps blocking the author's merge until
 a human dismisses it. The default follows the kind: `true` for an `app`, `false` for `gh`, because a `gh`
 identity is your own account and its reviews are yours to withdraw; set it to `true` on a `gh` identity to
@@ -946,7 +1014,9 @@ directories, such as `["docs/**", "**/*.md"]`) skips a PR whose changed files al
 `magnum review` still runs it. A watch's `skip_bot_authors` (default `true`) skips every bot's PR, and its
 `allow_bot_authors` names the bots whose PRs are reviewed all the same, such as `["helper[bot]"]` above for
 an App that writes code for the team, while the dependency bots' PRs stay skipped: GitHub logins, matched as `skip_authors`
-matches them (any case, with or without `[bot]`; none empty or with a space), and a `[[repo]]` block's
+matches them (any case, with or without `[bot]`; none empty or with a space; `helper` or `helper[bot]`, never
+`app/helper`, which the config refuses in this list, in `skip_authors` and in `auto_approve_skip_authors`
+because it would match no author), and a `[[repo]]` block's
 `allow_bot_authors` adds logins for that repository alone. Such a PR is reviewed as a person's would be,
 under every other filter but `skip_departed_authors`, which reads only people's membership (an App's
 `authorAssociation` is `NONE` whatever its installation writes): `skip_authors` wins (a login on both lists is skipped), with
@@ -1029,7 +1099,7 @@ not approve it as you: its head's checks fail …"; `auto_approve_refused` in `m
 
 `auto_approve_skip_authors` keeps some authors' PRs for a person's review, whatever Magnum's review says
 (a colleague whose PRs must get an explicit human approval): GitHub logins, matched as `skip_authors`
-matches them (any case, with or without `[bot]`; none empty or with a space). A `[[repo]]` block's
+matches them (any case, with or without `[bot]`; none empty or with a space; `app/<name>` is refused). A `[[repo]]` block's
 `auto_approve_skip_authors` adds logins for that repository alone. On such a PR Magnum reviews as
 usual and never posts your approval: the refusal is recorded once per head, whatever round reviewed it
 (`auto_approve_refused` reads "the author is in auto_approve_skip_authors", the card "auto-approval: off
@@ -1039,7 +1109,7 @@ author was listed stays (a later review that finds something to fix withdraws it
 on GitHub names the author or the list: the PR's status comment reads as on a watch without
 auto-approval.
 
-The body is one line, `Auto-approved: magnum's review of `<sha7>` found no blocking problems ([review](<url>)).`
+The body is one line, `Auto-approved: Magnum's review of `<sha7>` found no blocking problems ([review](<url>)).`
 (or `auto_approve_body`, a template of `.Short`, `.SHA`, `.ReviewURL`, `.Repo` and `.Number`), with a hidden
 `<!-- magnum:auto-approval head=<sha7> -->` marker Magnum knows its approvals by. One approval per review:
 a post GitHub refuses (403, 422) is not tried again for that review, another failure is tried again after
@@ -1047,9 +1117,9 @@ a post GitHub refuses (403, 422) is not tried again for that review, another fai
 
 New commits alone leave the approval standing (the repository decides about stale approvals): the next
 review decides. One that leaves something to fix, on any head, withdraws it (Magnum dismisses it as you:
-"magnum's review of <sha7> found blocking problems; this automatic approval is withdrawn ([review](<url>))."),
+"Magnum's review of <sha7> found blocking problems; this automatic approval is withdrawn ([review](<url>))."),
 and a clean one of the PR's head is held to the reviewers, watch, agents' files and checks conditions above
-as a new approval is: one they refuse withdraws it too ("magnum's review of <sha7> found nothing to fix, but
+as a new approval is: one they refuse withdraws it too ("Magnum's review of <sha7> found nothing to fix, but
 it changes the review agents' instructions or hooks (AGENTS.md); this automatic approval is withdrawn
 ([review](<url>)).") with the same event and toast, while the head's checks still run Magnum waits, and a
 head it has not reviewed yet changes nothing. A clean review they let through leaves the approval standing
@@ -1164,82 +1234,5 @@ watch's own judge, a judge of the same kind, or a role the watch's `roles` alrea
 A third kind of role takes part in no round: the fix role (`fix = true`). The built-in `claude-fix` (kind
 claude, model opus, effort high, the prompt `fix.md`, the fix skill, `timeout` 60m, no identity) belongs to
 the fix job, which fixes Magnum's findings on your own PRs (see [Fixing your own
-PRs](#fixing-your-own-prs)). Three `[pipeline]` keys configure the job, and a `[[watch]]` may set its own of
-each. `fix_role` (default `"claude-fix"`) names the role the job runs, and `fix_role = ""` on a watch
-switches the job off for that watch. `fix_cycles` (default 3, at least 1) caps the fix runs of one loop.
-`autofix` (`"never"` by default, or `"own"`) says whether a loop also starts by itself after a review with
-findings on your own PRs. A watch's `roles` list may not name a fix role, and `magnum roles` leaves it out.
-Validation refuses a `fix_role` that names no role, a judge, a shell role or a role without `fix = true`, and
-a fix role whose declared identity is not a `gh` one. A fix role that names none acts as the watch's poll identity.
-
-A fourth kind of role takes part in no round either: the whiteboard role (`whiteboard = true`). The built-in
-`claude-whiteboard` (kind claude, model opus, effort medium, the prompt `whiteboard.md`, no skill, `timeout`
-30m, no identity) belongs to the whiteboard job, which writes a dev.fast Whiteboard of a PR after Magnum
-posts a review on it (see [Whiteboards of reviewed PRs](#whiteboards-of-reviewed-prs)). Two `[pipeline]`
-keys configure the job, and a `[[watch]]` may set its own of each: `whiteboard` (default `false`) switches
-the automatic job on, and `whiteboard_role` (default `"claude-whiteboard"`) names the role that writes it;
-`whiteboard_role = ""` means no whiteboard job at all, by hand or automatic. The role's `args` give its
-session the Whiteboard MCP server alone (`--mcp-config` with an inline JSON that starts `whiteboard mcp`),
-and the claude kind's `--strict-mcp-config` keeps every other server out. A whiteboard role without an
-`identity` acts as the watch's poll identity; one it declares must be a `gh` identity. A watch's `roles` list
-may not name a whiteboard role, and `magnum roles` leaves it out. Validation refuses a `whiteboard_role` that
-names no role, a judge, a fix role, a shell role or a role without `whiteboard = true`, and a whiteboard role
-with `runs`, `after`, `own_pass` or `max_session_rounds`.
-
-What the reviewers add is measured, not guessed: in a round with the own pass, `judge` among a posted
-finding's sources means the own pass found it before any report was read. `magnum stats` (WHO FOUND THE
-POSTED FINDINGS, WHAT THE REVIEWERS ADD; `value` in `--json`) counts, for first reviews, re-reviews and
-delta checks (the judge alone), the posted findings by priority found by the own pass, by the own pass
-and a reviewer, and by reviewers only (by reviewer), the reviewer-only P0 to P2 per 10 rounds and each
-role's median turn. Read the re-review row against its reviewers' minutes: when reviewers alone add
-almost no P0 to P2 there, more re-reviews can run as the judge alone (a higher `rereview_min_lines` makes
-more of them delta checks) and save the reviewers' turns; the first review row tells the same of first
-reviews.
-
-No role may edit the checkout: after each stage Magnum compares HEAD and `git status`
-with what the stage found (the judge's own pass included while it works), and a role that changed them
-gets a `round.checkout_dirty` warning and the checkout reset to the PR head (`git reset --hard`, `git
-clean -fd`) before anything else runs on it.
-
-The judge also knows the repository's other PRs on the same files, since a round otherwise sees only its
-own PR (two open PRs fixing one flaky spec in different ways went unnoticed). The Details the poll reads
-for a changed PR carry its changed paths (GitHub's first 100; a longer list is marked truncated), which
-the registry keeps per PR with the head they belong to, refreshed only when the head moves and kept after
-the PR merges. Every judge prompt (the own pass, the candidates phase, a round's one prompt, a delta
-check) then names `related.json` in the report directory as `related_prs`, when there is any: the open
-PRs (drafts included) and those merged within `[pipeline] related_lookback` (14 days) whose paths overlap
-the PR's at the head under review, paths matching `related_ignore` (lockfiles by default) aside, a
-`[[watch]]` may set both (`related_lookback = "0s"` there, as in `[pipeline]`, keeps only the open PRs;
-unset keeps the pipeline's); an open PR without activity for 30 days (the board's UPDATED) is left out. They
-are ranked by shared paths, at most 10 with 20 paths each, and each has its number, URL, state (and merge
-time), last activity, head, the shared paths, whether Magnum reviewed it with its last review's URL and
-verdict, and how many findings Magnum posted on those paths; no titles, bodies or comments (the judge
-reads a PR itself with `gh` when it matters). Every judge prompt records its whole set in
-`related-all.json` beside it, and a later round's `related.json` names only the related PRs that the set
-recorded for the head the previous review covered lacked or named another way (open or merged, the
-shared paths), so a review does not repeat the Related line of the one before; with nothing new there is
-no file and no `related_prs`. The skill has the judge name an open PR
-that changes the same behaviour (a duplicate or competing fix, conflicting edits, one needing the other)
-in one line of its review, raise a finding only when merging both provably breaks something, check that
-the PR does not undo what a recently merged one fixed, and record a flaky-test or recurring-bug pattern
-in the repository notes. A blind replay (`magnum eval`) never gets the file: it would tell of later PRs.
-
-The reviewers also get the changed files' history, since in 4 of 5 misses traced the changed file's own
-recent log named the fix the PR undid. Before the reviewers of each head, Magnum writes `history.json` in
-the report directory: each file the PR changes that exists on its base (at most 40, in git's order, paths
-matching `related_ignore` aside) with its last 8 commits on `origin/<base>`, each with its short SHA,
-date, subject and the PR number a subject ending in `(#123)` names, read with `git log` in the checkout.
-A commit the base got after the PR's merge base is marked `after_merge_base` (a second `git log` at the
-merge base lacks it): the PR was never tested with it, and a PR once passed alone and failed after the
-merge because a newer base commit changed the tool its spec called. The judge's prompts (the own pass,
-the candidates phase, a round's one prompt) name it as `history`, the claude-review prompts in one
-sentence; the judge reads a commit that fixed the code or mechanism the PR touches (`git show <sha>`), and
-a PR that undoes or re-breaks that fix gets a finding; when a commit after the merge base changes what the
-PR's code or tests call, the judge runs the affected specs on the merged tree (`git merge-tree`, checked
-out in a scratch worktree), and a clean merge whose specs fail there is a broken build; a textual conflict,
-which GitHub shows, is one body line and no finding. A restart writes
-the new head's; a blind replay reads the logs at its merge base, never anything newer; a continued turn
-gets none, and a `git log` that fails or takes more than 2 minutes in all only leaves the prompts without
-it (a `round.history` warning).
-
-The reviewer
+PRs](#fixing-your-own-prs)). Four `[pipeline]` keys configure the job, and a `[[watch]]` may set its own of
+the first three. `fix_role` (default `"claude-fix"`) names the role the job 

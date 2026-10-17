@@ -69,6 +69,7 @@ Ohne Docker: `npm install && npm run dev` (Node ≥ 22.13) → http://localhost:
 | Shop wird geschont | Schreibzugriffe gedrosselt (`LOTSE_WRITE_CONCURRENCY`, Standard 2), max. 300 Einträge je Änderungsset, Timeouts (`LOTSE_SHOP_TIMEOUT_MS`), Backoff bei 429/503. |
 | Lokal & gehärtet | Port nur auf `127.0.0.1`, Host-/Origin-Prüfung, Container als Nicht-Root, read-only, ohne Capabilities, mit Ressourcen-Limits. |
 | Zugangsdaten | AES-256-GCM-verschlüsselt im Volume, gehen nie an die KI. |
+| Abverkauf | Standardmäßig aus; einschaltbar unter Einstellungen → KI-Zugriff → Abverkauf. Lotse liest dann mit einer festen Abfrage nur Summen je Produkt (Stückzahl, Umsatz, Anzahl Bestellungen), nie Kunden, Adressen oder einzelne Bestellungen. |
 | Internetrecherche | Standardmäßig aus; einschaltbar unter Einstellungen → KI-Zugriff → Internet (Websuche und Abruf öffentlicher Webseiten, nur lesend). |
 | Codex (ChatGPT-Abo) | Eigene Codex-Werkzeuge (Shell, Dateien, Web, Bilder, Plugins …) abgeschaltet (Websuche nur bei eingeschalteter Internetrecherche), Dateizugriff per Berechtigungsprofil komplett gesperrt, keine Rückfragen nach mehr Rechten; Shop-Tools nur über einen lokalen MCP-Endpunkt mit Zufalls-Token je Chat. Taucht trotzdem ein gesperrtes Werkzeug auf, bricht Lotse die Runde ab. |
 | Serverbetrieb | `LOTSE_PASSWORD` (Login) + `ALLOWED_HOSTS` setzen, HTTPS per Reverse-Proxy. Anleitung: [`docs/self-hosting.md`](docs/self-hosting.md). |
@@ -91,6 +92,7 @@ Die Sprache (Deutsch/Englisch) ist keine Variable: Sie wird in den Einstellungen
 | `SHOPWARE_PUBLIC_URL` | Shop-Adresse aus Sicht des Browsers, falls abweichend |
 | `SHOP_PLATFORM` | verbundene Plattform: `shopware` (Standard), `shopify`, `magento` (Magento 2) oder `openmage` (Magento 1 mit dem Modul aus `integrations/openmage/`); Variablen `SHOPIFY_*`, `MAGENTO_*`, `OPENMAGE_*` siehe `src/lib/platforms.ts` |
 | `AI_MODEL` | z. B. `sonnet` oder `opus` |
+| `LOTSE_AI_BUDGET_USD` | Kostenbremse: Monatsbudget für Claude in US-Dollar (Einstellungen → KI verbinden hat Vorrang); leer = keine Grenze |
 | `LOTSE_PASSWORD`, `ALLOWED_HOSTS` | Zugangsschutz für Serverbetrieb ([Selbst hosten](docs/self-hosting.md)) |
 | `LOTSE_BIND`, `LOTSE_PORT` | Veröffentlichte Adresse und Port des Containers (Standard `127.0.0.1`, `3333`) |
 | `LOTSE_WRITE_CONCURRENCY`, `LOTSE_SHOP_TIMEOUT_MS` | Shop-Schonung |
@@ -121,7 +123,7 @@ Chat statt Formulare. Du schreibst, was passieren soll („Ändere das Layout vo
 - **Produktindividuelle Blöcke** (FAQ): gemeinsames PDP-Layout mit Block `pdp-faq`, Inhalt je Produkt im JSON-Zusatzfeld `aicb_blocks` (mit FAQPage-Schema).
 - **Styleguide-Onboarding**: Die KI analysiert Theme-Konfiguration, Storefront-CSS, Logo und echte Texte → gespeichert in der Datenbank. Wirkt auf Texte, Farben, Vorschau und die CSS-Variablen (`--sg-*`) in Custom-HTML.
 - **Layout mit Bereichswahl** (Shopware): ein Layout für eine Kategorie, einzelne Produkte, alle Produkte einer Kategorie oder den ganzen Shop. Lotse fragt vorher mit echten Zahlen, die Freigabe zeigt, wie viele Seiten ein eigenes Layout verlieren, und Rückgängig stellt jede Seite einzeln wieder her.
-- **Entwurf auf der echten Seite** (Shopware): Kopf, Fuß, Theme, Kaufbox und Produktliste der Zielseite bleiben, nur der Inhalt wird durch den Entwurf ersetzt. Ohne genanntes Ziel wählt Lotse ein echtes Produkt bzw. eine Kategorie.
+- **Entwurf auf der echten Seite**: Kopf, Fuß, Theme, Kaufbox und Produktliste der Zielseite bleiben, nur der Inhalt wird durch den Entwurf ersetzt (Shopware: Einkaufswelt; Shopify, Magento, OpenMage: das HTML, das veröffentlicht wird, im echten Theme). Ohne genanntes Ziel wählt Lotse ein echtes Produkt bzw. eine Kategorie.
 - **Eigene Regeln**: feste Vorgaben für Texte („SEO-Texte mindestens 2000 Zeichen“, „wir duzen“), je Bereich (Produkttexte, Seiten, SEO) und optional nur für eine Kategorie. Gepflegt im Styleguide oder per Chat, gelten in jedem Chat.
 - **Eigene Shop-Prüfungen** (alle Plattformen): per Chat definierte Prüfungen über feste Felder (Beschreibungslänge, Meta, Preis, Bestand, Bild) erscheinen als Befunde im Shop-Check; vorhandene Prüfungen lassen sich an- und ausschalten.
 - **Einkaufswelten-Know-how**: Agent kennt Sections/Blöcke/Slots, liest bestehende Layouts (`get_cms_page`) und bezieht vorhandene Inhalte ein.

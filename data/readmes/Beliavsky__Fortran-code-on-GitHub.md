@@ -786,4 +786,4 @@ simulating and forecasting meteorological phenomena.
 
 [scream](https://github.com/E3SM-Project/scream): global atmosphere model targeted towards 3 km ("cloud resolving") resolution. It is part of the Energy Exascale Earth System Model (E3SM)
 
-[shumlib](https://github.com/metomi/shumlib): libraries which are used by the UM; the UK Met Off
+[shumlib](https://github.com/metomi/shumlib): libraries which are used by the UM; the UK Met Office's Unified Model, that may be of use to external tools or applic

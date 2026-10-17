@@ -21,6 +21,7 @@
 [![GitHub downloads](https://img.shields.io/github/downloads/Quality-Max/qmax-code/total?label=downloads)](https://github.com/Quality-Max/qmax-code/releases)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Made with Go](https://img.shields.io/badge/made%20with-Go%201.25.13+-00ADD8.svg)](https://go.dev/)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Quality-Max/qmax-code.svg)](https://pkg.go.dev/github.com/Quality-Max/qmax-code)
 [![Announcement](https://img.shields.io/badge/announcement-Apache%202.0-7c6cf0.svg)](docs/releases/v1.38.0.md)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support-yellow?logo=buymeacoffee)](https://buymeacoffee.com/qualitymax)
@@ -122,6 +123,12 @@ curl -sL https://qualitymax.io/static/install-qmax-code.txt | bash
 ```
 
 To build from source instead:
+
+```bash
+go install github.com/Quality-Max/qmax-code@latest
+```
+
+Or from a checkout:
 
 ```bash
 git clone https://github.com/Quality-Max/qmax-code.git
@@ -274,6 +281,13 @@ troubleshooting.
 | OpenCode | `/opencode` or `/orch` | Per-provider key in OS keychain | CLI subprocess for opt-in Z.AI, Groq, and OpenRouter providers. |
 | Ollama | `/ollama` or `/orch` | Configured Ollama endpoint | Self-hosted inference; configure the URL and model first. |
 
+Haiku 5.5 is an explicit option in the Anthropic API and Claude Code pickers,
+or with `/model claude-haiku-5-5`. The `haiku` shorthand and automatic chat
+routing continue to use Haiku 4.5 until the upgrade is verified. Direct Haiku
+5.5 requests disable thinking to reserve the response budget for text and
+tools. Cost estimates preserve each request's prompt-size tier and reported
+cache tokens; historical sessions without recorded costs remain estimates.
+
 QualityMax authentication is independent of model-provider authentication. You
 can run any backend with `--local` and no QualityMax login. Without `--local`,
 qmax-code starts the QualityMax onboarding flow when no supported QualityMax
@@ -352,6 +366,30 @@ be transferred, and image interpretation depends on the destination's support.
 Only content exposed to qmax-code can be retained; this cannot recover history
 that an older version already discarded.
 
+To keep a ruled-out approach visible when you switch backends, record the
+decision and its evidence explicitly:
+
+```text
+/handoff reject Increase the timeout | TestReconnect still fails at 60s; the connection is never reopened
+/handoff
+/handoff forget 1
+```
+
+`/handoff` lists the current rejected approaches and their user-supplied evidence.
+The checkpoint is part of every built-in provider prompt and is sent to a CLI
+backend whenever it has not seen the current version, remains visible when
+history is compacted, and survives `/save` and `/resume`. Write `\|` for a
+literal pipe inside the approach. After a backend switch that follows
+unrecorded work, qmax-code prints a one-line reminder to record anything that
+was ruled out, mentioning interrupted turns and failed tool calls it can see.
+`/handoff forget <number>` removes an outdated rejection; `/clear` resets it.
+Notes are redacted using the retained-transcript rules and capped at 12 KiB
+in total. Recording notes makes no additional model calls. qmax-code does not
+automatically classify failed commands as rejected approaches or independently
+verify the evidence. The destination is instructed to check the notes before
+acting and explain any justified retry; model compliance is not guaranteed.
+See [handoff notes and the live evaluation procedure](docs/HANDOFF.md).
+
 Saved conversations live in `~/.qmax-code/sessions/`; those carrying a portable
 transcript are kept for 90 days, legacy sessions for 7. `/clear` resets the
 shared conversation and native resume state and starts a new session ID, so the
@@ -382,8 +420,19 @@ unavailable in standalone local-only mode.
 
 Use `/screenshot` to capture a screen and `/paste` to attach clipboard text or
 an image. Image attachments are supported by the built-in multimodal path
-(including Gemma 4 on Cerebras); CLI subprocess backends currently receive text
-only.
+(including Gemma 4 on Cerebras).
+
+For CLI backends, the Gemma 4 vision sidecar can send images to Cerebras and
+pass their text descriptions to the selected coding model. It requires a
+Cerebras key. The default `auto` mode enables this for OpenCode with Z.AI
+coding-plan models; `always` enables it for every CLI backend, and `off`
+disables it. Set the mode with `/set vision_sidecar auto|always|off` or
+`qmax-code config set vision_sidecar off`.
+
+If the sidecar fails, screenshots and clipboard images use the built-in
+multimodal backend when configured; otherwise the turn stops without sending
+the image. Dragged image paths retain the text-only CLI fallback. Cancelling
+the sidecar skips the turn.
 
 ## Exposure Receipts
 

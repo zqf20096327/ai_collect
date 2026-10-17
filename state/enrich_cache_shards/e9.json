@@ -389,5 +389,122 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "ratel-ai/ratel": {
+  "commit_90d": 72,
+  "commit_7d": 1,
+  "rel_ver": "sdk-ts-v0.13.0-rc.12",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Rust": 41,
+   "TypeScript": 35,
+   "Python": 22,
+   "JavaScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Meridiona/meridian": {
+  "commit_90d": 1430,
+  "commit_7d": 0,
+  "rel_ver": "v1.96.0",
+  "rel_pub": "2026-10-07",
+  "rel_days": 10,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 69,
+   "TypeScript": 26,
+   "Shell": 3,
+   "CSS": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "microblink/blinkid-ios": {
+  "commit_90d": 19,
+  "commit_7d": 3,
+  "rel_ver": "v8002.0.2",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Swift": 76,
+   "Objective-C": 23,
+   "Starlark": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "wjluoxiao/XB_ToolBox": {
+  "commit_90d": 82,
+  "commit_7d": 14,
+  "rel_ver": "v0.9.08",
+  "rel_pub": "2026-09-23",
+  "rel_days": 24,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 59,
+   "JavaScript": 41,
+   "CSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

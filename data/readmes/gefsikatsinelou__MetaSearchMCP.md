@@ -146,6 +146,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 | Hugging Face | `huggingface` | Hub REST API, no key required |
 | Reddit | `reddit` | Reddit API |
 | npm | `npm` | npm registry API |
+| JSR | `jsr` | JSR (@jsr) packages search API (ESM-native JavaScript/TypeScript registry for Deno, Node.js, Bun and browsers: `@scope/name` identifier, latest version, description, relevance score, version/dependency/dependent counts, runtime compatibility and linked source repository), no key required |
 | PyPI | `pypi` | JSON API |
 | RubyGems | `rubygems` | RubyGems search API |
 | crates.io | `crates` | crates.io API |
@@ -180,6 +181,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 | Terraform Registry | `terraform` | Terraform Registry search API (reusable modules + providers for AWS, Azure, GCP, Kubernetes, ...), no key required |
 | IETF Datatracker | `ietf` | IETF Datatracker documents API (RFCs and Internet-Drafts by title/abstract, with standards level, stream and page count), no key required |
 | Software Heritage | `software_heritage` | Software Heritage origin search API (universal archive of public source code: repository URLs by keyword across GitHub, GitLab, Bitbucket, ... with visit types, snapshot availability, visit count, last-visited date and a link to the archived record), no key required |
+| endoflife.date | `endoflife` | endoflife.date JSON API (software release lifecycles and end-of-life dates for languages, runtimes, frameworks, databases and operating systems: latest release, active-support end, EOL, LTS status and the full release-cycle history), no key required |
 
 ### Academic Sources
 
@@ -209,6 +211,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 | ROR | `ror` | Research Organization Registry API (universities, institutes, labs), no key required |
 | UniProt | `uniprot` | UniProt REST API (protein knowledgebase), no key required |
 | MyGene.info | `mygene` | BioThings MyGene.info gene annotation API (gene symbols, names, organism, chromosome, aliases), no key required |
+| NCBI Gene | `ncbi_gene` | NCBI Gene E-utilities API (genes across all sequenced organisms, free-text search by symbol, name, disease, chromosome or organism: NCBI Gene id, official symbol, description, source organism, chromosome, map location and aliases), no key required |
 | MyVariant.info | `myvariant` | BioThings MyVariant.info variant annotation API (dbSNP rsID, gene, protein/coding change, ClinVar significance and conditions, CADD score), no key required |
 | RCSB PDB | `rcsb_pdb` | RCSB Protein Data Bank search + GraphQL data API (3D structures: title, method, resolution, citation), no key required |
 | Reactome | `reactome` | Reactome Content Service search API (curated biological pathways, reactions, proteins and small molecules: stable identifier such as `R-HSA-70171`, entity type, species, compartment and pathway summary), no key required |
@@ -239,6 +242,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 |---|---|---|
 | MedlinePlus | `medlineplus` | MedlinePlus/NLM web service (consumer health topics: plain-language summary, publishing organization, alternative names, MeSH terms, topic groups), no key required |
 | DailyMed | `dailymed` | DailyMed/NLM Content Service (the official repository of FDA Structured Product Labeling documents — current prescription and OTC drug labels by drug name: title, SPL version, published date and stable setid), no key required |
+| NLM Clinical Tables | `medical_codes` | NLM Clinical Tables API (medical code sets: ICD-10-CM and ICD-11 diagnosis codes plus HCPCS procedure/supply codes, searchable by code or keyword; each hit carries the coding system, code and official description), no key required |
 
 ### Legal Sources
 
@@ -334,6 +338,7 @@ Provider priority for `/search/google` is now `google` first, then `google_serpb
 | Discogs | `discogs` | Discogs database search API, no key required |
 | Deezer | `deezer` | Deezer public search API (streaming-catalog tracks with previews), no key required |
 | Audius | `audius` | Audius public REST API (independent, artist-uploaded music tracks with artist, genre, mood, duration, play counts and a direct stream URL when the track is streamable), no key required |
+| LRCLIB | `lrclib` | LRCLIB keyless lyrics API (song search by title or artist: track, artist, album, duration, instrumental flag, whether synced lyrics exist and a plain-lyrics preview, with the full lyrics in the result payload and a link to each track's LRCLIB page), no key required |
 | Kitsu | `kitsu` | Kitsu anime & manga catalog API (JSON:API), no key required |
 | AniList | `anilist` | AniList GraphQL API (anime, manga & light novels with synopsis, format, status, genres, community scores, popularity, studio and cover image), no key required |
 | MyAnimeList (Jikan) | `jikan` | Jikan keyless REST API mirroring MyAnimeList (anime by keyword: type, source, release status, air dates, episode count, rating, community score, rank, popularity, members, season, studios, genres, synopsis and cover image), no key required |

@@ -106,6 +106,7 @@ Integration of agents with APIs, nodes, and conditional process flows.
 
 | Repository | Description | Stack | Engine | Deployment | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| **API.market MCP Gateway** | Proprietary hosted gateway with five tools for API discovery, execution, usage and subscriptions; OAuth or API keys; per-API free tiers and paid plans. | TypeScript/MCP | API-based | Web UI | [Gateway](https://api.market/api/mcp/gateway) |
 | **GitHub Agentic Workflows** | CI/CD pipeline wrapper converting natural language to GitHub Action YAML files triggering matrix runners. | YAML/TS | API-based | Docker | [Link](https://github.com/github/gh-aw) |
 | **Composio** | Authentication middleware providing OAuth2 bridging and strictly-typed endpoint mapping between LLM and 3rd party APIs. | Python/TS | Hybrid | Web UI | [Link](https://github.com/ComposioHQ/composio) |
 | **n8n** | Node-based visual workflow engine running native JS sandbox execution and asynchronous event-driven RPC triggers. | TS/Docker | Hybrid | Web UI | [Link](https://github.com/n8n-io/n8n) |
@@ -276,6 +277,7 @@ Optimized semantic processing for professional and regulated fields.
 | **AI Agents Healthcare** | Modeling for FHIR compliance and US revenue analysis. | Various | API-based | Library | [Link](https://github.com/AgenticHealthAI/Awesome-AI-Agents-for-Healthcare) |
 | **OpenClaw Medical Skills** | Pre-trained operations on biomedical variables. | Python | Hybrid | Web UI | [Link](https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills) |
 | **HealthcareAgent** | Unification of logic layers and interfaces in clinical applications. | Python/Java | API-based | Library | [Link](https://github.com/AI-Hub-Admin/HealthcareAgent) |
+| **CareJobs.Now MCP** | Remote MCP server for US healthcare job search: open jobs, posted pay, employers and states. | TypeScript | N/A | Library | [Link](https://github.com/yumaheymans/carejobs-mcp) |
 
 ### Legal and Auditing
 | Project | Description | Stack | Engine | Deployment | Link |
@@ -287,6 +289,7 @@ Optimized semantic processing for professional and regulated fields.
 ### Marketing and Advertising
 | Project | Description | Stack | Engine | Deployment | Link |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| **LogNorm** | Hosted MCP server that hands a site's SEO and AI-visibility backlog (audits, fixes, content drafts) to Claude Code, Codex and Cursor. | MCP (hosted) | API-based | CLI | [Link](https://lognorm.com) |
 | **NotFair** | Claude Code skill set for SEO, GEO, Google Ads, and Meta Ads. Connects to live account data via Google Ads MCP, Meta Ads MCP, Google Search Console MCP, and Google Analytics (GA4) MCP to execute audits, keyword research, creative analysis, and bid management. | TypeScript | API-based | CLI | [Link](https://github.com/nowork-studio/NotFair) |
 
 ---
@@ -315,6 +318,7 @@ Parameterized sets of cases for deterministic measurement.
 | **AgentBench** | Synthetic agent verification across 8 types of sandbox environments. | Python | N/A | CLI | [Link](https://github.com/THUDM/AgentBench) |
 | **WebArena** | Automated interactivity score across 4 cloned web microservices. | Docker/TS | N/A | CLI | [Link](https://github.com/web-arena-x/webarena) |
 | **ClawBench** | Live-site browser-agent benchmark with 283 V1/V2 tasks and five-layer execution traces. | Python/Docker | N/A | CLI | [Link](https://github.com/TIGER-AI-Lab/ClawBench) |
+| **YYLO Benchmark** | Every candidate receives a dedicated fresh repository; evaluator profiles support deterministic commands and configurable LLM judges, and retained receipts, manifests, terminals, and evaluator provenance form one hash-verified evidence chain. | TypeScript/Node | N/A | CLI | [Link](https://github.com/yylo-dev/yylo-benchmark) |
 
 ---
 

@@ -565,5 +565,117 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "xybrid-ai/xybrid": {
+  "commit_90d": 199,
+  "commit_7d": 8,
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Rust": 65,
+   "Dart": 6,
+   "C": 6,
+   "Python": 5,
+   "C#": 4
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "gameworkerkim/vibe-investing": {
+  "commit_90d": 741,
+  "commit_7d": 14,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 84,
+   "Python": 8,
+   "TypeScript": 3,
+   "JavaScript": 3,
+   "TeX": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "GoogleCloudPlatform/document-ai-samples": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 24,
+  "lang": {
+   "Jupyter Notebook": 73,
+   "Python": 19,
+   "JavaScript": 2,
+   "TypeScript": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Yu-Yang-Li/StarWhisper": {
+  "commit_90d": 34,
+  "commit_7d": 10,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2023-10-12",
+  "rel_days": 1101,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 57,
+   "Jupyter Notebook": 41,
+   "HTML": 1,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

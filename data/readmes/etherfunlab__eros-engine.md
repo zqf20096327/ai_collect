@@ -15,15 +15,16 @@
 
 Most AI character apps eventually forget who you are. Their relationships reset to whatever fits in a prompt, and their personalities drift as the conversation grows. `eros-engine` makes those parts durable: a companion remembers you across sessions, the relationship changes through interaction, and each reply is chosen in character rather than improvised by a generic assistant.
 
-The engine has eight foundations:
+The engine has nine foundations:
 
 - 🧠 **Two-layer memory** — stable facts about the user live alongside shared moments, callbacks, and unfinished threads. → [Memory layers](docs/memory-layers.md)
 - 💞 **Evolving affinity** — six relationship dimensions move on graded, damped writes and decay with time, shaping tone, depth, and even whether the companion replies. → [Affinity model](docs/affinity-model.md) · [Ghost mechanics](docs/ghost-mechanics.md)
 - 🎭 **Persona Decision Engine (PDE)** — before generation, the engine chooses an action and inner state. Rules work out of the box; an optional LLM judge also rates the persona's basic needs and can stream its reasoning to the client. → [Model config](docs/model-config.md)
 - 🧩 **Structured user insight** — the engine builds a queryable profile that downstream products can use for onboarding, personalization, and analysis, and an optional keyset export lets a downstream service keep a read-only mirror. → [API reference](docs/api-reference.md)
-- ⚡ **A complete chat path** — SSE streaming, image understanding and generation requests, prompt traits, per-task model selection, fallbacks, and call auditing. OpenRouter is the default; additional OpenAI-compatible chat and embedding providers can be configured through `[providers]`. → [API reference](docs/api-reference.md) · [Model config](docs/model-config.md) A downstream can also let its end users bring their own chat endpoint and key per turn. → [BYOK](docs/byok.md)
+- ⚡ **A complete chat path** — SSE streaming, image understanding and generation requests, prompt traits, per-task model selection, fallbacks, and call auditing. OpenRouter is the default; additional OpenAI-compatible chat and embedding providers can be configured through `[providers]`. → [API reference](docs/api-reference.md) · [Model config](docs/model-config.md) A downstream can also let its end users bring their own chat endpoint and key per turn. → [BYOK](docs/byok.md) A downstream can also serve characters the engine never stores: each request carries the character card, sealed under a per-instance key. → [BYOC](docs/byoc.md)
 - 🎙️ **A voice turn path built for interruption** — a lean, low-latency turn endpoint on its own channel, with barge-in: the client stops playback and reports what was actually spoken, so history records what the user *heard* rather than what the model produced. A turn lost to a dropped connection can be regenerated instead of stranded. → [API reference](docs/api-reference.md#post-compvoicesession_idturnstream)
 - 🌍 **A simulated world** — personas have an off-screen life. A scheduled world director evolves a shared relationship graph and daily scripts; a feed lets personas post and comment on one another; per-persona stories keep work, romance, and daily living consistent over time. Fully opt-in and layered behind independent switches — an unconfigured deployment runs zero queries and spawns zero sweepers. → [World system](docs/world-system.md)
+- 🗓️ **Life events and needs** — the persona has a day of her own. When the caller asks, the engine draws what happens in it: incidents of up to a few hours, and trips or illnesses that last days, shaped by per-persona settings and cooldowns. Some take her offline — asleep, busy, away from the phone: she goes quiet, then explains. With the LLM judge she also has four basic needs (hunger, company, energy, being cared about) that drift between ratings and tilt what happens. → [Life events and needs](docs/life-events-needs.md)
 - 👥 **Group chat** — one user and up to three personas in a single conversation. A director call picks who answers and in what order; each speaker replies in its own voice with its own 1:1 relationship, and later speakers hear the earlier ones. A group reads affinity but never writes it. → [Group chat](docs/group-chat.md)
 
 This is not a generic agent framework. It is the stateful core for products where one persona gets to know the same person over time: companions, journals, coaches, tutors, and character chat.
@@ -58,9 +59,9 @@ cargo add eros-engine-core eros-engine-store eros-engine-llm
 
 ```toml
 [dependencies]
-eros-engine-core  = "2.2"
-eros-engine-store = "2.2"   # optional: Postgres + pgvector persistence
-eros-engine-llm   = "2.2"   # optional: model and embedding clients
+eros-engine-core  = "2.3"
+eros-engine-store = "2.3"   # optional: Postgres + pgvector persistence
+eros-engine-llm   = "2.3"   # optional: model and embedding clients
 ```
 
 `eros-engine-server` is not published to crates.io; run it as a Docker image instead.
@@ -70,14 +71,14 @@ eros-engine-llm   = "2.2"   # optional: model and embedding clients
 Multi-architecture images are published to GitHub Container Registry for every `v*` tag:
 
 ```bash
-docker pull ghcr.io/etherfunlab/eros-engine:2.2.2
+docker pull ghcr.io/etherfunlab/eros-engine:2.3.0
 # Or follow the latest tagged release
 docker pull ghcr.io/etherfunlab/eros-engine:latest
 ```
 
 ```bash
 docker run --rm -p 8080:8080 --env-file .env \
-  ghcr.io/etherfunlab/eros-engine:2.2.2 serve
+  ghcr.io/etherfunlab/eros-engine:2.3.0 serve
 ```
 
 Bring your own Postgres and `.env`; the same `docker/Dockerfile` can be deployed to any container host. See [Deploying](docs/deploying.md).
@@ -93,6 +94,7 @@ Bring your own Postgres and `.env`; the same `docker/Dockerfile` can be deployed
 - [Model config](docs/model-config.md) — tasks, selection, fallbacks, and multi-provider routing through `[providers]`.
 - [Prompt traits](docs/prompt-traits.md) — per-request prompt behavior and tier allow-lists.
 - [Bring your own key](docs/byok.md) — let end users run the companion reply on their own chat endpoint and key.
+- [Bring your own character](docs/byoc.md) — serve characters the engine never stores, one sealed card per request.
 - [LLM / OpenRouter audit](docs/llm-audit.md) — user and session attribution.
 - [Deploying](docs/deploying.md) — Docker, Postgres, identity, and operations.
 - [API reference](docs/api-reference.md) — routes, request schemas, and SSE frames.
@@ -115,7 +117,7 @@ The server listens on `0.0.0.0:8080` by default, with Scalar API docs at `/docs`
 
 ## API surface
 
-The main flow is simple: start a persona session, then send turns to the SSE streaming endpoint. Voice runs on its own channel — start the session with `channel: "voice"` and use the voice turn endpoint, which carries a leaner prompt and a barge-in call; the two channels never write into each other's sessions. A separate enqueue-only endpoint (`POST /v2/comp/session/{session_id}/message/async`) exists for bot-style callers that cannot hold a stream open; a background worker generates the reply and it lands in history/Realtime instead of a stream frame. The engine also exposes history, session, profile, and affinity routes, group management under `/v2/comp/group*`, and a route that asks for a life event in the persona's day (`POST /v2/comp/session/{session_id}/events`). Authentication uses Supabase JWTs by default and can be replaced through `AuthValidator`; the optional `GET /svc/v1/insights/changes` export is admitted by a shared secret instead and is mounted only when `INSIGHTS_EXPORT_SECRET` is set. See the [API reference](docs/api-reference.md) for paths, payloads, and stream frames.
+The main flow is simple: start a persona session, then send turns to the SSE streaming endpoint. Voice runs on its own channel — start the session with `channel: "voice"` and use the voice turn endpoint, which carries a leaner prompt and a barge-in call; the two channels never write into each other's sessions. A separate enqueue-only endpoint (`POST /v2/comp/session/{session_id}/message/async`) exists for bot-style callers that cannot hold a stream open; a background worker generates the reply and it lands in history/Realtime instead of a stream frame. The engine also exposes history, session, profile, and affinity routes, group management under `/v2/comp/group*`, and a route that asks for a life event in the persona's day (`POST /v2/comp/session/{session_id}/events`). Authentication uses Supabase JWTs by default and can be replaced through `AuthValidator`; the optional `GET /svc/v1/insights/changes` and `GET /svc/v1/memories/changes` exports are admitted by a shared secret instead and are mounted only when `INSIGHTS_EXPORT_SECRET` is set. See the [API reference](docs/api-reference.md) for paths, payloads, and stream frames.
 
 ## Configuration
 

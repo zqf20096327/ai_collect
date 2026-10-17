@@ -6,6 +6,15 @@ Remove AI provenance marks from images and video you generated yourself:
 - invisible pixel watermarks through direct local-format disruption or diffusion regeneration;
 - C2PA, EXIF, XMP, IPTC, and related AI metadata.
 
+| Before | After |
+| --- | --- |
+| ![Image with a visible Gemini watermark](demo_banana_before.png) | ![Image after visible watermark removal](demo_banana_after.png) |
+
+```bash
+uv tool install "remove-ai-watermarks[visible]"   # CLI for visible marks and metadata
+npx skills add wiltodelta/remove-ai-watermarks    # agent skill for Claude Code, Codex, Cursor, and other agents
+```
+
 Video support covers provenance identification, complete visible-plus-metadata
 cleaning, directory batches, visible Sora, Veo, Seedance, Doubao, Dola,
 Hailuo AI, and Kling AI mark removal, and oracle-certified VAE regeneration for video SynthID
@@ -274,11 +283,8 @@ features, and development setup.
 
 ### Visible Gemini mark
 
-| Before | After |
-| --- | --- |
-| ![Image with a visible Gemini watermark](demo_banana_before.png) | ![Image after visible watermark removal](demo_banana_after.png) |
-
-The `after` raster is generated from the tracked `before` raster by the public path:
+The `after` raster at the top of this page is generated from the tracked `before`
+raster by the public path:
 
 ```bash
 uv run remove-ai-watermarks visible demo_banana_before.png \
@@ -490,6 +496,8 @@ invisible removal.
 
 - A missing local signal means unknown, not clean. Proprietary pixel
   watermarks may remain after metadata has been stripped.
+  [What each path leaves behind](docs/known-limitations.md#what-each-path-leaves-behind)
+  lists, per command, what may remain and how to check it.
 - Visible removal reconstructs a small region. Results depend on the background
   and selected fill backend.
 - Invisible removal changes the whole image and may alter faces, text, or fine

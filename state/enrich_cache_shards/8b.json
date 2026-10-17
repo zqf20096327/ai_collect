@@ -629,5 +629,279 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "baidu-baige/LoongFlow": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.0.2",
+  "rel_pub": "2026-02-11",
+  "rel_days": 248,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 94,
+   "JavaScript": 3,
+   "Shell": 1,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "zai-org/Synapse": {
+  "commit_90d": 28,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 60,
+   "JavaScript": 34,
+   "Python": 2,
+   "PLpgSQL": 2,
+   "Rust": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "umbertogriffo/rag-chatbot": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 76,
+   "TypeScript": 20,
+   "CSS": 3,
+   "JavaScript": 1,
+   "Makefile": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "LnYo-Cly/ai4j": {
+  "commit_90d": 353,
+  "commit_7d": 2,
+  "rel_ver": "v2.8.1",
+  "rel_pub": "2026-09-25",
+  "rel_days": 22,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Java": 93,
+   "TypeScript": 5,
+   "Python": 1,
+   "Shell": 0,
+   "Less": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "vivekchand/clawmetry": {
+  "commit_90d": 1652,
+  "commit_7d": 39,
+  "rel_ver": "v0.12.899",
+  "rel_pub": "2026-10-01",
+  "rel_days": 16,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Python": 88,
+   "JavaScript": 9,
+   "HTML": 2,
+   "CSS": 1,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "TensorOpsAI/LLMstudio": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 99,
+   "Mako": 0,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "xaviviro/python-toon": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 18,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "mindroom-ai/mindroom": {
+  "commit_90d": 1198,
+  "commit_7d": 122,
+  "rel_ver": "v2026.10.335",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 92,
+   "TypeScript": 6,
+   "Swift": 1,
+   "Shell": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "niaka3dayo/agent-skills-vrc-udon": {
+  "commit_90d": 35,
+  "commit_7d": 0,
+  "rel_ver": "v4.1.1",
+  "rel_pub": "2026-09-14",
+  "rel_days": 33,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 47,
+   "C#": 25,
+   "Python": 17,
+   "PowerShell": 11
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "anthropics/devcontainer-features": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

@@ -159,6 +159,24 @@ Use native mode to avoid this issue.
 
 ## Version History
 
+### Version 247.0
+- "Generate Commit Message, Commit and Push" no longer brings Visual Studio to the front or opens Git Changes, so it runs quietly in the background while you work elsewhere.
+
+### Version 246.0
+- New "Keep last prompt visible" option (Settings → Prompt, off by default): the prompt box keeps showing your last prompt, dimmed, until you start typing, so you can see what the agent is working on. It is never resent by accident; Ctrl+Up recalls it for editing (issue #201).
+
+### Version 245.0
+- Native mode: new chat tabs opened with "+" now use the configured chat font, font size and composer height instead of the defaults.
+- Thanks to [@karpach-relativity](https://github.com/karpach-relativity) for contributing this fix (#202).
+
+### Version 244.0
+- Native mode: in a narrow chat tab the welcome card moves its tips below the welcome details instead of stretching tall, and the signed-in email gets its own line.
+- Thanks to [@gh61](https://github.com/Gh61) for contributing this improvement (#200).
+
+### Version 243.0
+- Native mode: scrolling inside an expanded tool card, such as a long shell command, no longer jumps the chat back to the newest reply while the agent keeps writing.
+- Thanks to [@gh61](https://github.com/Gh61) for contributing this fix (#199).
+
 ### Version 242.0
 - Native mode: tool calls that describe themselves, such as Claude Code's shell commands, now show that short description in the collapsed card instead of the raw command, and in the title of the permission prompt.
 - Native mode: resuming a conversation from Session History opened in a second or later chat tab now resumes it in that tab instead of the first one.
@@ -994,7 +1012,4 @@ Native mode now in beta phase
 
 ### Version 27.0
 - NOTE: this is a big release, for both trying to fix the terrible input issue in console and new features.
-- Please be patience and report any issues you find! Also if you don't like the extension, please just do not use and do not give bad review.
-- Features/Fixes:
-- You can now promote frequently used features — Update Code Agent, Detach/Attach Terminal, Restart Code Agent, View Changes, Session History, Show Usage, and Set Working Directory — to one-click toolbar buttons from the new "Toolbar" tab in Settings, where you can also reorder them; features you don't promote stay in a compact Tools (☰) dropdown that hides when empty.
-- Fixed "On Agent Finish" 
+- Please be patience and report any issues you find! Also if you don't like the extension, please just do not us

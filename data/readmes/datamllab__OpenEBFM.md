@@ -3,8 +3,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/datamllab/ebfm"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
-  <a href="https://huggingface.co/collections/guan-wang/ebfm"><img src="https://img.shields.io/badge/HuggingFace-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="HuggingFace"/></a>
+  <a href="https://www.alphaxiv.org/abs/2610.openesm"><img src="https://img.shields.io/badge/arXiv-2610.openesm-B31B1B?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv"/></a>
+  <a href="https://github.com/datamllab/openebfm"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
+  <a href="https://huggingface.co/collections/guan-wang/openebfm"><img src="https://img.shields.io/badge/HuggingFace-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" alt="HuggingFace"/></a>
 </p>
 
 <p align="center">
@@ -87,7 +88,7 @@ Use `configs/train.yaml` as the default configuration and set
 ## ⚙️ Pretrained Checkpoints
 
 Pretrained models are published in the
-[EBFM Hugging Face collection](https://huggingface.co/collections/guan-wang/ebfm).
+[EBFM Hugging Face collection](https://huggingface.co/collections/guan-wang/openebfm).
 The collection includes 160M, 520M, and 1B models trained on DCLM, FineWeb, and
 ClimbMix; one 160M OWT model; and a FineWeb SFT model named
 `EBFM-FineWeb-1B-CHAT`.
@@ -160,7 +161,7 @@ bash runs/eval.sh \
 bash runs/qa.sh \
   --checkpoint guan-wang/EBFM-DCLM-1B \
   --tokenizer-path "${MODEL_DIR}" \
-  --eval-bundle /path/to/eval_bundle \
+  --eval-bundle data/eval_bundle \
   --output_root . \
   --run_name qa-dclm
 
@@ -170,8 +171,7 @@ bash runs/chat.sh --checkpoint guan-wang/EBFM-FineWeb-1B-CHAT
 
 Chat, validation evaluation, QA evaluation, and SFT initialization accept
 published Hugging Face model IDs. BPB evaluation also needs the local snapshot
-directory for `token_bytes.pt`. Zero-shot evaluation currently expects a local
-Lightning checkpoint.
+directory for `token_bytes.pt`.
 
 Training reads `configs/train.yaml`; evaluation reads `configs/eval.yaml`.
 Explicit command-line arguments take precedence over YAML values. Training
@@ -263,8 +263,7 @@ ebfm/
 │   ├── prepare_data.sh           # Prepare and tokenize datasets
 │   ├── qa.sh                     # Run task-based QA evaluation
 │   ├── sft.sh                    # Fine-tune from a checkpoint
-│   ├── train.sh                  # Pretrain an EBFM model
-│   └── zeroshot.sh               # Run zero-shot benchmarks
+│   └── train.sh                  # Pretrain an EBFM model
 ├── scripts/                                 # Python command-line entry points
 │   ├── chat.py                   # Serve terminal or web chat
 │   ├── eval.py                   # Evaluate validation loss and BPB
@@ -272,9 +271,7 @@ ebfm/
 │   ├── prepare_data.py           # Build training and evaluation data
 │   ├── qa.py                     # Evaluate QA task suites
 │   ├── sft.py                    # Run supervised fine-tuning
-│   ├── train.py                  # Run pretraining
-│   ├── zeroshot.py               # Run zero-shot benchmark evaluation
-│   └── zeroshot_datasets.py      # Define zero-shot benchmark datasets
+│   └── train.py                  # Run pretraining
 ├── tasks/                                   # Dataset/task adapters for evaluation
 │   ├── common.py                             # Shared task interfaces and helpers
 │   ├── customjson.py                         # Load custom JSON evaluation tasks
@@ -304,6 +301,19 @@ python -m scripts.train --help
 python -m scripts.eval --help
 python -m scripts.qa --help
 python -m scripts.chat --help
+```
+
+## Citation
+
+If you found this work helpful, please star and cite this work:
+
+```bibtex
+@misc{pu-openesm-energy-steered-models,
+  author = {Pu, Yuan and Lu, Yudong and Wang, Ting and Hong, Zhicong and Li, Qinuo and Wu, Xuansheng and Zou, Na and Hu, Xia and Wang, Guanchu},
+  keywords = {Computation and Language (cs.CL), Machine Learning (cs.LG), Energy-Based Models, Foundation Models, Language Modeling, Energy Steering, Scaling},
+  title = {OpenESM: Energy-Steered Models Are Scalable Foundation Learners},
+  publisher = {arXiv}
+}
 ```
 
 ## Acknowledgement

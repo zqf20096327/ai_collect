@@ -116,4 +116,6 @@ General-purpose OpenTelemetry backends that GenAI spans can be sent to when you 
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Suggestions and corrections welcome, especially for anything on this list that has gone stale.
 
+Maintained by Angel Hermon (https://anhermon.dev): AI agent and MCP observability.
+
 To the extent possible under law, Angel Hermon has waived all copyright and related or neighboring rights to this work. CC0 1.0, 2026.

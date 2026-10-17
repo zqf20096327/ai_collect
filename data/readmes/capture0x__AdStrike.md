@@ -81,7 +81,7 @@ OR
 git clone https://github.com/capture0x/AdStrike.git && cd AdStrike && chmod +x install.sh run.sh && bash install.sh && source venv/bin/activate && bash run.sh
 ```
 
-Do not run `install.sh` or `run.sh` with `sudo`. The installer creates repo-local files such as `adrt_venv/`, `.env`, and `output/`; running as root can leave those files root-owned.
+Do not run `install.sh` or `run.sh` with `sudo`. The installer creates repo-local files such as `venv/`, `.env`, and `output/`; running as root can leave those files root-owned.
 
 If you already ran it with `sudo`, fix ownership once:
 
@@ -646,7 +646,7 @@ If the virtual environment is missing:
 
 ```bash
 bash install.sh
-source adrt_venv/bin/activate
+source venv/bin/activate
 python3 main.py --check
 ```
 

@@ -639,5 +639,138 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "kk7nc/RMDL": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "1.0.9",
+  "rel_pub": "2020-12-07",
+  "rel_days": 2140,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "caidaoli/ccLoad": {
+  "commit_90d": 843,
+  "commit_7d": 60,
+  "rel_ver": "v4.12.12-beta.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Go": 79,
+   "JavaScript": 14,
+   "HTML": 3,
+   "CSS": 3,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "microsoft/mastering-github-copilot-for-dotnet-csharp-developers": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "JeremieMelo/pytorch-onn": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 90,
+   "Cuda": 7,
+   "C++": 3,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Epistates/pmetal": {
+  "commit_90d": 506,
+  "commit_7d": 122,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-05-08",
+  "rel_days": 162,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 90,
+   "Metal": 4,
+   "Svelte": 3,
+   "C++": 2,
+   "C": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

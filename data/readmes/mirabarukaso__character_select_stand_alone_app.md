@@ -11,7 +11,7 @@ A Stand Alone App with AI prompt, Semi-auto Tag Complete and ComfyUI/Forge Neo(W
 
 | Verified | [ComfyUI](https://github.com/comfyanonymous/ComfyUI)  | [Forge Neo](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo) |
 | --- | --- | --- | 
-| Release | 0.37.0 | 2.29.1 |
+| Release | 0.41.1 | 2.29.1 |
 | Refiner (SDXL) | Yes | Yes |
 | Image Color Transfer (ALL) | Yes | No |
 | Regional Condition / Couple (SDXL/Anima) | Yes | Yes |
@@ -69,7 +69,7 @@ Navigate to my [HF dataset](https://huggingface.co/datasets/flagrantia/character
 > 
 > For ComfyUI, you need latest [ComfyUI_Mira](https://github.com/mirabarukaso/ComfyUI_Mira) for SAA.     
 >
-> *One-Click package v2.9.2*    
+> *One-Click package v2.10.0*    
 > The full package [embeded_env_for_SAA](https://huggingface.co/datasets/flagrantia/character_select_stand_alone_app/resolve/main/embeded_env_for_SAA.zip)      
 
 Clone this repo into your local folder     

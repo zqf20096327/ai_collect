@@ -812,5 +812,219 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "mehmetkahya0/AI-Catalog": {
+  "commit_90d": 92,
+  "commit_7d": 15,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 47,
+  "lang": {
+   "HTML": 79,
+   "Shell": 21
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "clearml/clearml-server": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.4.0",
+  "rel_pub": "2026-03-08",
+  "rel_days": 223,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Jinja": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "vercel-labs/marketing-team-eve-template": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "intellicia-public/parastore": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 57,
+   "Python": 41,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "tensorflow/cloud": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v0.1.16",
+  "rel_pub": "2021-06-16",
+  "rel_days": 1949,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 30,
+  "lang": {
+   "Python": 70,
+   "Jupyter Notebook": 25,
+   "C++": 4,
+   "Starlark": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "kiraaziz/Neoflow": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 87,
+   "TypeScript": 10,
+   "CSS": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "samchon/ttsc": {
+  "commit_90d": 814,
+  "commit_7d": 34,
+  "rel_ver": "v0.33.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 49,
+   "Go": 45,
+   "MDX": 3,
+   "JavaScript": 2,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "tumourlove/monolith": {
+  "commit_90d": 70,
+  "commit_7d": 0,
+  "rel_ver": "v0.23.0",
+  "rel_pub": "2026-09-09",
+  "rel_days": 38,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "C++": 96,
+   "Python": 2,
+   "PowerShell": 1,
+   "C": 0,
+   "C#": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

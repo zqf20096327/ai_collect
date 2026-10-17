@@ -1,13 +1,16 @@
 # (S)AGE — Sovereign Agent Governed Experience
 
-![SAGE: persistent memory for AI agents, with a lavender neural brain](docs/brand/sage-twitter-cover.png)
+![SAGE: governed memory for AI agents, with a lavender neural brain](docs/brand/sage-twitter-cover.png)
 
-**Stop re-explaining your project.**
+**Memory your agents can be held to.**
 
-SAGE gives AI agents a persistent memory of project decisions, failed approaches
-and useful lessons. Connect your tools to the same local node so authorized
-agents can record experience and recall relevant context in later sessions.
-Inspect what they keep in CEREBRUM, SAGE's local dashboard.
+SAGE is a governed memory and messaging layer for AI agents. Every memory is
+signed by an agent, admitted through a reviewable process, scoped by permissions
+you set, and kept with an audit trail you can inspect.
+
+Connect your tools to the same local node so authorized agents can record
+experience and recall relevant context in later sessions. Inspect what they keep
+in CEREBRUM, SAGE's local dashboard.
 
 Works with Claude Code, Codex, Cursor and other MCP-capable clients. Developers
 can integrate through the Python SDK or signed REST API. Recall depends on what
@@ -97,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.23.24`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.23.26`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -314,7 +317,31 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.23.24 and earlier)</summary>
+<summary>Recent release notes (v11.23.26 and earlier)</summary>
+
+## What's New in v11.23.26
+
+**App-v28 activation now succeeds on legacy public corpora.** The public-memory stage is built before the activation block's consensus transaction, so a record it could not encode aborted the activation on every replay and left the pending plan with no in-band downgrade. Records born before app-v25 whose canonical envelope lacks a domain, author, or author principal, carries a non-32-byte content hash, or carries a co-commit tombstone are now quarantined out of the committed public set instead of refusing the build. Records born under app-v25 or later still fail closed, and a recorded-but-empty or malformed field still refuses on every record. A record returns to the public set in the block that re-anchors its envelope.
+
+**Preflight now checks the corpus before the fork.** `sage-gui upgrade preflight` runs the same read-only census as `sage-gui upgrade public-memory-audit` when a chain still has to cross app-v28, and refuses "clear to climb" when a record would block activation. The audit names every record, the exact failed checks, and whether the stage would quarantine or refuse it. `--limit` bounds the printed list; the counters still cover the whole corpus.
+
+**Quarantined records are visible, not silent.** The audit reports them by memory id, and they stay outside the app-v28 public-memory tree until re-anchored. No chain migration is required; app-v28 remains active.
+
+Container: `ghcr.io/l33tdawg/sage:11.23.26`. SDK 11.23.26.
+
+## What's New in v11.23.25
+
+**Unscoped recall works again on a mature node.** An app-v23 node refuses a ranked recall whose candidate set exceeds its authorization scan budget rather than ranking an arbitrary prefix. On a node with a large corpus that made a domainless `sage_recall` fail permanently — the tool's default shape. Recall now falls back once to your governed home domain and reports the effective scope in `domain`, `recall_scope` and `recall_scope_note`, so an empty home-domain result is never read as proof the memory does not exist elsewhere. An explicitly scoped recall is never redirected.
+
+**Federated recall is bounded, and says why it is empty.** `/v1/federation/recall-plan` now carries a server-side deadline with a per-peer budget, so one unreachable peer can no longer hold the request open until the caller gives up. An empty plan reports `unavailable_reason` — `no_active_agreement`, `requested_chains_not_connected`, `peer_unreachable`, `domain_not_shared`, `planner_unavailable` or `federation_unavailable` — instead of an empty error map that read as an authorization verdict. The reasons are aggregate by design and never name a peer.
+
+**Federated agents appear inside their Access Group.** A federated agent linked to a local Access Group is now shown with the local members, with its authority stated. Federated write remains unavailable: it requires a consensus-bound federation ingress capability.
+
+**Product-specific bootstrap policy leaves core.** A root-owned provisioning profile now drives `init-fresh-personal-sage` and `check-private-config`. SAGE core no longer carries any one product's home path, Unix account, or unit list. Products that shipped `init-lantern-private` must ship the profile and update their scripts before pinning this release.
+
+App-v28 remains active and no chain migration is required.
+
+Container: `ghcr.io/l33tdawg/sage:11.23.25`. SDK 11.23.25.
 
 ## What's New in v11.23.24
 
@@ -700,7 +727,7 @@ Container: `ghcr.io/l33tdawg/sage:11.20.1`. SDK 11.20.1.
 
 **Local durability is no longer taken on faith.** SQLite opens with `synchronous=FULL` in both DSN and `PRAGMA` form and the node verifies `journal_mode` and `synchronous` at boot, refusing to serve when the durability posture is not provable. Vault publication is atomic in the same vein: attaching a vault and marking encryption required can no longer be observed separately, so an unlock cannot leave a window where a write is accepted against a store that does not yet require encryption.
 
-**Lantern bring-up support.** `sage-gui init-lantern-private` creates a fresh-only hardware identity — it refuses an existing or mismatched node rather than reusing it, takes its companion-key bootstrap explicitly, and never installs services or enables public enrollment. A `SAGE_LANTERN_PRIVATE_LISTENERS` node treats a missing config as an error instead of a default, and the policy is re-checked when the YAML is loaded so an edit cannot silently weaken it.
+**Managed appliance bring-up, with no product names in core.** `sage-gui init-fresh-personal-sage --profile <path> --unit <id> --owner-approved-companion-bootstrap` creates a fresh-only personal identity from a root-owned, mode-0600 provisioning profile. It refuses an existing or mismatched node rather than reusing it, takes its companion-key bootstrap explicitly, and never installs services or enables public enrollment. A profile that sets `private_listeners: true` makes a missing config an explicit error rather than a default, and the policy is re-checked when the YAML is loaded so an edit cannot silently weaken it. The product that ships a profile owns its home path, Unix account, unit ids and artifact filenames; SAGE core knows none of them.
 
 **A public-memory Merkle index ships dormant, and no fork is opened.** The sparse SHA-256 index over committed `PUBLIC=0` records, its migration builder and its stage/promote path are in the tree with their tests, and no production code calls any of them. Staged rows live under a local namespace that is excluded from the AppHash; promotion is what writes into AppHash-covered state, it is explicitly named for app-v28, and it is not reachable from a running node. Read that as preparation, not as activation.
 
@@ -1045,69 +1072,4 @@ This patch changes no consensus rule, AppHash input, transaction type, key
 encoding, fork target, or application version. Existing app-v27 chains replay
 byte-identically.
 
-Container: `ghcr.io/l33tdawg/sage:11.19.3`. SDK 11.19.3.
-
-## What's New in v11.19.2
-
-**Binary replacement now has consensus-authoritative upgrade-governance
-proof.** The read-only `/upgrade/governance-status` ABCI query reports the
-current application version, the exact pending `upgrade:plan` record, and the
-canonical `state:gov:active` proposal. Upgrade ballots include their decoded
-target application version. Storage, pointer/proposal identity, bounds,
-canonical-name, status, height, and payload-decode failures return ABCI code 1
-instead of being misreported as an empty plan or ballot.
-
-`sage-gui upgrade status` now consumes that fail-closed query rather than
-inferring safety from `/abci_info` plus the off-chain dashboard projection. The
-stopped-node `sage-gui upgrade preflight` command uses the same canonical
-inspector before the new server starts. v11.19.3 integrates that compatibility
-decision into the normal updater and lets supported in-flight operations
-continue automatically.
-
-This patch changes no consensus rule, AppHash input, transaction type, key
-encoding, fork target, or application version. Existing app-v27 chains replay
-byte-identically.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.2`. SDK 11.19.2.
-
-## What's New in v11.19.1
-
-**Stranded message claims remain recoverable beyond the retained-history
-window.** `sage_inbox` now embeds the first passive, payload-free page of
-unfinished claims held by another runtime sharing the same exact agent identity.
-Agents can continue through every older page with
-`sage_message_history(folder="claimed_elsewhere")`, then deliberately transfer
-an exact claim through the existing compare-and-swap `sage_message_handoff`
-path after deciding that its former claimant is dead or stale.
-
-The recovery projection exposes only the message ID, claimant-session fence,
-timestamps, and local/federated classification needed for safe handoff. It does
-not expose sender identity, intent, payload, result, provider, or chain IDs.
-Expired TTL-bounded claims are also excluded consistently from both the exact
-diagnostic count and its recovery pages before the periodic expiry sweep runs.
-
-Provider-addressed compatibility messages now bind atomically to the exact
-claiming agent and MCP session, resurface on later polls, support CAS handoff,
-and complete idempotently through `sage_message_reply`. A failed reply explicitly
-does not authorize creating a substitute `sage_message_send`; agents must recover
-the original claim or report the failure. Existing claimed provider rows receive
-an off-chain SQLite `legacy` session fence during startup migration.
-
-This patch introduces no consensus change or application-version increase. The
-supported consensus ceiling remains app-v27.
-
-Container: `ghcr.io/l33tdawg/sage:11.19.1`. SDK 11.19.1.
-
-## What's New in v11.19.0
-
-**Record authors regain lifecycle authority in reserved shared namespaces.**
-After app-v27 activates, the immutable author of a record in `general`, `self`,
-`meta`, or `sage-*` may challenge that record and may reinstate its open
-challenge without separately holding a level-3 Modify grant. The exception is
-record-scoped and does not apply to governance-promoted shared domains. Pending
-or inactive enrollment, read-only/profile restrictions, shared-write denies,
-and classification/clearance failures still deny the action. App-v21 weighted
-challenge rounds include the eligible record author in their frozen electorate.
-
-**Omitted task status now has one canonical meaning.** After app-v27, a signed
-new-task request that omits `task_status` is canonicalized to `planned` by
+Container: `ghcr.io/l33tdawg/sage

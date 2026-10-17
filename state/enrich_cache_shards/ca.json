@@ -850,5 +850,113 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "Tswoen/Paper-Agent": {
+  "commit_90d": 48,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 81,
+   "Vue": 10,
+   "CSS": 6,
+   "TypeScript": 4,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "modelscope/ms-cookbook": {
+  "commit_90d": 69,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "HTML": 80,
+   "JavaScript": 8,
+   "Python": 6,
+   "CSS": 5,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "VicenteVivan/geo-clip": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.3",
+  "rel_pub": "2026-10-07",
+  "rel_days": 10,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "cocofhu/grasp": {
+  "commit_90d": 1381,
+  "commit_7d": 37,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "TypeScript": 33,
+   "Go": 33,
+   "JavaScript": 19,
+   "Vue": 13,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

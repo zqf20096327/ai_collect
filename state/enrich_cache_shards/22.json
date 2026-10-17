@@ -546,5 +546,256 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "stillwater-sc/universal": {
+  "commit_90d": 330,
+  "commit_7d": 29,
+  "rel_ver": "v5.8.0",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 33,
+  "lang": {
+   "C++": 97,
+   "CMake": 1,
+   "C": 1,
+   "Python": 0,
+   "TeX": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "hecrj/icebreaker": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": "2026.2",
+  "rel_pub": "2026-02-08",
+  "rel_days": 251,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "awslabs/graphstorm": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "0.5.1",
+  "rel_pub": "2025-12-31",
+  "rel_days": 290,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2023-03-15",
+  "sec_ids": [
+   "GHSA-cwpw-3rjr-fc44(-,high)"
+  ],
+  "contrib_n": 24,
+  "lang": {
+   "Python": 93,
+   "Shell": 7,
+   "Dockerfile": 0,
+   "C": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "PlanExeOrg/PlanExe": {
+  "commit_90d": 117,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 93,
+   "HTML": 7,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "nipreps/mriqc": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "25.0.0rc0",
+  "rel_pub": "2025-01-13",
+  "rel_days": 642,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "Python": 77,
+   "JavaScript": 19,
+   "Dockerfile": 1,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "adapt-python/adapt": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "0.4.5",
+  "rel_pub": "2025-12-02",
+  "rel_days": 319,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 92,
+   "HTML": 6,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "slideflow/slideflow": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "3.0.2",
+  "rel_pub": "2024-10-18",
+  "rel_days": 729,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 89,
+   "CSS": 7,
+   "JavaScript": 2,
+   "HTML": 1,
+   "Groovy": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "JamesShi96/project-butler": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v1.7.3",
+  "rel_pub": "2026-07-29",
+  "rel_days": 80,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "aaryansamanta/advanced-ai-curriculum": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

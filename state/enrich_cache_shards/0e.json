@@ -595,5 +595,225 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
- }
+ },
+ "CodeUpdaterBot/ClickUi": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 97,
+   "Batchfile": 3
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ultracontext/ultracontext": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-04-20",
+  "rel_days": 180,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "JavaScript": 51,
+   "TypeScript": 34,
+   "MDX": 12,
+   "Python": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "NVIDIA/cuda-q-academic": {
+  "commit_90d": 70,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Jupyter Notebook": 94,
+   "Python": 5,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "starling-build/starling": {
+  "commit_90d": 1617,
+  "commit_7d": 240,
+  "rel_ver": "office-v0.1.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 72,
+   "C": 18,
+   "Python": 3,
+   "C++": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "JPeetz/Hermes-Studio": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.18.1",
+  "rel_pub": "2026-04-22",
+  "rel_days": 178,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "heqiangdiao-wq/AI-Cross-Border-Ecommerce-Agent-Toolkit": {
+  "commit_90d": 12,
+  "commit_7d": 12,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "frgfm/holocron": {
+  "commit_90d": 71,
+  "commit_7d": 16,
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-10-03",
+  "rel_days": 14,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1,
+   "Metal": 0,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "openucx/ucc": {
+  "commit_90d": 20,
+  "commit_7d": 8,
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-09-08",
+  "rel_days": 39,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 52,
+  "lang": {
+   "C": 60,
+   "C++": 35,
+   "M4": 2,
+   "Cuda": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "r-muresan/screen.vision": {}
 }

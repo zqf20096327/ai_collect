@@ -271,7 +271,7 @@ def pdf_to_markdown(pdf_path, output_dir):
     doc = pymupdf.open(pdf_path)
     md = pymupdf4llm.to_markdown(doc, header=False, footer=False, page_separators=True, ignore_images=True, write_images=False, image_path=None)
     md_cleaned = md.encode('utf-8', errors='surrogatepass').decode('utf-8', errors='ignore')
-    output_path = Path(output_dir) / Path(doc.name).stem
+    output_path = Path(output_dir) / Path(doc.name).name
     Path(output_path).with_suffix(".md").write_bytes(md_cleaned.encode('utf-8'))
 
 def pdfs_to_markdowns(path_pattern, overwrite: bool = False):
@@ -279,7 +279,7 @@ def pdfs_to_markdowns(path_pattern, overwrite: bool = False):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for pdf_path in map(Path, glob.glob(path_pattern)):
-        md_path = (output_dir / pdf_path.stem).with_suffix(".md")
+        md_path = (output_dir / pdf_path.name).with_suffix(".md")
         if overwrite or not md_path.exists():
             pdf_to_markdown(pdf_path, output_dir)
 
@@ -1409,24 +1409,28 @@ The chat interface will appear at the end.
 
 ### Option 2: Full Python Project (Recommended for Development)
 
-#### 1. Install Dependencies
+#### 1. Quick Launch (Recommended)
 ```bash
 # Clone the repository
 git clone https://github.com/GiovanniPasq/agentic-rag-for-dummies
 cd agentic-rag-for-dummies
 
-# Option A: pip
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-
-# Option B: uv
-uv venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-uv pip install -r requirements.txt
+# Run the startup script (auto-detects uv or venv, prepares environment & starts app)
+./start.sh        # Linux / macOS
+start.bat         # Windows (or double-click start.bat)
 ```
 
-#### 2. Run the Application
+#### 2. Manual Setup (Alternative)
+
+**Using `uv`:**
 ```bash
+uv run project/app.py
+```
+
+**Using `pip`:**
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 python project/app.py
 ```
 

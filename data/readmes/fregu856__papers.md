@@ -23,6 +23,15 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-10-16] [paper593]
+- Deep Learning-Based Segmentation and Quantification in Experimental Kidney Histopathology
+ [[pdf]](https://www.ovid.com/jnls/jasn/fulltext/10.1681/asn.2020050597~deep-learningbased-segmentation-and-quantification-in) [_unfortunately not open access, thus no annotated pdf_]
+- `Journal of the American Society of Nephrology, 2021`
+- [Computational Pathology]
+```
+Quite interesting paper, probably pretty useful for me to read. Gives a bit of general kidney pathology background, neat to see some examples of what structures might make sense to segment here etc. Relatively small amounts of annotated data that's needed actually, just 2100 annotated patches, and using just ~30% of that mostly works well too. And, this when training from scratch without using any PFM.
+```
+
 ##### [26-10-15] [paper592]
 - From Cosmos to Clinic: Interpretable Spatial Statistics for Histopathology Prognosis
  [[pdf]](https://openaccess.thecvf.com/content/ICCV2025W/CVAMD/html/Barna_From_Cosmos_to_Clinic_Interpretable_Spatial_Statistics_for_Histopathology_Prognosis_ICCVW_2025_paper.html) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/From%20Cosmos%20to%20Clinic%20Interpretable%20Spatial%20Statistics%20for%20Histopathology%20Prognosis.pdf)
@@ -1098,13 +1107,4 @@ Well written and fairly interesting paper, pretty quick to read. Everything is s
 
 ##### [25-07-21] [paper473]
 - RiskAgent: Autonomous Medical AI Copilot for Generalist Risk Prediction
- [[pdf]](https://arxiv.org/abs/2503.03802) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/RiskAgent%20Autonomous%20Medical%20AI%20Copilot%20for%20Generalist%20Risk%20Prediction.pdf)
-- `arxiv, 2025-03`
-- [ML for Medicine/Healthcare], [Language Models] 
-```
-Quite interesting paper. This is definitely not my area of expertise, but they explain things well here, I ~think~ that I mostly understand how this works on a high level. Seems like an approach that makes sense overall, and the results compared to the original LLMs do seem strong, but difficult for me to properly judge this.
-```
-
-##### [25-07-18] [paper472]
-- Sensing Cardiac Health Across Scenarios and Devices: A Multi-Modal Foundation Model Pretrained on Heterogeneous Data from 1.7 Million Individuals
- [[pdf]](https://arxiv.org/abs/2507.01045) [[annotated pdf]](https://github.com/fre
+ [[pdf]](https://arxiv.org/abs/2503.03802) [[annotated pdf]](https://github.com/fregu856

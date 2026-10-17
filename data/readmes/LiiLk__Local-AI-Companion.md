@@ -1,0 +1,588 @@
+# Local AI Companion
+
+<p align="center">
+  <img src="assets/cortana.jpg" alt="Local AI Companion Banner" width="600">
+</p>
+
+<p align="center">
+  <strong>Offline-first desktop AI companion with Live2D, realtime voice conversation, and a pragmatic local voice pipeline.</strong>
+</p>
+
+<p align="center">
+  <a href="#current-state">Current State</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#configuration">Configuration</a> •
+  <a href="#entry-points">Entry Points</a> •
+  <a href="#testing">Testing</a>
+</p>
+
+---
+
+## Current State
+
+`Local AI Companion` is a **Windows-first** AI assistant (desktop avatar + voice), with **WSL2 support for development and backend runs** ([LIL-49](docs/lil-49-wsl-compatibility.md)). The product shell remains optimized for Windows 11; WSL is a first-class contributor/agent environment.
+
+The current stable path on `main` is:
+
+```text
+Microphone -> Silero VAD -> Faster-Whisper -> LLM text -> Kokoro TTS -> RVC -> Audio playback
+```
+
+### What this repository is today
+
+- An **offline-first** assistant: ASR and TTS are local by default.
+- A **desktop companion** with Live2D shell support.
+- A **pipeline-first** architecture with explicit runtime ownership and test coverage.
+- A project that can run with a **local LLM** by default (`Ollama`) or an **optional cloud LLM** (`OpenRouter`) when you choose to enable it.
+
+### What is considered stable right now
+
+- `mode: "pipeline"`
+- `ASR: faster-whisper`
+- `LLM: Ollama` by default, `OpenRouter` optional
+- `TTS: Kokoro`
+- `Voice conversion: RVC`
+- Desktop overlay + WebSocket backend + CLI entry points
+
+### What is not the primary production path
+
+These remain supported or experimental, but they are not the default architecture we optimize around:
+
+- `Qwen3-TTS` as premium local TTS path
+- `Qwen3-ASR`
+- `mode: "omni"` (MiniCPM-o)
+- `mode: "gemma-omni"`
+- `Chatterbox` and `Edge TTS` as secondary/fallback providers
+
+---
+
+## Why This Project Exists
+
+This repository started as a from-scratch rebuild to understand and own the whole assistant stack instead of forking a monolithic VTuber project.
+
+The project priorities are now clear:
+
+- Keep the **main path simple and debuggable**
+- Favor **one stable architecture** over many half-working ones
+- Optimize for **single-GPU desktop reality**
+- Stay **config-driven** and easy to iterate on
+- Keep room for advanced paths without polluting the default runtime
+
+Inspired by [Open-LLM-VTuber](https://github.com/Open-LLM-VTuber/Open-LLM-VTuber), but implemented here with a smaller and more opinionated architecture.
+
+---
+
+## Features
+
+### Implemented
+
+- Realtime voice pipeline with sentence-level streaming
+- Local ASR with `faster-whisper`
+- Local TTS with `Kokoro`
+- Local voice conversion with `RVC`
+- Live2D desktop companion backend
+- Browser/WebSocket server for frontend integration
+- Character presets in YAML
+- Local config overrides via `config/config.local.yaml`
+- Local persistent conversation memory with bounded recent context and curated summary updates
+- Runtime lifecycle management for preload, warmup, cleanup, and degraded state handling
+- Test suite covering pipeline, TTS routing, RVC, websocket flows, config loading, and language strategy
+
+### Available but secondary
+
+- `OpenRouter` LLM provider
+- `Gemma` text+vision pipeline
+- `MiniCPM-o` omni mode
+- `Qwen3-TTS` worker-based local premium TTS path
+- `Chatterbox` multilingual ONNX TTS
+- `Edge TTS` cloud fallback
+
+### Planned / active improvement areas
+
+- Better ASR quality on the stable path (`Whisper large-v3` / `large-v3-turbo` evaluation)
+- Better March 7th voice fidelity on the `Kokoro -> RVC` path
+- Further codebase cleanup around the single stable architecture
+- Stronger desktop UX and Live2D polish
+- Vision and multimodal workflows once the voice core is settled
+
+---
+
+## Architecture
+
+### Stable Reference Pipeline
+
+```mermaid
+flowchart LR
+    Mic["Microphone"] --> VAD["Silero VAD"]
+    VAD --> ASR["Faster-Whisper"]
+    ASR --> LLM["LLM Text Layer\nOllama by default\nOpenRouter optional"]
+    LLM --> Splitter["Sentence Splitter + TTS Task Manager"]
+    Splitter --> TTS["Kokoro TTS"]
+    TTS --> RVC["RVC Voice Conversion"]
+    RVC --> Audio["Audio Playback + Desktop/Web Payloads"]
+```
+
+### Runtime Principles
+
+| Principle | Meaning |
+|---|---|
+| `pipeline` is the default | The separate ASR -> LLM -> TTS stack is the main product path |
+| One CUDA-heavy TTS path at a time | Sequential synthesis to stay safe on a single GPU |
+| Config-driven | Behavior lives in `config/config.yaml` and `config/config.local.yaml` |
+| Explicit lifecycle | Preload, warmup, cleanup, degraded state, and timeouts are owned centrally |
+| Optional advanced paths | `Qwen3`, `Gemma`, `MiniCPM-o` exist, but do not define the stable architecture |
+
+### Runtime Modes
+
+| Mode | Purpose | Status |
+|---|---|---|
+| `pipeline` | Separate ASR -> LLM -> TTS chain | Primary / stable |
+| `omni` | MiniCPM-o single-model multimodal path | Secondary / experimental |
+| `gemma-omni` | Gemma multimodal path with separate TTS | Secondary / experimental |
+
+---
+
+## Project Layout
+
+```text
+Local-AI-Companion/
+├── config/
+│   ├── config.yaml
+│   ├── config.local.example.yaml
+│   └── characters/
+├── frontend/
+│   ├── index.html
+│   └── live2d/
+├── resources/
+│   └── voices/
+├── scripts/
+│   ├── install_rvc_windows.ps1
+│   ├── install_qwen3_tts_windows.ps1
+│   ├── rvc_worker.py
+│   ├── qwen3_tts_worker.py
+│   └── benchmark / smoke test utilities
+├── src/
+│   ├── assistant/
+│   │   ├── app.py
+│   │   ├── conversation_pipeline.py
+│   │   ├── audio_service.py
+│   │   └── pipeline_runtime.py
+│   ├── asr/
+│   ├── llm/
+│   ├── server/
+│   ├── tts/
+│   ├── utils/
+│   └── vad/
+├── tests/
+├── main.py
+└── run_assistant.py
+```
+
+### Key Files
+
+| Area | Files |
+|---|---|
+| Desktop app | `run_assistant.py`, `src/assistant/app.py` |
+| Voice pipeline | `src/assistant/conversation_pipeline.py`, `src/assistant/pipeline_runtime.py` |
+| ASR | `src/asr/whisper_provider.py` |
+| TTS | `src/tts/kokoro_provider.py`, `src/tts/rvc_provider.py`, `src/tts/tts_task_manager.py` |
+| Optional premium TTS | `src/tts/qwen3_tts_provider.py` |
+| WebSocket server | `src/server/app.py`, `src/server/websocket.py` |
+| Character system | `config/characters/*.yaml` |
+| Core config | `config/config.yaml`, `config/config.local.yaml` |
+
+---
+
+## Quick Start
+
+The desktop assistant has one canonical command on both supported environments:
+
+| Environment | Desktop behavior | Launch |
+|-------------|------------------|--------|
+| **Windows** | Local backend + native Live2D shell | `python run_assistant.py` |
+| **WSL** | Backend in WSL + Windows-native Live2D shell | `python run_assistant.py` |
+
+Browser, CLI, diagnostics, and bridge-only modes are optional tools exposed by
+`scripts/run_wsl.sh`; they are not alternate desktop entry points.
+
+Full WSL notes: [docs/lil-49-wsl-compatibility.md](docs/lil-49-wsl-compatibility.md) (LIL-49).
+
+### 1. Prerequisites
+
+- Python 3.11 or 3.12
+- NVIDIA GPU recommended (CUDA works under WSL2 via the **Windows** NVIDIA driver)
+- [Ollama](https://ollama.com/) for the default local LLM path (or OpenRouter)
+- `ffplay` or `mpv` optional for CLI audio playback
+- Windows 11 for the native shell; Ubuntu WSL2 for the hybrid backend (`wsl --update` from PowerShell first)
+
+### 2. Clone and install
+
+#### Option A — Windows (desktop avatar)
+
+```powershell
+git clone https://github.com/LiiLk/Local-AI-Companion.git
+cd Local-AI-Companion
+
+python -m venv venv
+venv\Scripts\activate
+python -m pip install --upgrade pip
+# NVIDIA GPU (recommended): install the CUDA build of PyTorch first, from the
+# PyTorch index as the primary index. PyPI only ships the CPU-only build on
+# Windows, and an --extra-index-url would let pip pick it when it is newer.
+python -m pip install torch==2.11.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu128
+python -m pip install -r requirements.txt
+```
+
+Keep this `venv` dedicated to the default path. Optional providers (MiniCPM-o,
+Gemma, Qwen3, Chatterbox) pull large extra stacks such as `torchvision`,
+`accelerate` or another Transformers line. Installed here, they slow down every
+startup, because Transformers imports the integrations it finds installed.
+Measured on 2026-10-01: a venv holding every optional stack (271 packages)
+needed 61 s to preload the models, against 43 s for this default `venv`
+(138 packages). Install optional stacks in their own environment, as described
+in [Optional Advanced Providers](#optional-advanced-providers).
+
+Optional RVC voice conversion:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install_rvc_windows.ps1
+```
+
+Then:
+
+```powershell
+python run_assistant.py
+```
+
+#### Option B — WSL2 hybrid desktop
+
+```bash
+git clone https://github.com/LiiLk/Local-AI-Companion.git
+cd Local-AI-Companion
+
+# One-time WSL environment setup, including Kokoro -> RVC
+bash scripts/setup_wsl.sh --with-rvc
+
+source venv/bin/activate
+python run_assistant.py
+```
+
+`run_assistant.py` is the single desktop entry point on Windows and WSL. Under
+WSL it automatically starts the backend locally and the Windows-native pet
+shell. For the browser UI instead, run `bash scripts/run_wsl.sh web`, then open
+**http://localhost:8000/web/** in Windows Edge/Chrome.
+
+Use the HUD `QUIT` button or `Ctrl+Shift+Q` to stop the desktop shell and its
+backend cleanly on both Windows and WSL
+([LIL-50](docs/lil-50-graceful-quit.md)).
+
+The RVC setup installs dependencies only. Configure your own trusted model in
+the active character preset or `config.local.yaml`; the FAISS index is optional
+when the configured `index_rate` is `0`.
+
+Other WSL modes:
+
+```bash
+bash scripts/run_wsl.sh cli         # text chat
+bash scripts/run_wsl.sh cli-voice   # mic CLI
+bash scripts/run_wsl.sh bridge      # backend only for an external shell
+bash scripts/run_wsl.sh desktop     # experimental Qt avatar (not Windows parity)
+bash scripts/run_wsl.sh check       # CUDA / audio / paths
+```
+
+Do **not** install a Linux NVIDIA display driver inside WSL.
+
+### 3. Configure local overrides
+
+```powershell
+copy config\config.local.example.yaml config\config.local.yaml
+```
+
+On WSL/Linux:
+
+```bash
+cp config/config.local.example.yaml config/config.local.yaml
+```
+
+Use `config/config.local.yaml` for:
+
+- machine-specific paths
+- local experiments you do not want to commit
+
+Keep secrets out of YAML, including local ignored files. Set API keys through
+the process environment so config diagnostics and support logs cannot print
+them accidentally.
+
+### 4. Set up the default LLM path
+
+#### Option A: local LLM with Ollama (default)
+
+```powershell
+ollama pull qwen3.5:4b
+```
+
+Make sure Ollama is running on `http://localhost:11434`.
+
+The tracked configuration keeps the active Ollama model loaded for 30 minutes
+to avoid a cold reload after a short pause. Override `llm.ollama.keep_alive` in
+`config/config.local.yaml` when a different memory/latency tradeoff is needed.
+
+#### Option B: OpenRouter (optional)
+
+Set `OPENROUTER_API_KEY` in your environment, then switch the provider in
+`config/config.local.yaml`:
+
+```yaml
+llm:
+  provider: "openrouter"
+```
+
+### 5. Voice conversion (RVC) — already covered above
+
+Windows: `scripts/install_rvc_windows.ps1`
+WSL: `bash scripts/setup_wsl.sh --with-rvc` or `bash scripts/install_rvc_wsl.sh`
+
+If you want a plain Kokoro path first, you can temporarily disable RVC:
+
+```yaml
+tts:
+  rvc:
+    enabled: false
+```
+
+### 6. Run the app
+
+| Goal | Windows | WSL |
+|------|---------|-----|
+| Live2D desktop companion | `python run_assistant.py` | `python run_assistant.py` |
+| Browser UI | `python -m src.server` | `bash scripts/run_wsl.sh web` |
+| Bridge for external shell | `python run_assistant.py --bridge-server` | `bash scripts/run_wsl.sh bridge` |
+| CLI / voice CLI | `python main.py` / `--voice --listen` | `bash scripts/run_wsl.sh cli` / `cli-voice` |
+
+Browser UI: open `http://localhost:8000`.
+
+Live2D character presets use a project-relative model directory, for example
+`assets/models/my-character/`, plus its `.model3.json` filename. The same
+configuration is resolved for the browser and desktop shell; generic runtime
+code does not select a character model.
+
+---
+
+## Configuration
+
+The repository is intentionally config-driven.
+
+### Config files
+
+- Tracked defaults: `config/config.yaml`
+- Local overrides: `config/config.local.example.yaml`
+- Character presets: `config/characters/*.yaml`
+
+All main entry points now load config through the shared config loader, so `config.local.yaml` overrides are applied consistently.
+
+### Important settings
+
+```yaml
+mode: "pipeline"
+
+pipeline:
+  reply_language: "en"
+
+memory:
+  enabled: true
+  max_recent_turns: 8
+  max_message_chars: 2000
+  max_summary_chars: 2000
+  curate_enabled: true
+
+llm:
+  provider: "ollama"   # or "openrouter", "gemma"
+
+tts:
+  provider: "kokoro"
+  max_queue_size: 8
+  warmup_on_start: true
+  rvc:
+    enabled: true
+
+asr:
+  provider: "whisper"
+  profile: "balanced"
+  device: "cuda"
+```
+
+### Character presets
+
+The current default preset is `march7th`.
+
+Relevant assets already wired in the repo:
+
+- Live2D model under `assets/models/march7th/`
+- RVC files under `resources/voices/march7th/`
+- reference audio for premium voice paths under `resources/voices/march7th/`
+
+---
+
+## Entry Points
+
+| Command | Purpose |
+|---|---|
+| `python run_assistant.py` | Desktop Live2D assistant |
+| `python run_assistant.py --bridge-server` | Desktop backend without pywebview, websocket bridge mode |
+| `python -m src.server` | FastAPI + WebSocket server for browser frontend |
+| `python main.py` | CLI chatbot |
+| `python main.py --voice --listen` | CLI voice conversation path |
+
+---
+
+## Optional Advanced Providers
+
+These are intentionally not part of the primary README quick path, but they still exist in the codebase.
+
+Unless stated otherwise, create a separate virtual environment for each optional
+stack (for example `python -m venv .venv-omni`) instead of installing it into the
+default `venv`. Parakeet is the exception: `onnx-asr` is small and does not pull
+extra Transformers integrations.
+
+### Parakeet ASR
+
+Parakeet TDT 0.6B v3 is an optional local ASR candidate. Whisper remains the
+multilingual default and stock installs do not include Parakeet dependencies.
+
+```bash
+python -m pip install -r requirements-optional-parakeet.txt
+```
+
+Enable it in `config/config.local.yaml`:
+
+```yaml
+asr:
+  provider: "parakeet"
+```
+
+Parakeet is supported by the desktop/server pipeline (`run_assistant.py` and
+`python -m src.server`). The legacy `main.py --voice --listen` microphone path
+remains Whisper-only and reports a clear error for other ASR providers.
+
+See `docs/lil-48-parakeet-asr.md` for the current evaluation status.
+
+### Qwen3-TTS
+
+For the worker-based Qwen3 premium path:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install_qwen3_tts_windows.ps1
+```
+
+Then switch config:
+
+```yaml
+tts:
+  provider: "qwen3"
+```
+
+This path is useful for experimentation and premium local voice cloning, but it is not the default stable path on `main`.
+
+### Gemma / MiniCPM-o
+
+Both multimodal paths are available in the codebase, but they are secondary modes and should be treated as such. Keep them in separate experiment environments because MiniCPM-o uses the Transformers 4.51-4.52 line while Gemma uses Transformers 5.x+:
+
+Gemma (`mode: "gemma-omni"`), in its own environment. `requirements-optional-gemma-omni.txt`
+already includes `requirements.txt`:
+
+```powershell
+python -m venv .venv-gemma
+.venv-gemma\Scripts\activate
+python -m pip install torch==2.11.0 torchaudio==2.11.0 --index-url https://download.pytorch.org/whl/cu128
+python -m pip install -r requirements-optional-gemma-omni.txt
+python run_assistant.py
+```
+
+MiniCPM-o (`mode: "omni"`) also needs the base `requirements.txt`, but it cannot
+currently be installed on top of it without breaking the audited baseline:
+`minicpmo-utils` pins `pillow==10.4.0` while `constraints-security.txt` requires
+`pillow>=12.2.0` (see the header of `requirements-optional-omni.txt`). Only use it
+in a throwaway experiment environment until upstream ships a compatible release:
+
+```powershell
+python -m pip install -r requirements-optional-omni.txt  # MiniCPM-o only, not a runnable app environment on its own
+```
+
+```yaml
+mode: "omni"
+# or
+mode: "gemma-omni"
+```
+
+---
+
+## Testing
+
+Run the full repository test suite:
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests -q
+```
+
+Run a specific file:
+
+```bash
+pytest tests/test_pipeline_runtime.py -q
+pytest tests/test_conversation_pipeline_rvc.py -q
+pytest tests/test_websocket_openrouter.py -q
+```
+
+There are also utility scripts in `scripts/` for smoke tests, latency profiling, and provider benchmarking.
+
+For dependency security audits, see `docs/python-dependency-audit.md`.
+
+---
+
+## Known Constraints
+
+- The project is optimized for **single-GPU desktop usage**, so heavyweight providers should not all be enabled blindly.
+- The default stable ASR remains `whisper` with the `balanced` profile.
+  Parakeet passed live Windows and WSL validation in LIL-48 and remains opt-in
+  because its language coverage is narrower and there is no Whisper fallback.
+- `Qwen3-TTS`, `Qwen3-ASR`, `Gemma`, and `MiniCPM-o` are not the baseline that the repository is currently simplified around.
+- Windows remains the primary polished desktop target; WSL2 supports the full local test path after `bash scripts/setup_wsl.sh`. The launcher selects deterministic software WebGL for Live2D under WSL, and WSLg/Pulse provides microphone capture.
+- Tauri shell polish and native desktop behavior remain Windows-oriented.
+
+---
+
+## Roadmap
+
+### Near term
+
+- Improve ASR quality on the stable path
+- Improve March 7th voice fidelity on `Kokoro -> RVC`
+- Continue removing dead code and old architecture leftovers
+- Tighten desktop UX and preload behavior
+
+### Later
+
+- Stronger multimodal workflows
+- Better screen understanding and vision
+- Memory and long-term personalization
+- More polished Live2D and desktop-pet behavior
+
+---
+
+## Acknowledgments
+
+- [Open-LLM-VTuber](https://github.com/Open-LLM-VTuber/Open-LLM-VTuber)
+- [Ollama](https://ollama.com/)
+- [OpenRouter](https://openrouter.ai/)
+- [Kokoro](https://github.com/hexgrad/kokoro)
+- [RVC](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI)
+- [Faster-Whisper](https://github.com/SYSTRAN/faster-whisper)
+- [Silero VAD](https://github.com/snakers4/silero-vad)
+- [Live2D Cubism SDK](https://www.live2d.com/en/sdk/)
+
+---
+
+## License
+
+MIT. See [LICENSE](LICENSE).

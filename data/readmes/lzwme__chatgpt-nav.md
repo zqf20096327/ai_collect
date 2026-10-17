@@ -366,4 +366,292 @@
 1. [[⭐] https://fanyi.xfyun.cn/console/trans/text](https://fanyi.xfyun.cn/console/trans/text) **讯飞智能翻译。** 科大讯飞推出的人工智能翻译平台
 1. [[⭐] https://fireflies.ai](https://fireflies.ai) **fireflies.ai。** Fireflies.ai是一款利用生成式人工智能技术的AI会议记录助手，可自动转录、总结、搜索和分析语音对话。通过与Zoom、Google Meet、Microsoft Teams、Webex等平台集成，生成会议记录和智能摘要。
 1. [[⭐] https://github.com/RVC-Boss/GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) **GPT-SoVITS。** GPT-SoVITS-WebUI是一个强大的零样本语音转换和文本到语音WebUI。它具有零样本TTS、少样本TTS、跨语言支持和WebUI工具等功能。该产品支持英语、日语和中文，提供了集成工具，包括语音伴奏分离、自动训练集分割、中文ASR和文本标注，帮助初学者创建训练数据集和GPT/SoVITS模型。用户可以通过输入5秒的声音样本，即可体验即时的文本到语音转换，还可以通过仅使用1分钟的训练数据对模型进行微调，以提高语音相似度和逼真度。产品支持环境准备、Python和PyTorch版本、快速安装、手动安装、预训练模型、数据集格式、待办事项和致谢。
-1. [[⭐] https://github.com/Zejun-Yang/AniPortrait](https://github.com/Zejun-Yang/AniPortrait) **AniPortrait。** AniPortrait是一个根据音频和图像输入生成会说话、唱歌的动�
+1. [[⭐] https://github.com/Zejun-Yang/AniPortrait](https://github.com/Zejun-Yang/AniPortrait) **AniPortrait。** AniPortrait是一个根据音频和图像输入生成会说话、唱歌的动态视频的项目。它能够根据音频和静态人脸图片生成逼真的人脸动画，口型保持一致。支持多种语言和面部重绘、头部姿势控制。功能包括音频驱动的动画合成、面部再现、头部姿势控制、支持自驱动和音频驱动的视频生成、高质量动画生成以及灵活的模型和权重配置。
+1. [[⭐] https://github.com/myshell-ai/OpenVoice](https://github.com/myshell-ai/OpenVoice) **OpenVoice。** OpenVoice是一个开源的语音克隆技术,可以准确地克隆参考音色,生成多种语言和口音的语音。它可以灵活地控制语音风格,如情感、口音等参数,以及节奏、停顿和语调等。它实现了零样本跨语言语音克隆,即生成语音和参考语音的语言都不需要出现在训练数据中。
+1. [[⭐] https://hailuoai.com](https://hailuoai.com) **海螺AI。** 海螺AI是一个基于先进的AI生成技术打造的对话式智能助理。它可以通过简单的对话,为用户提供知识问答、信息检索、公众号文章写作、小红书笔记生成等服务,帮助用户快速获取信息,提高工作效率。主要功能包括:搜索问答、创意写作、语音交互等。适用于需要知识支持的创作者、自媒体从业者、学生群体等。
+1. [[⭐] https://home.tiangong.cn](https://home.tiangong.cn) **天工SkyMusic。** 天工是昆仑万维基于自研双千亿级大语言模型的人工智能产品，提供六大能力，六大领域数百种功能，包括生成创作、知识问答、规划决策、语言理解、代码能力和逻辑能力。天工具有独特的场景优势，适用于娱乐社交、游戏、广告/营销及海外业务场景等。同时天工拥有技术优势，核心技术攻坚积累，团队经验丰富。详情请访问官方网址。
+1. [[⭐] https://home.tiangong.cn/downloadGuide](https://home.tiangong.cn/downloadGuide) **天工SkyMusic。** 基于昆仑万维「天工3.0」超级大模型打造的AI音乐生成大模型「天工SkyMusic」，支持高质量AI音乐生成、人声合成、歌词段落控制、多种音乐风格和音乐智能表达等功能。目前开放免费邀测，助力用户更好地创作音乐，表达情感。
+1. [[⭐] https://humanaigc.github.io/emote-portrait-alive/](https://humanaigc.github.io/emote-portrait-alive/) **EMO。** 阿里巴巴的EMO:  是一款生成具有表情丰富的面部表情视频的工具，可以根据输入的角色图像和声音音频生成各种头部姿势和表情的声音头像视频。支持多语言歌曲和各种肖像风格，能够根据音频节奏生成动态、表现丰富的动画角色。
+1. [[⭐] https://member.bilibili.com/york/bilibili-studio](https://member.bilibili.com/york/bilibili-studio) **必剪 Studio。** 必剪 Studio 是一款数字分身工具，支持形象驱动和音色定制。用户可以定制专属数字分身，用于配音、口播等场景。产品背景为解决用户在音频制作中个性化需求的问题，定位于提供便捷的数字分身创作工具。
+1. [[⭐] https://mubert.com](https://mubert.com) **Mubert。** 使用人工智能为您的视频内容、播客和应用程序生成音乐。
+1. [[⭐] https://mvsep.com/zh](https://mvsep.com/zh) **MVSEP。** MVSEP是一款在线音频处理工具，利用先进的音频分离技术可将音乐和语音从音频文件中分离出来，适用于音乐制作、音频编辑、广播、电影后期制作等领域。优点包括高质量的音频输出、快速的处理速度和用户友好的操作界面。提供不同模型选择。
+1. [[⭐] https://myvocal.ai](https://myvocal.ai) **MyVocal。** MyVocal是一款AI音乐工具，可以帮助用户在60秒内克隆自己的声音，用于歌唱或内容创作。独特的音调将帮助您脱颖而出！免费使用，我们将向您的收件箱发送登录/注册链接。
+1. [[⭐] https://novamss.com](https://novamss.com) **NovaMSS。** NovaMSS是一款基于最顶级的AI模型调优后的新一代音乐源分离工具，可以一键提取伴奏、人声、贝斯、鼓点、分离音轨等。它的强大算法基于MSS领域最顶级的算法，并经过上千首歌曲的训练与调优，实现音轨分离的高效率和高质量。产品提供简单易用的界面，支持多种音频格式，包括MP3、Flac、Wave、AIFF等，并且支持批量上传和处理，内置音频播放器，方便用户即时查看分离结果。此外，产品分为社区版和专业版，社区版永久免费，而专业版提供更专业的算法模型和更高品质的音频输出格式。
+1. [[⭐] https://peiyin.baibaoyin.com](https://peiyin.baibaoyin.com) **百宝音。** 百宝音是一个在线免费文字转语音的配音合成软件，提供近百种配音模板，主打影视解说配音、专题片配音、广告配音等，具有高度定制化的优势，可根据用户需求定制各种音色风格。
+1. [[⭐] https://peiyin.xunfei.cn/virtual-broadcasting](https://peiyin.xunfei.cn/virtual-broadcasting) **讯飞智作。** 讯飞智作是一站式配音平台，可以提供AI文字转语音、语音合成、智能配音、AI虚拟主播等工具。
+1. [[⭐] https://replicate.com/lucataco/whisperspeech-small](https://replicate.com/lucataco/whisperspeech-small) **Whisper Speech。** Whisper Speech是一款完全开源的文本转语音模型，由Collabora和Lion在Juwels超级计算机上训练。它支持多种语言和多种形式的输入，包括Node.js、Python、Elixir、HTTP、Cog和Docker。该模型的优势在于高效的语音合成和灵活的部署方式。定价方面，Whisper Speech完全免费。它定位于为开发者和研究人员提供一个强大的、可定制的文本转语音解决方案。
+1. [[⭐] https://soundraw.io](https://soundraw.io) **Soundraw。** 用AI制作免费的音乐
+1. [[⭐] https://speechify.com](https://speechify.com) **Speechify。** 拥有数百万次在Chrome、iOS和Android上的下载量的领先文本到语音应用，可以在任何设备上听取互联网内容。
+1. [[⭐] https://tianyin.music.163.com](https://tianyin.music.163.com) **网易天音。** 网易天音是一款基于人工智能技术的音乐创作工具。它能够根据用户的需求和创作风格，自动生成个性化的音乐作品。用户可以通过选择曲风、节奏、乐器等参数，快速生成符合自己需求的音乐作品。AI音乐创作具有创作速度快、音乐风格多样、个性化定制等优势。定价方面，提供免费试用和付费订阅两种模式。它适用于音乐爱好者、创作人员、广告制作等领域。
+1. [[⭐] https://tingwu.aliyun.com](https://tingwu.aliyun.com) **通义听悟。** 阿里推出的会议转录工具
+1. [[⭐] https://vocalremover.org](https://vocalremover.org) **Vocal Remover。** Vocal Remover使用强大的AI算法免费将歌曲中的人声与音乐分离。
+1. [[⭐] https://work.duiopen.com](https://work.duiopen.com) **麦耳会记。** 麦耳会记是一款集实时语音转写、实时翻译和 AI 辅助写作功能为一体的 AI 办公助手。它可以用于办公会议、学生网课、客户访谈录音等场景。软件支持边录音、边转写，录音结束后，音频、文本实时同步至 PC 端、手机端。采用云端存储资料的方式，无论是办公、地铁，还是旅游途中，都可以随时随地查看文档或音频。麦耳会记还提供实时字幕同传功能，帮助听力受损人士更好地参与会议。
+1. [[⭐] https://www.aboutamazon.com/news/devices/amazon-2025-devices-alexa-event-live-updates](https://www.aboutamazon.com/news/devices/amazon-2025-devices-alexa-event-live-updates) **Alexa+。** Alexa+ 是亚马逊在 2025 年推出的下一代智能语音助手，基于生成式 AI 技术构建。它不仅能够进行自然流畅的对话，还能连接数千种服务和设备，帮助用户完成各种任务。其核心优势在于强大的语言理解能力、个性化服务以及无缝的设备集成。Alexa+ 的推出标志着语音助手从简单的问答工具向真正的智能生活助手的转变，能够帮助用户更好地管理日常生活和智能家居设备。
+1. [[⭐] https://www.aiva.ai](https://www.aiva.ai) **Aiva。** AIVA是一款人工智能音乐创作助手，为创作者提供原创且个性化的音乐配乐。通过利用AI生成的音乐，以比以往更快的速度为项目创作引人入胜的主题。我们提供多种预设风格和算法，包括现代电影、电子音乐、流行音乐、环境音乐、摇滚音乐、幻想音乐、爵士乐、海上颂歌、20世纪电影、探戈、中国音乐等。订阅我们的专业计划，您将永久拥有使用AIVA创作的任何作品的完整版权。定价方案有个人版、学生和学校版以及企业版。
+1. [[⭐] https://www.beatoven.ai](https://www.beatoven.ai) **Beatoven.ai。** Beatoven.ai利用先进的AI音乐生成技术，为您的视频或播客创作独特的基于情感的音乐，以适应您内容的每个部分。我们提供免费试用，定价详细请访问官方网站。
+1. [[⭐] https://www.feishu.cn/product/minutes](https://www.feishu.cn/product/minutes) **飞书妙记。** 飞书妙记是智能会议纪要工具，可将会议内容转录成易搜索、可翻译的逐字稿，自动总结会议纪要与待办事项，提升回顾和协作效率。
+1. [[⭐] https://www.haimian.com](https://www.haimian.com) **海绵音乐。** 海绵音乐 - 一键创作你的 AI 音乐
+1. [[⭐] https://www.hume.ai/blog/introducing-octave](https://www.hume.ai/blog/introducing-octave) **OCTAVE。** OCTAVE (Omni-Capable Text and Voice Engine)是一个结合了前沿语言模型和语音系统能力的下一代语音语言模型。它能够从简短的描述性提示或录音中生成不仅仅是声音，还有个性（语言、口音、表达、潜在性格等），并且能够实时响应中生成多个交互的AI个性和声音。OCTAVE维持了类似大小的前沿大型语言模型（LLM）的能力，非常适合驱动与人类丰富沟通的AI系统，同时遵循详细指令，使用工具或控制界面。
+1. [[⭐] https://www.iflyrec.com](https://www.iflyrec.com) **讯飞听见。** 讯飞听见是智慧办公服务平台，提供语音转文字、录音整理、语音翻译等服务，致力于提高办公效率。支持快速转录音频、视频为文字，提供 AI 写作、同传、翻译等功能。
+1. [[⭐] https://www.lalal.ai](https://www.lalal.ai) **Lalal.ai。** LALAL.AI是一款下一代音乐分轨器和人声消除器，采用世界一流的AI技术，快速、简便、准确地分离音乐的不同部分。无损地去除人声、乐器、鼓、贝斯、钢琴、电吉他、原声吉他和合成器等轨道。
+1. [[⭐] https://www.moyin.com](https://www.moyin.com) **魔音工坊。** 魔音工坊是一款可以在线将文字转成语音的智能配音产品。提供不同性别、不同口音的真人声音，在你输入文字后直接配音。你可快速对短视频等需要配音的内容进行配音。
+1. [[⭐] https://www.narakeet.com/app/text-to-audio/](https://www.narakeet.com/app/text-to-audio/) **Narakeet。** Narakeet是一个在线工具，允许用户轻松创建逼真的文本转语音和旁白视频。它提供了多种语言和声音选择，支持多种文件格式上传，并允许用户自定义音量、速度和输出格式。Narakeet的定价模式为一次性支付，无需订阅，适合商业用户和需要大量音频文件的用户。
+1. [[⭐] https://www.reecho.ai](https://www.reecho.ai) **REECHO 睿声。** REECHO.AI 睿声是一个超拟真的人工智能语音克隆平台。用户可以上传语音样本,系统利用深度学习技术进行语音克隆,生成质量极高的 AI 语音,可以实现不同人物的语音风格转换。该平台提供语音创作、语音配音等服务,让更多人可以通过 AI 技术参与语音内容的创作,降低创作门槛。平台定位大众化,提供免费使用基础功能。
+1. [[⭐] https://www.singduck.cn](https://www.singduck.cn) **唱鸭。** 唱鸭是一款音乐平台，通过跟随标记按键实现自弹自唱，用户可制作乐段、点歌、抢唱、说唱等，带来音乐创作与互动乐趣。
+1. [[⭐] https://www.songtell.com](https://www.songtell.com) **Songtell。** 通过Songtell，利用AI的力量，深入探讨您最喜欢的歌曲，揭示歌词背后引人入胜的故事和内涵。
+1. [[⭐] https://www.stableaudio.com](https://www.stableaudio.com) **Stable Audio。** Stability Al最新推出的音乐生成工具
+1. [[⭐] https://www.suno.ai](https://www.suno.ai) **Suno。** AI音乐创作平台，不需要任何工具，只需要想象力，就可以创作出美妙动听的音乐。
+1. [[⭐] https://www.texttovoice.online](https://www.texttovoice.online) **Texttovoice.online。** 在线文本转语音是一款免费的工具，可以将文本转换为真实的语音。它具有高音质、自然的语音效果，并支持多种语言和声音选择。用户只需输入文本，选择语言和声音，即可生成自定义的语音内容。该工具适用于多种场景，如视频配音、教育辅助、语音导航等。无论是Mac还是Windows用户，都可以轻松使用该工具。
+1. [[⭐] https://www.yinziai.com](https://www.yinziai.com) **音子 AI。** 音子 AI 是一款在线音轨分离解决方案，用户可上传音频或视频文件，立即获取独立的人声和伴奏文件。该产品基于人工智能技术，提供高效的音轨提取功能。
+1. [[⭐] https://y.qq.com/tme_studio/](https://y.qq.com/tme_studio/) **TME Studio。** TME Studio是一款为音乐爱好者提供的创作工具。它包括音乐分离、MIR计算、辅助写词、智能曲谱等功能。用户可以上传任意歌曲，分离出其中的人声和乐器，进行音乐内容理解与分析，提取音乐的各种信息。同时，它还提供了作词工具，帮助用户找到合适的押韵词语，打开创作灵感。另外，用户还可以生成智能吉他曲谱，只需上传音乐即可弹奏自己想弹的歌曲。音乐创作助手将助力音乐爱好者更轻松地进行音乐创作。
+
+### AI 角色生成 (13)
+
+1. [[⭐] https://apps.apple.com/cn/app/%E8%AF%9D%E7%82%89/id6475000292](https://apps.apple.com/cn/app/%E8%AF%9D%E7%82%89/id6475000292) **话炉。** 话炉APP是一款由字节跳动推出的AI社交应用，用户可以与多样化的虚拟AI角色进行互动聊天，体验沉浸式的对话互动。用户可以创作个性化AI角色，共同打造故事世界，享受新颖的社交互动方式。主要功能包括与AI角色互动、故事创作与推进、角色切换、个性化角色创建、多样化风格体验和社交互动。
+1. [[⭐] https://candy.ai](https://candy.ai) **Candy.ai。** Candy.ai是一个与虚拟伙伴进行沟通和互动的平台。通过与AI角色进行个性化对话，您可以深入参与复杂的对话，并激发您的想象力。立即体验适应性AI驱动的角色扮演。
+1. [[⭐] https://character.sensetime.com/character-wb/home](https://character.sensetime.com/character-wb/home) **商汤商量拟人大模型。** 商汤商量拟人大模型 “SenseChat-Character” 支持个性化角色创建与定制、知识库构建、长对话记忆、多人群聊等功能，可实现行业领先的角色对话、人设、及剧情推动能力。
+1. [[⭐] https://humanaigc.github.io/animate-anyone/](https://humanaigc.github.io/animate-anyone/) **Animate Anyone。** Animate Anyone旨在通过驱动信号从静态图像生成角色视频。我们利用扩散模型的力量，提出了一个专为角色动画量身定制的新框架。为了保持参考图像中复杂外观特征的一致性，我们设计了ReferenceNet来通过空间注意力合并详细特征。为了确保可控性和连续性，我们引入了一个高效的姿势指导器来指导角色的动作，并采用了一种有效的时间建模方法，以确保视频帧之间的平滑跨帧过渡。通过扩展训练数据，我们的方法可以为任意角色制作动画，与其他图像到视频方法相比，在角色动画方面取得了出色的结果。此外，我们在时尚视频和人类舞蹈合成的基准上评估了我们的方法，取得了最先进的结果。
+1. [[⭐] https://npc.baichuan-ai.com/index](https://npc.baichuan-ai.com/index) **百川角色大模型。** 百川角色大模型是百川智能提供的一款智能角色模型，融合了意图理解、信息检索以及强化学习技术，结合有监督微调与人类意图对齐，在知识问答、文本创作领域表现突出。该模型可实现角色扮演对话，提供高度开放的个性化角色定制能力，具备高度准确性和口语化的回答能力。
+1. [[⭐] https://spicychat.ai](https://spicychat.ai) **Spicychat。** Spicychat 是一个聊天机器人平台，提供虚拟 AI 角色。在 Spicychat 上加入我们的聊天机器人，实现你所有最疯狂的幻想。
+1. [[⭐] https://wantalk.baidu.com](https://wantalk.baidu.com) **万话。** 万话创作者平台是一个专注于角色创建和管理的在线服务，它允许用户构建和细化角色设定，包括基础信息、世界观设定、角色设定、隐藏设定以及开场白。该平台特别适合需要角色构建和剧情推进的写作项目，如小说创作、剧本编写等。它通过提供角色调试功能，帮助用户达到理想的角色设定效果。
+1. [[⭐] https://www.hume.ai/blog/introducing-octave](https://www.hume.ai/blog/introducing-octave) **OCTAVE。** OCTAVE (Omni-Capable Text and Voice Engine)是一个结合了前沿语言模型和语音系统能力的下一代语音语言模型。它能够从简短的描述性提示或录音中生成不仅仅是声音，还有个性（语言、口音、表达、潜在性格等），并且能够实时响应中生成多个交互的AI个性和声音。OCTAVE维持了类似大小的前沿大型语言模型（LLM）的能力，非常适合驱动与人类丰富沟通的AI系统，同时遵循详细指令，使用工具或控制界面。
+1. [[⭐] https://www.xingyeai.com](https://www.xingyeai.com) **星野。** 星野是 MiniMax稀宇科技旗下AI原生应用，致力于为用户打造沉浸式AI内容社区。
+1. [[🚀] https://beta.character.ai](https://beta.character.ai) **Character AI。** 创建虚拟角色，并与其进行开放式对话。
+1. [[🚀] https://hiwaifu.com](https://hiwaifu.com) **Hi Waifu。** Hi Waifu可以创建一个拥有独特个性的数字朋友，随时可以与AI聊天，准备好以一种新的方式与AI交流互动吧。
+1. [[🚀] https://janitorai.com](https://janitorai.com) **JanitorAI。** Janitor AI是由janitorai.com开发的一个平台，允许用户创建具有不同个性的虚拟聊天机器人角色。该平台由大型语言模型驱动，包括OpenAI的GPT模型。
+1. [[🚀] https://www.aichatting.net](https://www.aichatting.net) **AI Chatting。** 创建虚拟角色，并与其进行开放式对话。
+
+### AI 提示词 (20)
+
+1. [[⭐⭐] https://image-prompt-generator.com](https://image-prompt-generator.com) **Image Prompt Generator。** 免费的 AI 图像提示词生成器与提示词库，支持按 GPT Image、Seedream、Seedance、Grok Imagine、Gemini、Nano Banana Pro 等模型筛选，生成可直接复制使用的图片提示词，并提供热门提示词示例与一键复制。
+1. [[⭐] https://catjourney.life](https://catjourney.life) **Catjourney。** 超多实用的 MJ Style Tuner风格库
+1. [[⭐] https://contentatscale.ai/ai-prompt-library](https://contentatscale.ai/ai-prompt-library) **Content at scale。** 收录最佳的ChatGPT prompt提示词
+1. [[⭐] https://learningprompt.wiki](https://learningprompt.wiki) **Learning Prompt。** 提供免费的Prompt Engineering教程，包含ChatGPT和Midjourney的教程。
+1. [[⭐] https://lib.kalos.art](https://lib.kalos.art) **LIB.KALOS.ART。** 艺术风格流派参考库
+1. [[⭐] https://midlibrary.io](https://midlibrary.io) **Midlibrary。** 风格多样！实用超2000+MJ提示词资源
+1. [[⭐] https://moonvy.com/apps/ops/](https://moonvy.com/apps/ops/) **OPS 提示词工作室。** OPS 提示词工作室是一款可视化编辑工具，支持一键翻译 AIGC 提示词，提供 Midjourney 提示词库，让用户轻松管理和使用提示词，助力提升生产力。该工具还提供简洁清晰的界面，方便用户快速复制、导出和翻译提示词。
+1. [[⭐] https://prompt.noonshot.com](https://prompt.noonshot.com) **MJ Prompt Tool。** MJ提示词创造助手
+1. [[⭐] https://promptalot.com](https://promptalot.com) **Promptalot。** 超好用的MJ提示词辅助插件
+1. [[⭐] https://promptbase.com](https://promptbase.com) **PromptBase。** AI提示词交易网站
+1. [[⭐] https://promptknit.com](https://promptknit.com) **Knit。** Knit是一个专业的AI提示编辑和管理平台,提供强大的编辑器、项目协作、模型支持等功能,可高效管理优化AI提示,适用于各种AI应用场景。主要优势包括全功能提示编辑器、多模型支持、API参数控制、代码生成导出等。提供免费和付费版本,针对提示开发者和AI应用团队等群体。
+1. [[⭐] https://promptomania.com](https://promptomania.com) **PromptoMania。** MJ和SD提示词生成器
+1. [[⭐] https://publicprompts.art](https://publicprompts.art) **PublicPrompts。** AI绘画模型+风格参考
+1. [[⭐] https://replicate.com/pharmapsychotic/clip-interrogator](https://replicate.com/pharmapsychotic/clip-interrogator) **CLIP Interrogator。** 反向学习！从图片反推AI关键词
+1. [[⭐] https://www.aishort.top/en](https://www.aishort.top/en) **ChatGPT Shortcut。** AiShort是一个简单易用的ChatGPT提示命令列表，可大幅提升工作效率！包括标签筛选、提示搜索和一键复制功能。它提供了276个ChatGPT提示，涵盖了多个领域。用户可以根据需求选择感兴趣的提示，一键复制到剪贴板，快速获取所需内容。
+1. [[⭐] https://www.ordinarypeopleprompts.com](https://www.ordinarypeopleprompts.com) **Ordinary Prompts。** 有趣ChatGPT提示词
+1. [[⭐] https://www.promptingguide.ai](https://www.promptingguide.ai) **提示工程指南。** 提示工程（Prompt Engineering）是一门较新的学科，关注提示词开发和优化，帮助用户将大语言模型（Large Language Model, LLM）用于各场景和研究领域。
+1. [[🚀] https://flowgpt.com](https://flowgpt.com) **Flowgpt。** 专注于分享聊天指令的社区网站
+1. [[🚀] https://prompthero.com](https://prompthero.com) **PromptHero。** 最受欢迎的AI提示词网站
+1. [[🚀] https://www.prompthunt.com/explore](https://www.prompthunt.com/explore) **Prompt Hunt。** 按主题分类的SD提示词
+
+### AI 搜索引擎 (23)
+
+1. [[⭐⭐⭐🧑‍💻] https://so.csdn.net/chat](https://so.csdn.net/chat) **C知道。** 由CSDN和外部合作伙伴联合研发的生成式AI产品
+1. [[⭐⭐⭐] https://www.tiangong.cn](https://www.tiangong.cn) **天工Agent版。** 天工Skywork是一款具备超强DeepResearch能力的全新AI Office智能体，通过3个专家agent和1个通用agent，让AI深度研究，一键生成AI文档、AI PPT、AI表格，高效应对各类办公、学习场景；也支持网页html、图像、视频、有声书、绘本等多种形式的创意内容创作，激发无限灵感。天工Skywork融合先进的多模态理解与深度检索分析技术，一问即得科研级、专业级、咨询级的高质量结果，帮助你摆脱繁琐事务，显著提升效率。无论你是职场白领、科研人员、大学生、研究生，还是自媒体KOL，天工Skywork都将是你值得信赖的智能伙伴，助你专注思考、释放创造力。
+1. [[⭐⭐] https://www.n.cn](https://www.n.cn) **纳米AI搜索。** 纳米AI搜索是由360集团推出的一款基于大模型的新一代答案引擎应用。该产品旨在为用户提供更直接、更直观的问题答案，不再只是一个普通的搜索工具，而是能够理解和处理复杂搜索查询的智能AI助手。
+1. [[⭐⭐] https://www.studywithgpt.com/zh-cn](https://www.studywithgpt.com/zh-cn) **Study with GPT。** GPT时代，你还在到处找教程资源学习？无论是学习Java、php、golang、python、前端、后端、运维、微服务等等任意方向的技术栈，AI全栈导师为你量身打造教程，有问题也不用跪求大神，AI全栈导师24小时为你解答。
+1. [[⭐] https://bing.com/create](https://bing.com/create) **Bing Image Creator。** Bing影像建立工具是一款由Microsoft Bing提供的智能搜索工具，可以帮助用户快速找到想要的图像信息，并获得奖励。
+1. [[⭐] https://consensus.app](https://consensus.app) **Consensus。** Consensus是一个使用人工智能来搜索研究论文并找到洞见的搜索引擎。它具有广泛的覆盖范围，可搜索超过2亿篇科学论文。所有的结果都来源于实际研究，我们引用我们的来源，绝不会显示广告。它还具有即时分析功能，利用GPT4和其他LLM来为您总结结果。Consensus旨在帮助您进行有效的研究。
+1. [[⭐] https://exa.ai/blog/websets-evals](https://exa.ai/blog/websets-evals) **Websets。** Exa Websets 是一种创新的搜索引擎，专注于复杂查询的精准搜索。它通过自定义嵌入式搜索算法，能够检索出符合多条件的精确结果。该产品的核心技术在于其强大的多代理搜索架构，能够处理复杂的多标准查询，适用于需要精准数据检索的场景。Exa Websets 的主要优势在于其高精度和高召回率，尤其在复杂查询方面表现卓越。产品目前处于早期阶段，主要面向开发者和企业用户，价格根据使用量和计算资源需求而定。
+1. [[⭐] https://felo.ai](https://felo.ai) **Felo。** 多语言AI搜索引擎，为发现和理解世界知识而优化。利用ChatGPT和AI引擎的强大功能，轻松打破语言障碍，获取全球信息
+1. [[⭐] https://fireflies.ai](https://fireflies.ai) **fireflies.ai。** Fireflies.ai是一款利用生成式人工智能技术的AI会议记录助手，可自动转录、总结、搜索和分析语音对话。通过与Zoom、Google Meet、Microsoft Teams、Webex等平台集成，生成会议记录和智能摘要。
+1. [[⭐] https://jina.ai/deepsearch/](https://jina.ai/deepsearch/) **Jina DeepSearch。** Jina DeepSearch 是一种基于深度搜索技术的产品，通过结合网络搜索、阅读和推理能力，能够解决需要迭代推理和最新信息的复杂问题。它与 OpenAI 的聊天 API 完全兼容，支持多种客户端接入。其主要优点是能够动态调整搜索和推理过程，提供高质量的答案。产品定位为需要深入研究和复杂问题解决的用户，价格基于词元使用情况，支持免费试用和付费购买。
+1. [[⭐] https://metaso.cn](https://metaso.cn) **秘塔AI搜索。** 秘塔科技旗下的一款AI搜索产品，能够大幅提升搜索效率，解决日常生活、工作学习等场景中遇到的各类搜索需求
+1. [[⭐] https://microsoftedge.microsoft.com/addons/detail/hpkbpmbgkhngdlopdpnfjelemchlmdko](https://microsoftedge.microsoft.com/addons/detail/hpkbpmbgkhngdlopdpnfjelemchlmdko) **AI课代表。** “AI课代表” 是您在B站最专业的人工智能助手 🤖 基于GPT4的“知识提问+“视频总结”+“字幕搜索” 每日刷新免费额度 解决问题，快速定位关键点，筛选视频，帮你成为人见人爱的“课代表” 无情吸赞，学霸人设，专栏大佬，最重要的是：您的声音至关重要，我们将以“3天1更”的速度持续改进！
+1. [[⭐] https://so.360.com](https://so.360.com) **360AI搜索。** 360AI搜索是由360集团推出的一款基于大模型的新一代答案引擎应用。该产品旨在为用户提供更直接、更直观的问题答案，不再只是一个普通的搜索工具，而是能够理解和处理复杂搜索查询的智能AI助手。
+1. [[⭐] https://suppr.wilddata.cn](https://suppr.wilddata.cn) **超能文献·文档翻译。** Suppr 超能文献是一个利用人工智能技术驱动的医学文献搜索引擎，旨在帮助医学研究人员快速检索和获取相关医学领域的最新研究进展和临床试验信息。它通过限定时间、类型、影响因子、作者、期刊等多重条件，提供精准的文献检索服务，极大地提高了医学研究的效率和质量。
+1. [[⭐] https://undermind.ai](https://undermind.ai) **Undermind.ai。** Undermind是一个由人工智能驱动的科研助手，旨在通过先进的语言模型，帮助研究人员快速准确地找到所需的学术论文。它由两位来自MIT的量子物理博士创立，拥有深厚的研究背景。Undermind的搜索算法模仿人类系统化的发现过程，通过阶段性地检查结果并使用语言模型做出关键决策，如识别重要信息和调整搜索策略，从而实现前所未有的准确性和全面性。
+1. [[⭐] https://www.chatplayground.ai](https://www.chatplayground.ai) **ChatPlayground AI。** ChatPlayground AI是一个集成了16+ AI应用和功能的聊天机器人平台，它允许用户通过一个订阅来访问多种AI模型。该平台的主要优点包括行业领先的AI模型、实时网络搜索、图像生成器、历史记录回顾、多语言支持以及导入自定义内容的能力。ChatPlayground AI旨在为开发者、数据科学家、学生、研究人员、内容创作者、作家和AI爱好者提供服务，帮助他们提高工作效率和创造力。
+1. [[⭐] https://www.frase.io](https://www.frase.io) **Frase。** Frase是一款内容优化工具，通过使用人工智能技术，提供智能化的SEO优化建议。它可以帮助用户分析网站内容，并提供针对关键词优化的建议，以提高网站在搜索引擎中的排名。Frase还提供语义搜索功能，可以帮助用户找到与其网站相关的问题，从而为他们提供创作内容的灵感和指导。Frase还可以分析竞争对手的网站，并提供比较和改进建议。该产品定价灵活，并根据用户的需求提供不同的套餐选择。
+1. [[⭐] https://www.glean.com](https://www.glean.com) **Glean。** Glean是为现代团队提供的企业级搜索和知识发现解决方案。通过搜索所有公司应用程序，找到所需内容，并发现所需知识。
+1. [[⭐] https://www.wenxiaobai.com](https://www.wenxiaobai.com) **问小白。** 问小白上线了DeepSeek驱动的人工智能助手，定位为一款强大的写作和任务处理工具。它基于深度学习技术，能够实时在线提供服务，支持深度思考和联网搜索功能。其主要优点包括免费不限次数使用，可帮助用户高效完成写作、创作、分析和规划等任务。产品面向需要高效完成各类文字工作和任务的用户，目前以网页形式提供服务，未来可能推出更多客户端形式。其免费的定位使其具有较高的性价比，适合广泛用户群体使用。
+1. [[⭐⭐⭐🚀] https://www.bing.com/chat](https://www.bing.com/chat) **Bing。** bing版ChatGPT聊天机器人，微软新搜索引擎。中国区不可用
+1. [[⭐⭐⭐🚀] https://www.perplexity.ai](https://www.perplexity.ai) **Perplexity AI。** Perplexity AI通过信息发现和共享解锁知识的力量。
+1. [[🚀] https://www.phind.com](https://www.phind.com) **Phind。** 为开发人员而生的AI搜索引擎。中国区不可用
+1. [[🚀] https://you.com](https://you.com) **YOU。** You是一种具有对话性和持续学习能力的技术，可以增强网络搜索、写作、编码、数字艺术创作和解决复杂问题。
+
+### AI 行业工具 (65)
+
+1. [[⭐⭐⭐] https://chat.sensetime.com](https://chat.sensetime.com) **商汤商量。** 商汤旗下的AI对话助手
+1. [[⭐⭐⭐] https://www.sensenova.cn/token-plan](https://www.sensenova.cn/token-plan) **商汤日日新Token Plan。** 商汤SenseNova Token Plan公测阶段免费使用！精选模型与用量方案，支持 Hermes Agent、OpenClaw 与 Cowork-Skills 办公场景。
+1. [[⭐⭐⭐] https://ying.baichuan-ai.com/chat](https://ying.baichuan-ai.com/chat) **百小应。** 在线体验国产医药大模型。查指南、找文献、搜药品，每一条医学医疗建议都有据可依！
+1. [[⭐] https://answerai.pro](https://answerai.pro) **AnswerAI.pro。** Answer.AI是一款AI家教应用程序，利用先进的人工智能技术，为用户提供从数学到历史等各个学科的作业解答和学习辅导服务。它通过拍照、扫描问题、上传PDF或聊天等方式与AI家教互动，提供详细的步骤解答和视频解释，帮助学生更好地理解和掌握知识点。该应用支持iOS和Android系统，并提供Chrome浏览器扩展。Answer.AI以其高准确率和高答案率在教育类应用中名列前茅，深受全球数百万学生的喜爱。
+1. [[⭐] https://anyword.com](https://anyword.com) **Anyword。** Anyword是一款AI写作工具，为营销团队提供高效撰写营销内容的解决方案。它能够分析您过去发布的所有内容，并帮助您发现最有效的信息传递方式。同时，Anyword提供品牌声音管理功能，让您可以在一个平台上管理品牌口吻、目标受众和品牌规则。您还可以训练定制的AI模型，利用品牌和绩效数据来提高各个渠道的表现，并显著影响业务结果。
+1. [[⭐] https://apps.apple.com/au/app/grok/id6670324846](https://apps.apple.com/au/app/grok/id6670324846) **Grok App。** Grok是一个由X.AI Corp开发的AI助手应用，旨在提供最真实、有用和好奇的答案。用户可以通过Grok获取任何问题的答案、生成引人注目的图像，并上传图片以更深入地了解世界。Grok以其高质量的图像生成、实时更新的数据、对话式的幽默语气和注重隐私的特性，为用户提供了一个安全、高效的AI体验平台。
+1. [[⭐] https://claid.ai](https://claid.ai) **Claid AI Scene Creation。** Claid.ai是一个提供AI生成、增强和编辑产品图片的平台。它能够自动转换普通产品图片为具有拍摄品质的营销图片，提高图片的清晰度，去除背景，并创建令人惊叹的照片，从而提升转化率。Claid.ai支持生成多个适合品牌的产品图片，并提供统一的背景和图像大小，以适应不同的平台。用户可以通过API访问结果，实时获取编辑后的图片。Claid.ai还提供了多种功能，包括图片放大、智能去除背景、智能框架、AI颜色校正等，这些功能可以提高图片的质量和视觉效果。Claid.ai的目标是帮助企业实现图片的统一化和提升，从而提升转化率和销售业绩。
+1. [[⭐] https://copyleaks.com](https://copyleaks.com) **Copyleaks。** Copyleaks是唯一的基于AI的平台，可快速检测抄袭内容、AI生成内容等。它被全球数百万人使用，被验证为最准确的AI内容检测器。除了检测抄袭内容外，还可以验证内容是否由人或AI生成，并提供企业级解决方案。定价根据不同需求而定。
+1. [[⭐] https://crikk.com](https://crikk.com) **Crikk。** Crikk是一款价格实惠的强大文本转语音工具，支持56种语言，提供真实的语音合成技术。无论是用于语音播报、有声书还是教育，Crikk都能为用户提供高质量的声音合成。用户可以选择免费试用或者采用月费20美元的专业版，月额度为500,000个字符，拥有6种不同的声音和56种语言。此外，Crikk还将推出移动应用，实现图片或PDF的文字转语音。Monster Incorporation Inc.位于Delaware，United States。
+1. [[⭐] https://designs.ai/cn](https://designs.ai/cn) **Designs AI。** 免费AI设计。使用生成型 AI 创建图像、视频等。利用人工智能的力量提升您的社交媒体营销水平。
+1. [[⭐] https://donotpay.com](https://donotpay.com) **DoNotPay。** DoNotPay 是一个利用人工智能帮助你与大公司抗争、保护隐私、寻找隐藏收入并对抗垄断平台。它可以帮你自动取消免费试用、解决停车罚单、与客服争议、降低银行费用等。DoNotPay 通过智能算法提供最佳解决方案，使用户能够省时省力地解决各种问题。
+1. [[⭐] https://elicit.com](https://elicit.com) **Elicit。** Elicit是一款能够以超人速度分析研究论文的AI助手。它可以自动完成繁琐的研究任务，如论文摘要、数据提取和综合研究发现。用户可以搜索相关论文、获取一句话摘要、从论文中提取详细信息并进行整理、寻找主题和概念等。Elicit的准确度高，使用方便，已受到广大研究者的信赖和好评。
+1. [[⭐] https://explainthis.ai](https://explainthis.ai) **ExplainThis。** ExplainThis.AI是一款在浏览器中添加聊天AI的插件。它可以解释关键概念，帮助你理解阅读的内容。通过高亮选择文本，助手可以用简单的语言解释给你。它还可以用单击提供整个页面的摘要，节省你的时间。ExplainThis.AI保护您的数据安全和隐私。
+1. [[⭐] https://fintax.golcer.com](https://fintax.golcer.com) **高灯财务 AI 助手。** 高灯财务 AI 助手是一款专注于财税领域的专业工具，它通过对话式智能输出、多模态数据抽取、文本推理等技术，为用户提供财务报告分析、文件解读、智能提取、智能思维导图、办税指南等服务。这款产品利用海量财税领域训练数据，结合垂直知识进行分析和推理，生成专业报告内容，帮助用户轻松掌握文件要点，提升工作效率。
+1. [[⭐] https://fireflies.ai](https://fireflies.ai) **fireflies.ai。** Fireflies.ai是一款利用生成式人工智能技术的AI会议记录助手，可自动转录、总结、搜索和分析语音对话。通过与Zoom、Google Meet、Microsoft Teams、Webex等平台集成，生成会议记录和智能摘要。
+1. [[⭐] https://gamma.ai](https://gamma.ai) **Gamma.ai。** Gamma.AI是一款基于人工智能的云数据泄露防护解决方案。它通过持续监控员工行为，并在员工发生安全错误时进行提醒，帮助组织防止数据泄露。Gamma.AI提供准确的数据分类和深度学习技术，支持所有应用、设备和用户，并赋予终端用户即时修复的能力。
+1. [[⭐] https://hix.ai](https://hix.ai) **HIX.AI。** HIX.AI是一款由先进的GPT-3.5/4技术驱动的全能人工智能写作助手。
+1. [[⭐] https://inksprout.co](https://inksprout.co) **Inksprout Video。** Inksprout是一款AI助手，可以从博客生成社交视频。它使用AI生成字幕，让您可以在几秒钟内生成引人注目的、简洁的社交视频。您只需输入博客的URL，AI将自动摘要文章内容，并根据摘要生成视频。您可以使用这些视频在多个社交媒体平台上分享，并提高用户参与度。Inksprout提供免费计划，同时还有更多功能丰富的付费计划可供选择。
+1. [[⭐] https://keyue.cloud.baidu.com](https://keyue.cloud.baidu.com) **百度智能云客悦。** 百度智能云客悦基于百度文心一言大模型,全面重构智能客服系列产品,涵盖客户服务、智能营销、智能通信三大系列,满足企业智能客服全场景需求。主要产品包括:智能对话平台(提供大模型驱动的高智能客服机器人)、智能外呼平台(高拟人度语音对话营销)、对话洞察平台(对话数据分析洞见优化建议)、智能通信平台(集成通信资源API接入)等。产品优势有:基于大模型对话更准确友好全面、高效快速上线运营、多渠道无缝集成适配等。
+1. [[⭐] https://ling.jd.com](https://ling.jd.com) **京东羚珑。** 京东羚珑是一站式内容生产与管理服务平台，提供商品主图设计、广告 banner 设计、店铺首页设计等功能。其主要优点包括丰富的模板选择、免费设计服务、高效便捷的操作流程。产品定位于为商家提供设计合作伙伴服务。
+1. [[⭐] https://looka.com](https://looka.com) **Looka。** AI辅助logo和品牌设计
+1. [[⭐] https://microsoftedge.microsoft.com/addons/detail/hpkbpmbgkhngdlopdpnfjelemchlmdko](https://microsoftedge.microsoft.com/addons/detail/hpkbpmbgkhngdlopdpnfjelemchlmdko) **AI课代表。** “AI课代表” 是您在B站最专业的人工智能助手 🤖 基于GPT4的“知识提问+“视频总结”+“字幕搜索” 每日刷新免费额度 解决问题，快速定位关键点，筛选视频，帮你成为人见人爱的“课代表” 无情吸赞，学霸人设，专栏大佬，最重要的是：您的声音至关重要，我们将以“3天1更”的速度持续改进！
+1. [[⭐] https://mokker.ai](https://mokker.ai) **Mokker AI。** Mokker 是一款利用人工智能技术，自动为电商平台或营销材料提供高质量产品图片的在线工具。使用时，只需上传几张产品的照片，Mokker 就会根据您的产品特征和风格，生成逼真的背景和场景。产品内置了一系列高质量模板，如家具、车辆、食物、珠宝等，可直接复用。当然，使用时也可以创建自己产品的专属模板，通过再次描述产品特征和需要在背景图中剔除的元素，最终生成更符合预期的图片效果。
+1. [[⭐] https://pipl.ai](https://pipl.ai) **Pipl.ai。** pipl.ai - 超级强化版是一款冷邮件自动化工具，可以轻松发送大量冷邮件。无限连接邮箱，免费预热所有账户，内置邮箱验证和数据清理，AI驱动的序列和模板编写器等功能。定价和定位等详细信息请访问官方网站。
+1. [[⭐] https://politepost.net](https://politepost.net) **PolitePost。** PolitePost.net是一个使用人工智能来重写邮件的工具。它可以将您草拟的邮件进行重写和整理，使其更加专业和适合在职场中使用。只需输入您的初稿，包含所有俚语和脏话，我们的AI机器人就会为您进行重写和清理，让您的邮件在几秒钟内变得专业起来。
+1. [[⭐] https://qidian.qq.com/module/service.html](https://qidian.qq.com/module/service.html) **腾讯企点客服。** 企点客服是一款智能在线客服系统，基于即时通讯、人工智能等技术，全面提升企业客户服务效率。产品定位于提供全场景的企业级 SaaS 服务，助力企业实现数字化智慧经营。
+1. [[⭐] https://quizlet.com](https://quizlet.com) **Q Chat。** 【教育】教育领域的人工智能导师
+1. [[⭐] https://randomx.ai/zh-CN](https://randomx.ai/zh-CN) **RandomX.ai。** RandomX.ai随机中文取名生成器是一款利用人工智能技术，结合语言专业知识与创意天赋，为用户提供快速生成具有文化意义和故事背景的中文名字的服务。该产品支持多种风格选择，包括中国古典神话等，确保生成的名字既符合传统中文取名习俗，又具有独特性。产品完全免费，无需注册，保护用户隐私，并且支持多种语言，适合需要中文名字的个人或企业使用。
+1. [[⭐] https://scalenut.com](https://scalenut.com) **Scalenut。** Scalenut是一个AI驱动的SEO和内容营销平台，帮助您从识别关键词集群、创建内容简介到优化内容以提高搜索排名，管理您的整个内容生命周期。
+1. [[⭐] https://scite.ai](https://scite.ai) **Scite。** scite是一个用于发现和评估科学文章的平台。通过智能引文，用户可以查看文章的引用情况，并了解引文提供了支持或对照证据。用户可以搜索超过12亿个智能引文，找到关于各个主题的专家分析和观点。scite受到世界领先的大学、出版商和企业的信任。
+1. [[⭐] https://secretllama.com](https://secretllama.com) **Secret Llama。** Secret Llama 是一个免费且完全私密的聊天机器人，与ChatGPT不同，它完全在您的浏览器内运行，意味着您的对话数据不会离开您的电脑。首次加载可能需要一些时间，因为模型需要完全下载到您的电脑上，但之后可以断开WiFi工作。支持Chrome和Edge浏览器，需要GPU，不推荐在移动设备上使用。
+1. [[⭐] https://studycorgi.com/free-writing-tools/chat-gpt-detector/](https://studycorgi.com/free-writing-tools/chat-gpt-detector/) **Chat GPT Detector for Essays。** ChatGPT 检测器是一个用于检查论文是否由 AI 生成的工具。它通过分析文本中每个词的可预测性来判断文本的真实性，帮助用户识别人工写作与机器生成的文本。该工具的主要优点在于免费、准确、适合学生使用，提供详细的文本分析。
+1. [[⭐] https://summify.io](https://summify.io) **Summify。** 探索 Summify.io，这是您总结 YouTube 视频的一键式解决方案。利用人工智能的力量，通过快速有效地关注关键见解来增强您的学习体验。借助 Summify.io，您可以节省时间并轻松掌握长视频的主要思想、记下教育讲座的笔记、总结播客等。立即尝试 Summify.io！
+1. [[⭐] https://trexlabel.com](https://trexlabel.com) **T-Rex Label。** T-Rex Label是一个开箱即用的智能标注工具，致力于成为密集场景标注的理想选择。它具备卓越的零样本检测能力，无需微调即可直接赋能各行各业的复杂场景标注，为各类应用提供数据支持。T-Rex Label通过视觉提示输入，快速通关密集场景，彻底攻克标注效率瓶颈，帮助算法工程师和研究人员加速标注流程，打造高质量数据集。
+1. [[⭐] https://wanderlog.com/trip-plan-assistant](https://wanderlog.com/trip-plan-assistant) **Wanderlog。** 【旅游】Wanderlog是一款旅行规划AI助手，使用它来规划下下一场旅行吧！
+1. [[⭐] https://wordvice.ai/cn](https://wordvice.ai/cn) **Wordvice AI。** Wordvice AI是一款在线英语语法检查工具，提供实时高效的英语语法和拼写检查，突破基本功能，提供语气风格修改，提供有效反馈建议，适用于各类英文文件。Wordvice AI还提供人工编辑服务和其他英文写作工具。
+1. [[⭐] https://write.thisonegpt.com](https://write.thisonegpt.com) **神笔AI写作。** 神笔AI写作平台提供了一个简化的四步写作流程，帮助用户从输入论文题目到生成全文。它支持多种学科领域的论文写作，包括哲学、经济学、法学等，旨在帮助大学生高效完成论文。
+1. [[⭐] https://www.aiprm.com](https://www.aiprm.com) **AIPRM。** AIPRM 是一个 AI Prompt 市场和社区驱动的 Prompt 库。使用它可以在几分钟内完成营销、销售、运营、生产力和客户支持等任务。提供了 ChatGPT、Bard、Midjourney 和 DALL-E 2 的即用型 Prompts。可以轻松创建博客标题、完整的原创文章、服务页面的文案等。AIPRM 可以帮助您以您的声音快速、有创意地创建内容。
+1. [[⭐] https://www.arcads.ai](https://www.arcads.ai) **Arcads。** Arcads提供AI视频广告生成器，允许用户快速从文本创建视频广告，特别适合需要大量视频内容的品牌和营销团队。
+1. [[⭐] https://www.bild.ai](https://www.bild.ai) **Bild AI。** Bild AI 是一款专注于建筑行业的生产力工具，通过人工智能技术读取和理解建筑蓝图，快速生成材料成本估算和确保蓝图的准确性。该技术能够显著减少人工估算的时间和错误率，帮助建筑企业提高效率和竞争力。Bild AI 的主要优势在于其高效的 AI 模型，能够快速识别蓝图中的关键信息，并生成详细的成本分析报告。此外，它还能提前发现蓝图中的合规性问题，确保提交的图纸一次性通过审批。Bild AI 的目标是为建筑行业提供一个高效、准确且可靠的数字化解决方案，帮助企业在复杂的建筑项目中节省时间和成本。
+1. [[⭐] https://www.brandroot.com](https://www.brandroot.com) **Business Names and Logos。** Brandroot的商业名称生成器使用人工智能技术，快速生成数百个引人注目的商业名称，并提供可注册的.com域名。您可以轻松找到适合您企业的完美名称。
+1. [[⭐] https://www.chanjing.cc](https://www.chanjing.cc) **蝉镜。** 蝉镜是一个在线数字人视频创作平台，利用 AI 简化视频创作过程，提供 AI 数字人播报、短视频制作、分身定制等服务。广告营销、跨境电商、短视频口播等领域的用户可以在此提升创作效率、降低成本。
+1. [[⭐] https://www.editage.cn/paperpal](https://www.editage.cn/paperpal) **Paperpal。** 学术写作新世代，面向科研人员的AI写作工具
+1. [[⭐] https://www.getmerlin.in](https://www.getmerlin.in) **Merlin。** Merlin是一款由ChatGPT驱动的终极浏览器扩展，能够彻底改变用户的浏览体验。Merlin提供了多种功能，包括Youtube Summarizer、Blog Summarizer、ChatGPT on Google、Merlin on Twitter、Merlin on LinkedIn、Merlin on Gmail、Live Web Data等，能够简化用户的浏览流程，提升用户的生产力。Merlin提供了免费的GPT-4访问，支持所有语言，具有最佳的安全性，符合SOC2、GDRP、ISO 27001等标准。用户可以通过安装、激活、打开Merlin来使用这款浏览器扩展。
+1. [[⭐] https://www.getresponse.com/features/email-marketing/ai-email-generator](https://www.getresponse.com/features/email-marketing/ai-email-generator) **GetResponse Email Generator。** 使用GetResponse的AI邮件生成器，利用GPT-3.5技术快速高效地创建高质量的邮件和新闻简报。通过行业和目标优化的主题行和内容，提升你的邮件营销效果。
+1. [[⭐] https://www.gravitywrite.com](https://www.gravitywrite.com) **GravityWrite。** GravityWrite 是一款 AI 写作助手，能快速生成高质量的内容，适用于博客、广告、邮件和社交媒体。它节省时间、提高效率，降低成本，是提升点击率、转化率和销售额的利器。
+1. [[⭐] https://www.hippolearning.cn](https://www.hippolearning.cn) **河马爱学。** 【教育】字节旗下基于AI的教育平台，河马爱学拥有行业领先的技术团队，通过构建基于学习行为的推荐模型，评测学生能力并实时跟踪“掌握度”变化，个性化推荐学习内容，帮助老师精准教学，帮助学生自适应学习。
+1. [[⭐] https://www.hubspot.com/campaign-assistant](https://www.hubspot.com/campaign-assistant) **HubSpot Campaign Assistant。** HubSpot智能营销助手是一个免费的AI营销资产生成器，可用于创建落地页、电子邮件和广告文案。它基于你的营销活动内容生成所需的文本，帮助你节省时间和精力。
+1. [[⭐] https://www.ihuiwa.com](https://www.ihuiwa.com) **绘蛙。** 绘蛙是一款智能图片、文案创作平台，通过AI生成商拍图和种草文案，免费创作小红书图片、电商商品主图等。其功能包括AI生成商拍图、种草文案、美图、稿定设计、换装、去水印、图片高清修复等。定位于为用户提供简洁好用的智能创作工具。
+1. [[⭐] https://www.intelogos.com](https://www.intelogos.com) **Intelogos。** Intelogos是首款自动详细人员分析和绩效管理工具。它可以收集员工绩效数据,生成建议,帮助团队成长进步。
+1. [[⭐] https://www.iwencai.com](https://www.iwencai.com) **同花顺问财。** 同花顺问财是同花顺旗下的智能选股平台，提供智能选股、量化投资、技术分析等服务，覆盖股票、指数、美股、港股等，帮助投资者提高投资效能。定位于为投资者提供智能化的投资决策支持。
+1. [[⭐] https://www.ixigo.com/plan](https://www.ixigo.com/plan) **Ixigo。** 【旅游】GPT旅行，在几秒钟内计划您的梦想旅行！
+1. [[⭐] https://www.khanmigo.ai](https://www.khanmigo.ai) **Khanmigo。** 【教育】可汗学院Khanmigo，教育界的世界级人工智能。
+1. [[⭐] https://www.piccopilot.com](https://www.piccopilot.com) **Pic Copilot。** Pic Copilot是一个利用图像生成模型为电商提供的AI驱动图片优化工具。它能够通过对大量图片点击量数据的训练,有效提高图片的点击转化率,从而优化电商的营销效果。其关键优势是提高图片的点击转化率,从而提升电商营销效果。它是阿里巴巴团队训练的数据结果,能够显著优化图片的点击转化表现。
+1. [[⭐] https://www.researchrabbit.ai](https://www.researchrabbit.ai) **ResearchRabbit。** ResearchRabbit是研究人员最强大的发现应用程序。它为研究人员提供了强大的搜索和筛选功能，帮助他们快速找到所需的学术论文、数据集和其他研究资源。ResearchRabbit还具有智能推荐和团队协作功能，帮助研究人员更好地组织和管理他们的研究工作。该应用程序还提供了定价方案，适用于个人研究人员和团队。
+1. [[⭐] https://www.scholarcy.com](https://www.scholarcy.com) **Scholarcy。** Scholarcy是一款在线文献摘要工具，可以将长篇文章生成摘要卡片。它通过阅读研究文章、报告和书籍章节，并在几秒钟内将它们拆分成易于理解的部分，帮助用户快速评估任何文献对他们工作的重要性。它提取关键信息，如研究参与者、数据分析、主要发现和局限性，并将其转化为摘要卡片。Scholarcy还可以提取文献中的图表和图片，并创建链接以打开引用来源。用户可以使用Scholarcy的浏览器扩展与开放获取库集成，并通过付费订阅服务Scholarcy Library建立个人摘要研究库。
+1. [[⭐] https://www.smartwriter.ai](https://www.smartwriter.ai) **Smartwriter。** 智能写手是一款使用AI技术帮助用户生成高度个性化冷邮件和LinkedIn信息的工具。它可以自动化您的整个推广过程，比人工快40倍且更经济实惠。使用智能写手，您可以快速生成千千万万个个性化邮件，使您的回复率提高8倍，从而帮助您更好地推动销售。
+1. [[⭐] https://www.storynest.ai](https://www.storynest.ai) **Storynest.ai。** StoryNest.ai是一款AI驱动的互动故事平台，可以帮助用户创作吸引人的故事、深入的文章和全面的教育内容。通过与角色对话和超级故事书等功能，深入互动学习。加入StoryNest.ai，创造力、教育和技术完美结合。
+1. [[⭐] https://www.tanka.ai](https://www.tanka.ai) **Tanka。** Tanka是一款创新的团队协作工具，其核心功能是利用AI长期记忆技术来优化团队沟通和协作。该技术基于神经科学原理，能够将零散的聊天记录、邮件和文档转化为结构化的长期记忆，从而提供上下文感知的智能回复和主动建议。Tanka的主要优点在于其能够持续学习和自我进化，确保团队成员在沟通中始终保持清晰和精准。此外，Tanka还支持与Slack、WhatsApp、Outlook等多种常用工具的无缝集成，进一步提升了工作效率。产品目前处于Beta阶段，主要面向需要高效协作的团队，如科技初创公司、销售团队、教育机构等。
+1. [[⭐] https://www.tawk.to](https://www.tawk.to) **tawk.to。** tawk.to是一款完全免费的在线聊天软件，它允许网站所有者监控并与访问者进行实时聊天，响应支持票据，使用CRM组织联系人，并创建帮助中心以增强客户自助服务的能力。tawk.to的主要优势在于其易用性、安全性以及无需任何费用即可使用。此外，它还提供了AI Assist功能，允许用户训练一个完全自动化的AI驱动聊天机器人。
+1. [[⭐] https://www.turnitin.com](https://www.turnitin.com) **Turnitin。** 【教育】Turnitin是一款促进学术诚信，简化评分和反馈，防止抄袭，并改善学生的学习成果的产品。
+1. [[⭐] https://www.yanbiai.com](https://www.yanbiai.com) **言笔AI。** 言笔AI是一款基于AI大模型驱动的智能写作工具，支持多种写作场景，如文章创作、论文写作、PPT制作及公文撰写等。它通过提供免费的AI写作服务，帮助用户快速生成高质量的内容，避免重复内容，提升文案效果。言笔AI已为10,000+创作者提供服务，成功生成288,736,788字文案，具有高用户评价，值得信赖。
+1. [[⭐] https://www.yunque360.com/product-ai.html](https://www.yunque360.com/product-ai.html) **云雀AI智能客服。** 云雀 AI 智能客服是一款基于大数据的在线客服平台，通过智能机器人提供多渠道客户服务，帮助企业降低成本、提高效率。该平台结合了 AI 技术和客服系统，为企业提供高效的客户交互体验，提升服务质量。
+1. [[⭐⭐🚀] https://cloud.google.com/products/gemini/code-assist](https://cloud.google.com/products/gemini/code-assist) **Gemini Code Assist。** Gemini Code Assist 是 Google Cloud 提供的一款 AI 编码助理，它通过生成式 AI 协助、企业安全和隐私保护机制，帮助提升软件开发和交付速度。该产品利用数十亿行开源代码、安全数据以及 Google Cloud 文档和示例代码进行微调，为开发者在其 IDE 和 Google Cloud 服务中提供代码补全、代码生成、自然语言聊天等功能。它支持多种编程语言，并集成了 Google Cloud 的多种服务，如 Firebase、Colab Enterprise、Databases、BigQuery、Apigee 和 Application Integration。
+1. [[🚀] https://www.copy.ai](https://www.copy.ai) **Copy AI。** 人工智能营销文案和内容创作工具，帮助各行各业的撰稿人、营销人员和企业快速高效地创建高质量的内容。
+
+### AI 写作助手 (103)
+
+1. [[⭐⭐⭐🧑‍💻] https://chatglm.cn](https://chatglm.cn) **智谱清言。** 全能 AI 助手，支持精通对话、写作与编程。为你答疑解惑，激发创意，更能理解图片与文档，提升学习与工作效率。
+1. [[⭐⭐⭐] https://docs.qq.com/ai/chat/](https://docs.qq.com/ai/chat/) **腾讯文档智能助手。** 腾讯文档推出的 AI 文档助手，支持全品类内容生成、数据处理、版式美化等高效创作。AIPPT、AI阅读、AI思维导图、AI流程图一键生成
+1. [[⭐⭐⭐] https://scribelydesigns.top/tools/story-starter](https://scribelydesigns.top/tools/story-starter) **Scribely Story Starter。** 基于AI的视觉小说与故事开头生成器，帮助克服写作障碍。
+1. [[⭐⭐⭐] https://www.notion.so](https://www.notion.so) **Notion AI。** Notion AI是一款功能强大的人工智能工具，它可以帮助用户自动化和管理个人和团队的任务和流程。
+1. [[⭐⭐⭐] https://www.notion.so/product/ai](https://www.notion.so/product/ai) **Notion AI。** AI写作神器！比你想得更多！写得更快
+1. [[⭐⭐] https://hailuoai.video](https://hailuoai.video) **Hailuo AI。** Hailuo AI Video Generator 是一款利用人工智能技术，根据文本提示自动生成视频内容的工具。它通过深度学习算法，将用户的文字描述转化为视觉图像，极大地简化了视频制作流程，提高了创作效率。该产品适用于需要快速生成视频内容的个人和企业，特别是在广告、社交媒体内容制作和电影预览等领域。
+1. [[⭐⭐] https://www.giiso.com](https://www.giiso.com) **Giiso写作机器人。** Giiso是一款内容创作AI辅助工具，提供资讯写作、小红书文案、短视频脚本、PPT创作、文生图等类型创作。
+1. [[⭐⭐] https://www.wanzhi.com](https://www.wanzhi.com) **万知。** 万知 I 问答、阅读、创作的一站式AI工作平台。支持 PPT 智能生成
+1. [[⭐] https://ahrefs.com](https://ahrefs.com) **Ahrefs。** Ahrefs 是一款全能的 SEO 工具集，具有分析竞争对手、审核和优化网站、发现关键词、获取内容创意和链接机会以及跟踪排名进展等功能。其数据和指标是 SEO 行业中最受信任的，深受市场营销人员和领先公司的信赖。
+1. [[⭐] https://ai.chinaz.com](https://ai.chinaz.com) **站长 AI。** 站长 AI 是一个强大的 AI 工具合集，通过人工智能技术为用户提供内容鉴定、编程辅助、SEO 优化、智能写作等多种功能。其主要优点包括高效提升工作效率、帮助用户解决难题、节省时间成本、提高内容质量等。站长 AI 定位于为广大站长和创作者提供便捷、智能的工具支持。
+1. [[⭐] https://ai.kezhan365.com](https://ai.kezhan365.com) **万彩AI。** 万彩AI是一款强大的AI写作工具合集，它为缺乏灵感或对写作感到困难的人提供了AI智能写作支持。
+1. [[⭐] https://aic.oceanengine.com](https://aic.oceanengine.com) **抖音即创。** 即创工作台是一个一站式的智能创意生产与管理平台。它集成了视频创作、图文创作、直播创作等多种创意工具,可以通过AI的力量大大提高创作效率。主要功能和优势包括:1)视频创作:内置多种AI视频创作工具,支持智能编剧、数字人物、一键成片等,可快速生成高质量视频内容;2)图文创作:提供智能图文和商品图片生成工具,可快速制作微信文章、产品详情等图文内容;3)直播创作:支持AI直播背景、直播文案等创作工具,可轻松制作抖音、快手等直播内容。定位为新创和创意从业者的创意助手,以合理价格提供创意生产全流程服务。
+1. [[⭐] https://aigc.baidu.com](https://aigc.baidu.com) **百度度加创作工具。** 百度旗下产品，打造人人可用的AI创作工具
+1. [[⭐] https://aistudio.baidu.com/aistudio/projectdetail/3557574](https://aistudio.baidu.com/aistudio/projectdetail/3557574) **PP飞桨。** 公文写作｜智能笔杆子是基于 ERNIE 3.5 模型的公文撰写助手，专为编写公文文章设计。该应用能够提供优质的公文风格文章，适用于国企公司内部新闻等场景。
+1. [[⭐] https://anyword.com](https://anyword.com) **Anyword。** Anyword是一款AI写作工具，为营销团队提供高效撰写营销内容的解决方案。它能够分析您过去发布的所有内容，并帮助您发现最有效的信息传递方式。同时，Anyword提供品牌声音管理功能，让您可以在一个平台上管理品牌口吻、目标受众和品牌规则。您还可以训练定制的AI模型，利用品牌和绩效数据来提高各个渠道的表现，并显著影响业务结果。
+1. [[⭐] https://app.grammarly.com](https://app.grammarly.com) **Grammarly。** Grammarly是一款受数百万人信赖的AI写作助手，帮助用户自信地沟通，提高写作速度和乐趣。使用简单，立即下载应用程序。
+1. [[⭐] https://audionotes.ai](https://audionotes.ai) **AudioNotes.ai。** AudioNotes.ai是一款利用智能AI将您的口述文字转化为有序文本摘要的应用程序，使得记笔记、头脑风暴和内容创作等活动变得更加轻松！您只需通过语音输入，即可获得清晰、有序的文字记录。此外，AudioNotes.ai还具有智能分类和标签功能，帮助您快速组织和检索笔记。该应用程序适用于各种场景，包括会议记录、学习笔记、写作草稿等。通过AudioNotes.ai，您可以更高效地记录和整理您的想法，提升工作和学习效率。
+1. [[⭐] https://bearly.ai](https://bearly.ai) **Bearly。** 英文阅读写作效率提高10倍
+1. [[⭐] https://chuangyi.taobao.com/pages/aiCopy](https://chuangyi.taobao.com/pages/aiCopy) **悉语。** 悉语智能是阿里妈妈创意中心出品的一款一键生成商品营销文案的工具。
+1. [[⭐] https://contentatscale.ai/ai-prompt-library](https://contentatscale.ai/ai-prompt-library) **Content at scale。** 收录最佳的ChatGPT prompt提示词
+1. [[⭐] https://cp.baidu.com](https://cp.baidu.com) **橙篇。** 百度旗下写作助手，长文生成神器
+1. [[⭐] https://effidit.qq.com](https://effidit.qq.com) **Effidit写作助手。** Effidit是由腾讯AI Lab 开发的一个智能创作助手，探索用AI技术提升写作者的写作效率和创作体验。
+1. [[⭐] https://elevenlabs.io](https://elevenlabs.io) **Eleven Labs。** ElevenLabs 带来了最逼真、丰富和生动的声音，为寻求叙事的终极工具的创作者和发布者提供了最具吸引力的文本转语音和语音克隆软件。
+1. [[⭐] https://fullpeace.cn](https://fullpeace.cn) **风平智能。** 风平 IP 智造平台是基于 AIGC 的智能化 IP 打造平台，致力于提供虚拟数字人定制、AI 短视频内容生产和数字人直播的一站式解决方案。通过结合领先的 AI 技术，平台实现了数字人的高质量生产和互动能力，为用户打造全新的数字人 IP 体验。
+1. [[⭐] https://gifshift.xyz](https://gifshift.xyz) **GifShift。** GifShift提供了一个简单的三步流程，用户可以上传GIF或从图库中选择一个，然后输入描述性的提示，以生成具有标志性角色或风格的新GIF版本。该服务由fal.ai提供支持。
+1. [[⭐] https://gptzero.me](https://gptzero.me) **GPTZero。** GPTZero是最先进的AI侦测工具，用于侦测ChatGPT、GPT-4、Bard等AI模型的抄袭。只需几秒钟即可检查高达50000个字符的文本。GPTZero已被100多家媒体报道，是最可靠的AI侦测工具。
+1. [[⭐] https://guanjia.seowhy.com](https://guanjia.seowhy.com) **搜外内容管家。** 搜外内容管家是一款集关键词挖掘、AI 创作、文章发布和外链发布于一体的内容管理工具。其主要优点在于自动化流程，帮助用户轻松实现关键词挖掘、文章创作和发布。产品背景信息为提高网站内容质量和 SEO 效果。价格免费。
+1. [[⭐] https://hailuoai.com](https://hailuoai.com) **海螺AI。** 海螺AI是一个基于先进的AI生成技术打造的对话式智能助理。它可以通过简单的对话,为用户提供知识问答、信息检索、公众号文章写作、小红书笔记生成等服务,帮助用户快速获取信息,提高工作效率。主要功能包括:搜索问答、创意写作、语音交互等。适用于需要知识支持的创作者、自媒体从业者、学生群体等。
+1. [[⭐] https://hix.ai](https://hix.ai) **HIX.AI。** HIX.AI是一款由先进的GPT-3.5/4技术驱动的全能人工智能写作助手。
+1. [[⭐] https://huixie.iflyrec.com/welcome](https://huixie.iflyrec.com/welcome) **讯飞写作。** 讯飞写作基于讯飞星火认知大模型能力，支持多场景写作，提供会议纪要，求职简历，心得体会，入党申请，论文大纲，品宣文案，PPT 大纲等各类写作模板。AI 对话，激发灵感。
+1. [[⭐] https://ibiling.cn](https://ibiling.cn) **笔灵AI。** 笔灵AI是国内领先的AI写作助手与智能工具。专为提高写作效率而设计，提供免费的AI文章改写、论文辅助、商业计划书撰写等服务。
+1. [[⭐] https://if.caiyunai.com](https://if.caiyunai.com) **彩云小梦。** 彩云小梦是一个智能写作AI，你只需开个头，AI 就会帮你创作故事。你可以自由定义故事的世界设定，并扮演其中的角色，与其他角色聊天。
+1. [[⭐] https://inksprout.co](https://inksprout.co) **Inksprout Video。** Inksprout是一款AI助手，可以从博客生成社交视频。它使用AI生成字幕，让您可以在几秒钟内生成引人注目的、简洁的社交视频。您只需输入博客的URL，AI将自动摘要文章内容，并根据摘要生成视频。您可以使用这些视频在多个社交媒体平台上分享，并提高用户参与度。Inksprout提供免费计划，同时还有更多功能丰富的付费计划可供选择。
+1. [[⭐] https://jasper.ai](https://jasper.ai) **Jasper。** 最佳AI写作和艺术生成工具
+1. [[⭐] https://jenni.ai](https://jenni.ai) **jenni。** 面向作家的AI协作助手
+1. [[⭐] https://katteb.com/en](https://katteb.com/en) **Katteb。** Katteb是最佳的AI写作工具，可进行事实核查并生成可靠的AI内容。加入超过200,000位依赖Katteb的作者！Katteb提供多达30种类型、超过110种语言的内容生成，通过引用可信赖来源的内文引文，确保内容的准确性。
+1. [[⭐] https://languagetool.org](https://languagetool.org) **Language Tool。** LanguageTool 是一款免费的英语、西班牙语和其他30种语言的语法检查和改写工具。
+1. [[⭐] https://ling.jd.com](https://ling.jd.com) **京东羚珑。** 京东羚珑是一站式内容生产与管理服务平台，提供商品主图设计、广告 banner 设计、店铺首页设计等功能。其主要优点包括丰富的模板选择、免费设计服务、高效便捷的操作流程。产品定位于为商家提供设计合作伙伴服务。
+1. [[⭐] https://littlefrog.ai](https://littlefrog.ai) **写作蛙。** 清华智谱旗下的AI写作助手
+1. [[⭐] https://ltx.studio](https://ltx.studio) **LTX Studio。** LTX Studio是一个集成了AI技术的创新视频制作平台，它允许用户从概念到最终剪辑，全面控制视频的各个方面。该平台通过AI技术，将创意转化为连贯的视频故事，提供角色一致性、自动编辑、深度帧控制等功能，旨在简化视频制作流程，提高创作效率。
+1. [[⭐] https://magickpen.com](https://magickpen.com) **MagicPen。** 在线AI英语写作助手
+1. [[⭐] https://metaso.cn](https://metaso.cn) **秘塔AI搜索。** 秘塔科技旗下的一款AI搜索产品，能够大幅提升搜索效率，解决日常生活、工作学习等场景中遇到的各类搜索需求
+1. [[⭐] https://miaobi.xinhuaskl.com](https://miaobi.xinhuaskl.com) **新华妙笔。** 新华社媒体出品！AI公文写作学习平台
+1. [[⭐] https://miro.com/ai](https://miro.com/ai) **Miro AI。** Miro AI是你和团队的超能力助手。它能帮助你释放创意、提高协作效率，是你的创意、协作和效率的新启动平台。Miro AI拥有多种功能，支持可视化项目管理、图表绘制、产品开发流程、内容和数据可视化、工作坊协作等场景。它能智能扩展你的思维，帮助你生成广阔、创新的想法。
+1. [[⭐] https://novelistai.com](https://novelistai.com) **Novelist AI。** AI辅助你创建自己的小说
+1. [[⭐] https://openai.com/index/introducing-gpt-4-5/](https://openai.com/index/introducing-gpt-4-5/) **GPT-4.5。** GPT-4.5是OpenAI发布的最新语言模型，代表了当前无监督学习技术的前沿水平。该模型通过大规模计算和数据训练，提升了对世界知识的理解和模式识别能力，减少了幻觉现象，能够更自然地与人类进行交互。它在写作、编程、解决问题等任务上表现出色，尤其适合需要高创造力和情感理解的场景。GPT-4.5目前处于研究预览阶段，面向Pro用户和开发者开放，旨在探索其潜在能力。
+1. [[⭐] https://originality.ai](https://originality.ai) **Originality AI。** Originality AI是一款智能写作助手，帮助用户提升写作效率和质量。它通过自然语言处理和机器学习技术，提供实时的字数和字符统计，帮助用户控制文章长度；还能自动检测文本中的重复内容和抄袭问题，保证内容的原创性；同时，它还提供了丰富的写作模板和提示，帮助用户更好地组织思路和提升文章质量。Originality AI定价灵活，用户可以选择免费试用或购买高级会员享受更多功能和服务。
+1. [[⭐] https://otterai.sjv.io/c/3697237/1063514/13661](https://otterai.sjv.io/c/3697237/1063514/13661) **Otter.ai。** Otter.ai使用AI进行自动会议笔记，实时转录，记录音频，自动捕捉幻灯片，并生成会议摘要。它可以与Zoom、Microsoft Teams和Google Meet等平台集成，实时转录会议内容，并生成自动化的会议笔记。用户可以在Web、iOS或Android应用中实时跟进，并与团队合作。此外，Otter还能自动捕捉并插入会议中共享的幻灯片，方便用户回顾讨论内容。如果错过了会议的任何部分，Otter还会实时生成摘要，供用户方便回顾。价格根据不同用户类型有所不同。
+1. [[⭐] https://paraphrasetool.com](https://paraphrasetool.com) **Paraphraser。** 免费语言转述工具是一款多语言转述工具，可以帮助用户重新表达句子，改写段落，重写文章，检查语法并消除抄袭。它提供了15种免费转述模式，适用于100多种语言。用户可以将原始文本粘贴或输入到工具中，然后生成最佳转述结果。
+1. [[⭐] https://promptport.ai](https://promptport.ai) **PromptPort。** PromptPort 是一个提供创意写作灵感的平台，通过提供丰富的写作提示和创作工具，激发用户的创作热情和想象力，创建、优化和分享 ChatGPT 的提示词。用户可以浏览各种主题的写作提示，从中获取灵感并展开创作。PromptPort 还提供文本生成工具和可视化生成工具，帮助用户优化写作效果。该平台适用于作家、诗人、学生、教师和任何对创作感兴趣的人。
+1. [[⭐] https://resoomer.com](https://resoomer.com) **Resoomer。** Résoomer 是一款用于文本摘要的软件和在线工具：它允许您通过重要概念来总结和分析您的文章。它提供了一种有效的解决方案，可以节省阅读和理解长文本的时间。 Resoomer 使用人工智能算法从文本中提取主要思想，并以简洁明了的方式呈现它们。该软件供学生、信息专业人员和研究人员用来合成文章、报告和研究论文。
+1. [[⭐] https://scalenut.com](https://scalenut.com) **Scalenut。** Scalenut是一个AI驱动的SEO和内容营销平台，帮助您从识别关键词集群、创建内容简介到优化内容以提高搜索排名，管理您的整个内容生命周期。
+1. [[⭐] https://smodin.io/zh-cn](https://smodin.io/zh-cn) **Smodin。** 全球数百万学生、作家和互联网工作者使用的日常应用程序。我们最受欢迎的应用程序包括文本重写器、抄袭检查器、自动引文机和多语言翻译器。
+1. [[⭐] https://studycorgi.com/free-writing-tools/chat-gpt-detector/](https://studycorgi.com/free-writing-tools/chat-gpt-detector/) **Chat GPT Detector for Essays。** ChatGPT 检测器是一个用于检查论文是否由 AI 生成的工具。它通过分析文本中每个词的可预测性来判断文本的真实性，帮助用户识别人工写作与机器生成的文本。该工具的主要优点在于免费、准确、适合学生使用，提供详细的文本分析。
+1. [[⭐] https://suppr.wilddata.cn](https://suppr.wilddata.cn) **超能文献·文档翻译。** Suppr 超能文献是一个利用人工智能技术驱动的医学文献搜索引擎，旨在帮助医学研究人员快速检索和获取相关医学领域的最新研究进展和临床试验信息。它通过限定时间、类型、影响因子、作者、期刊等多重条件，提供精准的文献检索服务，极大地提高了医学研究的效率和质量。
+1. [[⭐] https://tingwu.aliyun.com](https://tingwu.aliyun.com) **通义听悟。** 阿里推出的会议转录工具
+1. [[⭐] https://tldrthis.com](https://tldrthis.com) **TLDR this。** TLDR This是一款免费的在线文本摘要工具，利用先进的人工智能技术将长篇文章、文档、论文等压缩成关键摘要段落。它能帮助用户从信息过载中解放出来。
+1. [[⭐] https://undetectable.ai](https://undetectable.ai) **Undetectable.ai。** 逍遥AI是一款AI写作工具，旨在将被AI检测器标记的内容转化为与人类写作无法区分的优质文本。我们的基于AI的解决方案保证了不可区分的结果，让您拥有与品牌声音一致、流畅的文本，与您的受众产生共鸣。立即信任我们，提升您的内容水平！
+1. [[⭐] https://wantalk.baidu.com](https://wantalk.baidu.com) **万话。** 万话创作者平台是一个专注于角色创建和管理的在线服务，它允许用户构建和细化角色设定，包括基础信息、世界观设定、角色设定、隐藏设定以及开场白。该平台特别适合需要角色构建和剧情推进的写作项目，如小说创作、剧本编写等。它通过提供角色调试功能，帮助用户达到理想的角色设定效果。
+1. [[⭐] https://wantquotes.net](https://wantquotes.net) **据意查句。** 清华出品！AI 神器让你的文案立马变高级
+1. [[⭐] https://wensi.sodabot.cn](https://wensi.sodabot.cn) **文思助手。** 文思助手是一款AI写作智能体，能够一键生成专业报告、工作总结、科研论文等文档。它利用先进的人工智能技术，为用户节省时间，提高工作效率。该产品由厦门苏哒智能科技有限公司开发，拥有强大的功能和广泛的应用场景。
+1. [[⭐] https://wordai.com](https://wordai.com) **WordAi。** 10倍速AI内容输出！创建读者喜爱的优质内容
+1. [[⭐] https://wordvice.ai/cn](https://wordvice.ai/cn) **Wordvice AI。** Wordvice AI是一款在线英语语法检查工具，提供实时高效的英语语法和拼写检查，突破基本功能，提供语气风格修改，提供有效反馈建议，适用于各类英文文件。Wordvice AI还提供人工编辑服务和其他英文写作工具。
+1. [[⭐] https://write.thisonegpt.com](https://write.thisonegpt.com) **神笔AI写作。** 神笔AI写作平台提供了一个简化的四步写作流程，帮助用户从输入论文题目到生成全文。它支持多种学科领域的论文写作，包括哲学、经济学、法学等，旨在帮助大学生高效完成论文。
+1. [[⭐] https://writebot.io](https://writebot.io) **WriteBot。** WriteBot是一个AI辅助写作工具，旨在帮助用户快速生成独特、符合SEO标准的内容。不需要月费订阅，采用按需付费的定价模式。这个工具特别适合生产博客文章、Facebook广告、产品描述等，带有关键词和SEO优化功能，提高内容创作的效率和质量。
+1. [[⭐] https://wukong.com/tool](https://wukong.com/tool) **小悟空AI。** 小悟空是一个集成了多种智能工具的网站，旨在提高个人和团队的创作效率和运营效果。它通过提供诸如文章生成、视频脚本创作、笔记创作等多样化功能，满足不同用户在内容创作、个人表达、学习教育等方面的需求。产品背景基于人工智能技术，结合大数据分析，为用户提供个性化、高质量的服务。价格定位为免费试用，部分功能付费，以适应不同用户的需求。
+1. [[⭐] https://www.5118.com/ai/articlegenius](https://www.5118.com/ai/articlegenius) **5118 SEO优化精灵。** 一键式生成高质量SEO文章
+1. [[⭐] https://www.aiprm.com](https://www.aiprm.com) **AIPRM。** AIPRM 是一个 AI Prompt 市场和社区驱动的 Prompt 库。使用它可以在几分钟内完成营销、销售、运营、生产力和客户支持等任务。提供了 ChatGPT、Bard、Midjourney 和 DALL-E 2 的即用型 Prompts。可以轻松创建博客标题、完整的原创文章、服务页面的文案等。AIPRM 可以帮助您以您的声音快速、有创意地创建内容。
+1. [[⭐] https://www.creatifyone.com](https://www.creatifyone.com) **创一AI。** 创一AI是一款专业的AI短视频脚本创作工具，旨在通过人工智能技术帮助用户快速生成高质量的短视频脚本。该产品利用先进的自然语言处理技术，结合用户需求，能够自动分析并创作出符合主题的脚本内容，大大提高了视频创作者的工作效率。创一深入理解以及对用户需求的精准把握，价格定位为免费体验，以吸引更多用户使用。
+1. [[⭐] https://www.editage.cn/paperpal](https://www.editage.cn/paperpal) **Paperpal。** 学术写作新世代，面向科研人员的AI写作工具
+1. [[⭐] https://www.editgpt.app](https://www.editgpt.app) **editGPT。** 让ChatGPT修改英语文章
+1. [[⭐] https://www.frase.io](https://www.frase.io) **Frase。** Frase是一款内容优化工具，通过使用人工智能技术，提供智能化的SEO优化建议。它可以帮助用户分析网站内容，并提供针对关键词优化的建议，以提高网站在搜索引擎中的排名。Frase还提供语义搜索功能，可以帮助用户找到与其网站相关的问题，从而为他们提供创作内容的灵感和指导。Frase还可以分析竞争对手的网站，并提供比较和改进建议。该产品定价灵活，并根据用户的需求提供不同的套餐选择。
+1. [[⭐] https://www.grammarly.com](https://www.grammarly.com) **Grammarly.。** Grammarly开发了一种使用人工智能和自然语言处理的数字写作工具。Grammarly键盘随时随地为您提供支持，确保您的写作始终看起来很棒。无论您是在输入紧急电子邮件、重要的LinkedIn消息还是必要的Facebook帖子，Grammarly都能让您放心地从移动设备上进行写作。
+1. [[⭐] https://www.gravitywrite.com](https://www.gravitywrite.com) **GravityWrite。** GravityWrite 是一款 AI 写作助手，能快速生成高质量的内容，适用于博客、广告、邮件和社交媒体。它节省时间、提高效率，降低成本，是提升点击率、转化率和销售额的利器。
+1. [[⭐] https://www.heyfriday.cn/home](https://www.heyfriday.cn/home) **西湖心辰-FRIDAY。** FRIDAY智能写作平台依靠自主研发的创新性AI算法，可以生成不同形式和语言风格的内容。
+1. [[⭐] https://www.ihuiwa.com](https://www.ihuiwa.com) **绘蛙。** 绘蛙是一款智能图片、文案创作平台，通过AI生成商拍图和种草文案，免费创作小红书图片、电商商品主图等。其功能包括AI生成商拍图、种草文案、美图、稿定设计、换装、去水印、图片高清修复等。定位于为用户提供简洁好用的智能创作工具。
+1. [[⭐] https://www.jasper.ai](https://www.jasper.ai) **Jasper AI。** AI文字内容创作工具。
+1. [[⭐] https://www.jenni.ai](https://www.jenni.ai) **Jenni AI。** Jenni AI是一款研究和写作助手，提供强大的功能来增强你的研究和写作能力。它具有AI自动补全、引文、改写、文件生成、与PDF交流、大纲生成、自定义样式和语气、研究库等功能。Jenni AI受到全球大学和企业的信赖，被超过100万名学者喜爱。它可以帮助你提高写作速度、检查抄袭、进行引文，并根据你的需求生成定制化的文本。Jenni AI适用于各种写作场景，包括论文、文献综述、个人陈述、博客文章、演讲稿等。
+1. [[⭐] https://www.mypitaya.com](https://www.mypitaya.com) **火龙果写作。** 火龙果智能写作软件，是一款基于AI 驱动的写作辅助神器，它提供了文章内容生成续写、智能改写、校对纠错、实时翻等强大功能。
+1. [[⭐] https://www.peppertype.ai](https://www.peppertype.ai) **Peppertype.ai。** Peppertype.ai是一个提供AI助手和智能文本编辑器的内容写作平台。它提供无缝的写作体验，帮助用户创建优化的内容，并通过SEO写作助手提供最佳建议。Peppertype.ai还提供自动化审核，包括字数、易读程度和抄袭检查，以帮助用户编写出更好的内容。定价方案根据用户的需求提供灵活的选择。
+1. [[⭐] https://www.scholarcy.com](https://www.scholarcy.com) **Scholarcy。** Scholarcy是一款在线文献摘要工具，可以将长篇文章生成摘要卡片。它通过阅读研究文章、报告和书籍章节，并在几秒钟内将它们拆分成易于理解的部分，帮助用户快速评估任何文献对他们工作的重要性。它提取关键信息，如研究参与者、数据分析、主要发现和局限性，并将其转化为摘要卡片。Scholarcy还可以提取文献中的图表和图片，并创建链接以打开引用来源。用户可以使用Scholarcy的浏览器扩展与开放获取库集成，并通过付费订阅服务Scholarcy Library建立个人摘要研究库。
+1. [[⭐] https://www.semrush.com](https://www.semrush.com) **Semrush。** Semrush 是一款集合了 55 多种工具，用于 SEO、PPC、内容、社交媒体、竞争研究等领域，帮助您使业务在线可见。
+1. [[⭐] https://www.shenyandayi.com](https://www.shenyandayi.com) **深言达意。** 深言达意是一款写作辅助工具，核心功能包括据意查词、据意查句。
+1. [[⭐] https://www.smartwriter.ai](https://www.smartwriter.ai) **Smartwriter。** 智能写手是一款使用AI技术帮助用户生成高度个性化冷邮件和LinkedIn信息的工具。它可以自动化您的整个推广过程，比人工快40倍且更经济实惠。使用智能写手，您可以快速生成千千万万个个性化邮件，使您的回复率提高8倍，从而帮助您更好地推动销售。
+1. [[⭐] https://www.spellbook.legal](https://www.spellbook.legal) **Spellbook。** Spellbook 利用 GPT-4 和其他大型语言模型，可以在 Microsoft Word 中为您的合同提供审查和建议。它可以基于合同的上下文即时起草新的条款和整个章节。Spellbook 帮助您更快地达成更好的交易，同时检测潜在的问题条款、提供缺失的条款和定义，并提供谈判建议。它还将引入自动尽职调查功能，可以自动检测整个数据室中最紧迫的问题。Spellbook 不仅仅理解合同，还经过对维基百科、图书和互联网的训练，可以参考世界上的事实。它由 OpenAI 的 GPT-4 提供动力，是唯一经过调整以适应合同起草和与 Word 集成的 GPT-4 工具。欢迎预订。
+1. [[⭐] https://www.squibler.io](https://www.squibler.io) **Squibler。** Squibler是一个人工智能辅助写作的在线软件平台。它可以为用户生成故事思路、增强人物塑造、写出通顺的句子、帮助克服写作障碍,还能以前所未有的速度写出书稿和剧本。主要功能包括AI辅助写作、AI元素生成、AI图像生成、AI视频生成、目标跟踪、项目管理、协作等。适用于小说、书籍、剧本、故事等创作。
+1. [[⭐] https://www.storynest.ai](https://www.storynest.ai) **Storynest.ai。** StoryNest.ai是一款AI驱动的互动故事平台，可以帮助用户创作吸引人的故事、深入的文章和全面的教育内容。通过与角色对话和超级故事书等功能，深入互动学习。加入StoryNest.ai，创造力、教育和技术完美结合。
+1. [[⭐] https://www.sudowrite.com](https://www.sudowrite.com) **Sudowrite。** Sudowrite是一款革命性的AI写作辅助工具,旨在成为你永不评判、永远在一旁支持创作、永不枯竭创意的写作伙伴。它集成了GPT-3和GPT-4等大型语言模型,可为你提供各种创作支持,从生成描写、情节发展到角色塑造、修改润色等,全方位提高你的写作效率和质量。主要功能包括:自动续写、情节扩展、重写修改、反馈建议、构思助手、视觉呈现等。无论你是在写小说、剧本还是其他作品,Sudowrite都能给你源源不断的灵感和指导,让创作变得轻松有趣。Sudowrite提供付费订阅服务,定价合理,同时也有免费试用版本。它致力于让写作爱好者重拾对创作的热爱,帮助专业作家提高工作效率。
+1. [[⭐] https://www.surferseo.com](https://www.surferseo.com) **Surfer。** Surfer是一款提供SEO工作流程的产品，可以帮助用户提升有机流量，增加可见度和改善排名。它利用下一代AI技术进行研究、写作和优化，可以在20分钟内生成高质量、优化良好的文章。Surfer还提供生成吸引人的标题的简报功能，支持多语言写作和优化，可以实时监测结构、字数、NLP关键词和图片等指标，帮助用户在全球范围内获得高排名。此外，Surfer还提供文章真实性验证和集成多种常用工具的功能。Surfer适用于各种场景，包括个人博客、企业网站和内容创作者等。定价方面，Surfer提供多种套餐选择，满足不同用户的需求。
+1. [[⭐] https://www.vidu.studio](https://www.vidu.studio) **Vidu。** Vidu 是一个创新的 AI 视频生成模型，能够根据用户提供的文本或图片快速生成高质量的视频内容。它的技术基于深度学习，能够理解并分析输入信息，从而创造出富有创意和视觉吸引力的视频。随着视频内容在各类平台上的流行，Vidu 以其便捷性和高效性，成为了内容创作者和市场营销人员的得力助手。该产品适用于个人和企业用户，旨在帮助他们提升内容制作的效率，且目前提供免费试用以吸引更多用户尝试其强大的功能。
+1. [[⭐] https://www.wenxiaobai.com](https://www.wenxiaobai.com) **问小白。** 问小白上线了DeepSeek驱动的人工智能助手，定位为一款强大的写作和任务处理工具。它基于深度学习技术，能够实时在线提供服务，支持深度思考和联网搜索功能。其主要优点包括免费不限次数使用，可帮助用户高效完成写作、创作、分析和规划等任务。产品面向需要高效完成各类文字工作和任务的用户，目前以网页形式提供服务，未来可能推出更多客户端形式。其免费的定位使其具有较高的性价比，适合广泛用户群体使用。
+1. [[⭐] https://www.xiaomengai.com](https://www.xiaomengai.com) **彩云小梦尝鲜版。** 彩云小梦尝鲜版是一款 AI 辅助创作工具，能够生成平行世界故事情节，帮助用户创作各种虚拟故事。具有智能推荐、故事设定、人物塑造等功能，用户可以通过与 AI 对话获得创作灵感。
+1. [[⭐] https://www.xiezuocat.com](https://www.xiezuocat.com) **秘塔写作猫。** 基于GPT的中文写作工具
+1. [[⭐] https://www.ximalaya.com/gatekeeper/write-wise-web](https://www.ximalaya.com/gatekeeper/write-wise-web) **WriteWise。** WriteWise 是一款强大的写作助手工具，帮助用户提升写作效率和质量。它提供智能推荐和编辑功能，可以快速生成高质量的文章和内容。 WriteWise 还提供语法检查、词汇替换、段落重组等功能，帮助用户改进文章结构和表达方式。该产品定价灵活，适用于个人写作、商务写作等不同领域。
+1. [[⭐] https://www.yanbiai.com](https://www.yanbiai.com) **言笔AI。** 言笔AI是一款基于AI大模型驱动的智能写作工具，支持多种写作场景，如文章创作、论文写作、PPT制作及公文撰写等。它通过提供免费的AI写作服务，帮助用户快速生成高质量的内容，避免重复内容，提升文案效果。言笔AI已为10,000+创作者提供服务，成功生成288,736,788字文案，具有高用户评价，值得信赖。
+1. [[⭐] https://xiezuocat.com](https://xiezuocat.com) **秘塔写作猫。** 写作猫是新一代交互式中英文写作辅助平台，集智能文本纠错、改写润色、自动续写、智能配图为一体。
+1. [[⭐] https://zuojia.baidu.com](https://zuojia.baidu.com) **百度作家平台。** 百度作家平台是一个AI智能创作工具，提供多种功能，包括AI助手、对话有问必答、AI续写等。用户可以使用该平台进行写作创作，包括小说设定、润色、角色起名等。平台还提供作品管理、收益分析等功能。百度作家平台适用于想要提升写作效率和创作质量的作者。
+1. [[⭐⭐⭐🚀] https://gemini.google.com](https://gemini.google.com) **Gemini。** 认识 Gemini：Google 旗下的 AI 助理。在写作、规划和开展头脑风暴等方面获得帮助。体验生成式 AI 的强大功能。在这里可以在线体验谷歌最先进的 Gemini3、Nano Banana 等顶级模型。
+1. [[🚀] https://monica.im](https://monica.im) **Moncia。** Monica是由ChatGPT API提供支持的Chrome扩展程序，旨在成为您的个人AI助手，实现轻松聊天和文案编写。
+1. [[🚀] https://novelai.net](https://novelai.net) **NovelAI。** 基于人工智能，轻松构建独特的、惊险的、引入入胜的故事。
+1. [[🚀] https://quillbot.com](https://quillbot.com) **QuillBot。** QuillBot一款写作改写工具，能够帮助您让写作更好、更快、更聪明。我们的改写工具是免费且易于使用的，只需点击一下按钮，即可进行改写。
+1. [[🚀] https://writesonic.com](https://writesonic.com) **Writesonic。** Writesonic可以为博客、广告、电子邮件和网站快速生成已优化的免费原创内容。
+1. [[🚀] https://www.copy.ai](https://www.copy.ai) **Copy AI。** 人工智能营销文案和内容创作工具，帮助各行各业的撰稿人、营销人员和企业快速高效地创建高质量的内容。
+
+### AI 思维导图 (12)
+
+1. [[⭐⭐🧑‍💻] https://xmind.ai](https://xmind.ai) **Xmind Copilot。** Xmind Copilot 思维导图 AI 助手
+1. [[⭐] https://boardmix.cn](https://boardmix.cn) **博思AI白板。** boardmix博思白板，多人实时协作的流程图，思维导图工具。
+1. [[⭐] https://chatmind.tech/editor](https://chatmind.tech/editor) **Chatmind AI。** Chatmind 是一款由 Xmind 团队推出的免费在线 AI 思维导图和头脑风暴工具，通过 ChatGPT 技术，帮助用户在几分钟内创建思维导图。用户可以通过简单的文本描述生成思维导图，快速总结文档或 URL 链接为思维导图，与 AI 对话产生创意并整合到思维导图中，描述文本即可立即生成图像，轻松为任何主题创建视觉内容，自动保存文件历史以便跨设备访问，编辑文本和重新排列主题轻松自如，将思维导图转化为幻灯片展示只需一键，轻松以多种格式分享思维导图。
+1. [[⭐] https://gitmind.cn](https://gitmind.cn) **GitMind思乎。** GitMind是一款全平台在线思维导图脑图架构图制作软件工具，支持手机手机思维导图，Windows/Mac多平台操作及内容同步。
+1. [[⭐] https://modao.cc/brand](https://modao.cc/brand) **墨刀AI。** 墨刀AI是国内知名产品设计协作平台「墨刀」最新推出的AI产品原型设计助手，帮助产品设计人高效实现和落地创意，激发无限创造力。
+1. [[⭐] https://static.app.yinxiang.com/evermind/product/login](https://static.app.yinxiang.com/evermind/product/login) **印象图记。** 印象图记是一个在线思维导图工具与流程图工具，由印象笔记出品。它提供简洁易用的界面、实用主题和丰富图标，支持自由布局、分享导出和云端存储。这个工具旨在帮助用户提高工作和生活效率。
+1. [[⭐] https://whimsical.com](https://whimsical.com) **Whimsical。** Whimsical是一个集图表、白板等多种功能于一体的视觉协作平台。用户可以使用Whimsical创建流程图、线框图、思维导图和文档，快速将想法变为现实。它可以帮助团队成员更好地协作，从而更快地构建出更好的产品。Whimsical还可以与Jira、GitHub、Notion、Figma和Slack等常用工具集成，提高工作效率。
+1. [[⭐] https://www.ayoa.com/ultimate/](https://www.ayoa.com/ultimate/) **Ayoa Ultimate。** AI驱动的思维导图和生产力工具
+1. [[⭐] https://www.edrawsoft.cn/mindmaster](https://www.edrawsoft.cn/mindmaster) **亿图脑图。** 万兴科技旗下的亿图脑图M

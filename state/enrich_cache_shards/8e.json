@@ -457,5 +457,232 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "AlexAnys/opencrew": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-04-03",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "antoinecarme/pyaf": {
+  "commit_90d": 4,
+  "commit_7d": 0,
+  "rel_ver": "5.0",
+  "rel_pub": "2023-07-14",
+  "rel_days": 1191,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 92,
+   "Makefile": 8,
+   "Shell": 0,
+   "R": 0,
+   "Procfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ChatLunaLab/chatluna": {
+  "commit_90d": 46,
+  "commit_7d": 5,
+  "rel_ver": "v1.4.2",
+  "rel_pub": "2026-10-13",
+  "rel_days": 4,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "TypeScript": 80,
+   "Vue": 18,
+   "Python": 1,
+   "JavaScript": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "zaina-ml/ml_forge": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.4",
+  "rel_pub": "2026-08-17",
+  "rel_days": 61,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "410979729/scope-recall-hermes": {
+  "commit_90d": 980,
+  "commit_7d": 119,
+  "rel_ver": "v3.10.6",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Ji-Rath/MassAIExample": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v0.5.2",
+  "rel_pub": "2026-08-13",
+  "rel_days": 65,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "C++": 93,
+   "C#": 6,
+   "C": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "brainiak/brainiak": {
+  "commit_90d": 6,
+  "commit_7d": 1,
+  "rel_ver": "v0.12",
+  "rel_pub": "2025-01-06",
+  "rel_days": 649,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 33,
+  "lang": {
+   "Python": 89,
+   "Roff": 8,
+   "Cython": 1,
+   "C++": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "scouzi1966/maclocal-api": {
+  "commit_90d": 640,
+  "commit_7d": 0,
+  "rel_ver": "nightly-20261005-138ca5d",
+  "rel_pub": "2026-10-05",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Swift": 43,
+   "Python": 31,
+   "Shell": 22,
+   "C": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

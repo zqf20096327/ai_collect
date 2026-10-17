@@ -982,9 +982,9 @@ Full retrieval tables — including the MRR figures behind the router numbers ab
 ## What it answers
 
 <details>
-<summary><b>190 long flags</b> across seven families, plus the MCP server — and <code>--help-task</code> names the ONE command a task wants, or abstains honestly when the evidence is too thin</summary>
+<summary><b>192 long flags</b> across seven families, plus the MCP server — and <code>--help-task</code> names the ONE command a task wants, or abstains honestly when the evidence is too thin</summary>
 
-Around the core sit 191 long flags advertised in `--help`, across seven families — plus an MCP
+Around the core sit 192 long flags advertised in `--help`, across seven families — plus an MCP
 server, so a coding agent can call any of them mid-task instead of grepping and reading whole files.
 `--help` prints one line per flag (~4.5K tokens); `--help=--FLAG` prints that flag's full entry with
 every caveat, `--help=SECTION` one family, and `--help=all` the whole catalog.
@@ -1351,4 +1351,13 @@ rather than blurring it:
   the one property with a corpus-derivable answer — on this repository's `src/`, camelCase is the
   dominant convention at **1,677/1,803 (93.0%)** agreement, and the verb flags **136** off-convention
   names with a mechanically recombined `propose=` value for each (no dictionary, no synonym judgment —
-  see [What it answers](#what
+  see [What it answers](#what-it-answers)).
+- **`--lint --naming-locals`** points those same naming rules at local variable names — the thing a
+  human reviewer flags immediately in a sprawling function and no static tool measured until this
+  session. Opt-in, off by default: on this repository, a plain `--lint` finds **2,225** findings;
+  adding `--naming-locals` finds **3,198** — **973 findings that were structurally invisible**
+  a moment ago, scoped tightly (only inside functions already flagged large/complex, only locals
+  nested two blocks deep for the short-name rule) so it doesn't just relabel every loop counter in
+  the tree. Ships disabled by default on purpose: this repository's own history includes a naming
+  rule that shipped on plausibility and was later measured to flag its *best*-named functions — see
+  the withdrawn-rule note below — so a rule thi

@@ -1,0 +1,1769 @@
+# Loom
+
+[![ci](https://github.com/nickthelegend/loom/actions/workflows/ci.yml/badge.svg)](https://github.com/nickthelegend/loom/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@loompad/cli)](https://www.npmjs.com/package/@loompad/cli)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+**The shared-memory layer for AI dev environments.** Every coding agent — Claude Code,
+OpenCode, Antigravity, Codex, … — keeps its own brain in its own files. Loom makes them
+**one brain**: connect your ADEs, and their memory, decisions, and context become a
+single shared thread that flows from one agent to the next.
+
+Today that means **Claude Code, Codex, OpenCode, Grok Code and Antigravity** as full
+agents, each verified against a real version, plus **Kiro** driven through its own
+window —
+see [Supported agents](#supported-agents) for exactly how far each one goes, and
+[How memory actually reaches a model](#how-memory-actually-reaches-a-model) for the
+part most tools gloss over.
+
+An agent doesn't have to be a CLI any more. A **[`model` agent](#agents-that-are-models)**
+is an HTTP endpoint — any OpenAI-compatible provider, a model you pick from a list,
+nothing to install — which means the cheap work can go somewhere cheap, and on a
+provider's free tier it costs nothing at all. Pin one to a
+**[thread](#threads-and-who-answers-in-them)** and two conversations run on two models
+at once; **[ask several](#asking-several-models-at-once)** and one prompt fans out to
+all of them.
+
+And because a fleet you can't see is a fleet you can't trust, every turn, handoff and
+route step is exported as **OpenTelemetry** — traces, metrics and logs — and read back
+into an in-app **[Observatory](#observability)**.
+
+Loom is **not** another IDE. It's the thin layer *between* your agents — the continuity
+and memory they don't share on their own.
+
+```
+   CLAUDE.md      AGENTS.md      .antigravity/     ← each ADE's native memory
+       │              │               │
+       └──────────────┼───────────────┘   import
+                      ▼
+            ╔═══════════════════╗
+            ║  ONE SHARED BRAIN ║   decisions · imported ADE memory · the thread
+            ╚═════════╤═════════╝
+                      │  projected on every handoff
+       ┌──────────────┼───────────────┐
+   Claude Code ──▶ OpenCode ──▶ Claude Code      ← baton carries the brain forward
+     (plan)        (execute)      (review)
+```
+
+<p align="center">
+  <img src="docs/img/workspace.png" alt="Loom workspace — one thread over every agent, with the Explorer, the composer, and the agent baton" width="100%">
+  <br>
+  <em>One thread over every agent — projects and chats on the left, the shared conversation in the middle, the Explorer on the right, and a composer you switch agents from without leaving the box.</em>
+</p>
+
+## One link — a teammate, their agents, your repo
+
+Click **Invite** in a project, or run `loom invite`. Loom makes sure you're on a
+team that shares this repo (it creates the team and shares the repo if you
+haven't) and gives you one https link to send.
+
+Your teammate clicks it. If they already have Loom, it opens in their Loom and
+one **Join** does the rest. If they don't, the page shows one command that
+installs Loom and joins:
+
+1. **Sign in** with GitHub.
+2. **Join** the team, and keep the team key the link carries.
+3. **Get the repo.** Loom uses a clone they already have, or clones it. For a
+   private repo, *your* Loom adds them as a collaborator the moment they join,
+   and *theirs* accepts GitHub's invitation.
+4. **Open it with their agents** — whichever of Codex, OpenCode, Claude Code
+   and the rest are installed on their machine.
+5. **Share** it with the team, so you see each other's live agents, goals and
+   files.
+6. **Set up your crews**, filled from their own agents.
+
+```bash
+loom invite                 # in a project: the link, a QR, and a message to paste
+loom join '<link>'          # the same thing from a terminal
+```
+
+The invite is the part of the link after `#`. Browsers never send that part to
+a server, including the join page's. A link works once and expires in a day.
+It carries the team key, so send it the way you'd send a password.
+
+## Quota Relay — a limit doesn't stop the work
+
+Hit Claude's 5-hour window halfway through a task, and the work normally
+stops: Claude Code parks the turn until the reset, and Codex ends it with
+"try again at 3:04 PM". Loom recognises the limit and responds:
+
+- **It hands the work on.** It stops the parked turn and passes the baton to
+  the next agent, with a briefing: "claude ran out of quota; its changes are in
+  the working tree, continue from them". It re-sends the same request in the
+  same chat.
+- **It routes new prompts.** While an agent is out, anything sent to it goes
+  to the agent standing in.
+- **It gives the chat back.** When the window resets, the baton returns.
+- **It waits if it has to.** If no other agent is free, the request is queued
+  for the moment the limit lifts.
+
+The thread records each step ("claude hit its usage limit — codex carries on;
+claude is back around 19:00"), and your phone gets a push. By default only
+your other CLI agents take over, never a metered API model. Set the order
+with `relay.to`. `relay.auto: false` only reports the limit, and
+`relay.handBack: false` keeps the stand-in. Limits are read from what Claude
+and Codex report about their usage windows, and from the error text any CLI
+gives ("usage limit", "rate limited", "quota exceeded", with "try again at…"
+or "resets in…").
+
+## Proof — is "done" true?
+
+Agents say "all tests pass" when three of fourteen ran, or when none did. When
+an agent's reply claims the tests, build, typecheck or lint pass, Loom checks
+the claim three ways:
+
+- **What it said.** The claims in its final message, including any numbers
+  ("all 14 tests pass").
+- **What it ran.** The commands from that turn and their exit codes. A claim
+  with no test run behind it, or with a failed one, doesn't hold.
+- **A clean re-run.** Loom runs your tests again in a fresh worktree containing
+  exactly the agent's uncommitted changes and new files. Dependency folders
+  are linked, not reinstalled. Your working tree is never touched.
+
+The verdict goes into the thread as a card: **Verified**, **Didn't hold** (with
+the reason, such as "said 14 pass; 11 did"), or **Unverified**. If a "done"
+doesn't hold, your phone gets a push. Every turn card also has **Check it**,
+to verify any turn on demand.
+
+```bash
+loom proof                   # check the newest turn (exits 1 if it didn't hold)
+loom proof --test "npm run test:unit"
+```
+
+The test command is detected from the project (`npm test`, `cargo test`,
+`go test ./...`, `pytest`, `make test`). Override it with `proof.testCommand`
+in `.loom/config.json`; `proof.auto: "off"` turns off automatic checks.
+Pass/fail counts are read from vitest, jest, node:test, mocha, pytest, cargo,
+go test, rspec and phpunit output.
+
+## Crews — agents with roles, on one goal
+
+A crew is a few of your agents with jobs: a **lead** who plans, **builders**, a
+**reviewer**, a **tester**. You give the crew a goal. The Lead turns it into
+cards, and you approve the plan. Each card is then built, reviewed (changes go
+back to the same builder), and tested, in the goal's own worktree and branch.
+When it's done, you apply it.
+
+```bash
+loom crew create ship       # templates: ship · fix · research · solo
+loom crew goal "Add rate limiting to the public API"
+loom crew approve           # or: loom crew say "smaller cards, please"
+loom crew                   # cards by stage; questions a teammate asked you
+loom crew apply             # merge the goal's branch into yours
+```
+
+The **Crew** tab shows the same thing. Every commit carries `Loom-Crew`,
+`Loom-Goal`, `Loom-Card` and `Loom-Teammate` trailers. Phase 1 works one card
+at a time; [docs/proposals/agent-teams.md](docs/proposals/agent-teams.md) has
+the rest of the plan.
+
+## Orchestra — one conductor, many agents, in parallel
+
+Give Loom a goal and let one agent run the others. The **orchestrator** can be any
+agent: Claude Code, Codex (ChatGPT), Antigravity, Grok or OpenCode.
+
+1. It reads the repository and splits the goal into a **task graph**.
+2. Loom runs every ready task **at the same time** on the **worker** agents the
+   plan names. Each task gets its own thread and its own git worktree.
+3. Loom merges each finished task into one integration branch.
+4. The orchestrator reviews the results. It can accept them, send follow-ups,
+   spawn more tasks, or finish.
+
+```bash
+loom orchestrate "add OAuth login with tests" -o claude-code -w codex,antigravity,claude-code -p 6
+```
+
+```
+                 ┌──────────── orchestrator (any agent) ────────────┐
+   goal ──▶ plan │  t1 → codex        t2 → antigravity    t3 → codex │ ◀── review, follow up, done
+                 └──────┬──────────────────┬────────────────┬──────┘
+                        ▼                  ▼                ▼  (after t1)
+                   worktree t1        worktree t2      worktree t3
+                        └──────── merged into loom/orchestra/<run>/main ──▶ apply to your branch
+```
+
+- **Any agent can orchestrate.** The orchestrator never runs shell commands. It
+  answers in a small JSON block that Loom parses, so an agent in a sandbox or with
+  no tools at all can still lead.
+- **Many workers, mixed or the same kind.** Three Codex tasks and two Antigravity
+  tasks run side by side as separate CLI sessions, capped by `--parallel` (1–12).
+- **Real dependencies.** A task with `dependsOn` starts only after those tasks are
+  merged, and it branches from a tip that already contains their work.
+- **Nothing touches your branch until you say so.** All work lands on
+  `loom/orchestra/<run>/main`. You merge it with `loom orchestra:apply <run>`, or
+  with the **Apply** button in the app. Merge conflicts go back to the
+  orchestrator, which can ask the worker to resolve them.
+- **You're in the loop.** When the orchestrator needs a decision it asks, and the
+  run waits for your reply (`loom orchestra:reply <run> "…"`, or the app on your
+  phone). You can steer a run mid-flight the same way.
+- **Everything is visible.** Every step is an `orchestra` event. The web app,
+  desktop app, phone and CLI all watch the same run live, and each task's stream
+  sits in its own thread. The project's budgets, quarantine and shared brain apply
+  to every worker.
+
+- **Race instead of plan.** `--race` (or the Race switch in Orchestrate) gives
+  every worker the whole goal in its own worktree, with no orchestrator. The
+  entrants finish side by side, each with its diff, and you keep one:
+  **Pick this one** in the app, or `loom orchestra:apply <run> --task race-<agent>`.
+- **A restart doesn't lose the run.** If Loom stops mid-run, the run says it
+  was interrupted. **Resume** (or `loom orchestra:resume <run>`) picks up the
+  tasks that were running and briefs the orchestrator again.
+
+Under the hood: [`src/core/orchestra.ts`](src/core/orchestra.ts).
+`node scripts/verify-orchestra.mjs` runs a real orchestra against your installed
+CLIs and checks the result on disk.
+
+## Codex & GPT‑5.6
+
+Loom is built around orchestrating **OpenAI Codex** as a first‑class agent — and in this
+build every Codex turn runs **GPT‑5.6**: Codex's model, pinned in Loom's per‑project agent
+config (`.loom/config.json` → `codex → model: "gpt-5.6-terra"`) at high reasoning effort.
+
+> The slug is `gpt-5.6-terra`, not a bare `gpt-5.6` — that is the id Codex actually
+> accepts, and asking for `gpt-5.6` is a 400 (`not supported when using Codex with a
+> ChatGPT account`). Loom's model picker asks the CLI what it supports
+> (`codex debug models`) rather than shipping a list that goes stale, which is exactly
+> how this got caught.
+
+- **Codex holds the baton like any other agent.** The adapter
+  ([`src/providers/codex/adapter.ts`](src/providers/codex/adapter.ts)) keeps a warm
+  `codex app-server` (JSON-RPC) per chat: it opens a thread, streams Codex's items
+  (`agentMessage` / `commandExecution` / `fileChange`), its context usage and compaction,
+  and **keeps the same thread across turns** (resuming it after a restart) so Codex keeps
+  its own context between handoffs.
+- **Codex reads and writes the shared brain.** Before a Codex turn, Loom projects the
+  unified memory (imported ADE memory + decisions + the thread) into its briefing; its
+  replies and memory writes land back in the one shared store. So a handoff
+  *Claude Code → Codex* carries the full context, and the next agent inherits what Codex
+  learned. *(Verified end‑to‑end: Codex recalled a value another agent set one turn
+  earlier, and its turns emit `run_complete` + `memory_add`.)*
+- **Voice, on real hardware.** The **LoomPad** is a physical ESP32‑S3 macropad, and the
+  loop is: press the **Codex** key to hand Codex the baton, hold the mic and speak, hear
+  the reply spoken back through the pad. It lives in this repo under
+  [`hardware/orchestrator-pad/`](hardware/orchestrator-pad/README.md) — parametric CAD,
+  printable STLs, the wiring diagram, the Arduino firmware and the voice backend — with
+  the daemon-side proxy endpoints (`/api/loompad/health`, `/api/loompad/connect`) and the
+  status pill that reads them. See [Hardware](#hardware) to print and wire one.
+- **Codex as a dev agent, too.** Because Codex is a full agent, you can hand it real work
+  inside Loom — `loom route ship "…"` routes *plan → Codex executes → review*, the brain
+  flowing hop to hop.
+
+In short: **GPT‑5.6, via Codex, is one of the interchangeable minds Loom keeps in sync** —
+start a thread in Claude Code, hand it to Codex mid‑task, and it picks up with the whole
+shared context intact.
+
+## Observability
+
+Loom exports its agent activity as **all three OpenTelemetry signals**, and then reads
+them back into an in-app **Observatory** so you never have to leave to answer "what is
+the fleet doing, and what did it cost".
+
+**Backend-agnostic.** Loom speaks OTLP/HTTP and nothing else — no vendor SDK, no
+vendor-specific code path. Point `OTEL_EXPORTER_OTLP_ENDPOINT` at a Collector, Grafana,
+Jaeger, SigNoz, Honeycomb, anything with a `/v1/traces` endpoint. An ingestion key
+rides in through the standard `OTEL_EXPORTER_OTLP_HEADERS`, so a new destination is a
+config change and never a code change.
+
+| Signal | What Loom puts in it |
+|---|---|
+| **Traces** | every turn as `gen_ai.agent.turn` (model, tokens, cost, duration), tool calls, baton handoffs, route steps, memory folds — one trace per turn |
+| **Metrics** | tokens, turn duration, turns, cost, active agents, handoffs — GenAI semantic conventions |
+| **Logs** | every message, tool call, edit, decision and error, correlated to the span it happened inside |
+
+The Observatory tab renders it back: a live fleet canvas, per-agent **burn rate** and
+budgets, **Span Replay** with a trace waterfall, a **Decisions** explorer, a **Logs**
+view, **Time-Travel Replay** that refolds the whole run from the event log, and
+**Ask** — a question about your fleet, answered from its own telemetry.
+
+**Self-heal** closes the loop: point your monitoring's webhook at
+`POST /api/webhooks/alerts` (the Alertmanager shape SigNoz, Prometheus and Grafana all
+send) and a firing alert takes the named agent out of rotation until it resolves. That
+is the part a dashboard can't show you — it knows the alert fired, only Loom knows the
+fleet reacted.
+
+Two rules run through all of it: **nothing is estimated**, and **absent beats invented**.
+Tokens and cost are what each agent's own CLI reported; an adapter that reports tokens
+but no dollar figure (codex) produces no cost datapoint rather than a zero, because
+zeros are indistinguishable from real cheap turns once summed.
+
+Off with `DO_NOT_TRACK=1`. Full details, every variable, and how to verify it's flowing:
+**[docs/observability.md](docs/observability.md)**.
+
+## Why
+
+Every coding agent keeps its own brain. Claude Code's memory can't be read by
+OpenCode; Antigravity doesn't know what you decided with Claude an hour ago. Switch
+tools and you re-explain your project every time.
+
+Other multi-agent tools answer this by keeping agents **apart** — each in its own
+worktree, run in parallel, compare and merge. Loom makes the opposite bet: keep the
+agents' **memory together** so work *continues* across them instead of forking.
+
+- **One brain across every ADE** — Loom imports each agent's native memory
+  (`CLAUDE.md`, `AGENTS.md`, …) into a unified store, merges it with your decisions and
+  the shared thread, and hands the whole thing to whoever picks up next. `loom memory`.
+- **The baton** — exactly one agent may *write* at a time; passing it *carries the context*
+  (interrupt-safe, memory projected, briefing armed). Not isolation — continuation.
+- **Routes** — let Loom drive the chain: `loom route ship "add dark mode"` runs
+  plan → execute → review as one command, the brain flowing hop to hop; or `loom route
+  auto` lets an LLM pick each next agent.
+- **Every surface, one daemon** — a full-screen TUI, a web app, a desktop window, and a
+  phone app (voice input, per-prompt diffs, push) — each a paired client of the same
+  local daemon over your tailnet.
+- **Local-first & yours** — one `npm i -g`, no account, MIT, runs headless on a server.
+
+## Install
+
+Requires **Node ≥ 22.5** (Loom's event log uses the built-in `node:sqlite`).
+
+On **Windows**, install Node.js and Git for Windows, then use PowerShell or
+Command Prompt. Bash and WSL are not required. From a source checkout:
+
+```powershell
+git clone https://github.com/nickthelegend/loom.git
+cd loom
+npm.cmd ci
+npm.cmd link
+loom.cmd doctor
+```
+
+For a managed source installation, run `scripts/install.ps1` in PowerShell
+(it clones into `%USERPROFILE%\.loom-src`, builds, and links the CLI). Use
+`loom.cmd` when PowerShell's execution policy blocks npm's `.ps1` shim.
+Install agents separately: `npm.cmd i -g @openai/codex opencode-ai`, then
+sign in to the agents you use. Claude Code's native Windows installer is also
+detected under `%USERPROFILE%\.local\bin`.
+
+Normal chat, shared memory, routes, Orchestra worktrees and crews use the
+standard runtime on Windows. The optional **native continuity** mode
+(`brain.continuity: true`) needs verified process containment. On Windows,
+every harness runs inside a Job Object, and Loom checks the containment
+works on this machine before it offers the mode; if the check fails, the
+agent says why and stays on the standard runtime. Leave it off for Orchestra
+and crews, which also run outside native continuity on other OSes.
+
+```bash
+npm install -g @loompad/cli          # → `loom` on your PATH
+```
+
+Other paths:
+
+```bash
+# one-liner from source (clones ~/.loom-src, builds, links; re-run to update)
+curl -fsSL https://raw.githubusercontent.com/nickthelegend/loom/main/scripts/install.sh | bash
+
+# straight from git
+npm install -g github:nickthelegend/loom
+
+# hackable checkout
+git clone https://github.com/nickthelegend/loom.git && cd loom
+npm install && npm run build && npm link
+```
+
+Then verify the setup:
+
+```bash
+loom doctor        # checks node, agents, tailscale, daemon (and what it sees vs your shell), providers, and your project
+```
+
+Surfaces, all talking to the same daemon:
+- **TUI / CLI** — `loom` (default), `loom chat`, `loom send`, …
+- **Desktop app (Loom Desktop)** — prebuilt for
+  [**macOS**, **Linux**, and **Windows**](https://loompad.tech/#download)
+  (`.dmg` · `.AppImage` · `.exe`; the macOS dmg is ad-hoc signed, so right-click → **Open**
+  the first time), or build from [`desktop/`](desktop/README.md): `cd desktop && npm
+  install && npm start`. Either way it opens a native window that starts the daemon and
+  pairs itself.
+- **Phone app (LoomPad)** — install the newest
+  [Android APK](https://loompad.tech/download/android) (allow unknown sources; Google
+  Play is coming), open **Loom**, and **Scan QR code** from the desktop's *Connect a phone*.
+  Voice input, per-prompt diffs, push. Or build from source
+  ([`app/`](app/README.md)): `cd app && npx expo install && npx expo start`.
+- **Web app** — no install; `loom pair` → open the link. Same workspace in the browser.
+
+## Fan out, retry, reap
+
+Three moves the fleet learned for when one turn isn't the right shape:
+
+- **Sub-agents** — a turn can fan a subtask out to a child that runs alongside
+  it and **never holds the baton**: `loom spawn "audit the tests" --agent codex`.
+  The child gets a narrowed briefing (its task, the project's rules, retrieval
+  scoped to its own work — not the parent's thread), reports back as
+  `subtask_done`, and everything it learns lands in the one brain. Capped at
+  four per project, because each child is a real CLI process.
+- **Retry on another agent** — when a turn fails, `loom retry <agentId>`
+  re-runs the failed prompt on the agent you choose, with the failure attached
+  as a briefing instead of pasted into the message: the thread shows a clean
+  prompt twice, and the second agent is told what was tried and what it died of.
+- **Reap a hung session** — a CLI that hangs holds `busy` forever and blocks
+  every dispatch. `loom stale` names what's hung (busy past ten minutes);
+  `loom reap <agentId>` interrupts, stops, respawns from config, and releases
+  the baton if the corpse held it.
+
+## Native context continuity (opt-in)
+
+The new deterministic Brain path supports sequential switching between checked
+Codex/Claude CLI profiles with scoped native sessions, protected user context,
+SQLite search, source-backed checkpoints and delivery diagnostics. It requires no
+embedding model or inference package. Enable **Native context continuity** in
+Settings → Preferences; the legacy workflow remains the default.
+
+Unknown CLI versions, OpenCode/bridges, attachments and parallel execution are
+gated in this mode. Overflow saves a reviewable request instead of silently dropping
+user intent. See [native continuity](docs/brain-continuity.md),
+[current architecture](ARCHITECTURE.md) and
+[remaining verification gates](docs/refactoring/BRAIN-TODO.md).
+
+## Several sessions, one brain
+
+`loom agents:add claude-code` a second time doesn't error — it adds
+`claude-code-2`: its own session, its own context window, **the same project
+brain**. Name them for their jobs (`--as reviewer --role reviewer`) and pick
+per message. Memory import dedupes by file and units are project-scoped, so
+what one session learns the others retrieve. One baton still rules them all:
+two sessions of a kind never means two writers at once.
+
+## The Browser tab
+
+Agents write Playwright specs constantly and could never watch them run. The
+**Browser** tab (next to Console in the dock) lists the project's specs
+(`*.spec.*`, `*.e2e.*` — never inside `node_modules`), runs one on click with
+the reporter streaming line by line, records pass/fail in the Console, and on
+failure stages the reporter's own words in the composer to hand back to
+whichever agent should fix it. Playwright stays the project's dependency (`npx
+--no-install`) — a project without it is told so plainly.
+
+**Your dev servers live there too.** Declare them under `servers` in
+`.loom/config.json` (Loom suggests them from `package.json` and waits for you
+to accept) and the rail shows each one's real state: **running** means a port
+answered, **starting** means the process is up but nothing is listening yet,
+and **crashed** carries the exit code it died with. Start, stop and restart
+from the row; click the row to point the preview at it; open its output under
+the page, which is where the reason for a blank frame usually is. A server
+that dies while an agent works against it says so in the thread, and every
+server Loom started is stopped when the daemon goes.
+
+From the terminal: `loom servers`, `loom servers start|stop|restart <name>`,
+`loom servers logs <name> -n 100`.
+
+**The page can talk back.** Click a server and Loom previews it through its
+own proxy, which forwards everything (including the socket hot reload rides on)
+and injects one small script. The **Page** pane then shows what that page
+logged and what it fetched, live — and a click puts any line into the composer
+as context, which is the whole point: the loop used to be *see the error,
+select it, retype it*. **Pick** turns the cursor into an element picker: click
+the thing that's wrong and its selector, text, size, markup and computed
+styles (fonts, colours, spacing, layout) land in the composer, along with a
+picture of just that element, so any agent can see what you mean. The picture
+is taken at your width and colour scheme with the project's own Playwright.
+Nothing about the page is rewritten; the script only reports.
+
+**The preview itself** emulates a width (Fit / 375 / 768 / 1280, remembered per
+project, scaled down when the dock is narrower), reloads itself when an agent
+changes files — a toggle, on by default — and has a camera button that puts a
+picture of what you're looking at into the composer. The page is another
+origin, so the browser won't let it photograph itself: the daemon takes the
+shot with the project's own Playwright, and a project without Playwright is
+told exactly that rather than handed an empty file.
+
+**Dark mode, on the page being previewed** — Auto / ☀ / ☾, independent of
+Loom's own theme and remembered per project. No API lets one document set
+another's `prefers-color-scheme`; Loom isn't outside the page, though — the
+proxy served it *and* its stylesheets — so the bridge re-points the page's own
+`@media (prefers-color-scheme: …)` rules, sets the UA colour-scheme, and makes
+`matchMedia` answer the way you asked (firing `change`, so an app that themes
+itself in JavaScript re-renders). Every rewritten rule remembers the media text
+it came with, so **Auto is the page exactly as it shipped**; stylesheets Loom
+doesn't serve can't be read and aren't claimed. A page you typed into the
+address bar rather than previewing through Loom says so instead of offering a
+switch that does nothing — and the screenshot drives a real browser, where the
+scheme is honoured either way. Both conditions ride along with what you send:
+*Screenshot taken at 375×812, dark mode*, and an element pick names them too.
+
+## The workspace
+
+On a wide screen the web app (and the desktop shell around it) is a full workspace for
+*driving* agents — still not an editor: Loom shows you the context and the agents do
+the writing.
+
+```
+┌───────────┬────────────────────────────┬──────────────┐
+│ projects  │  Thread · Board · Brain    │  Explorer    │
+│  └ chats  │                            │  Search      │
+│           │  the conversation, with    │  Source ctl  │
+│ New task  │  Update(n files) cards ────┼─▶ diff opens │
+│ New proj  │                            │  Agents      │
+│ Search    ├────────────────────────────┤              │
+│           │  terminal (a real shell)   │              │
+└───────────┴────────────────────────────┴──────────────┘
+  live · host · baton · spend                    ← status bar
+```
+
+- **Projects + chats** in the left rail: a project holds as many conversations as you
+  want, and they share one brain, one baton and one working tree. The **agents** live in
+  the right panel — click one to aim your next message at it, click its role to rename
+  the job (roles are free text: "architect", "the one that writes docs", anything).
+- **Thread** is the shared conversation; **Brain** is the unified memory; **Board**
+  is everything in flight.
+- **Board** is one board with three sources — **GitHub**, **Projects**, **Linear** —
+  switched from a segmented control (see [GitHub & Linear, native](#github--linear-native)).
+  GitHub is four live columns (working → needs you → in review → ready to merge); cards
+  come from **yours** (`+ Task`), **Loom** (which agents are running or blocked), and
+  your repo's **PRs** (draft, CI failed, changes requested, approved — read through your
+  own `gh`). Search issues and PRs in GitHub's own query language; **Start** hands an
+  issue to an agent. Dragging your own card really moves it; dragging a PR card only moves
+  where you *see* it — the badge keeps telling the truth, because a drag can't approve a
+  review or turn CI green. Each card wears its agent's own logo.
+- **Click any change** — an `Update(n files)` card, or a file in Source Control — and the
+  diff opens to the right of the chat. It stays closed until you ask for it.
+- **Explorer / Search / Source Control / Tasks** in the right panel; every column is
+  drag-resizable (double-click a handle to reset).
+- **Terminal** (`Ctrl` + `` ` ``) is a real terminal in the project directory — a
+  proper pty, so the shell draws its own prompt and `vim`, `less`, `htop`, `^C`
+  and `^Z` all behave. `node-pty` is optional: without it (Linux with no build
+  toolchain) you get a pipe-backed shell instead, where `cd` and variables still
+  persist and `^C` still works, driven a line at a time.
+- **New task** (`n`) picks a project, a task, and **one agent — or several**, which run
+  it as a pipeline, hop to hop. **New project** (`p`) adds a repo — a native folder
+  picker in the desktop app — and reports which ADEs it found on the host.
+
+### Settings, in one place
+
+Everything about a Loom lives behind the gear in the bottom-left: **Setup** (what the
+machine still needs to run agents), **Diagnostics** (`loom doctor`, run live on the
+daemon), **Updates** (build rev, and how far the checkout is behind its remote),
+**Preferences** (theme, the brain extractor, handoff brief style, default agent),
+**Devices** (paired clients — revoke one, or pair another), and **About**.
+
+<p align="center">
+  <img src="docs/img/settings.png" alt="Loom's Settings screen — Setup, Diagnostics, Updates, Preferences, Devices, About" width="100%">
+</p>
+
+## GitHub & Linear, native
+
+Browse pull requests, issues, and **GitHub Project boards** in-app; open a worktree from
+any task; review and approve PRs; and file **Linear** issues with a team selector — no
+context switch, no second browser tab.
+
+<p align="center">
+  <img src="docs/img/board-projects.png" alt="A GitHub Project board rendered in Loom, items grouped by their Status column" width="100%">
+  <br>
+  <em>A GitHub Project (v2) board, in-app — items grouped by their Status column, each linking back to its issue or PR.</em>
+</p>
+
+- **Browse PRs, issues, and Project boards.** The **GitHub** source is the live kanban;
+  the **Projects** source lists the owner's GitHub Project (v2) boards and lays a
+  project's items out by Status; search takes github.com's own query language.
+- **Review and approve PRs in place.** Open a PR's diff without leaving Loom and post the
+  three things a reviewer does — **comment**, **request changes**, **approve**. The review
+  is signed as you (through your `gh`); approve asks first, because it publishes.
+- **Open a worktree from any task.** One click cuts a checked-out branch in its own
+  directory, a sibling of the repo: a **PR** worktree checks the branch out — forks
+  included — and an **issue** worktree cuts a fresh branch to start it. An agent can work
+  a PR while your main tree stays exactly where you left it.
+- **Create Linear issues with a team selector.** Pick a team, write a title and
+  description, file it — the new issue's identifier comes straight back.
+
+<p align="center">
+  <img src="docs/img/board-linear.png" alt="Loom's Linear source, honest about being off until you connect it" width="100%">
+  <br>
+  <em>Linear is off until you connect it — and Loom tells you exactly how, because it holds no token of its own.</em>
+</p>
+
+**Loom holds no token of its own.** GitHub goes through your `gh` CLI; Linear reads
+`LINEAR_API_KEY` from the daemon's own environment (you `export` it) and never stores,
+logs, or transmits it anywhere else. No key → an honest "not connected", never a dead
+form — the same bet the agent adapters make by shelling out to the CLIs you already have.
+
+## Quickstart
+
+```bash
+cd your-project
+loom init          # detects the agents installed on this machine, assigns roles
+loom               # opens the TUI — a tabbed workspace (Thread · Board · Brain · Diff)
+```
+
+```
+  ██      ▄████▄  ▄████▄  ▄█▄▄█▄
+  ██      ██  ██  ██  ██  ██▀▀██
+  ██      ██  ██  ██  ██  ██  ██
+  ██████  ▀████▀  ▀████▀  ██  ██
+        one thread · every agent
+
+  1 Thread   2 Board   3 Brain   4 Diff                          ↑12  pgup/pgdn
+  10:44 claude-code  here's the plan: …
+   ⟶ baton: claude-code → opencode
+  10:45 opencode     implementing step 1 …
+
+ ╭──────────────────────────────────────────────╮
+ │ › Ask anything… "/route ship: add dark mode" │
+ │ opencode · executor ⟵ baton                  │
+ ╰──────────────────────────────────────────────╯
+   shift+tab view · tab agent · ctrl+p palette · esc back/interrupt
+   ~ my-project · baton opencode  ➤ ship 2/3
+```
+
+The TUI is a **tabbed workspace**, not just a thread:
+
+- **Thread** — the conversation, streamed. **`tab` shifts the active agent/IDE**
+  (claude-code → opencode → back); the handoff (interrupt-safe, memory projected, briefing
+  armed) happens when you hit enter, so switching is one keystroke, not a ceremony.
+- **Board** — agents, your cards, issues and PRs in the four flow columns.
+- **Brain** — the memory the project has learned, grouped by kind (failures first), each
+  tagged with who learned it.
+- **Diff** — the working tree: changed files and a colourised patch.
+
+**`shift+tab` cycles the tabs** (or `/board`, `/brain`, `/diff`, `/thread`, or the
+palette); `pgup/pgdn` scrolls the view. **`ctrl+p` opens the command palette**
+(fuzzy-filtered: jump to a view, shift to any agent, launch a named route, decision,
+interrupt, pair…). `esc` steps back to the thread or interrupts the running turn; `/help`
+lists the slash commands.
+
+Prefer plain line-mode (SSH, scripts)? `loom chat` is the same thread as a classic REPL,
+and every action also exists as a one-shot command (`loom send`, `loom handoff`, …).
+
+## Routing — multi-hop pipelines
+
+Handoffs are unlimited and manual by default. **Routes** automate a chain of them:
+
+```bash
+loom route auto "add a dark-mode toggle"          # DYNAMIC: an LLM picks each hop
+loom route ship "add a dark-mode toggle"          # named pipeline from config
+loom route planner,executor "fix the flaky test"  # ad-hoc: roles…
+loom route claude-code,opencode,claude-code "…"   # …or agent ids, any length
+```
+
+**`auto` is dynamic routing**: after every hop, a router looks at the task, the hop
+history, and the last replies, then picks the next agent — or declares the task done.
+The router is Claude (headless, small model, JSON out) with a deterministic
+plan→execute→review rules engine as automatic fallback, so routes never stall on a
+router failure. Every decision is logged with its reason
+(`➤ hop 2 → opencode (plan ready — execute it)`), a hop budget caps runaways
+(`--max-hops`, default 8), and `--router rules` skips the LLM entirely.
+
+What happens per hop: interrupt-safe **handoff** → shared-memory **projection** →
+**briefing** → the step's role instruction. Then:
+
+- step finishes cleanly → Loom advances to the next agent automatically;
+- the agent asks a question → the route **pauses** (`waiting_human`), you get a
+  notification, `loom route --status` and the board show the question; you answer in
+  the shared thread (`loom send "…"`) and the route **resumes by itself**;
+- an agent errors or a step times out (45 min default) → the route fails loudly —
+  unless the step carries an [`onFail`](#routes-that-loop-and-steps-that-skip), which
+  sends it back to an earlier step instead;
+- a step carrying a [condition](#routes-that-loop-and-steps-that-skip) the previous turn
+  didn't meet (`reviewer?lines>200`) is **skipped**, with the numbers that decided it;
+- **you always outrank the route**: any manual `handoff`/`interrupt` cancels it, and
+  `loom route --abort` stops it and interrupts the in-flight turn.
+
+`--detach` returns immediately (fire-and-notify); following with Ctrl-C also leaves the
+route running server-side. One route per project at a time (the baton is one write
+lock); run routes across *different* projects in parallel freely.
+
+Define named pipelines in `.loom/config.json` — steps are roles or agent ids, and any
+step can carry its own focus:
+
+```json
+"routes": {
+  "ship": ["planner", "executor", "reviewer"],
+  "api-only": [
+    { "step": "planner",  "instruction": "design the endpoint contract only" },
+    { "step": "executor", "instruction": "only touch src/api — no schema changes" },
+    { "step": "reviewer", "when": "lines>200", "onFail": "executor" }
+  ]
+}
+```
+
+Per-step instructions are appended to the role guidance for exactly that step — the
+next hop never sees them. `when` runs a step only if the previous turn met a condition
+Loom measured, and `onFail` sends a failing step back to an earlier one; both are
+[explained here](#routes-that-loop-and-steps-that-skip). `loom init` seeds a `ship` route automatically when it
+detects at least two roles.
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `loom` | **The TUI** — tabbed workspace (Thread · Board · Brain · Diff), `shift+tab` switches view, `tab` shifts agents, `/`-commands + `ctrl+p` palette inline |
+| `loom init` | Make the current directory a Loom project (auto-detects agents); in a git repo it offers to add `.loom/` to `.gitignore` (`--gitignore` / `--no-gitignore` to skip the question) |
+| `loom chat` | Same thread as a plain line REPL (`/handoff`, `/interrupt`, `@agent`) |
+| `loom send <text>` | One-shot message (`-a <agent>` to address someone specific). `--wait` blocks until the turn ends and prints the reply and cost (`--json` for one object, `--timeout <s>`); it exits 0 done, 1 failed, 2 the agent asked a question, 124 timed out — so a script can drive an agent without reading `.loom/log.db` |
+| `loom handoff <agent>` | Pass the baton — interrupts, projects memory, briefs the target |
+| `loom route <spec> "<task>"` | Run a pipeline (name, or `a,b,c` ids/roles); `--status` / `--abort` / `--detach` |
+| `loom routes` | List named pipelines defined for this project |
+| `loom interrupt` | Stop the current holder's turn (cancels an active route) |
+| `loom update [--check] [--yes]` | Is there a newer Loom — and install it, in the commands it prints first |
+| `loom servers [start\|stop\|restart\|logs] [name]` | The project's dev servers: real state, start/stop, and their output |
+| `loom queue` | What's lined up behind the running turn — position, who takes it, why it's waiting |
+| `loom queue add "<text>" [--to <agent\|orchestrate\|auto>] [--plan]` | Line a prompt up; it goes when nothing is in its way |
+| `loom queue edit / to / move / rm / clear` | Rewrite one, send it to someone else, reorder it, drop it, empty the queue |
+| `loom queue pause` / `loom queue resume` | Hold the queue where it is · let it run again |
+| `loom queue at <when> "<text>"` / `after landed:<run>\|green:<run>` | Queue a prompt for a time, or for a goal landing / going green |
+| `loom queue save <name>` / `run <name>` / `recipes` | Keep a queue as a recipe and replay it on any project |
+| `loom digest [--since <hours>]` | What happened in this project while you were away |
+| `loom decision <text>` | Record a decision into shared memory |
+| `loom memory [import]` | The unified brain — one memory across every connected ADE |
+| `loom log [-f]` | Show (or follow) the project event log |
+| `loom costs` | Project spend: total + per-agent turns, $ and agent time |
+| `loom agents` / `loom projects` / `loom status` | Agent roster, project board, daemon health |
+| `loom providers` | Where model agents send their turns, and whether each has a key |
+| `loom providers:set <id> [--key --base-url --header]` | Point Loom at a provider — the key goes to `~/.loom/providers.json` (0600) or the env, never a project |
+| `loom providers:rm <id>` | Forget a provider's key and settings |
+| `loom models [agentId] [--provider --free --refresh]` | With an agent: the models it reports. Without: what every configured provider has right now |
+| `loom ask "<text>" [--models a,b,c \| --free --limit n]` | One prompt to several models at once, a thread each, side by side |
+| `loom up [--tailnet] [--restart]` / `loom down` / `loom daemon` | Daemon lifecycle (`--tailnet` binds to your Tailscale IP) |
+| `loom pair` | QR deep link that pairs a phone (single-use token) |
+| `loom clients [--revoke <id>] [--ping]` | Paired devices: list, revoke, or send a test push |
+| `loom doctor [--json] [--fix]` | Diagnose env, daemon, binding, and project config — and where the daemon sees something different from your shell (an agent missing from its PATH, a sign-in, an API key exported only in a terminal), whether each provider answers with the daemon's key, and whether a model agent pinned to a `:free` model keeps getting 429/503 (it suggests `pool:free`). `--fix` repairs what has exactly one safe repair |
+| `loom orchestrate "<goal>"` | One orchestrator plans, many workers build in parallel worktrees (`-o`, `-w`, `-p`, `--no-watch`) |
+| `loom orchestrate --plan "<goal>"` | Plan mode: the plan and each task's spec land as markdown under `plans/<run>/` for any agent to pick up |
+| `loom orchestra [run] [--watch]` | Orchestra runs in this project, or one run's task graph live |
+| `loom orchestra:reply / :apply / :abort / :cleanup <run>` | Answer or steer the orchestrator · merge the run into your branch (a race: `--task <entrant>`) · stop it · remove its worktrees |
+| `loom orchestrate --race "<goal>" -w a,b` | Race: each agent takes the whole goal in its own worktree, and you keep the one you like |
+| `loom orchestra:resume <run>` | Carry on a run Loom stopped by restarting |
+| `loom stats` | Today across every project: turns, how many failed, the time and the spend |
+| `loom export [--chat <id\|title>] [--out file]` | A chat as Markdown: prompts, replies, tool summaries and turn footers |
+| `loom backup [--out file]` | Everything Loom knows in one archive: `~/.loom` and every project's `.loom` (logs copied as consistent snapshots) |
+| `loom completion zsh\|bash` | Shell completion: `loom completion zsh >> ~/.zshrc` |
+| `loom hub [--host --port --secret]` | Run a self-hosted Team Hub for your team |
+| `loom invite` / `loom join <link>` | One link: a teammate joins the team and gets this repo, their agents and your crews |
+| `loom crew [status\|create\|goal\|say\|approve\|stop\|resume\|apply\|diff\|remove]` | Crews: agents with roles (lead, builders, reviewer, tester) working one goal |
+| `loom team [status\|signin\|create\|invite\|join\|share\|unshare\|brain\|landing\|doctor\|adopt\|deploys\|release-notes\|webhook\|remove\|leave]` | Loom Teams: see teammates' live agents and goals; the shared team brain; landing goal PRs; GitHub webhooks; membership and key rotation |
+| `loom land [runId]` | Land a goal's PR: fresh main in, fast tests, push, merge when GitHub's rules pass |
+| `loom runner [status\|pair\|join\|start\|stop\|token\|doctor\|install\|revoke\|goal\|move\|back\|jobs]` | Runners: your always-on Loom that takes goals while you're away |
+| `loom cloud [status\|enable\|disable\|rotate]` | Loom Cloud relay: reach this daemon from any network, end-to-end encrypted |
+| `loom spawn "<task>"` | Fan a subtask out to a child agent — the parent keeps the baton |
+| `loom review <agents…> [--file f \| --diff \| --text "…"] [--focus "…"]` | Several agents review the same change at once — **read-only** (their own plan mode where they have one), **nobody takes the baton**, so nobody is asked to hand off for a read. It waits and prints every finding in one list, worst first; two reviewers on the same line show as one finding they agree on. The same card lands in the app with Accept / Reject on each finding. `--diff` (the uncommitted changes) is the default; `--no-wait`, `--json` |
+| `loom council "<goal>" --planner <id> --reviewers <ids>` | One planner, several reviewers, seven stages in one chat (and one card in the app that fills in as they go): the **planner plans** (no edits) → the **reviewers backtest the plan** in parallel, read-only → the **planner accepts or rejects** each finding, recorded as decisions → **only the planner builds** → **Proof** re-runs the tests in a clean checkout → the **reviewers forward-test the diff** → the **planner fixes** what it agrees with, and Proof again. `loom council:status [id]`, `loom council:stop` |
+| `loom review:accept <id…>` / `loom review:reject <id…> [--note why]` | Decide on review findings — an accepted one becomes a project decision every agent is briefed with. `loom reviews [id]` lists them |
+| `loom subtasks` | Subtasks running right now |
+| `loom agents:add <kind> [--as name] [--role r]` | Add an agent session — repeat for a second session of the same kind, same brain |
+| `loom agents:add model --model <id> [--tools --write --run "npm test"]` | An agent that *is* a model: no CLI, and what it may read, write or run |
+| `loom agents:rm <id>` / `loom agents:available` | Remove a session · what this machine can drive and how many are here |
+| `loom watch [--all] [--json]` | Tail a project's events live — turns, handoffs, memory, subtasks |
+| `loom retry <agentId>` | Re-run the last failed turn on a different agent, failure attached |
+| `loom stale` / `loom reap <agentId>` | Sessions that look hung · respawn one fresh (baton released) |
+| `loom budgets` / `loom budget <id> [usd]` | Daily USD caps: measured spend vs cap · set or clear one |
+| `loom brain:search "<query>" [--explain]` | Retrieval exactly as a briefing sees it — the score, and the arithmetic behind it |
+| `loom brain:forget <memoryId>` | Drop one unit from the project's memory |
+| `loom brain:export [file]` / `brain:import <file>` | The project's memory as a portable file — import dedupes |
+| `loom brain:conflicts` | Units that likely contradict each other, with the signal that tripped each |
+| `loom snapshot [file]` / `loom restore <file>` | Checkpoint brain+board+config · bring one back (brain merges) |
+| `loom rewind [checkpoint]` | Points the working tree can go back to · put the files back to one |
+| `loom routes:save <name> <steps...>` / `routes:rm` | Define a named pipeline, validated against the roster · remove one |
+| `loom task "<title>"` / `loom tasks` | Put a card on the board (`--agent`, `--blocked-by`) · list yours |
+| `loom specs` / `loom specs:run <file>` | The project's Playwright specs · run one through the daemon |
+| `loom mcp:health` | Each MCP server's live state from the background poll |
+| `loom costs --series [days]` | The spend ledger day by day, per agent |
+| `loom open` / `loom version` | Open this project in the web app · what's installed |
+| `loom rename <name>` / `loom find <query>` | Rename the project (id never moves) · search the thread |
+
+## Supported agents
+
+| Agent | Tier | Transport | Status |
+|---|---|---|---|
+| Claude Code | adapter (full-duplex) | Claude Agent SDK driving the installed `claude` (stream-json control protocol), resume by session, briefing appended to Claude Code's system prompt | ✅ verified against 2.1.278 with SDK 0.3.283 (2026-09-28) |
+| Codex | adapter (full-duplex) | `codex app-server` JSON-RPC, `thread/resume`; found on PATH **or inside Codex.app** | ✅ verified against codex-cli 0.153.4 (2026-09-28) |
+| OpenCode | adapter (full-duplex) | `opencode serve` HTTP + SSE (`/prompt`, `/interrupt`, `/event`) | ✅ verified against 1.17.20; re-verified 1.18.31 (2026-09-18) |
+| Grok Code | adapter (full-duplex) | `grok -p --output-format json`, `-r <session>` | 🔶 verified against 0.2.54 — **answers only, no tool or edit events** (see below) |
+| Antigravity | adapter (full-duplex) | `agy -p` headless, `--conversation <id>` to resume | ✅ verified against agy 1.1.6; re-verified 1.2.6 (2026-09-18) |
+| Cursor | — | `cursor-agent --print` | 🔜 coming soon |
+| **Model (API)** | adapter (full-duplex) | `POST /v1/chat/completions`, streamed — any OpenAI-compatible provider | ✅ no CLI to install; tools are read-only unless you allow more (see [below](#agents-that-are-models)) |
+| Echo | adapter (demo/tests) | in-process | ✅ |
+| Kiro | **bridge** (driveable) | Chromium debug port — types into the real chat panel and reads the panel back | 🔶 mechanism verified; its selectors are not (see below) |
+
+**Context and limits.** For Claude Code and Codex, the composer shows the chosen
+agent's context in use against its model's window, shows **compacting…** while the
+harness compacts (with a "compacted its context · 180k → 12k tokens" line in the
+thread when it's done), and calls out a usage-limit window once it passes 80%. Hover
+for every window and when it resets.
+
+> The Claude Agent SDK package carries a platform build of Claude Code as an
+> optional dependency (about 215 MB installed on macOS arm64). Loom never runs it: it always points
+> the SDK at your own `claude`. Installing with `--omit=optional` skips it.
+
+Four of those need their asterisks spelled out, because the table row is
+shorter than the truth:
+
+**Codex reports tokens, never money.** Its `turn.completed` carries
+`input_tokens` / `output_tokens` and no dollar figure, so Loom shows tokens and
+no cost for Codex turns. A USD number derived from a price table we'd have to
+keep current is fiction with a decimal point in it.
+
+**Grok can't show you its steps.** `--output-format streaming-json` sounds like
+it would help and doesn't: it emits `thought` and `text` deltas and a final
+`end`, with no tool calls and no file edits — not even when the turn
+demonstrably ran a shell command and wrote a file. So a Grok turn in the thread
+is what it said, and `git status` is what it did. Inferring the edits by diffing
+the tree would put guesses in the event log dressed as facts. Its permission
+mode also defaults to `bypassPermissions`, because headless with no TTY to ask,
+every other mode ends the turn `Cancelled` having written nothing.
+
+**Antigravity used to be a bridge, and isn't any more.** Loom drove the IDE's
+chat panel over the DevTools protocol: it needed the app open with a debugging
+port, it could only watch, and it could never hold the baton. `agy` does the
+whole turn headless, so Antigravity is a full agent and the GUI stopped being a
+dependency. It reports no dollar cost — the CLI hands us none — so its turns
+show a model and a duration and honestly nothing else. The CDP bridge is still
+in the tree and still builds, so projects that name it still open; it just isn't
+offered any more.
+
+**Kiro is driven, not routed.** It's an Electron app with no
+API; Loom connects to the debugging port, finds the chat box, types through the
+input pipeline and reads back what the panel gained — the approach
+[antigravity_phone_chat](https://github.com/krishnakanthb13/antigravity_phone_chat)
+takes, and for the same reason: never touch the provider APIs, drive the app
+that's already signed in. Launch it with
+`--remote-debugging-port=9222` first.
+
+The driver refuses more than it accepts, on purpose. Kiro is VS Code
+family and Monaco — the editor holding your source file — is a
+`contenteditable`. Anything under `.monaco-editor` is never a candidate, a
+candidate must be labelled like a chat box, and zero-or-several matches is a
+refusal that names the fix (`options.selectors.composer`). Typing a prompt into
+your code and pressing Enter is not a mistake an error message repairs.
+
+What's verified is the mechanism, against a real Chromium. What is **not**
+verified is Kiro's actual chat DOM: it shows no chat panel until you open one,
+so there was no composer to read the selectors from. Reachable and driveable are
+separate questions, and Loom answers both — an app with no chat panel open
+replies to CDP cheerfully and reports
+`driveable: false — no chat box on screen`.
+
+**Adapters** run a turn to completion headless and may hold the baton. **Bridges** only observe and receive shared-memory
+projections — they never hold the write lock. That's a design decision, not a gap: GUI
+agents without a stable API can't be trusted with interrupt-safe writes. See
+[docs/integration-notes.md](docs/integration-notes.md) for the verified surfaces.
+
+## Agents that are models
+
+Every other agent in Loom wraps a CLI. A `model` agent is an HTTP endpoint:
+
+```sh
+loom providers:set openrouter --key sk-…          # or $OPENROUTER_API_KEY
+loom models --free                                 # what costs nothing today
+loom agents:add model --as cheap --role reviewer \
+  --model "google/gemma-4-31b-it:free" --tools
+```
+
+It streams into the thread like any other agent, shows reasoning as reasoning,
+reports its token counts, and holds the baton. Out of the box it is a thinker
+rather than an editor — planning, reviewing, summarising, answering, routing,
+which is most of what a fleet does between edits and what free quota is very
+happy to pay for — and it becomes an editor only when you say so, below.
+
+**It can read the project, if you let it.** `--tools` adds `read_file`,
+`list_files` and `search` — read-only, inside the project, with `.git` and
+`.loom` off limits and every path proven contained before anything opens it.
+Each call shows in the thread, and the loop is bounded at eight hops.
+
+**And write, if you say so.** With `--tools` already on, `--write` adds
+`write_file` and `--run "npm test"` adds `run` with that allow-list. (Either
+without `--tools` is refused — they're the writing half of it, not a
+replacement for it.) Every write and every command is a card you
+allow or deny first:
+
+> **write_file** — write src/app.ts: 40 lines (replacing 12) — fix the port
+> &nbsp;&nbsp;[Allow] [Deny]
+
+It asks in `auto` as well as `ask`, which is stricter than the CLI mapping and
+on purpose: a CLI in your roster is one you installed and signed into, and a
+model agent is a name you picked off a provider's list an hour ago. `bypass`
+is the only mode that doesn't ask. With nobody to ask, the answer is no.
+
+The allow-list is a prefix match on whole commands and there is no shell — so
+`npm test` permits `npm test --watch` and refuses `npm testify`,
+`npm test; rm -rf ~`, backticks, pipes and redirection — and a tool is only
+offered to the model when it can actually be used.
+
+**Providers Loom knows by name** — and anything else that speaks
+`/v1/chat/completions` works with a base URL:
+
+| provider | base URL | free tier |
+|---|---|---|
+| `openrouter` | `https://openrouter.ai/api` | models whose id ends `:free` |
+| `agentrouter` | `https://agentrouter.org` | all of it — but see the note below |
+| `groq` | `https://api.groq.com/openai` | — |
+| `openai` | `https://api.openai.com` | — |
+| `ollama` | `http://127.0.0.1:11434` | local, no key |
+| *anything* | `loom providers:set mine --base-url …` | whatever you tell it |
+
+**Keys are never project config.** `.loom/config.json` names a provider;
+the key lives in the environment or in `~/.loom/providers.json` (mode 0600),
+and nothing — no route, no log, no listing — hands it back. You get the last
+four characters, which is enough to tell two keys apart.
+
+**A fallback chain, for when the free pool is dry:**
+
+```json
+{ "id": "cheap", "kind": "model", "role": "reviewer",
+  "options": { "provider": "openrouter",
+               "model": "google/gemma-4-31b-it:free",
+               "fallbacks": ["qwen/qwen3.8-27b:free"],
+               "tools": true } }
+```
+
+**Refusals are read, not guessed at.** A dry free pool (402) or a rate limit
+(429) moves to the next model in `fallbacks` and says so once; a model name
+that doesn't exist (503) stops, because falling back would hide the typo. And
+a provider that rejects *Loom* rather than your key says exactly that —
+AgentRouter, for one, only accepts clients it recognises, which is a thing to
+ask them about rather than a key to go and regenerate.
+
+## Threads, and who answers in them
+
+A thread can name its own agent. It then answers there whatever the baton is
+doing elsewhere, which is what lets two threads talk to two agents at once —
+one planning on a free model, one editing with Claude Code, neither waiting for
+the other.
+
+Pinning does **not** take the baton. The baton is the write lock for work that
+touches the repository; a conversation doesn't need it, and taking it would
+stop whatever is actually working. The main thread still follows the baton,
+because that's what makes it the main thread.
+
+A thread may pin a **model** as well, for agents that can change model per turn
+(the `model` kind). Pinning one to an agent whose model is baked into a spawned
+process is refused at the point of pinning — a setting that silently does
+nothing is worse than an error.
+
+## Asking several models at once
+
+```sh
+loom ask --free --limit 3 "is this migration reversible?"
+loom ask --models "openrouter/qwen/qwen3.8-27b:free,ollama/llama3" "review this approach"
+```
+
+In the app it's **More → Ask several models…** in the composer: tick the
+models (free ones are listed first), and what's in the box goes to each.
+
+One prompt, one thread per model, all at the same time, each thread named
+after the model that answered in it. With free quota this costs what asking
+one model costs, and picking the good answer takes a person ten seconds.
+
+The agents that run are transient — five asks don't leave five agents in the
+roster — and one model failing leaves its error in its own thread while the
+others carry on.
+
+## The brain, sharpened
+
+Five retrieval behaviours worth knowing, all inspectable with `explain`:
+
+- **Recency decay** — a unit's match decays toward a floor (7-day half-life,
+  never below 0.55): an equal match, fresher, wins; a strong old constraint
+  still beats a weak new fact. Age tips ties, it never erases history.
+- **A fuzzy channel** — hashed character-trigram vectors catch typos and
+  morphology (`sqllite databse` finds `sqlite database`; `deploying` finds
+  `deployment`). Honestly **not** synonymy: that needs a model, which is the
+  next one.
+- **A semantic channel, opt-in** (`brain.semantic`, or Settings → Brain) —
+  all-MiniLM-L6-v2 embeddings, so *how does login work* reaches a note about
+  Supabase JWKS. Measured on `test/brain-recall.test.ts`, recall@5 goes
+  **0.50 → 1.00** on queries that share no word with the memory they want,
+  **0.80 → 1.00** across word forms, and stays **1.00** on the literal ones —
+  it costs nothing where the lexical channels already worked. It is **not** a
+  dependency: the 23MB model needs a ~470MB ONNX runtime, so Loom asks you to
+  install it (`npm i -g @huggingface/transformers`) and works exactly as
+  before if you don't. Scored relative to the best hit in the query, like
+  BM25, because this model's absolute similarities don't mean enough to
+  threshold.
+- **Contradiction flags** — `loom brain:conflicts` scans same-kind units for
+  negation pairs (`always`/`never` on one topic) and same-topic-divergent
+  decisions. Every flag names the signal that tripped it, so you can judge the
+  judge. Resolution stays human.
+- **Portability** — `loom brain:export` writes what the project knows to a
+  plain file; `brain:import` brings one in, deduped by hash, so the same file
+  twice reports *known* rather than minting duplicates. `loom snapshot` /
+  `restore` widen that to brain+board+config — restore **merges** the brain,
+  because what the project learned since the snapshot should survive it.
+
+## How memory actually reaches a model
+
+Worth being precise about, because this is the whole premise and it has a soft edge.
+
+Loom **reliably builds** the shared brain (every ADE's imported memory + your decisions
++ the thread) and **reliably writes** it to `.loom/memory/<agent>.md` on every handoff.
+That part is solid and tested.
+
+Getting it into the model's context is a different problem, and it depends on the agent:
+
+| Agent | How the brain arrives | Strength |
+|---|---|---|
+| Claude Code | briefing appended to Claude Code's system prompt — the model *always* sees a summary (recent decisions + messages) plus a pointer to `.loom/memory/claude-code.md`, which it can Read | **strong** — the summary is guaranteed; the full file is one tool-call away |
+| Grok Code | the briefing rides in `--rules`, Grok's real system-prompt channel, so `-p` stays your clean prompt | **strong** — `--rules` is a genuine system channel, not text in the turn |
+| Codex | no per-turn system channel in `codex app-server`, so the briefing rides in front of your prompt — **framed** as an unmissable `LOOM SESSION MEMORY — authoritative, read first` block | **reliable** — one prompt either way, but framed so it can't be mistaken for chatter |
+| OpenCode | no per-prompt system field on `/prompt`, so the same **framed** block is prepended to your prompt | **reliable** — delivered as an authoritative block, not loose text |
+| Antigravity, Kiro | nothing tells them the file exists — Loom types into their chat box, which is not a system prompt | **none** — a human has to open it |
+
+So: the **summary always lands**; the **full brain is an invitation**. An agent that
+ignores the pointer works from the summary alone. If you need something remembered for
+certain, put it in a decision (`loom decision`) — decisions ride in the briefing itself.
+There's an opt-in eval (`LOOM_TEST_REAL=1`) that checks a real model actually *uses* an
+injected brief, and declines rather than invents when the brief is silent.
+
+Memory also flows **one way**. Loom reads `CLAUDE.md` / `AGENTS.md` and never writes
+them, so your ADE's own memory files stay yours. And the import is a **merge, not a
+parse**: files are read, capped at 8000 chars, and concatenated under headers. Claude
+Code's `@path` imports are **not followed** — a `CLAUDE.md` that is mostly `@` pointers
+imports the pointers, not what they point at.
+
+The brain also **learns on its own**. After each turn a small Claude reads what changed
+and files what's worth keeping as typed memory *units* — a constraint, a decision, a
+convention, a fact, a failure — reconciled on write (add / update / forget, never a
+growing blob), the approach [mem0](https://github.com/mem0ai/mem0) pioneered, adapted to
+Loom's event log. Every unit's evidence is verified against the turn before it's kept, so
+the brain doesn't remember things that were never said. Retrieval is hybrid too — exact
+entity matches (file paths, symbols, error codes) unioned with BM25 over the text and a
+trigram channel for typos and word forms, and [a real embedding
+channel](#the-brain-sharpened) if you turn one on — with failures and constraints biased
+to the top of the brief, because getting burned twice is worse than missing a detail.
+
+The brain is the **project's**, not each agent's: a fact one agent learns is scoped to the
+chat, not walled off to whoever happened to learn it, so it reaches whichever agent takes
+the baton next. (The [`brain-shared` test](test/brain-shared.test.ts) makes this concrete —
+five agents each learn one fact, and every other agent's brief then carries all five.) The
+**Brain tab** — and `loom tui`'s **Brain** view — show exactly what it has learned; toggle
+the extractor off per project in Settings.
+
+<p align="center">
+  <img src="docs/img/brain.png" alt="Loom's Brain tab — the memory units it has learned, by kind" width="100%">
+  <br>
+  <em>The Brain tab — learned memory units, grouped by kind, each traceable to the turn it came from.</em>
+</p>
+
+## How it works
+
+- **Event log** (`.loom/log.db`, SQLite via `node:sqlite`, JSONL fallback) — every
+  message, tool call, file edit, decision, and handoff, appended in order. The log *is*
+  the project's memory; everything else is a view of it.
+- **Projection** — on handoff, Loom distills the log into
+  `.loom/memory/<agent>.md` (persistent, namespaced) and arms a short one-shot briefing
+  injected with the target's next turn (system-prompt append for Claude Code, delimited
+  preamble for OpenCode). Two renderers behind one interface:
+  - **template** (default) — deterministic, instant, free;
+  - **llm** — a small Claude model distills the recent log into a dense doc
+    (mission / current state / decisions / risks / next moves). Opt in per project:
+    `"projection": { "mode": "llm", "model": "haiku" }`. Any failure or timeout falls
+    back to the template — a broken Claude never blocks a handoff. Bridges always get
+    template views (no N×LLM waste per hop).
+- **Baton** — persisted per project (`.loom/state.json`). Messages route to the holder;
+  addressing a non-holder returns `409 not_holder` and the surface asks you to confirm a
+  handoff. Ghost holders (agent removed from config) self-heal. Every handoff snapshots
+  the outgoing agent's working-tree state (dirty flag + `git status`) into the log.
+- **Unified memory ("multiple memory in one")** — each connected ADE keeps its own
+  native memory (`CLAUDE.md`, `AGENTS.md`, …). Loom imports them all into one brain
+  (`memory_import` events, content-hash deduped), merges them with the project's
+  decisions and shared thread, and projects the union into whoever is taking the turn.
+  Connect a new agent → its knowledge joins the brain, and everything the others learned
+  flows into it. `loom memory` shows the merged brain; it refreshes on open and on every
+  handoff. This is the seam an isolation-first tool (separate worktrees) can't own.
+- **Decisions** — `loom decision <text>` pins a fact, and any agent line starting
+  `Decision: …` is captured automatically. Decisions ride every future projection.
+- **Cost telemetry** — agents that report per-turn cost (Claude Code, OpenCode) feed a
+  live ledger: `loom costs` breaks it down per agent, the board/TUI/phone app show the
+  project total, and every route logs exactly what it spent
+  (`✔ route completed (3 steps) · $0.0421`). Totals rehydrate from the event log, so
+  they survive restarts.
+- **Daemon** — one process, many projects. REST for commands, WebSocket for the live
+  stream. Config edits hot-reload when the project is quiet.
+
+## Your phone (Android today, over Tailscale)
+
+The daemon serves a full phone app at `/app` — board, live thread, agent chips, routes.
+No app store, no build step; it ships inside Loom.
+
+**Pair from the app.** The web/desktop window has a **Connect a phone** button next to the
+terminal: it opens a modal with a QR (and a copy link) and a **Local network / Tailnet**
+toggle. Pick one and, if the daemon is still localhost-only, hit **Enable phone access** —
+Loom adds a *second listener* on that LAN or tailnet IP (localhost is never disturbed, so
+the window you're in doesn't blink) and shows a QR your phone can actually reach. Same
+single-use token, no terminal needed.
+
+**Or pair from the terminal:**
+
+```bash
+loom up --tailnet     # daemon binds to your Tailscale IP (never 0.0.0.0)
+loom pair             # QR appears in the terminal (also `/pair` inside `loom tui`)
+```
+
+Scan the QR with your phone camera (for the tailnet path, the phone must be on your
+tailnet — install the Tailscale app and sign in; the local-network path just needs the
+same Wi-Fi). The link opens `…/app#pair=<token>`; the app claims the **single-use,
+10-minute** pairing token from the URL fragment (fragments never hit the network log) and
+exchanges it for its own client token. Then:
+
+- **Board** — every project, needs-input dots, baton holder, live route progress.
+- **Thread** — the same shared conversation, streaming over WebSocket.
+- **Agent chips** — tap `opencode`, hit send: baton shifts (projection + briefing
+  included), exactly like `tab` in the TUI.
+- **Routes** — the ➤ button opens a picker: choose **auto** (LLM picks each hop), any
+  named pipeline, or custom steps, type the task, go. Live banner with hop progress and
+  reasons, an abort button, and when a route pauses on a question you answer right
+  there and it resumes.
+- Chrome menu → *Add to Home screen* installs it like an app.
+
+**Push notifications** come with the native app ([`app/`](app/README.md)): open it once
+after pairing and it registers its Expo push token with the daemon. From then on your
+phone buzzes when an agent **needs input**, when a **route completes or fails**, and
+when a solo turn finishes — route hops are deliberately silent (a 5-step pipeline
+buzzes once, not five times). Verify with `loom clients --ping`.
+
+## Permissions: bypass, auto, or always ask
+
+Every agent CLI has its own idea of "may I?". Loom gives you one dropdown with
+three words and maps them onto each CLI. Every cell below was checked against the
+real CLI with `node scripts/verify-permissions.mjs`, not read off `--help`.
+
+| | Bypass | Auto | Always ask |
+|---|---|---|---|
+| Claude Code | `bypassPermissions` | `acceptEdits` + Loom's Auto policy *(default)* | **real approvals**: each tool call waits for your Allow / Deny in Loom, on desktop or phone |
+| Codex | no sandbox | `workspace-write` *(default)* | **real approvals**: a `read-only` sandbox, and each command or edit waits for your Allow / Deny in Loom |
+| Antigravity | `--dangerously-skip-permissions` *(default)* | ✗ unavailable: agy 1.2.6 headless writes into its own scratch folder, not your project | `--mode plan` |
+| Grok | `bypassPermissions` *(default)* | `auto` | `plan` |
+| OpenCode | allow-all | its defaults *(default)* | ✗ unavailable: opencode 1.18.31 ignores read-only settings on its headless API |
+
+- **What Auto lets Claude Code do.** It edits files and runs commands inside the
+  project, its tests included, the same as Codex's `workspace-write`. Refused,
+  with the rule that fired named in the refusal: a path outside the project, a
+  command that can't be undone (the [shield](#blast-radius-shield-what-cant-be-taken-back)'s
+  list), and MCP tools nobody allowed. The project's test command
+  (`proof.testCommand` or the detected one) always runs. To allow more, add
+  `.loom/config.json` → `permissions.allow`: command prefixes (`"docker compose up"`),
+  tool names (`"WebFetch"`) or globs (`"mcp__github__*"`). Add folders an
+  agent may read but not write with `readPaths` (`["../chatterbox-api"]`).
+- An agent whose Auto is unavailable runs in its default instead (Antigravity
+  runs Bypass). Hover a permission badge to see what that agent's mode actually
+  allows.
+- "Unavailable" cells are shown disabled with the reason, and the API refuses them.
+- **Always ask** is answered inside the daemon: Claude Code's permission prompts
+  arrive through the Agent SDK's `canUseTool`, and Codex's through app-server
+  approval requests. The request appears in the thread as an approval card; nothing
+  happens until you answer, and a card closes by itself if the turn ends first.
+- `node scripts/verify-approvals.mjs` proves it against the real CLI: the file does
+  not exist until you press Allow.
+
+## Plan mode
+
+Turn on **Plan** in the composer and agents write plans, not code.
+
+- **In a chat:** the agent investigates, then writes
+  `plans/<date>-<slug>.md` (Goal, Context, Approach, self-contained Tasks, Risks,
+  Verification) and stops.
+- **In an orchestra** (`loom orchestrate --plan "<goal>"`):
+  - the orchestrator's plan becomes `plans/<run>/PLAN.md` plus one spec file per
+    task, committed to the run's branch *before* any worker starts;
+  - each worker is pointed at its own spec;
+  - when the run ends, statuses and results are written back.
+
+Every file has front matter (`id`, `agent`, `depends_on`, `status`) and is written
+so another agent, or a teammate, can pick up any task with no other context.
+
+## Git delivery: commit, push, or open a PR
+
+One per-project setting decides what happens to finished work. It's the toggle
+next to GitHub in the status bar, or `git.delivery` in `.loom/config.json`.
+
+| | Chat turns | A finished orchestra |
+|---|---|---|
+| **No commit** *(default)* | left uncommitted | waits on its branch until you Apply |
+| **Commit only** | committed, agent as co-author | merged into your branch |
+| **Commit & push** | committed and pushed | merged and pushed |
+| **Commit & open PR** | committed | its branch pushed, and a PR opened with `gh`: summary, task table, PLAN.md |
+
+A failed push never un-finishes a run. The error is shown, and **Retry delivery**
+is one click.
+
+## Rewind: put the work back the way it was
+
+An agent turn can touch forty files, and until now the honest answer to *undo
+that* was "read the diff and retype it". So **Loom writes down what the files
+were before every turn**, and the turn's Update card offers **Rewind**.
+
+It is a working tree, not a history. Rewinding restores what changed, removes
+what was created, brings back what was deleted — and does not move HEAD, does
+not touch your commits, and does not edit the thread. What happened still
+happened; the files just don't have to live with it.
+
+**Three things it will never touch.** Checkpoints are taken with `git add -A`,
+so `.gitignore` applies at capture: your `node_modules`, your build output and
+your `.env` are never read, never stored and never restored. `.loom/` is
+ignored too, which is why a rewind cannot eat the event log.
+
+**It is itself rewindable.** A rewind saves what it is about to replace before
+it replaces it, and hands you that checkpoint back — in the thread as *Undo the
+rewind*, and on the command line as the id to pass next. A one-way undo is a
+trap, and the one time it matters is the time someone rewinds past work they
+meant to keep.
+
+**It refuses while an agent is mid-turn**, naming who. Replacing the tree under
+a running agent gives it a working directory that contradicts everything it has
+read, and the damage lands in whatever it writes next.
+
+```sh
+loom rewind                 # the points you can go back to
+loom rewind cm8x2k1p        # go back to one (asks first)
+```
+
+Checkpoints live on hidden refs under `refs/loom/checkpoints/`, so no branch
+listing, no stash and no `git log` ever shows them. The newest 60 are kept.
+
+## Review Triage: what to read first
+
+An agent hands back twelve changed files and you have five minutes. Most are
+fine to skim; one deleted a test, one touched the auth middleware, one added a
+dependency. Every turn card now ranks its files by what a reviewer would want
+to see first and puts the top ones up front, each with its reason:
+
+> **Review first** `session.ts` touches auth or security code · `ci.yml` changes CI, build or deploy
+
+A chip opens the diff on that file, and its header carries the reason. What it
+flags, most serious first:
+
+- an added secret key or hard-coded credential
+- a deleted test file, a skipped or focused test, or test assertions removed
+- a database migration or schema change
+- auth, session, token, permission or other security code
+- CI, build and deploy files; new or changed dependencies; project config
+- added risky calls: `eval`, shell commands, `rm -rf` or `git push --force`,
+  raw HTML injection, TLS checks turned off, a silenced type or lint check
+- a large source change in a turn that touched no test
+
+Lockfiles and generated files sink to the bottom. Triage reads only what the
+diff shows and never guesses why: it says "a test was removed", not "the agent
+cheated". The phone's turn card lists the same files.
+
+## Opening a PR from a card
+
+With `git.branchPerTask` on, dragging a card to **Working** cuts its branch.
+When it reaches **Review**, the card offers **Open PR** — which first shows
+what would be pushed: the branch, the commits `main` doesn't have, the files
+they touch, and the exact `git push` and `gh pr create` it will run. Asking
+pushes nothing. Publishing happens on the button and nowhere else.
+
+## While you were away
+
+Come back to a project you haven't looked at in a while and Loom says what
+happened: goals started and finished, what landed, what failed, what a server
+did, and what is waiting on you — newest first, each line clicking through to
+the moment it came from. It says what happened and never guesses at why; a
+line without an event behind it doesn't get written.
+
+The mark is per device, because "when did you last look" is a fact about this
+window. From the terminal: `loom digest --since 8`.
+
+## Night Shift: run the list while you sleep
+
+Line up work before bed and wake up to a report you can trust. Each task runs
+in its own chat, one after another, through the queue. While the shift runs:
+
+- **Proof** checks every "done" against what ran and a clean re-run of the tests.
+- **Loop watch** nudges an agent going in circles (on by default during a shift).
+- **Quota Relay** hands the work on if an agent runs out.
+- **A question doesn't hold up the line.** It stays open in its chat, and the
+  next task goes.
+
+When the last task settles, one report card lands in the thread and on your
+phone: each task marked **Verified**, **Done**, **Didn't hold**, **Failed**,
+**Needs you** or **Not started**, with what decided it, the files it changed,
+and what it cost. Click a task to open its chat.
+
+```bash
+loom shift "fix the flaky date test" "add a --json flag to loom costs" --to codex --until 7:00 --max 5
+loom shift            # how it's going, or the last report
+loom shift --stop     # the running task finishes; nothing new starts
+```
+
+In the desktop app, type the tasks in the composer, one per line, and choose
+**⋯ → Night shift…** to pick the agent, a stop-by time and a budget. On the
+phone, type them and tap 🌙. `--until` and `--max` stop *new* tasks from
+starting; the one running always finishes. A shift survives a daemon restart.
+A task the restart cut off is reported as failed, and the rest carry on.
+
+## Scorecards: which agent can you trust with this?
+
+"Finished without an error" isn't the same as "did what it said". Proof, the
+loop watch and the shield record, per agent, whether its work held up, and
+the Observatory's leaderboard (and the phone's) has a **Held up** column:
+
+- how many of its checked "done"s were verified, out of all it claimed (for
+  example `9/10`, green above 90%)
+- the times the loop watch caught it going in circles (↻) and the shield
+  caught a command that can't be taken back (⛔)
+- **cost per verified result**: its spend over the "done"s that held, which
+  is what a result you can trust costs from that agent
+
+```bash
+loom scorecard            # every agent's record in this project
+loom scorecard --days 7
+```
+
+The same numbers are on every agent in `/api/projects/:id/insights/turns` as
+`trust`.
+
+## Replay: a run you can send anyone
+
+Export any chat as one self-contained HTML page:
+- what you asked and what the agents said;
+- every command they ran, with its output folded away;
+- every diff, with Review Triage's "read first";
+- what Loom checked along the way: Proof's verdicts, the loop watch, the
+  shield, a Night Shift's report.
+
+Across the top is a one-line summary: who worked, how many turns, how long,
+files changed, checks verified, cost. Send it to a teammate, attach it to a
+PR, or post it. It opens in any browser, offline, with nothing to install.
+
+```bash
+loom replay                       # the main chat → <project>-main.replay.html
+loom replay --chat "night" --open
+```
+
+In the desktop app it's **⋯ → Export as replay**, beside Export as
+Markdown. The page runs no scripts and loads nothing: every value is
+escaped, and a Content-Security-Policy forbids the rest. It does contain the
+code and output from the chat, so share it the way you'd share the repo.
+
+## Blast-Radius Shield: what can't be taken back
+
+Rewind puts the files back. It can't un-push a force-push, restore a dropped
+table, or un-publish a package. The shield watches every command an agent
+runs, and when one can't be taken back it says so at once, with a red card
+in its chat and a push to your phone, naming the command and why it matters:
+
+- **git:** force-push (not `--force-with-lease`), `reset --hard`,
+  `clean -fd`, discarding every change, `branch -D`, history rewrites
+- **files:** a recursive delete outside the project (`/`, your home, `..`,
+  an absolute path elsewhere). Inside the project is fine.
+- **data:** `DROP TABLE`, `TRUNCATE`, a `DELETE` with no `WHERE`, database resets
+- **infrastructure and publishing:** `terraform destroy`, `kubectl delete`,
+  `npm publish`, `docker system prune -a`
+- **the machine:** `sudo`, piping a download into a shell, `chmod 777`,
+  writing to a disk device
+
+Most CLIs report a command after it has run, so the shield can't veto that
+first command. What it can do is stop the turn before it does more:
+
+```json
+{ "shield": { "auto": "stop" } }
+```
+
+`"notify"` (the default) tells you and offers **Stop the turn**. `"stop"`
+stops it immediately, and is the default during a Night Shift, when nobody
+is watching. `"off"` turns the shield off.
+
+## Loop watch: an agent going in circles
+
+The expensive failure isn't the error. It's the agent that hits the same red
+test eight times while you're away, burning tokens on fixes that don't work.
+Loom counts what each agent runs within a turn, and when the same command has
+failed three times (or the exact same call has been made five times) it says
+so: a card in the thread with the command, its last output, and three ways
+out, plus a push to your phone under Questions.
+
+- **Stop**: end the turn.
+- **Nudge it**: stop the turn and tell the agent to say what's actually
+  failing and try a different approach.
+- **Hand it off**: give the original request to another agent, told what the
+  first one kept getting wrong. The changes stay in the working tree.
+
+```json
+{ "watchdog": { "auto": "nudge" } }
+```
+
+`"notify"` (the default) only tells you. `"nudge"` also nudges on its own,
+once; if the agent is still going in circles after that, it's yours to decide.
+`"off"` turns the watch off. A person speaking in the chat starts every count
+over.
+
+## Fleet: what every agent is doing
+
+The **Fleet** tab (and the phone's Fleet screen) shows every agent in every open
+project, updated live:
+- its thread;
+- whether it's mid-turn, and for how long;
+- its permission mode;
+- the last thing it did: the command it ran, the file it edited, or what it said.
+
+Orchestra tasks are listed too, each with a link to its thread.
+`GET /api/activity` serves the same data.
+
+## Updating
+
+Loom tells you when a newer version is published — a quiet pill in the status
+bar, never a banner — and **Settings → Updates** has the button.
+
+It says what it will do before it does it, because that depends on how you
+installed it: a **git checkout** pulls, installs and rebuilds; a **global npm
+install** reinstalls itself; anything else is pointed at the release rather
+than having a command guessed at and run over it. A checkout with uncommitted
+changes is refused — that tree is yours. The commands are shown in full, their
+output streams while they run, and the daemon restarts itself on the new build
+with the page reconnecting to it.
+
+From the terminal: `loom update --check` to look, `loom update` to do it.
+
+**The desktop app** has its own, under **Help → Check for Updates…**, because
+an installed application is not a checkout:
+
+- **Windows** and the **Linux AppImage** update themselves — it asks before
+  downloading, installs on quit, and restarts only when you press Restart.
+- **macOS** finds the build for your architecture, downloads it, and
+  **verifies its SHA-256** against the checksums the release publishes (a file
+  that doesn't match is deleted, not opened), then opens the disk image for
+  you to drag across. The drag stays yours: macOS only lets an app signed by a
+  certificate it already trusts replace itself, and this build is ad-hoc
+  signed. Automating the *checking* is the part worth having — the checksums
+  have shipped since 0.2.0 and nobody compares them by hand.
+- A **`.deb`** is left to the package manager that owns it — and so is a
+  **Homebrew** install: `brew install --cask` means `brew upgrade --cask`, and
+  Loom says so rather than downloading over a copy brew is tracking. It also
+  offers to **run that command in Loom's own terminal**, the one in the dock,
+  so you watch the upgrade happen instead of it happening inside the app:
+
+  > Loom Desktop 0.2.4 was installed with Homebrew
+  > &nbsp;&nbsp;`brew upgrade --cask loom-desktop`
+  > &nbsp;&nbsp;[Run it in Loom] [Copy command] [Close]
+
+  It replaces the app in place, so restart Loom when it finishes. An upgrade
+  that happens invisibly inside an app is an upgrade nobody can check.
+
+**On a Mac, Homebrew is the easy way in:**
+
+```sh
+brew tap nickthelegend/loom https://github.com/nickthelegend/loom
+brew install --cask loom-desktop
+brew upgrade --cask loom-desktop
+```
+
+The cask lives in this repo because the official tap requires every cask to be
+signed and notarized by Apple, and Loom's macOS build is ad-hoc signed. **There
+is no free Developer ID for open-source projects** — Apple's fee waiver covers
+nonprofits, schools and government entities, and a free Apple ID cannot sign
+for distribution at all — so the honest options are to buy one, to be one of
+those entities, or to ship unsigned and say so.
+
+Installing with Homebrew does **not** get past Gatekeeper: brew applies the
+quarantine attribute to cask downloads deliberately, and removed the flag that
+used to skip it. The first launch asks, exactly as it does for a dmg you
+downloaded yourself — right-click, Open, Open, once. Some taps strip the
+attribute in a postflight; this one doesn't, because quarantine is the
+protection that exists *because* the app is unsigned. What the cask buys is a
+one-line install and a real update path owned by a package manager you already
+trust.
+
+## More than one goal, when they can't collide
+
+One orchestra goal at a time is the default, and for good reason: two goals
+editing the same files is a merge nobody can explain. Set
+`maxConcurrentGoals` in `.loom/config.json` and Loom will start a second one —
+but only when the paths can't collide. A goal's scope is the `touches` its
+plan declares; a goal that hasn't said what it touches counts as touching
+everything, and waits. Anything overlapping queues as it always did, with the
+overlap named: *waiting for "rework billing" — both touch src/billing/\*\* and
+src/billing/tax.ts*.
+
+## What a goal may spend
+
+`loom orchestrate --max-usd 2 "…"` stops that goal at $2: running work
+finishes its turn, nothing new starts, and the goal goes to **needs you** with
+what it spent. Replying allows one more budget's worth. A project default
+lives in `.loom/config.json` as `budgets.perGoalUsd`, and there's a word in the
+thread at 80% — hearing about a budget for the first time when the goal halts
+is a bad way to learn it exists.
+
+## Before you send: the forecast
+
+The composer shows what a turn on the chosen agent usually costs and takes:
+`~$0.12 · 1m 40s`. The numbers come from that agent's own recent turns in
+this project, not from a price list. "Typical" is the median of its last 30
+turns, and the tooltip shows the 80th percentile, so one marathon turn doesn't
+skew it. An agent on a subscription reports no spend, so it gets a time-only
+forecast. If the agent has a daily budget, the chip turns amber when one more
+long turn could cross it. The same numbers are on every agent in
+`/api/projects/:id` as `forecast`.
+
+## The prompt queue — line up the next ones
+
+Type while an agent is mid-turn, or while a goal is still running, and the
+prompt waits above the composer instead of being refused or lost. It stays
+yours until it's sent:
+
+- **Queue as many as you like.** They run strictly one at a time, in order.
+- **Send each one where you want it:** one agent by name, the **orchestrator**
+  (a whole new goal, started when the running one finishes), or **Auto** to let
+  the router pick. Change a waiting prompt's target from the list on the item.
+- **Edit, reorder, drop.** Click a queued prompt to edit it (⌘⏎ saves, Esc
+  cancels), move it up or down, or remove it — all before it runs.
+- **Pause and resume** the whole queue. **Stop** pauses it too: stopping a turn
+  never silently discards what you lined up behind it.
+- **A question holds the queue.** If the agent stops to ask you something, the
+  next queued prompt would answer a question you never read — so the queue
+  waits and says who asked. Your reply goes out at once and lifts the hold; a
+  pause you set yourself stays until you resume it.
+- A prompt enters the conversation when it is actually sent, not when it's
+  queued, so the thread stays an honest record of what the agent was asked.
+- **Reorder by dragging** (the arrows stay, for anyone who can't drag).
+- **Queue for later.** A prompt can wait for a time, for a goal to *land*
+  (not merely finish), for that goal's checks to go green, or for the project
+  to be quiet for a while: `loom queue at 03:00 "…"`,
+  `loom queue after landed:<runId> "…"`, `loom queue after green:<runId> "…"`.
+  The row says what it's waiting for, and one click releases it.
+- **Save a queue as a recipe** and run it anywhere: `loom queue save ship`,
+  `loom queue run ship`, `loom queue recipes`. Steps remember who they go to by
+  **role**, so a recipe travels between projects; anything a project can't
+  resolve becomes an Auto prompt rather than a refusal.
+
+It survives a daemon restart (reloaded paused, so an hour-old queue doesn't
+start itself), and lives in the project's `.loom/queue.json`. Over the API:
+`GET/POST /api/projects/:id/queue`, `PATCH|DELETE .../queue/:itemId` (text,
+target, or `to` for its position), `POST .../queue/pause`, `DELETE .../queue`.
+
+## Prompt manager
+
+A clipboard manager for prompts, built into the chat bar (⌘⇧V):
+- **Saved** prompts: pinned first, then most used.
+- **Recent:** every prompt you actually sent (chats, plans, orchestra goals),
+  de-duplicated and searchable.
+
+Everything is stored in `~/.loom/prompts.json` and never leaves the machine.
+
+## Teams — see each other's agents
+
+Five people, each with their own agents, on one repo. **Phases 1 to 6 are built.** Phase 1:
+teammates see each other's live agents and goals, and a team feed collects goals,
+plans, PRs and CI in one place. Content is end-to-end encrypted to the team, so
+the hub can't read goal titles.
+
+```bash
+loom hub --host 0.0.0.0 --secret <join-secret>   # one teammate runs a hub (or use hosted Loom Teams)
+loom team signin http://<hub>:7430 --secret <join-secret>
+loom team create "Acme"
+loom team invite            # one-time link; it carries the team key, so send it like a password
+loom team join '<link>'     # a teammate
+loom team share             # in a project: its repo now shows up for the team
+loom team                   # who's doing what, right now
+```
+
+- **What teammates see:** agents, state, branch, the files each task declared
+  it will touch, and goal and task titles. They never see your prompts or your
+  agents' transcripts.
+- **Sharing is opt-in per project.** A clone whose `origin` matches a team repo
+  is shared automatically, and `loom team unshare` opts it out.
+- **Removing a member rotates the team key.** The new key is sealed to every
+  remaining device, so the person who left can't read anything new.
+- **Worker commits carry `Loom-Goal`, `Loom-Task`, `Loom-Agent` and `Loom-Member`
+  trailers.** `git log` alone tells you which goal, task and agent wrote a line.
+
+**Phase 2 (stop colliding) is built too:**
+- **Declaring touches.** On a team project, every orchestra task declares the files
+  it will `touch`, and Loom takes a lease on them.
+- **Overlap needs a decision.** If a teammate's goal already holds some of those
+  files, the task waits until the orchestrator decides: wait for their PR, narrow
+  its scope, or proceed with a reason the team can see.
+- **Hard zones.** Areas listed in `loom.team.json` (migrations, lockfiles) take one
+  goal at a time. Other tasks queue and start on their own when the area frees up.
+- **Conflict prediction.** Work in progress goes to hidden `refs/loom/wip/*` refs,
+  and `git merge-tree` predicts merge conflicts before anyone opens a PR. Both
+  people involved hear about it.
+- **Team policy.** `loom.team.json` on your default branch sets a permission
+  ceiling, the allowed agents, protected branches and concurrency caps. Changing it
+  takes a reviewed PR.
+
+```jsonc
+// loom.team.json
+{ "hardZones": ["db/migrations/**", "package-lock.json"],
+  "permissions": { "ceiling": "auto", "bypassRequiresPlan": true },
+  "delivery": { "protected": ["main"] },
+  "orchestra": { "maxParallelPerMember": 6, "teamMaxConcurrentAgents": 20 } }
+```
+
+**Phase 3 (one brain) is built too:**
+- **What one agent learns, the team's agents know.** Durable memories
+  (constraints, failures, decisions, conventions, facts) from a shared project
+  reach teammates, encrypted to the team. `task` notes, memories you mark
+  private, and anything learned while reading outside content (web pages, issue
+  and PR text) stay on your machine.
+- **Every briefed line says how sure to be.** Briefings rank team canon first,
+  then memories confirmed by two or more teammates, then your own, then a single
+  teammate's proposal, and label each one. When two people's agents learn the
+  same thing, it becomes one memory with two confirmations.
+- **Canon lives in `AGENTS.md`, reviewed like code.** "Propose as canon" adds a
+  memory to a Loom-managed section of `AGENTS.md` on one rolling `loom/canon` PR,
+  and adds `@AGENTS.md` to `CLAUDE.md`. Once merged, every agent reads it, Loom or
+  not. Edit or delete a line in any PR to change canon.
+- **An inbox for what needs a human:** contradictions between teammates' memories,
+  near-duplicates, corrections waiting on a decision, untrusted memories, and
+  memories ready for canon. Resolving keeps the loser, linked to the winner.
+- **Live team context.** Worker briefings also say which teammates hold leases on
+  the same paths, which open PRs change them, which checks are failing, and where
+  a conflict is predicted.
+
+```bash
+loom team brain                     # the team's memories and your inbox
+loom team brain promote <id>        # propose as canon (opens or updates the loom/canon PR)
+loom team brain resolve <keep> <drop> "why"
+loom team brain trust <id>          # an untrusted memory is fine: share it
+```
+
+**Phase 4 (land safely) is built too:**
+- **CI comes back to the owner.** Your daemon watches your goal PRs. A failing
+  required check is rerun once; if it passes, it's labelled flaky and no agent
+  touches it. A real failure's log goes to the goal's orchestrator, which fixes
+  it and pushes to the same PR — at most 2 attempts, then your phone buzzes.
+- **A second opinion from another vendor.** An agent from a different vendor
+  than the goal's authors reviews each goal PR (on open and after each fix) and
+  posts a `loom/review` check that fails only on high-severity findings. It
+  comments; it never approves.
+- **Land.** One click (or `loom land`) merges fresh main into the goal, runs the
+  team's fast tests, pushes, and asks GitHub to merge when approvals and checks
+  pass. A conflict gets one agent attempt; a conflict in a hard zone goes to you.
+- **Stacks, Adopt, budgets.** Big goals can land as a stack of PRs
+  (`"delivery": {"stack": "auto"}`). When your goal is stuck and you're offline,
+  a teammate can adopt it, get it green on your branch, and hand it back. Goals
+  and members can have budgets, and the team view rolls up cost per member, per
+  goal and per landed PR.
+- **Doctor.** `loom team doctor` checks your repo for merge-queue traps
+  (workflows that don't run on `merge_group`, no required checks) and offers a
+  fix PR. It never changes repo settings.
+
+```bash
+loom team landing           # your goal PRs, and teammates' goals that need someone
+loom land                   # land the goal PR
+loom team adopt 123         # take a stuck teammate goal and make it green
+loom team doctor            # merge-queue setup check (add "fix" to open the PR)
+```
+
+```jsonc
+// loom.team.json — Phase 4 additions
+{ "landing": { "fastTest": "npm test -- --changed", "timeoutMin": 10, "autoFixAttempts": 2 },
+  "review": { "enabled": true, "maxRuns": 3 },
+  "delivery": { "protected": ["main"], "stack": "auto" },
+  "budgets": { "perGoalUsd": 15, "perMemberDailyUsd": 60 } }
+```
+
+**Hosted hub.** `loom team signin` with no URL signs in to hosted Loom Teams with
+your GitHub account; `loom team signin http://host:7430` still uses a
+self-hosted `loom hub`.
+
+**Phase 5 (runners) is built too:**
+- **Your goals keep going when your laptop sleeps.** A runner is your own
+  always-on Loom (a VPS, a home server, a container) paired to your account. Start
+  a goal on it, or move a running goal there — from the desktop or your phone —
+  and bring it back whenever you like. Its code never touches Loom's servers.
+- **Its own trust tier.** Each goal gets a fresh clone (a fresh container when
+  Docker runs), agents get a scrubbed environment with only their logins and a
+  fine-grained GitHub token, and `loom.team.json` sets how far they may go.
+- **CI fixes while you're away.** If your goal needs a fix and you've been offline
+  15 minutes, your runner takes it.
+- **Shared runners** can take teammates' goals when the repo's policy allows it.
+- **Deploys and release notes.** Deploy results show in the team feed, a failed
+  deploy that contains your goal buzzes your phone, and
+  `loom team release-notes --since v1.2.0` writes the notes.
+
+```bash
+loom runner pair                    # on your laptop: a one-time link
+loom runner join '<link>'           # on the always-on box (then: loom runner install)
+loom runner token github_pat_…      # a fine-grained token: contents + pull requests
+loom runner goal "Add rate limiting"  # start a goal there
+loom runner move <runId>            # move a running goal; `loom runner back <runId>` to return it
+```
+
+Or with Docker: `docker build -f Dockerfile.runner -t loom-runner .`
+
+**Phase 6 (land in turn, hear it now) is built too:**
+- **A landing train when there's no merge queue.** Land queues the goal in its
+  lanes and merges it on its turn: fresh main in, fast tests, push, green on that
+  commit, then `gh pr merge --squash`. The next goal in the lane lands on top of
+  it. A goal waiting shows **queued**; a red check on its turn hands the lane to
+  the next goal, and it rejoins when green. Repos with a merge queue keep
+  Phase 4's path.
+- **Lanes.** Path scopes in `loom.team.json`: goals in different lanes land side
+  by side.
+- **GitHub webhooks, no App needed.** `loom team webhook --install` points a repo
+  webhook at your hub (self-hosted, or the hosted hub's Edge Function). Checks,
+  merges, reviews and deploys reach the team feed as they happen, signed and
+  verified, and your daemon acts on your PR's CI result at once. Polling keeps
+  running; nothing is posted twice.
+
+```jsonc
+// loom.team.json — Phase 6 addition
+{ "landing": { "lanes": { "web": ["web/**"], "api": ["api/**", "db/**"] } } }
+```
+
+```bash
+loom team webhook --install         # a repo webhook to the team hub (prints the URL and secret)
+```
+
+**How to use it, step by step: [docs/teams.md](docs/teams.md).** The researched
+architecture (84 decisions, six phases, all built) is in
+**[docs/teams-architecture.md](docs/teams-architecture.md)**. Every doc is indexed
+in [docs/README.md](docs/README.md); the code map is [src/README.md](src/README.md).
+
+## Loom Cloud — your agents from any network
+
+Tailscale is great when your phone is on your tailnet. **Loom Cloud** reaches your
+computer from anywhere (mobile data, a café, another country) with nothing to
+install on the computer's network.
+
+```bash
+loom cloud enable --url https://<ref>.supabase.co --key <anon key>
+loom pair            # the QR now works from any network
+```
+
+- **End-to-end encrypted.** The daemon and the phone meet on a Supabase Realtime
+  channel. Every message is XChaCha20-Poly1305 with a key that exists only in the
+  pairing QR. Supabase relays ciphertext it cannot read or forge. `loom cloud rotate`
+  mints a new key and locks out every phone that paired with the old one.
+- **Same auth as the LAN.** Each relayed request becomes a real call against the
+  daemon, carrying the phone's own paired token. Scopes, admin-only routes and
+  revocation behave identically. The local admin bootstrap is never reachable
+  through the relay.
+- **Direct when it can, cloud when it must.** The phone tries the LAN or tailnet
+  address first and falls back to the relay. It reconnects on its own when you
+  come back to the app.
+- **Bring your own Supabase project.** Free tier is plenty. Loom never runs a
+  server of its own.
+
+Setup, including Google sign-in and the country-only usage stats, takes about 10 minutes:
+[docs/cloud.md](docs/cloud.md). Protocol: [`src/core/relay-protocol.ts`](src/core/relay-protocol.ts).
+Daemon side: [`src/daemon/relay.ts`](src/daemon/relay.ts).
+
+## Hardware
+
+<div align="center">
+<img src="hardware/orchestrator-pad/docs/images/hero.png" alt="The LoomPad — a 3D-printed macropad with one key per agent and a voice bar" width="720">
+</div>
+
+The **LoomPad** is the pad on your desk: one key per agent, a bar you hold to
+talk, and the answer spoken back through its own speaker. Press a key and it
+locks that agent in Loom — a real baton handoff, visible in the thread like any
+other. It talks to the daemon over Wi‑Fi, with USB‑HID as a fallback.
+
+It is all here, MIT, in [`hardware/orchestrator-pad/`](hardware/orchestrator-pad/README.md):
+parametric CAD, printable STLs, the wiring diagram, the Arduino firmware and the
+voice backend. Nothing to buy a licence for and nothing to reverse‑engineer.
+
+### Print it
+
+Six parts, all watertight, none needing supports. 0.4 mm nozzle, 0.2 mm layers,
+PETG or PLA — it prints on a bed‑slinger in an evening.
+
+| Part | Download | Orientation |
+|---|---|---|
+| Tray | [`tray.stl`](hardware/orchestrator-pad/exports/tray.stl) | flat on the bed |
+| Switch deck | [`switch-deck.stl`](hardware/orchestrator-pad/exports/switch-deck.stl) | flat, sits between tray and plate |
+| Plate | [`plate.stl`](hardware/orchestrator-pad/exports/plate.stl) | top face down |
+| Keycaps (all 14) | [`caps-all.stl`](hardware/orchestrator-pad/exports/caps-all.stl) | as oriented — slow the outer walls for crisp glyphs |
+| Legends | [`legends-all.stl`](hardware/orchestrator-pad/exports/legends-all.stl) | print in the contrast colour |
+| Knob | [`knob.stl`](hardware/orchestrator-pad/exports/knob.stl) | upright |
+
+Look before you print: [`orchestrator-pad-assembled.glb`](hardware/orchestrator-pad/exports/orchestrator-pad-assembled.glb)
+and [`orchestrator-pad-exploded.glb`](hardware/orchestrator-pad/exports/orchestrator-pad-exploded.glb)
+open in any GLB viewer. Sizes, triangle counts and watertightness are recorded in
+[`MANIFEST.json`](hardware/orchestrator-pad/exports/MANIFEST.json).
+
+The enclosure is code, not a binary — `numpy` and `shapely`, no CSG kernel — so
+you can change the layout and regenerate every STL:
+
+```bash
+cd hardwa

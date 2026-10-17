@@ -654,5 +654,122 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "google/allocation-instrumenter": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "java-allocation-instrumenter-3.3.5",
+  "rel_pub": "2026-04-27",
+  "rel_days": 173,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Java": 83,
+   "Starlark": 15,
+   "Shell": 3
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "databrickslabs/dbx": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.8.19",
+  "rel_pub": "2024-07-02",
+  "rel_days": 837,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 32,
+  "lang": {
+   "Python": 97,
+   "Jinja": 2,
+   "Makefile": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Lyellr88/marm-memory": {
+  "commit_90d": 766,
+  "commit_7d": 23,
+  "rel_ver": "v2.60.1",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 79,
+   "TypeScript": 20,
+   "CSS": 1,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "convertigo/convertigo": {
+  "commit_90d": 718,
+  "commit_7d": 71,
+  "rel_ver": "8.4.6",
+  "rel_pub": "2026-10-09",
+  "rel_days": 8,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Java": 71,
+   "JavaScript": 14,
+   "Svelte": 8,
+   "CSS": 2,
+   "TypeScript": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

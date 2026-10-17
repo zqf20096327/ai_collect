@@ -12,7 +12,7 @@
 
 <a href="https://codexpet.top"><img src="./assets/cover/awesome-codex-pet-cover.png" alt="Open the Awesome Codex Pet gallery"></a>
 
-![pets: 343](https://img.shields.io/badge/pets-343-2ea44f) ![categories: 11](https://img.shields.io/badge/categories-11-0969da) ![languages: en | zh--CN | ko | ja | es](https://img.shields.io/badge/languages-en%20%7C%20zh--CN%20%7C%20ko%20%7C%20ja%20%7C%20es-8250df) ![code: MIT](https://img.shields.io/badge/code-MIT-111111) ![assets: CC BY--NC 4.0](https://img.shields.io/badge/assets-CC%20BY--NC%204.0-f97316) ![install: one command](https://img.shields.io/badge/install-one%20command-111111) [![Pet previews](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml/badge.svg)](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml)
+![pets: 344](https://img.shields.io/badge/pets-344-2ea44f) ![categories: 11](https://img.shields.io/badge/categories-11-0969da) ![languages: en | zh--CN | ko | ja | es](https://img.shields.io/badge/languages-en%20%7C%20zh--CN%20%7C%20ko%20%7C%20ja%20%7C%20es-8250df) ![code: MIT](https://img.shields.io/badge/code-MIT-111111) ![assets: CC BY--NC 4.0](https://img.shields.io/badge/assets-CC%20BY--NC%204.0-f97316) ![install: one command](https://img.shields.io/badge/install-one%20command-111111) [![Pet previews](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml/badge.svg)](https://github.com/legeling/awesome-codex-pet/actions/workflows/pet-previews.yml)
 
 </div>
 
@@ -103,7 +103,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 </table>
 
 <details>
-<summary>Full pet index (text only) · 343</summary>
+<summary>Full pet index (text only) · 344</summary>
 
 ### Game Characters
 
@@ -187,6 +187,7 @@ The **Update** action is an AI-assisted v1-to-v2 conversion, not a download noti
 <li><a href="./pets/aventurine-plush-bird--legeling">Aventurine Plush Bird</a> · by <a href="https://github.com/legeling">@legeling</a> · v2</li>
 <li><a href="./pets/stinky-spike--jjkun28">臭臭斯派克</a> · by <a href="https://github.com/JJkun28">@JJkun28</a> · v2</li>
 <li><a href="./pets/arona--legeling">阿罗那</a> · by <a href="https://github.com/legeling">@legeling</a> · v2</li>
+<li><a href="./pets/ghost-squeak--jjkun28">鬼马史魁克</a> · by <a href="https://github.com/JJkun28">@JJkun28</a> · v2</li>
 <li><a href="./pets/youmu--ai-generated">魂魄妖梦</a> · by @ai-generated · v2</li>
 <li><a href="./pets/zayne--legeling">Zayne</a> · by <a href="https://github.com/legeling">@legeling</a> · v2</li>
 </ul>

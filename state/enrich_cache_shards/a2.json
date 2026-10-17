@@ -595,5 +595,170 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "official-stockfish/nnue-pytorch": {
+  "commit_90d": 68,
+  "commit_7d": 20,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Python": 55,
+   "C++": 43,
+   "Shell": 1,
+   "CMake": 1,
+   "C": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "RiccardoBiosas/awesome-MLSecOps": {
+  "commit_90d": 51,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {
+   "Astro": 46,
+   "TypeScript": 40,
+   "CSS": 14
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "carloslfu/slotstream": {
+  "commit_90d": 500,
+  "commit_7d": 25,
+  "rel_ver": "v0.2.29",
+  "rel_pub": "2026-10-13",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Swift": 68,
+   "Python": 30,
+   "Shell": 2,
+   "C": 0,
+   "Jinja": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "openaccountants/openaccountants": {
+  "commit_90d": 307,
+  "commit_7d": 25,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-07-04",
+  "rel_days": 105,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 92,
+   "JavaScript": 7,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Srameo/LED": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "0.1.1",
+  "rel_pub": "2024-01-13",
+  "rel_days": 1008,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 97,
+   "Jupyter Notebook": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Lap-Platform/LAP": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-07-30",
+  "rel_days": 79,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 62,
+   "TypeScript": 33,
+   "JavaScript": 5
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

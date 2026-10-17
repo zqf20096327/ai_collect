@@ -677,5 +677,208 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "aristoteleo/PantheonOS": {
+  "commit_90d": 60,
+  "commit_7d": 0,
+  "rel_ver": "pantheon-local-v0.9.75",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-06-15",
+  "sec_ids": [
+   "GHSA-93qj-5q5v-3c2h(-,critical)"
+  ],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 96,
+   "Go": 2,
+   "Shell": 1,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "aiming-lab/AutoHarness": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-04-02",
+  "rel_days": 198,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 88,
+   "TypeScript": 9,
+   "HTML": 1,
+   "CSS": 1,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "TheLynxHub/LynxHub": {
+  "commit_90d": 243,
+  "commit_7d": 0,
+  "rel_ver": "V3.6.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 8,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 0,
+   "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "shoumikchow/bbox-visualizer": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-07-17",
+  "rel_days": 92,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 97,
+   "Makefile": 3
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "langchain-ai/langchain-google": {
+  "commit_90d": 85,
+  "commit_7d": 11,
+  "rel_ver": "libs/genai/v4.4.2",
+  "rel_pub": "2026-10-13",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-10-06",
+  "sec_ids": [
+   "GHSA-hc4q-pgh4-r9gx(-,medium)"
+  ],
+  "contrib_n": 216,
+  "lang": {
+   "Python": 87,
+   "Jupyter Notebook": 11,
+   "HTML": 1,
+   "HCL": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "rlleshi/phar": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2022-06-01",
+  "rel_days": 1599,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "tensorflow/build": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 32,
+  "lang": {
+   "Shell": 37,
+   "Dockerfile": 20,
+   "Python": 17,
+   "Pug": 11,
+   "JavaScript": 8
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

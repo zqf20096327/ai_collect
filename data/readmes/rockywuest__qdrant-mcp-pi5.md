@@ -333,9 +333,9 @@ openclaw-plugin/
 
 ### What Gets Injected
 
-When a user asks "Wer ist Martin Grieß?", the plugin:
+When a user asks "Wer ist Erika Mustermann?", the plugin:
 
-1. Calls `mcporter run qdrant-memory qdrant-find --query "Wer ist Martin Grieß?"`
+1. Calls `mcporter run qdrant-memory qdrant-find --query "Wer ist Erika Mustermann?"`
 2. Gets results from Qdrant (semantic search)
 3. Injects them as:
 
@@ -344,8 +344,8 @@ When a user asks "Wer ist Martin Grieß?", the plugin:
 
 Relevante Informationen aus der Vektordatenbank:
 
-1. [87%] Martin Grieß ist Head of Data bei H. & J. Brüggen KG (Quelle: people.md)
-2. [72%] Martin arbeitet eng mit dem CDO Rocky Wüst zusammen (Quelle: org.md)
+1. [87%] Erika Mustermann ist Head of Data bei Acme GmbH (Quelle: people.md)
+2. [72%] Erika arbeitet eng mit dem CDO Max Mustermann zusammen (Quelle: org.md)
 
 ---
 Diese Informationen wurden automatisch abgerufen.
@@ -392,7 +392,7 @@ Qdrant excels at **semantic retrieval** — finding facts by meaning. But it doe
 
 | System | Good at | Example Query |
 |--------|---------|---------------|
-| **Qdrant** | Facts, entities, semantic similarity | "Who is Martin Grieß?" |
+| **Qdrant** | Facts, entities, semantic similarity | "Who is Erika Mustermann?" |
 | **drift-memory** | Behavioral patterns, preferences | "What communication style works best?" |
 
 ### How They Work Together

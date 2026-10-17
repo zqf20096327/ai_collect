@@ -220,6 +220,16 @@ When Claude hits an interactive prompt inside the session, the plugin surfaces i
 
 Every decision is written to an audit JSONL (`statePaths.logs.permissions`). The short-id alphabet excludes the letter `l` (to avoid confusion with `1`/`i`).
 
+### The permission gate is optional
+
+The gate (`scripts/permission-gate-hook.ts`) is **opt-in** – an extra layer of protection on top of ordinary hooks. It is not installed by default: `scripts/install-hooks.sh` registers it only with `--permission-gate`.
+
+- **You want extra protection** (a new or third-party agent, a shared host, you want to confirm sensitive commands with a Telegram button) – install the gate and configure the policy file as described below.
+- **You don't** – skip the gate. The channel works fully on ordinary Claude Code hooks (the agent's own PreToolUse hooks, `settings.json`); there are no Allow / Deny cards in Telegram.
+- **To remove an installed gate** – delete the `PreToolUse` entry with marker `dashi-permission-gate-hook` from the agent's `settings.json` and restart the channel.
+
+Everything below applies only if you installed the gate.
+
 ### Secret-path allowlist for the permission gate (`DASHI_SECRET_PATH_ALLOWLIST`)
 
 The PreToolUse permission gate (`scripts/permission-gate-hook.ts`) hard-denies any Bash command that references a secret path (`*.key`, `secrets/`, `.env`, …). If an agent legitimately needs to check that a key file is present — e.g. a root-owned broker reads the key itself and the agent must never see it — set, in the environment of the channel process:
@@ -229,6 +239,33 @@ DASHI_SECRET_PATH_ALLOWLIST=/home/you/.claude-lab/myagent/secrets/example.key
 ```
 
 Several paths are separated by `:` or `,`; entries may be absolute or `~/…` (expanded against `HOME`). For a listed path, Bash may run **only** a standalone `test -s <path>` (unquoted, `'…'` or `"…"`, or unquoted `~/…` when the path is under `HOME`). Everything else stays denied: reading, copying, suffixes, child paths, neighbours, `$(…)` derivations, compound commands, and `Read`/`Grep` of the file. Unset (the default) means no exception. Restart the channel after changing it.
+
+### Lifting built-in confirms (`confirm_overrides.builtin_rules`)
+
+Built-in confirm rules can be dropped to the normal policy flow (operator confirm → allow → `default_tier`) only by naming them exactly in the policy file:
+
+```yaml
+confirm_overrides:
+  builtin_rules:
+    - "git push"
+    - "pipe-interpreter"
+    - "git-exec-surface"
+```
+
+Accepted names: the substring rules (`sudo `, `rm -rf `, `rm -fr `, `git push`, `git reset --hard`, `git clean -`, `chmod -r`, `chown -r`, `kill `, `pkill`, `docker `, `npm publish`, `pip install`, `apt install`, `apt-get install`) and two named detectors that are **overridable only by explicit operator opt-in** (owner decision 2026-10-17): `pipe-interpreter` (`curl … | sh`, `base64 -d | sh` and similar download-and-execute) and `git-exec-surface` (`git -c <key>=…`, `GIT_SSH_COMMAND` / `GIT_CONFIG_*` env, writes to `.git/hooks` / `.git/config`). An unknown name fails validation and the whole policy falls back to confirm-everything. Not listed, every rule confirms exactly as before.
+
+**What a detector lift relaxes — allowlisted shapes only.** Listing a detector does not switch it off: it is skipped only when the whole command matches an exact allowlisted shape, and anything else still confirms.
+
+- `git-exec-surface`: the command must be one segment whose first word is literally `git` — no wrapper (`time`, `xargs`, `env`, `nice`, `nohup`, `find`, `flock`, `parallel`, `timeout`, `sudo`), no `GIT_*`/env prefix, no redirection, no expansion (`$`, backticks, `$(…)`, `${IFS}`), no pipe or `;`/`&&`/`||`. Global options are limited to `-c` with an allowlisted key: `user.name`, `user.email`, `color.*`, `advice.*`, `init.defaultBranch`, `core.quotepath`, `pull.rebase`, `push.autoSetupRemote`, and `commit.gpgsign=false`. The subcommand must be one of `status`, `log`, `diff`, `show`, `add`, `commit`, `fetch`, `pull`, `checkout`, `switch`, `branch`, `merge`, `stash`, `tag` (without delete), `rev-parse`, `remote -v` / `remote show`, or `push` without force, delete, mirror or prune flags and without `+` or colon refspecs. Transport-program flags (`--upload-pack`, `--receive-pack`, `--exec`, fetch `-u`) are never allowed.
+- `pipe-interpreter`: exactly `curl` (flags from `-fsSL`, `--fail`, `--silent`, `--show-error`, `--location`, `--compressed`, `--tlsv1.2`, `--proto =https`) or `wget` (`-q`, `-O-`, `--quiet`, …) with exactly one http(s) URL, piped once into `sh`, `bash` or `python3` (or `sh|bash -s -- <plain args>`). No expansions, redirections, `@file` uploads or other operators.
+
+When a lift does apply, the secret-path, catastrophic and own-channel checks are re-run on the command with adjacent quoted word parts joined (`.e""nv` → `.env`), so a secret path split by quotes cannot get through the lift. A push that deletes a remote ref (`git push origin :main`, `--delete`, `-d`, `--prune`) still confirms even when the `git push` rule is lifted.
+
+Listing one detector does not relax the other, and a compound command that also trips a non-listed rule still confirms. The built-in hard-deny (secret paths, catastrophic shell, mutating `systemctl` on the agent's own channel, force push) and the operator `deny` list run before this layer and are never affected. The doctor reports a lifted `sudo`/`rm -rf`/detector as a WARN.
+
+**Force push is a built-in deny (`git-force-push`, not overridable).** Two checks are OR'ed, so the deny fails closed. A linear text check denies any command whose text contains a `git` / `git-push` / `send-pack` word, a `push` word and a force marker (`--force…`, `--mirror`, a short flag cluster containing `f`, a `+` refspec) anywhere. An argv parser skips assignments, redirections (`2>/dev/null git …`), wrappers with their flags (`sudo -u`, `env -C` / `env -S`, `time -p`, `xargs -I {}`, `timeout`, `flock`, `parallel`, `find -exec`) and git global options (`-C`, `-c`, `--git-dir`, `--work-tree`). It recognizes the git-core `git-push` form, abbreviated force options, and `alias.*` / `GIT_CONFIG_*` / `remote.<r>.push=+…` / `remote.<r>.mirror=true` definitions inside git invocations; plain data such as `echo remote.origin.mirror=true` is not denied. It also re-parses quoted shell bodies (`bash -c`, `ssh`, `eval`). A normal `git push origin <branch>` is unaffected. Accepted false positives: a command that combines `git push` with another `-f` flag (`git push && rm -f x`) or merely quotes a force push (`grep "git push -f" docs/`) is denied — split it. Residual: a force-push alias defined before the session (e.g. in `~/.gitconfig`) is invisible at its call site; the gate never reads git config.
+
+**Operator deny patterns are substring matches** on the lowercased command (glob when they contain `*`/`?`). A pattern such as `git push --force` misses `git -C . push --force`; prefer patterns without the `git ` prefix (`push --force`, `push -f`), and rely on the built-in force-push deny for the git argv forms.
 
 ### AskUserQuestion relay (PR #28)
 
@@ -327,6 +364,8 @@ Default **OFF**, opt-in via config (in multichat — via the `tmux_mirror` flag 
     "line_count": 50,
     "mode": "latest_inbound_only",
     "max_lines": 14,
+    "min_edit_interval_ms": 20000,
+    "max_edits_per_min": 3,
     "hide_segments": ["boot_banner", "inbound_warning", "footer_hints", "input_box"]
   }
 }
@@ -337,7 +376,8 @@ Behavior:
 - Polls `tmux capture-pane -p -t <pane_target> -S -<line_count>` every `poll_interval_ms`.
 - ANSI/CSI/OSC/DCS sequences are stripped, control chars (except `\n`, `\t`) removed.
 - The text passes through `redactSecrets` (section 10) → HTML-escape → wrapped in `<pre>`.
-- Hash-based dedup: an identical poll → no API call.
+- Hash-based dedup: an identical poll → no API call. The hash runs over a normalised body: only Claude Code's volatile status rows (spinner row, `esc to interrupt`, agent rows `<elapsed> · ↓ <n>k tokens`, a trailing elapsed column like `1d 0h 17m`) get their counters masked; every other line is hashed verbatim, so `Timeout: 20s` → `Timeout: 30s` still edits. A counter-only change refreshes at most once every 5 minutes.
+- Flood control: at most one edit per `min_edit_interval_ms` (default 20000) and `max_edits_per_min` (default 3); a change inside the window ships on the first poll after it. A 429 pauses the mirror for the real `retry_after` (no cap), and while any 429 is active the bot-wide flood gate skips mirror/status/progress edits without calling the API.
 - `mode: latest_inbound_only` (default since PR #21) trims everything up to the last `← <channel>:` preview — you only see what the agent is doing after the operator's last message.
 - `max_lines` cap (default 14, range 4..100, 0=off) — the top is trimmed with a `… +N lines` marker.
 - An edit `"message to edit not found"` → re-send; other 4xx do **not** trigger a resend (storm protection).
@@ -507,7 +547,7 @@ bun skills/doctor-dashi-plugin/scripts/doctor.ts --plugin-dir "$PWD"
 
 On the first launch, Claude Code asks 2 interactive questions (allow external imports + dev channels) — **once**; answer `1` to both.
 
-> **Migration doctor.** If you are moving an agent off the legacy gateway — or fixing a bot that misbehaves — start with the [`doctor-dashi-plugin`](skills/doctor-dashi-plugin/SKILL.md) skill. It diagnoses the whole bridge: toolchain floors, workspace placement (identity drift), dev-vs-runtime copy (multi-agent aware), settings/hook registration with hook-profile awareness (a tmux-mirror-only setup is not punished for feeder hooks it deliberately lacks), the permission gate (ask-relay, policy file, `confirm_overrides` must never lift `sudo`/`rm -rf`), multichat (terminal mirror is DM-only, per-chat policy coverage), security hygiene (webhook must bind loopback only; the env file holding the bot token must not be world-readable), MCP comms consistency, the Telegram allowlist, fleet isolation (`--fleet`), and live-session signals (welcome hang, expired auth, 409 conflict, crash loop). It is read-only — it never restarts a service or prints a secret. On a systemd host `bun skills/doctor-dashi-plugin/scripts/doctor.ts` with no flags autodetects the unit, env, session and state config. Exit codes: `0` no FAIL, `1` at least one FAIL, `2` usage.
+> **Migration doctor.** If you are moving an agent off the legacy gateway — or fixing a bot that misbehaves — start with the [`doctor-dashi-plugin`](skills/doctor-dashi-plugin/SKILL.md) skill. It diagnoses the whole bridge: toolchain floors, workspace placement (identity drift), dev-vs-runtime copy (multi-agent aware), settings/hook registration with hook-profile awareness (a tmux-mirror-only setup is not punished for feeder hooks it deliberately lacks), the permission gate (ask-relay, policy file, `confirm_overrides` lifting `sudo`/`rm -rf` or the opt-in detectors `pipe-interpreter`/`git-exec-surface` is surfaced as a WARN), multichat (terminal mirror is DM-only, per-chat policy coverage), security hygiene (webhook must bind loopback only; the env file holding the bot token must not be world-readable), MCP comms consistency, the Telegram allowlist, fleet isolation (`--fleet`), and live-session signals (welcome hang, expired auth, 409 conflict, crash loop). It is read-only — it never restarts a service or prints a secret. On a systemd host `bun skills/doctor-dashi-plugin/scripts/doctor.ts` with no flags autodetects the unit, env, session and state config. Exit codes: `0` no FAIL, `1` at least one FAIL, `2` usage.
 >
 > **Do migrations and bridge surgery from a terminal, not through Telegram.** This work modifies the bridge that delivers your Telegram messages. If it breaks halfway, Telegram goes dark and you lose the channel you were issuing instructions through. Open a terminal session on the host (`tmux attach -t channel-<agent>` for inspection, a separate `claude` session for the work), make the change, run the doctor, send a test message — and only then walk away. Fix bugs and errors the same way: doctor first, then the reference for the failing check.
 

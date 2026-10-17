@@ -17,7 +17,7 @@ Built for people who use Claude Code every day. Everything runs on your machine.
 
 A conversation with an AI lives in a window of limited size. When the window is nearly full, the tool compacts it: everything so far is replaced by one summary, and the conversation carries on from there.
 
-That keeps you going. But the summary is written generically, in one big pass, without knowing what matters to you. The details go: the file path, the id, the reason behind a decision, what you were about to do next. The last few exchanges, the ones you need most, get summarised too. And once it's done, it's done.
+That keeps you going. But the summary is written generically, in one big pass, without knowing what matters to you. Nobody else knows which bits were the bones. The details go: the file path, the id, the reason behind a decision, what you were about to do next. The last few exchanges, the ones you need most, get summarised too. And once it's done, it's done.
 
 If you've ever watched your AI say "let me re-read that file" for the third time in a session, or come back after a compaction to a collaborator who has lost the thread, that is what this is.
 

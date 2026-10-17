@@ -417,6 +417,9 @@ All `mlx_vlm.server` flags forward unchanged. Two things are handled for you:
   harnesses. Measured on `tq4-g64`: a tool-result turn cost **54 completion
   tokens at `low` versus 106 at the default `high`**, for the same answer.
 
+It listens on `127.0.0.1` unless you pass `--host` (mlx-vlm's own server binds
+`0.0.0.0`). Add `--host 0.0.0.0` to accept connections from other machines.
+
 #### Serve a model bigger than RAM (expert streaming)
 
 Passing `--cache-budget-gb` routes the loader through the streaming path, so a
@@ -439,8 +442,8 @@ The [Flash-MoE streaming levers](#tuning-the-streaming-reader-v061) ride along:
 with `--kv-*` to compress the growing KV cache of long agentic loops, and
 `--prompt-concurrency 1` since streaming is a single-user path.
 
-`--cache-budget-gb auto` sizes the expert cache from the machine (80% of
-Metal's recommended working set, minus resident weights and a KV reserve),
+`--cache-budget-gb auto` sizes the expert cache from the machine (Metal's
+recommended working set, minus resident weights and a runtime + KV reserve),
 and a `hot_experts.json` shipped in the model directory (the pin output of
 `calibrate_experts.py`) is auto-discovered: those experts are pinned **and
 preloaded** at startup — measured on the 35B ternary, a 1.1 GB / 1,500-expert
@@ -1368,6 +1371,10 @@ python -m turboquant_mlx.stream.stream_generate \
     --max-active-experts 8 --prefetch-workers 16 --fanout
 ```
 
+K3's tokenizer is custom code (`tokenization_kimi.py`). It runs without asking
+only when `--model` / `--hf-path` is a local K3 directory you passed on the
+command line; to load K3 by Hub repo id, add `--trust-remote-code`.
+
 Measured on a **Mac Studio (512 GB)** with a 506 GB expert cache and the shipped
 hot-expert list: **2.3 tok/s** at `--max-active-experts 8`, **1.2 tok/s** at
 native top-16. Full numbers and the recipe breakdown are in
@@ -1830,4 +1837,4 @@ Options:
 | Sarvam MoE (Megatron-style fused QKV, DeepSeek-V3 routing) | `sarvam_moe` | Yes | Port tested against fp32 (7122/7122 tensors, layer-1 parity 5.4e-7). Custom arch — MLX port shipped here. **No quantized build published**: 4-bit degenerates on long generations (53% of trials; mlx-lm affine 4-bit 100%) |
 | Muse Glimmer (dense VLM: gated attention, sandwich norms, sliding/NoPE mix, ViT-G/14) | `muse_glimmer` | No | Tested (29.8B: `tq4-g64` beats affine 4-bit on PPL — 4.3315 vs 4.3798 — in 25% less space; `tq3-g64` = 12.53 GiB). Structural match verified against the checkpoint, 1436/1436 tensors. Needs **mlx-vlm >= 0.6.12** ([#1838](https://github.com/Blaizzy/mlx-vlm/pull/1838), merged) — see [Muse Glimmer](#muse-glimmer-30b-dense-vlm) |
 | Qwen3.8-Flash-Next (Gated DeltaNet + Qwen Sparse Attention, n-gram/PLE embedding, hyper-connections; Qwen3-VL tower) | `qwen4_exp` | Yes (512 experts, top-10, 640 wide) | Tested (180B: `tq4a-tq2e-g64` = 52.00 GiB, fully resident on a 64 GB Mac at 16–18 tok/s; vision through mlx-vlm's Qwen3-VL tower). Architecture vendored from the open mlx-lm PR [#1788](https://github.com/ml-explore/mlx-lm/pull/1788) until it merges. `--kv-bits` has no effect on it — see [Qwen3.8-Flash-Next](#qwen38-flash-next-180b-moe-512-experts) |
-| DiffusionGemma (block-diffusion 
+| DiffusionGemma (block-diffusion MoE, via **mlx-vlm**) | `diffusion_gemma` | Yes (128 experts, top-8) | Tested (26B-A4B: convert + block-diffusion sampler, coherent at 3-bit — [HF](https://huggingface.co/manjunathshiva/diffusiongemma-26B-A4B-it-tq3-g32)). **Experimental**: decode is much slower than nativ

@@ -104,7 +104,7 @@ PowerShell.MCP complements your existing MCP setup by providing a flexible, gene
 - Real-time streaming output
 
 **🔐 Enterprise-Ready Security**
-- Local-only named pipe communication—no network exposure
+- Local named pipes by default; a TCP port only when someone at a remote machine turns on remote control ([Remote Control](SECURITY.md#remote-control))
 - Every command visible, and recordable with `Start-Transcript` or Script Block Logging ([Auditing an AI Session](SECURITY.md#auditing-an-ai-session))
 - Integrates with existing security policies
 
@@ -126,6 +126,8 @@ Six tools provide maximum flexibility with minimum complexity:
 | `wait_for_completion` | Wait for long-running commands to complete |
 | `cancel` | Interrupt the command currently running in the console |
 | `close_console` | Close a console by PID (e.g. one paused at an interactive prompt) |
+
+Six more drive a console on another machine (see [Remote console](#remote-console-another-machine)): `connect_remote_console` and `accept_remote_console` to pair with it, `execute_remote_command`, `wait_for_remote_completion` and `cancel_remote_command` to work there, and `disconnect_remote_console`.
 
 ## Quick Start
 
@@ -160,7 +162,7 @@ Install-PSResource PowerShell.MCP
 ```powershell
 Register-PwshToClaudeCode
 ```
-It then asks whether to disable Claude Code's built-in Bash and PowerShell tools, so that every command runs in the console you can see. `-DisableBuiltInShellTools` or `-KeepBuiltInShellTools` answers without asking.
+It then asks whether to disable Claude Code's built-in Bash and PowerShell tools, so that every command runs in the console you can see (recommended, and the default answer). `-DisableBuiltInShellTools` or `-KeepBuiltInShellTools` answers without asking.
 
 **For Claude Desktop:**
 ```powershell
@@ -200,7 +202,7 @@ chmod +x "$(Get-MCPProxyPath)"
 ```powershell
 Register-PwshToClaudeCode
 ```
-It then asks whether to disable Claude Code's built-in Bash and PowerShell tools, so that every command runs in the console you can see. `-DisableBuiltInShellTools` or `-KeepBuiltInShellTools` answers without asking.
+It then asks whether to disable Claude Code's built-in Bash and PowerShell tools, so that every command runs in the console you can see (recommended, and the default answer). `-DisableBuiltInShellTools` or `-KeepBuiltInShellTools` answers without asking.
 
 **For Claude Desktop:**
 ```powershell
@@ -239,7 +241,7 @@ chmod +x "$(Get-MCPProxyPath)"
 ```powershell
 Register-PwshToClaudeCode
 ```
-It then asks whether to disable Claude Code's built-in Bash and PowerShell tools, so that every command runs in the console you can see. `-DisableBuiltInShellTools` or `-KeepBuiltInShellTools` answers without asking.
+It then asks whether to disable Claude Code's built-in Bash and PowerShell tools, so that every command runs in the console you can see (recommended, and the default answer). `-DisableBuiltInShellTools` or `-KeepBuiltInShellTools` answers without asking.
 
 **For Claude Desktop:**
 ```powershell
@@ -337,6 +339,33 @@ With the Claude Code CLI, pass it as `-e POWERSHELL_MCP_TIMEOUT_CEILING=120` to 
 
 ---
 
+### Remote console (another machine)
+
+The AI can also drive a console on **another machine** — a test VM, a build box, a colleague's PC with that colleague watching. If that console is elevated, so is the AI, which makes it a practical tool for **defensive work**: auditing a server, reading its event logs, checking what it exposes, hardening it, with the person responsible watching every command.
+
+*"Audit this VM's security, read-only"* — against a lab VM in Azure, reached through a port its owner had opened to one address, one session went from the Security log (2,015 failed RDP logons in three hours, no account lockout configured) to the local accounts and password policy, the listening ports checked against what is reachable from outside, SQL Server's version and login mode, Defender, TLS settings and persistence points, and ended with a report the team that owns the VM template could act on, in about ten minutes. That kind of review is usually postponed; attackers' tooling is already automated, and the gap is on the defenders' side.
+
+On the remote machine, in PowerShell 7 with PowerShell.MCP installed:
+
+```powershell
+Import-Module PowerShell.MCP
+Enable-MCPRemoteControl -AllowFrom 192.168.0.10   # the AI's machine; TCP port 42777 by default, -Port to change
+```
+
+It asks you to confirm — saying which user the AI will act as, and whether elevated — then prints a pairing code (`XXXX-XXXX-XXXX`, good for one connection within 10 minutes), its host name and IP addresses. Give those to the AI on your machine — *"connect to the remote console at 192.168.0.20 with code 7Q4K-M2XP-H9RT"*. It calls `connect_remote_console`, then runs commands there with `execute_remote_command`: the same semantics as `execute_command` (a persistent session, `var1`–`var8`, the text-file cmdlets, `wait_for_remote_completion`, `cancel_remote_command`), with that machine's paths, in a window the person there can see. A `Read-Host` is answered by that person. While the AI is connected, every prompt there starts with `[AI from <your host>]`.
+
+If the remote machine cannot take an inbound connection (NAT, a cloud NSG, a firewall you cannot open), or has nothing installed yet, turn it around: the AI calls `accept_remote_console` on **your** machine and gives you **one line to paste** there — into PowerShell 7 if it is installed, otherwise into Windows PowerShell. It fetches PowerShell.MCP (the same build as yours) and, if PowerShell 7.4+ is not installed, a portable PowerShell 7 from your machine, and checks their hashes — nothing to install, no admin right, no internet access needed on the remote side. Pasted into PowerShell 7, remote control starts in that same window, so a console you opened as Administrator is the one the AI drives; pasted into Windows PowerShell, it opens a PowerShell 7 window that dials in. Either way the console asks you to confirm before it dials. If you let the AI install PowerShell 7 and PowerShell.MCP there for later use (it asks you first: for this user, or for all users), the script lists what it will install and asks again. Where PowerShell 7 and PowerShell.MCP are already installed, the same answer also gives the shorter `Enable-MCPRemoteControl -ConnectTo <your-host>:<port> -Code <code>`. Only an outbound connection is needed there; the inbound port is on your machine — Windows asks once whether to allow `PowerShell.MCP.Proxy.exe` through the firewall (private networks is enough). Same pairing, roles swapped.
+
+- Inbound TCP 42777 must be allowed through the remote machine's firewall (listening mode); the cmdlet prints a `New-NetFirewallRule` line scoped to the AI's address, and the line that removes it. In dial-out mode the port to open is on your machine instead.
+- One proxy at a time per console, one remote console at a time per proxy. A dropped connection reconnects by itself. A pairing code works once: after `disconnect_remote_console` the console shows a new one, and remote control stops by itself if nobody connects within 10 minutes. `Disable-MCPRemoteControl` (or `Remove-Module`) ends it at any time.
+- Remote control ends after five failed pairing attempts.
+- Security: TLS with a certificate made for the session and a handshake bound to that certificate and to the code. The code is short-lived on purpose: anyone who reaches the port can try codes offline. Meant for a LAN or VPN — do not expose the port to the Internet. What an attacker on the network can and cannot do: [SECURITY.md](SECURITY.md#remote-control).
+- Both machines must run the same PowerShell.MCP version.
+
+**Granted, not taken.** Remote control starts only when a person at that machine runs `Enable-MCPRemoteControl` or pastes the line and answers Yes. It refuses to start where nobody could be watching (a service, a script without a console, `-NonInteractive`), shows `[AI from <host>]` on every prompt and `Administrator:` in the title of an elevated window, and is gone when it ends. Intrusion tooling is built to be the opposite: hidden and persistent. Like any tool, it cannot stop someone who already runs code on a machine from starting it out of sight — but it gives such a person nothing they did not have, and [SECURITY.md](SECURITY.md#remote-control) lists how to spot it.
+
+**Data on the remote machine can be written by an attacker.** Event logs, user names in failed-logon records, file contents, web pages: when the AI reads them, it reads text that someone else chose, possibly crafted to look like instructions — with whatever rights that console has. The server tells the AI to treat it as data and to connect only to hosts and codes you typed. For audits and incident response, ask for **read-only** work first and have the AI confirm before any change; to keep a record, run `Start-Transcript` in the remote console before pairing (see [Auditing an AI Session](SECURITY.md#auditing-an-ai-session)).
+
 ## First-Time Demo
 
 Experience PowerShell.MCP's capabilities:
@@ -346,121 +375,27 @@ Experience PowerShell.MCP's capabilities:
 - "Automate Notepad: type text and smoothly move the window in a circle"
 - "How does it feel now that you have a tool like PowerShell.MCP?"
 
-After trying these demos, explore the built-in prompts below or ask AI to explain any command.
+After trying these demos, try the built-in prompts below or ask AI to explain any command.
 
 ## Built-in Prompts
 
-PowerShell.MCP includes 7 specialized prompts accessible from your MCP client's prompts menu. Each prompt is designed for specific tasks and guides AI to provide optimal results.
+PowerShell.MCP includes 2 prompts that teach AI how to use companion modules it does not otherwise know. In Claude Code, run them as slash commands, with what you want as the argument:
 
-<div align="center">
-  <table cellspacing="0" cellpadding="0" border="0" width="100%">
-    <tr>
-      <td align="center" width="45%">
-        <img src="images/builtin-prompt-1.png" alt="Built-in Prompts Menu" style="max-width: 100%; height: auto;"/>
-        <br/>
-        <em>Built-in Prompts Menu</em>
-      </td>
-      <td width="3%"></td>
-      <td align="center" width="45%">
-        <img src="images/builtin-prompt-2.png" alt="Selecting a Prompt" style="max-width: 100%; height: auto;"/>
-        <br/>
-        <em>Selecting a Prompt</em>
-      </td>
-    </tr>
-  </table>
-</div>
+```text
+/pwsh:show_interactive_map hot springs in Kanto
+/pwsh:foreign_language_dictation English, short sentences, normal speed
+```
 
----
-
-### 📋 Create Work Procedure + ⚙️ Execute Work Procedure
-**Best for:** Complex, multi-step tasks you'll perform repeatedly
-
-Work together as a powerful workflow system with automatic file management:
-
-1. **Create Work Procedure** - AI analyzes the task and generates `work_procedure.md` as the reusable procedure and `work_progress.txt` as the execution plan.
-2. **Execute Work Procedure** - AI follows and refines `work_procedure.md` during execution, and tracks and records outcomes in `work_progress.txt`.
-
-**Key benefits:** self-refining procedures, resumable workflows, automatic progress tracking, consistent results
-
-**Example:** "Write Get-Help markdown for multiple cmdlets through execution and verification"
-
-<div align="center">
-  <table cellspacing="0" cellpadding="0" border="0" width="100%">
-    <tr>
-      <td align="center" width="45%">
-        <img src="images/work_procedure.png" alt="AI-generated work_procedure.md" style="max-width: 100%; height: auto;"/>
-        <br/>
-        <em>AI-generated work_procedure.md</em>
-      </td>
-      <td width="3%"></td>
-      <td align="center" width="45%">
-        <img src="images/work_progress.png" alt="AI-generated work_progress.md" style="max-width: 100%; height: auto;"/>
-        <br/>
-        <em>AI-generated work_progress.md</em>
-      </td>
-    </tr>
-  </table>
-</div>
-
----
-
-### 📊 Analyze Content
-**Best for:** Deep analysis of files, folders, or datasets
-
-Generates comprehensive reports with insights and recommendations. Combine with **HTML Generation Guidelines for AI** for visual reports with charts.
-
-**Examples:** "Analyze my project's log files" • "Create a report on this CSV dataset" • "Analyze this HAR file"
-
-<div align="center">
-  <table cellspacing="0" cellpadding="0" border="0" width="100%">
-    <tr>
-      <td align="center" width="45%">
-        <img src="images/cs_analysis-1.png" alt="C# code quality analysis report" style="max-width: 100%; height: auto;"/>
-        <br/>
-        <em>C# code quality analysis report</em>
-      </td>
-      <td width="3%"></td>
-      <td align="center" width="45%">
-        <img src="images/cs_analysis-2.png" alt="C# code quality analysis report (continued)" style="max-width: 100%; height: auto;"/>
-        <br/>
-        <em>C# code quality analysis report (continued)</em>
-      </td>
-    </tr>
-  </table>
-</div>
-
----
-
-### 🎨 HTML Generation Guidelines for AI
-**Best for:** Professional HTML reports with charts and styling
-
-Companion prompt that ensures AI generates high-quality HTML with Chart.js visualization, responsive design, and proper styling. Works with any prompt or task that needs HTML output.
-
-**Examples:** Analyze Content + this = visual reports • Your custom prompt + this = professional HTML • Any data task + this = interactive output
-
-<div align="center">
-  <img src="images/combine_prompts.png" alt="Combined prompts generate visual HTML file" width="400"/>
-  <br/>
-  <em>Combined prompts generate visual HTML file</em>
-</div>
-
----
-
-### 📚 Learn Programming & CLI
-**Best for:** Learning programming languages and command-line tools at any level
-
-Provides personalized learning experiences with clear explanations, practical examples, and hands-on exercises. Specify your learning goals directly without worrying about experience levels.
-
-**Examples:** "Learn Python basics for data analysis" • "Learn Git commands for version control" • "Learn PowerShell scripting"
+The argument is optional; without it, AI asks what you want. Other MCP clients offer them in their prompt list, if the client shows MCP prompts.
 
 ---
 
 ### 🗣️ Foreign Language Dictation Training
 **Best for:** Improving listening skills in foreign languages
 
-Creates dictation exercises with automatic checking.
+Plays sentences aloud from the PowerShell console and checks what you type back. Windows only (uses the built-in speech synthesizer).
 
-**Examples:** "English dictation at beginner level" • "Japanese conversation at the zoo"
+**Examples:** `/pwsh:foreign_language_dictation English dictation at beginner level` • `/pwsh:foreign_language_dictation Japanese conversation at the zoo`
 
 ---
 
@@ -469,7 +404,7 @@ Creates dictation exercises with automatic checking.
 
 Generates interactive HTML maps with markers, descriptions, and optional 3D display using [PowerShell.Map](https://github.com/yotsuda/PowerShell.Map) module.
 
-**Examples:** "Show major Roman battles in chronological order" • "Create a map of hot springs in Japan"
+**Examples:** `/pwsh:show_interactive_map major Roman battles in chronological order` • `/pwsh:show_interactive_map hot springs in Japan`
 
 <div align="center">
   <table cellspacing="0" cellpadding="0" border="0" width="100%">

@@ -40,7 +40,7 @@
 - **Lecture 10.** Where to go next?                                                 ([slides](https://disk.yandex.ru/i/p0zOH2se8fg8Bg)).
 - **Lecture 11.** Training neural network speaker models from transformer pretrains ([slides](https://disk.yandex.ru/i/wIc8yqQlnAVgRQ)).
 
-**Video lectures of the course** on the course are presented below. 
+**Video recordings of the course lessons** are available on Yandex Disk and are listed below. 
 
 - **Lesson 1.** Review of lecture 1                      ([video](https://disk.yandex.ru/i/8NPVgp-OoLkgxQ)).
 - **Lesson 2.** Review of lecture 1                      ([video](https://disk.yandex.ru/i/BTfxr0KfhqZQcA)).
@@ -57,6 +57,8 @@
 - **Lesson 13.** Review of lecture 9                     ([video](https://disk.yandex.ru/i/DygM9pksQ2Ryew)).
 - **Lesson 14.** Review of lecture 10                    ([video](https://disk.yandex.ru/i/luQHNOGAc7rTsg)).
 - **Lesson 15.** Review of lecture 11                    ([video 1](https://disk.yandex.ru/i/-HoaGBjHU6z-TA), [video 2](https://disk.yandex.ru/i/cuTFtdSDfCyFeQ), [video 3](https://disk.yandex.ru/i/2iotTvwNyIVzeg)).
+
+Video recordings of the course lessons are also available on [YouTube](https://www.youtube.com/playlist?list=PLDH9YGRrmXqg) and [VK Video](https://vkvideo.ru/playlist/-242376518_1). 
 
 **Technical talks** and **speaking at conferences** on the topic of voice biometrics are presented below. 
 

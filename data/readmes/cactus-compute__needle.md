@@ -67,7 +67,7 @@ print(needle.transcribe("clip.wav")["text"])
 # turn off the kitchen lights
 ```
 
-Every call returns the text, the language, the milliseconds to the first token and the decoder's tokens per second after it. `word_timestamps=True` adds each word with its start, end and probability, `keywords=[...]` favours the names, product words and jargon your users say, and `language="de"` forces the language instead of detecting it. `needle.Whistle()` is the same model as an object, for `embed(audio)` or to hold one tuned `.cact`. Silence and steady noise return an empty transcript rather than an invented sentence. `needle.stream(chunks)` transcribes live for as long as the microphone runs, committing the words two passes agree on. `needle whistle playground` transcribes from the microphone, and `needle whistle compare` puts Whistle next to Whisper and Moonshine on the same clip.
+Every call returns the text, the language, the milliseconds to the first token and the decoder's tokens per second after it. `word_timestamps=True` adds each word with its start, end and probability, `keywords=[...]` favours the names, product words and jargon your users say, and `language="de"` forces the language instead of detecting it. `needle.Whistle()` is the same model as an object, for `embed(audio)` or to hold one tuned `.cact`. Silence and steady noise return an empty transcript rather than an invented sentence; other sounds, music especially, can still come out as text, so put a voice activity detector or a wake word in front of an always-on microphone. `needle.stream(chunks)` transcribes live for as long as the microphone runs, committing the words two passes agree on. `needle whistle playground` transcribes from the microphone, and `needle whistle compare` puts Whistle next to Whisper and Moonshine on the same clip.
 
 At 16.9 MB Whistle is 8.6x smaller than Whisper base and 6.6x quicker to the first token. It is ahead on LibriSpeech test-clean and test-other, on SPGISpeech, on Earnings-22 and on the FLEURS average. Whisper base is ahead on TED-LIUM, on AMI and on the MLS average.
 
@@ -82,6 +82,14 @@ needle --model needle3.cact --model whistle.cact --tools tools.json --audio clip
 One engine holds both models: `needle_load` reads whichever one a `.cact` carries, and `needle_complete` takes a clip wherever it takes text. It transcribes, answers the transcript against your tools, and returns one JSON object with the tool calls and the speech fields, the speech ones prefixed `audio_`. The transcription stays inside the engine, so audio in and tool calls out is one call, and it favours the option values your schemas enumerate, so a clip that names one is transcribed as the schema spells it.
 
 The benchmarks against Whisper and Moonshine, the architecture and the interactive demo are at [cactuscompute.com/whistle](https://cactuscompute.com/whistle); the weights and every platform engine are on [Hugging Face](https://huggingface.co/Cactus-Compute/whistle).
+
+Whistle fine-tunes locally: LoRA adapters on the attention projections, base frozen, merged at export, 4-bit. Each JSONL line is `{"audio": "clip.wav", "text": "...", "language": "pt"}`; a language code outside the seven adds that language, and `--tokens` takes a file of words or characters to add to the vocabulary, one per line.
+
+```sh
+pip install "cactus-needle[train]"
+needle whistle finetune clips.jsonl --tokens tokens.txt --out adapter.safetensors
+needle whistle build --lora adapter.safetensors --out tuned.cact
+```
 
 ## Guides
 

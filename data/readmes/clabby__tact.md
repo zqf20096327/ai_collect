@@ -159,7 +159,7 @@ chmod 600 ~/.tact/config.toml
 
 ### Turn on the extras
 
-Memory, skills, decisions, and Claude are off by default. Here's a config that turns all of them on.
+Memory, skills, and Claude are off by default. Here's a config that turns all of them on.
 
 ```toml
 [memory]
@@ -168,9 +168,6 @@ enabled = true
 [skills]
 enabled = true
 roots = ["/path/to/your/skills"]
-
-[decisions]
-enabled = true
 
 [claude]
 enabled = true
@@ -315,29 +312,6 @@ in your namespace that don't exist locally, so run `--dry-run` first. Pull only 
 deletes local records. Normal agent operations never push. The [memory guide](docs/memory.md)
 covers backend selection, the HTTP contract, privacy, and a local server walkthrough.
 
-## Decisions
-
-Decisions give agents a `decide` tool backed by OpenAI's
-[Decisions API](https://developers.openai.com/api/docs/guides/decisions). Instead of writing prose,
-it answers typed questions about text or images: yes/no probabilities, a pick from a fixed set of
-options, or a score on a rubric. Agents use it for quick classification, routing, and triage.
-Decisions are off until you turn them on.
-
-```toml
-[decisions]
-enabled = true
-
-[openai]
-decisions_api_key = "sk-..." # only needed with a ChatGPT login and no API key
-```
-
-The Decisions API takes an OpenAI API key, and a ChatGPT subscription can't pay for it. Tact uses
-`OPENAI_API_KEY` or `openai.api_key` when either is set, whatever `auth.mode` says. Otherwise it uses
-`openai.decisions_api_key`. With decisions on and no key available, sessions fail to start and the
-error names the settings to fix.
-
-The tool works in Codex and Claude sessions, including subagents and code mode. Changes apply when a
-session starts or resumes.
 
 ## Models, effort, and speed
 
@@ -355,10 +329,13 @@ Esc to cancel.
 | `sonnet-5.5` | `claude-sonnet-5-5` | high |
 | `opus-5.5` | `claude-opus-5-5` | medium |
 | `fable-5.1` | `claude-fable-5-1` | high |
+| `mythos-5.1` | `claude-mythos-5-1` | high |
 
-Claude models need Claude enabled (see below). Every model supports effort from `low` through `max`,
-and a configured `agent.thinking` overrides the defaults. Resumed sessions keep the model they started
-with. Sessions on retired model IDs can't be resumed.
+Claude models need Claude enabled (see below). Mythos 5.1 is only served to accounts in Anthropic's
+Project Glasswing and needs its own key, so Tact only offers it once `claude.glasswing_api_key` is set.
+It's the same model as Fable 5.1, so pick Fable if you don't have that access. Every
+model supports effort from `low` through `max`, and a configured `agent.thinking` overrides the
+defaults. Resumed sessions keep the model they started with. Sessions on retired model IDs can't be resumed.
 
 Astra, Sol, and Luna also support **Pro** mode, independent of effort. Open `/effort`, press `p` to toggle
 Pro, and press Enter to save. Pro applies to new sessions.
@@ -373,7 +350,7 @@ when you change models. Ultrafast picks the fastest tier each model supports.
 | --- | --- |
 | Astra, Sol | Ultrafast |
 | Luna, Opus 5.5 | Fast |
-| Haiku 5.5, Sonnet 5.5, Fable 5.1 | Standard |
+| Haiku 5.5, Sonnet 5.5, Fable 5.1, Mythos 5.1 | Standard |
 
 Astra and Sol send `service_tier = "ultrafast"`, and access and pricing depend on your account. See
 [OpenAI ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for details.
@@ -415,11 +392,21 @@ not a validity check). Keys never go into prompts, session checkpoints, or shell
 environments. Codex can still use a ChatGPT subscription in the same task tree via
 `tact auth --provider codex login`.
 
-The `[claude]` section accepts `enabled`, `api_key`, `api_base_url` (Tact appends `/messages`), and
-`workspace_id`. Any other field is an error, including the retired `auth` and `subscription_store`
-settings, so remove those if you're upgrading. If your key isn't scoped to a workspace, set
-`workspace_id` to the ID from [Console workspace settings](https://platform.claude.com/settings/workspaces),
+The `[claude]` section accepts `enabled`, `api_key`, `api_base_url` (Tact appends `/messages`),
+`workspace_id`, `glasswing_api_key`, and `glasswing_workspace_id`. Any other field is an error,
+including the retired `auth` and `subscription_store` settings, so remove those if you're upgrading.
+If your key isn't scoped to a workspace, set `workspace_id` to the ID from [Console workspace settings](https://platform.claude.com/settings/workspaces),
 and Tact sends it as `anthropic-workspace-id`. Start a new session after changing it.
+
+Mythos 5.1 doesn't use `api_key`. Anthropic gives Project Glasswing members separate keys that expire
+quickly, so Tact keeps that key in its own `glasswing_api_key` field, with an optional
+`glasswing_workspace_id` for the workspace it belongs to. Mythos requests from root sessions and
+subagents only ever send the Glasswing key and workspace, and every other Claude request only ever
+sends `api_key` and `workspace_id`. Without a Glasswing key Tact hides Mythos from the model picker,
+the web UI, and subagents, and picking it anyway fails with an error that names `glasswing_api_key`.
+When the key expires, put the new one in your config and reload it. Running Mythos sessions pick it up
+on their next request, so there's no need to restart them. The Glasswing key follows the same rules as
+`api_key`, which means a private config file and the same key format check.
 
 Claude sessions use the same code mode runtime as Codex, with nested tools, memory, MCP, and
 mixed-provider subagents. Web search and image generation still use your OpenAI credentials, as do
@@ -573,7 +560,6 @@ file = "/path/to/.codex/auth.json"
 
 [openai]
 api_key = ""
-decisions_api_key = ""
 
 [agent]
 workspace = "/path/to/workspace"
@@ -608,9 +594,6 @@ max_total_bytes = 262144
 [subagents]
 enabled = true
 
-[decisions]
-enabled = false
-
 [web]
 enabled = true
 bind = "127.0.0.1"
@@ -644,6 +627,7 @@ model_haiku = "blue"
 model_sonnet = "green"
 model_opus = "red"
 model_fable = "cyan"
+model_mythos = "light-magenta"
 
 [theme.dark]
 text = "reset"
@@ -664,6 +648,7 @@ model_haiku = "blue"
 model_sonnet = "green"
 model_opus = "red"
 model_fable = "cyan"
+model_mythos = "light-magenta"
 ```
 
 </details>

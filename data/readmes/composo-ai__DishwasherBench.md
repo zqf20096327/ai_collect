@@ -120,7 +120,7 @@ pnpm test           # every package; 8 to 17 minutes, with real washes on the GP
 ```
 
 **A wash is tied to its parameter set.** The set the game washes with
-(`anchored-v7.owner-capsule`, in `packages/calibration/anchors/`) records the state of the
+(`anchored-v8.owner-capsule`, in `packages/calibration/anchors/`) records the state of the
 simulation source and of the machine data it was made for. After a change to either, the wash
 stops and lists what differs. [CONTRIBUTING.md](CONTRIBUTING.md) explains the rule and how to
 make the set current again.
@@ -272,13 +272,16 @@ share of the level's points. The middle columns are the scripted reference playe
 
 | #   | Level                | Points on offer | Random      | Careless     | Careful      | `gpt-6.1-sol`                               | `gpt-6-astra` |
 | --- | -------------------- | --------------- | ----------- | ------------ | ------------ | ------------------------------------------- | ------------- |
-| 1   | tutorial (12 pieces) | 64              | 20 (31.3 %) | 58 (90.6 %)  | 64 (100 %)   | 64 (100 %)                                  | not run       |
+| 1   | tutorial (12 pieces) | 64              | 40 (62.5 %) | 58 (90.6 %)  | 64 (100 %)   | 64 (100 %)                                  | not run       |
 | 4   | breakfast (37)       | 220             | 36 (16.4 %) | 112 (50.9 %) | 174 (79.1 %) | 190 (86.4 %); a second episode 188 (85.5 %) | 175 (79.5 %)  |
-| 7   | dinner-party (62)    | 367             | 88 (24.0 %) | 100 (27.2 %) | 250 (68.1 %) | 260 (70.8 %)                                | 274 (74.7 %)  |
+| 7   | dinner-party (62)    | 367             | 85 (23.2 %) | 100 (27.2 %) | 250 (68.1 %) | 260 (70.8 %)                                | 274 (74.7 %)  |
 
 `gpt-6.1-sol` and `gpt-6-astra` are the names of the two deployments on the Azure endpoint
 used; both ran at medium reasoning effort. The three scripted columns are the saved reference
-loads ([docs/benchmark/course-table.md](docs/benchmark/course-table.md)).
+loads on the current parameter set ([docs/benchmark/course-table.md](docs/benchmark/course-table.md)).
+The episodes were played on 11 October on the set before it; washed again from their own loads
+on the current set, the five that still verify score the same points with every verdict the
+same.
 
 - **Both models beat the careful reference load** on both full levels, by placing pans, a
   platter and boards that the scripted player never tries.
@@ -287,8 +290,10 @@ loads ([docs/benchmark/course-table.md](docs/benchmark/course-table.md)).
   clean. Their scores differ by what they fitted in.
 
 The records, transcripts and pictures of the six episodes, and a fuller account, are in
-[docs/benchmark/first-runs/course/](docs/benchmark/first-runs/course/README.md). Each episode
-verifies by replay and by a second wash with the same verdicts and points.
+[docs/benchmark/first-runs/course/](docs/benchmark/first-runs/course/README.md). Five of the
+six episodes verify by replay and by a second wash with the same verdicts and points; the record
+of `gpt-6-astra` on breakfast no longer passes the load check of its replay
+([issue 67](https://github.com/composo-ai/DishwasherBench/issues/67)).
 [Scope and limitations](#scope-and-limitations) says what decides a score.
 
 ## How it works
@@ -325,11 +330,11 @@ is left where, which do not change the points. See
 default, a range and a source. A _wash record_ describes a real test wash: the machine and the
 programme, each item with its soil and where it stood, and what was seen afterwards. The
 calibration tool runs the simulation on a record, scores it against what was seen, fits chosen
-parameters and says which parameters the data can and cannot identify. The first wash record is
-four egg-yolk plates on Eco 50. See
+parameters and says which parameters the data can and cannot identify. The two wash records so
+far are the owner's washes of egg-yolk plates on Eco 50, and the set is fitted on both. See
 [docs/calibration/wash-record.md](docs/calibration/wash-record.md),
 [docs/calibration/fitting.md](docs/calibration/fitting.md) and, for the set the game washes
-with, [docs/calibration/anchoring-v7.md](docs/calibration/anchoring-v7.md).
+with, [docs/calibration/anchoring-v8.md](docs/calibration/anchoring-v8.md).
 
 ### Check the simulation yourself
 
@@ -342,7 +347,7 @@ INIT_CWD=. pnpm exec tsx packages/sim-verify/src/phenomena/cli.ts --list
 INIT_CWD=. pnpm exec tsx packages/sim-verify/src/phenomena/cli.ts P01 P36 --tier fast \
   --out .spotless/phenomena
 INIT_CWD=. pnpm exec tsx packages/sim-verify/src/phenomena/cli.ts P36 --tier fast \
-  --params packages/calibration/anchors/anchored-v7.owner-capsule.json --dose-g 12.9 \
+  --params packages/calibration/anchors/anchored-v8.owner-capsule.json --dose-g 12.9 \
   --out .spotless/phenomena
 ```
 
@@ -359,7 +364,7 @@ pnpm --filter @spotless/calibration spotless-fit validate \
   packages/calibration/records/owner/owner-wash-01-egg-yolk-eco50.measured.json
 pnpm --filter @spotless/calibration spotless-fit predict \
   packages/calibration/records/owner/owner-wash-01-egg-yolk-eco50.measured.json \
-  --params packages/calibration/anchors/anchored-v7.owner-capsule.json
+  --params packages/calibration/anchors/anchored-v8.owner-capsule.json
 ```
 
 `validate` checks a wash record; `predict` says what the simulation gives for every observation
@@ -379,9 +384,11 @@ pnpm --filter @spotless/loader check-loads --jobs 3      # all 25 of them: about
 DishwasherBench models one machine with one detergent. Programmes other than Eco 50, drying,
 spots and film on glass, items moved by the jets, soil settling on clean items, flaking of thick
 layers and where a tablet lands outside its tray are out of scope
-([docs/design/scope.md](docs/design/scope.md#out-of-scope)). The wash is calibrated on a test
-wash of that machine (four egg-yolk plates) and on the published class means of a sister
-machine, the Bosch SMV6ECX51E.
+([docs/design/scope.md](docs/design/scope.md#out-of-scope)). The wash is calibrated on two test
+washes of that machine (eight egg-yolk plates, air-dried and oven-dried, some turned to the
+wall or stacked) and on the published class means of a sister machine, the Bosch SMV6ECX51E.
+It gives every verdict the owner saw on those plates, with one of them, a small plate,
+on the edge of clean ([docs/calibration/anchoring-v8.md](docs/calibration/anchoring-v8.md)).
 [docs/validation/README.md](docs/validation/README.md) has the full account, with every number
 and where it comes from.
 
@@ -396,8 +403,12 @@ Three things decide most of a score:
 
 The wash responds little to how plates and cutlery are stacked: plates that lean on each other
 and cutlery crowded into one cell come out clean, so a score shows little of how well they were
-stacked. Whether the real machine is as forgiving on Eco 50 has not been measured; the test
-washes of [docs/calibration/protocol.md](docs/calibration/protocol.md) would show it. Of the 46
+stacked. Whether the real machine is as forgiving on Eco 50 has one reading so far: in the
+owner's second test wash, two air-dried egg-yolk plates in one slot, one a slot behind them and
+one lying flat all came out with no egg seen, the flat one after a light rinse
+([docs/calibration/owner-wash-02-result.md](docs/calibration/owner-wash-02-result.md)). That is
+one wash, judged by eye; the test washes of
+[docs/calibration/protocol.md](docs/calibration/protocol.md) would show more. Of the 46
 loading phenomena in the suite, 9 are out of scope, and 17 of the other 37 pass; most of the
 sizes they expect are estimates, not measurements
 ([docs/research/standards.md](docs/research/standards.md) section 0.2). The adapter for
@@ -416,9 +427,9 @@ map of them.
 | [docs/design/scope.md](docs/design/scope.md)           | The aim of the project, what was built first, what is out of scope, the status                                            |
 | [docs/validation/README.md](docs/validation/README.md) | What the simulation was checked against and what a verdict can be trusted for                                             |
 | [docs/benchmark/](docs/benchmark/README.md)            | Running the benchmark, the course of levels, the first runs with models                                                   |
-| [docs/calibration/](docs/calibration/protocol.md)      | The protocol of test washes for calibrating the simulation, the wash-record format, the fitting tool, the first test wash |
+| [docs/calibration/](docs/calibration/protocol.md)      | The protocol of test washes for calibrating the simulation, the wash-record format, the fitting tool, the two test washes |
 | `docs/research/`                                       | Sourced dossiers: the machine, jets, films, soils, chemistry, standards, the benchmark's design                           |
-| [docs/reference/](docs/reference/REDACTIONS.md)        | Photographs and measurements of the machine, the machine drawings, the photographs of the test wash                       |
+| [docs/reference/](docs/reference/REDACTIONS.md)        | Photographs and measurements of the machine, the machine drawings, the photographs of the test washes                     |
 | `packages/machine`, `catalogue`, `geometry`, `physics` | The machine, the items and soils, shapes, loading physics                                                                 |
 | `packages/session`, `levels`, `loader`                 | The game's actions and queries, the levels, the scripted players and their saved loads                                    |
 | `packages/sim-*`, `inspector`                          | The wash: scene, hydraulics, jets, spray, film, liquor, soil, timeline, the inspection of the result                      |

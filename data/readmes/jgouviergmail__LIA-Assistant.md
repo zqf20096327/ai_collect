@@ -44,7 +44,7 @@
 </p>
 
 <p align="center">
-  <strong>Version 3.0.1</strong> — <strong>A portrait that reads everything LIA keeps, and lighter ReAct turns.</strong> The compiled portrait is an analysis again, fed by nine sources read whole, with a brief written as a summary of its own and a journal change that marks it stale instead of erasing it; ReAct binds fewer tools, skips recovery passes over pages a tool capped on purpose and checkpoints only what a turn changed, while API workers keep their vectors compact — 13 October 2026.
+  <strong>Version 3.1.1</strong> — <strong>LIA's eyes stay where you put them.</strong> On a phone the companion no longer steps aside or folds into a dot on its own, the radio's music sits lower under every voice, and the image library moves to Pillow 13.0.0 to close twenty-one advisories — 17 October 2026.
 </p>
 
 ---
@@ -147,63 +147,191 @@ The video is a product demonstration, not a recorded provider session.
 
 ## Screenshots
 
-The application views below show the real interface in English with fictional demonstration data. They illustrate workflows and controls; no model, connected account or external action was exercised in these captures. The Radio player used a local silent audio fixture.
+Explore the real application interface in English and light mode, filled with fictional demonstration data. The geographic maps and walking route use [real Google Maps imagery and geographic data](apps/web/e2e/fixtures/maps/provenance.json), prepared separately and served locally with attribution. The browser captures exercise the actual pages, controls and widgets without model inference, provider calls, connected accounts or external actions. Radio uses a local silent audio fixture. The interactive budget is a custom skill example produced by an executed [Python fixture generator](apps/web/e2e/capture/render_trip_budget.py); its estimates are illustrative and no booking is made.
+
+Open any image at full resolution. The [home capture manifest](apps/web/public/screenshots/manifest.json), [workflow manifest](apps/web/public/screenshots/proof/manifest.json) and [extended application manifest](apps/web/public/screenshots/proof/extended-manifest.json) record the images and their provenance. Reproduce the campaigns with the [public capture workflow](apps/web/e2e/README.md#public-screenshots), [workflow runner](apps/web/e2e/capture/run-landing-proof.mjs) and [extended capture runner](apps/web/e2e/capture/run-extended-screenshots.mjs).
 
 <p align="center">
-  <a href="docs/assets/screenshot-homepage.png"><img src="docs/assets/screenshot-homepage.png" alt="Personal home dashboard — Daily summary, calendar, unread mail, tasks and reminders" width="1000" /></a>
-  <br /><em>Your personal hub — daily summary, calendar, emails, tasks and reminders in one place, with activity and usage at a glance.</em>
-</p>
-
-This home dashboard capture is retained from the earlier public screenshot campaign, documented in the [capture workflow](apps/web/e2e/README.md#public-screenshots).
-
-Open any image for its full resolution. For the workflow captures below, the [application manifest](apps/web/public/screenshots/proof/manifest.json) records the capture provenance, native BIP masculine selection and interactions; the [capture runner](apps/web/e2e/capture/run-landing-proof.mjs) reproduces this campaign.
-
-<p align="center">
-  <a href="apps/web/public/screenshots/proof/dossier.png"><img src="apps/web/public/screenshots/proof/dossier.png" alt="Chat — Project sources, conflicting dates and next steps" width="1000" /></a>
-  <br /><em>Prepare a conversation with the relevant sources and open questions in view.</em>
+  <a href="docs/assets/screenshot-homepage.png"><img src="docs/assets/screenshot-homepage.png" alt="Personal home dashboard — daily briefing, agenda, mail, tasks and reminders" width="1000" /></a>
+  <br /><em>Your personal hub — the day’s priorities, appointments and useful context in one place.</em>
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/relations.png"><img src="apps/web/public/screenshots/proof/relations.png" alt="Relations — Debrief, open commitments and recent emails" width="1000" /></a>
-  <br /><em>Relations — pick up the conversation with recent exchanges and open commitments beside you.</em>
+  <a href="apps/web/public/screenshots/proof/dossier.png"><img src="apps/web/public/screenshots/proof/dossier.png" alt="Chat — project sources, conflicting dates and practical next steps" width="1000" /></a>
+  <br /><em>Prepare a decision with the relevant documents, emails and meeting notes in view.</em>
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/radio.png"><img src="apps/web/public/screenshots/proof/radio.png" alt="Personal Radio — Player, programme, transcript and source articles" width="1000" /></a>
-  <br /><em>Personal Radio — your day and selected news, with the programme and sources in the actual player.</em>
+  <a href="apps/web/public/screenshots/proof/relations.png"><img src="apps/web/public/screenshots/proof/relations.png" alt="Relations — person overview, debrief, open commitments and recent exchanges" width="1000" /></a>
+  <br /><em>Pick up a conversation with useful context and commitments beside you.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/radio.png"><img src="apps/web/public/screenshots/proof/radio.png" alt="Personal Radio — programme, transcript, upcoming segments and source articles" width="1000" /></a>
+  <br /><em>Follow a personal programme with its transcript and inspectable sources.</em>
 </p>
 
 <details>
-<summary><strong>Meetings, knowledge, memory and actions you can review</strong></summary>
+<summary><strong>Places, maps and routes in rich conversations</strong></summary>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/meetings.png"><img src="apps/web/public/screenshots/proof/meetings.png" alt="Meetings — Decisions, action items and editing and export controls" width="1000" /></a>
-  <br /><em>Meetings — review decisions and assigned action items, then edit or export the report.</em>
+  <a href="apps/web/public/screenshots/proof/places.png"><img src="apps/web/public/screenshots/proof/places.png" alt="Google Places — complete place card with opening hours and practical details" width="1000" /></a>
+  <br /><em>Inspect a complete place card with opening hours, rating, price range, address and accessibility details.</em>
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/approval.png"><img src="apps/web/public/screenshots/proof/approval.png" alt="Approval — A prepared message and confirm, modify and cancel controls" width="1000" /></a>
-  <br /><em>Review a prepared message through the application’s approval controls.</em>
+  <a href="apps/web/public/screenshots/proof/maps.png"><img src="apps/web/public/screenshots/proof/maps.png" alt="Google Maps — location card with geographic map, coordinates and address" width="1000" /></a>
+  <br /><em>Inspect a location with its geographic map, coordinates and address in the conversation.</em>
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/knowledge.png"><img src="apps/web/public/screenshots/proof/knowledge.png" alt="Knowledge spaces — Documents, Drive folders and Gmail label sources" width="1000" /></a>
-  <br /><em>Knowledge spaces — documents and connected sources you can manage.</em>
+  <a href="apps/web/public/screenshots/proof/routes.png"><img src="apps/web/public/screenshots/proof/routes.png" alt="Walking route — geographic map, distance and travel time" width="1000" /></a>
+  <br /><em>Read a walking itinerary with its map, distance and travel time in view.</em>
+</p>
+
+</details>
+
+<details>
+<summary><strong>Memory, avatars, personal portrait and emotional context</strong></summary>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/memory-library.png"><img src="apps/web/public/screenshots/proof/memory-library.png" alt="Memory library — remembered facts, preferences, categories and management controls" width="1000" /></a>
+  <br /><em>Find what LIA remembers and manage the facts and preferences you keep.</em>
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/memory.png"><img src="apps/web/public/screenshots/proof/memory.png" alt="Memory — Editing a stored preference" width="1000" /></a>
-  <br /><em>Review and correct what LIA remembers.</em>
+  <a href="apps/web/public/screenshots/proof/memory.png"><img src="apps/web/public/screenshots/proof/memory.png" alt="Memory — editing a stored preference" width="1000" /></a>
+  <br /><em>Correct a remembered preference through the actual edit form.</em>
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/skill.png"><img src="apps/web/public/screenshots/proof/skill.png" alt="Chat — Interactive unit converter showing 2.5 metres as 250 centimetres" width="1000" /></a>
-  <br /><em>A useful mini-app inside the conversation — the actual unit-converter widget.</em>
+  <a href="apps/web/public/screenshots/proof/portrait.png"><img src="apps/web/public/screenshots/proof/portrait.png" alt="Personal portrait — accumulated context and profile sections" width="1000" /></a>
+  <br /><em>Review the portrait that brings your personal context together.</em>
 </p>
 
 <p align="center">
-  <a href="apps/web/public/screenshots/proof/administration.png"><img src="apps/web/public/screenshots/proof/administration.png" alt="Administration — Account budgets and instance spending ceiling" width="1000" /></a>
-  <br /><em>Administration — account budgets and the instance ceiling, with visible usage gauges.</em>
+  <a href="apps/web/public/screenshots/proof/avatar-picker.png"><img src="apps/web/public/screenshots/proof/avatar-picker.png" alt="Avatar picker — companion previews and appearance selection gallery" width="1000" /></a>
+  <br /><em>Preview the companion styles and choose LIA’s appearance in the actual avatar gallery.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/psyche.png"><img src="apps/web/public/screenshots/proof/psyche.png" alt="Psyche Engine — personality traits, emotional state and responsiveness" width="1000" /></a>
+  <br /><em>Inspect the personality and emotional settings that shape LIA’s responses.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/psyche-evolution.png"><img src="apps/web/public/screenshots/proof/psyche-evolution.png" alt="Emotional evolution — state timeline and associated events" width="1000" /></a>
+  <br /><em>Follow emotional state changes and the events associated with them.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/journal.png"><img src="apps/web/public/screenshots/proof/journal.png" alt="Personal journal — saved reflections and their context" width="1000" /></a>
+  <br /><em>Revisit the reflections and context kept in your personal journal.</em>
+</p>
+
+</details>
+
+<details>
+<summary><strong>Routines, schedules and project work</strong></summary>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/routine-studio.png"><img src="apps/web/public/screenshots/proof/routine-studio.png" alt="Routine studio — workflow instructions, recurrence and execution settings" width="1000" /></a>
+  <br /><em>Prepare a recurring workflow with its instructions, timing and execution settings.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/routine-week.png"><img src="apps/web/public/screenshots/proof/routine-week.png" alt="Routine calendar — scheduled workflows across the week" width="1000" /></a>
+  <br /><em>See the week’s routines and their upcoming runs together.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/workboard.png"><img src="apps/web/public/screenshots/proof/workboard.png" alt="Workboard — projects and work organized by stage" width="1000" /></a>
+  <br /><em>Follow projects and tasks across their working stages.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/workboard-dossier.png"><img src="apps/web/public/screenshots/proof/workboard-dossier.png" alt="Project dossier — tasks, working context and follow-ups" width="1000" /></a>
+  <br /><em>Keep a project’s tasks, context and next steps together.</em>
+</p>
+
+</details>
+
+<details>
+<summary><strong>Knowledge spaces, meetings and reusable reports</strong></summary>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/knowledge-library.png"><img src="apps/web/public/screenshots/proof/knowledge-library.png" alt="Knowledge library — spaces and indexed document collections" width="1000" /></a>
+  <br /><em>Find the knowledge spaces that hold your documents and reference material.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/knowledge.png"><img src="apps/web/public/screenshots/proof/knowledge.png" alt="Knowledge space — documents, Drive folders and mail sources" width="1000" /></a>
+  <br /><em>Inspect indexed documents and manage the sources attached to a space.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/meetings-list.png"><img src="apps/web/public/screenshots/proof/meetings-list.png" alt="Meetings list — recordings and reports with their processing states" width="1000" /></a>
+  <br /><em>Find your meetings and follow the processing state of each recording or report.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/meetings.png"><img src="apps/web/public/screenshots/proof/meetings.png" alt="Detailed meeting report — participants, summary, decisions and assigned action items" width="1000" /></a>
+  <br /><em>Inspect the detailed meeting report: participants, summary, decisions and assigned actions, with editing and export controls.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/meeting-transcript.png"><img src="apps/web/public/screenshots/proof/meeting-transcript.png" alt="Meeting transcript — recorded conversation and report controls" width="1000" /></a>
+  <br /><em>Read the conversation behind the meeting report.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/meeting-templates.png"><img src="apps/web/public/screenshots/proof/meeting-templates.png" alt="Meeting templates — available report structures and formats" width="1000" /></a>
+  <br /><em>Choose the structure used to turn a recording into a useful report.</em>
+</p>
+
+</details>
+
+<details>
+<summary><strong>Actions to approve, connected services and interactive skills</strong></summary>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/approval.png"><img src="apps/web/public/screenshots/proof/approval.png" alt="Approval — prepared message and confirm, modify and cancel controls" width="1000" /></a>
+  <br /><em>Review a prepared action through the application’s approval controls.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/connections.png"><img src="apps/web/public/screenshots/proof/connections.png" alt="Connections — linked services and access management" width="1000" /></a>
+  <br /><em>Manage connected services and inspect the access available to LIA.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/skills-library.png"><img src="apps/web/public/screenshots/proof/skills-library.png" alt="Skills library — available skills and activation controls" width="1000" /></a>
+  <br /><em>Browse the skills you can use and manage their activation.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/skill.png"><img src="apps/web/public/screenshots/proof/skill.png" alt="Weekend Budget Studio — interactive custom skill with a category breakdown and editable trip controls" width="1000" /></a>
+  <br /><em>A custom skill example inside the conversation — adjust travellers, nights and budget to explore an illustrative spending breakdown.</em>
+</p>
+
+</details>
+
+<details>
+<summary><strong>Models, consumption and account budgets</strong></summary>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/model-routing.png"><img src="apps/web/public/screenshots/proof/model-routing.png" alt="Model routing — provider and model selection for each operation" width="1000" /></a>
+  <br /><em>Choose the providers and models used by each operation.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/consumption.png"><img src="apps/web/public/screenshots/proof/consumption.png" alt="Consumption — usage figures, costs and operation details" width="1000" /></a>
+  <br /><em>Inspect usage and costs with the operations that produced them.</em>
+</p>
+
+<p align="center">
+  <a href="apps/web/public/screenshots/proof/administration.png"><img src="apps/web/public/screenshots/proof/administration.png" alt="Administration — account quotas and instance spending ceiling" width="1000" /></a>
+  <br /><em>Set account limits and the instance ceiling with visible usage gauges.</em>
 </p>
 
 </details>
@@ -246,9 +374,11 @@ Every capability below is documented in an architecture decision record (ADR) or
 #### Voice, both ways
 
 - Push-to-talk, or the wake word "Dis LIA" — a small trained model run by ONNX Runtime in a browser worker, every file checked against its SHA-256, so no audio leaves the device for detection. "Stop" cuts LIA's voice while it reads an answer. French only for now, in beta; the other interface languages keep tap-to-speak ([ADR-329](docs/architecture/ADR-329-Live-Standby-And-Multilingual-Wake-Word.md), [WAKE_WORD_TRAINING](docs/technical/WAKE_WORD_TRAINING.md)).
-- Offline Whisper transcription in the user's own language.
-- Spoken answers from a catalogue-driven TTS (Edge, free; OpenAI; ElevenLabs), streamed sentence by sentence. Playback can begin before the complete answer is available; startup latency depends on the model, provider and connection ([VOICE](docs/technical/VOICE.md), [ADR-081](docs/architecture/ADR-081-Voice-TTS-Catalogue-Driven.md), [ADR-082](docs/architecture/ADR-082-Progressive-Sentence-Streaming.md)).
-- ElevenLabs synthesis shares an administrator-set concurrency ceiling across API workers and speech surfaces; the browser plays queued audio in sequence, even when synthesis completes out of order.
+- Offline Whisper transcription in the user's own language, or the remote engine the administrator configured (ElevenLabs Scribe, OpenAI or Fish Audio), named before anyone opts in.
+- Spoken answers from a catalogue-driven TTS (Edge, free; OpenAI; ElevenLabs; Gemini; Fish Audio), streamed sentence by sentence. Playback can begin before the complete answer is available; startup latency depends on the model, provider and connection ([VOICE](docs/technical/VOICE.md), [ADR-081](docs/architecture/ADR-081-Voice-TTS-Catalogue-Driven.md), [ADR-082](docs/architecture/ADR-082-Progressive-Sentence-Streaming.md)).
+- Every heard sentence is billed once, by the engine that spoke it; ElevenLabs synthesis and every Fish Audio request share an administrator-set allowance per vendor account across API workers and speech surfaces; the browser plays queued audio in sequence, even when synthesis completes out of order.
+- On the engines that perform them, LIA's spoken comments carry a few expressive cues (a sigh, a laugh, a whisper) in each engine's own syntax, while text it reads aloud never turns a bracket into a cue. Administrators manage the instance's Fish Audio voices: clone one under a consent attestation filed in the audit log, design one from a description, rename or delete ([ADR-345](docs/architecture/ADR-345-Fish-Audio-Served-Whole-One-Door-One-Allowance-Cues-Each-Engine-Reads.md)).
+- Each person picks LIA's male and female voice among the voices of the engine that speaks in the chat, kept per provider so a change of model keeps them; every voice picker — LIA's, the radio's, the administrator's slots — can be narrowed to the person's language and the multilingual voices, never hiding a voice already chosen ([ADR-345](docs/architecture/ADR-345-Fish-Audio-Served-Whole-One-Door-One-Allowance-Cues-Each-Engine-Reads.md)).
 
 #### A personal speaking avatar, experimental
 
@@ -270,10 +400,11 @@ Every capability below is documented in an architecture decision record (ADR) or
 
 #### A personal radio, on demand
 
-- A deterministic programme grid blends the listener's day with news from identified sources.
+- A deterministic programme grid blends the listener's day with news from identified sources, over the station's own instrumental music, lowered under every voice.
 - Models write and voice the segments, while verification decides what may air. The listener chooses subjects, sources, voices and verification, sees sources and live cost, and ends the session with a timer. Production runs only while someone listens.
 - An administrator controls the capability and the guided self-host installer asks before enabling it ([ADR-324](docs/architecture/ADR-324-A-Personal-Radio-A-Grid-Decides-Models-Only-Write.md), [RADIO](docs/technical/RADIO.md)).
 - The radio settings group programme, sources, verification, voices and spending so a listener can see what will be used before starting.
+- Debates and discussions are voiced in one take on the engines that voice several speakers, each commentator with the voice the listener chose — never one shared with LIA, the anchor or another commentator. The second-model verification is off unless the listener chooses it, because every check is billed ([ADR-324](docs/architecture/ADR-324-A-Personal-Radio-A-Grid-Decides-Models-Only-Write.md)).
 - Editorial selection excludes advertisements, sponsorships and purchase pitches while retaining genuine news, scientific reporting, invoices, reservations and appointments. Raw PCM and µ-law speech are wrapped with their actual format before mixing.
 
 #### An expressive companion
@@ -286,12 +417,14 @@ for projection and performance limits.
 
 - Psyche temperament, actual tool execution and the delivered answer's tone share one animation rig, including the shaded Smiley. Eyes lead a head with depth and weight.
 - Continuous mouth/brow contours, quiet thought and varied resting scenes keep transitions natural. Speech follows actual audio, and a prepared draft never earns an accomplished-action gesture. Fresh cached weather and the account clock add discreet ambience without a provider or LLM call.
+- You place the companion — a drag, the arrow keys, or a fold into its restore dot — and on a phone nothing else moves it.
 - Reduced motion keeps static contextual poses ([ADR-240](docs/architecture/ADR-240-expressive-eyes-widget.md), [ADR-252](docs/architecture/ADR-252-Expressive-Eyes-Animation-Rig.md), [ADR-253](docs/architecture/ADR-253-Per-Turn-Expressivity-Annotation.md), [ADR-264](docs/architecture/ADR-264-Living-Brows-And-Mouth.md), [ADR-294](docs/architecture/ADR-294-A-Face-That-Never-Plays-The-Same-Twice.md)).
 
 #### A psyche of its own
 
 - Big Five traits, a mood space, discrete emotions, a relationship stage and curiosity drives shape word choice and rhythm without ever being announced.
-- A four-chart dashboard, temperament sliders and two reset scopes in Settings ([PSYCHE_ENGINE](docs/technical/PSYCHE_ENGINE.md)).
+- Settings › LIA's psyche draws it — emotion rings around the mood, a pleasure × arousal plane, the Big Five pentagon, relationship and drive meters, an evolution chart on a true time axis — beside the temperament sliders and two reset scopes ([PSYCHE_ENGINE](docs/technical/PSYCHE_ENGINE.md)).
+- An experience per domain learned from evidence, never from its own grade: what an answer verifiably established and the usefulness you expressed (👍/👎) are kept apart, and an index needs several recent observations. Where evidence is thin, LIA checks a point, asks one question or names its limit — a pilot, no gain claimed before a held-out comparison ([ADR-348](docs/architecture/ADR-348-Efficacy-Learned-From-Evidence-Results-And-Usefulness-Kept-Apart.md)).
 
 #### Wherever you are
 
@@ -313,6 +446,7 @@ for projection and performance limits.
 - The three providers speak one vocabulary at the client boundary: a text body, never HTML, with quoted history and signature removed, measured on real payloads.
 - The assistant chooses how much to read from the question: headers to list, a body paginated by paragraph to read, or a digest per message to reason over many. A small model computes each digest once; it is cached thirty days and counted in your usage. If digest generation fails or is truncated, the original body remains available ([ADR-287](docs/architecture/ADR-287-Email-Content-First-Detail-Levels-Digests-And-Neutral-Message.md), [EMAIL_FORMATTER](docs/technical/EMAIL_FORMATTER.md)).
 - An attachment is read too — its text when it has one, the vision slot for a picture or a scan — bounded, paginated and treated as what a stranger sent ([ADR-296](docs/architecture/ADR-296-Mail-Attachments-Read-By-Text-Or-Vision.md)).
+- Your mailbox drafts — Gmail, Outlook, iCloud — are saved, listed, edited and trashed from the conversation without a confirmation, since nothing reaches anyone; sending one asks once, on a card that shows the draft as the mailbox holds it, and a draft edited elsewhere since is not sent ([ADR-344](docs/architecture/ADR-344-Mailbox-Drafts-Kept-Freely-Sent-After-One-Confirmation.md)).
 
 #### Connected from the first day
 
@@ -366,6 +500,7 @@ the supported surfaces and secure continuation contract.
 - _ReAct_ adapts its next steps to tool results for exploratory or ambiguous requests. Token use and latency depend on the task and configured models.
 - Both stream through the same response node ([ADR-070](docs/architecture/ADR-070-ReAct-Execution-Mode.md), [PLANNER](docs/technical/PLANNER.md)).
 - A ReAct tool result is projected item by item under a token budget derived from the slot's own window, never cut mid-item, the cut stated to the model and counted ([ADR-286](docs/architecture/ADR-286-Tool-Result-Projected-Per-Item-Under-A-Token-Budget.md)).
+- In the pipeline too, what a read step found beyond the cards — durations, connections, a next page — reaches the answer through the same projection, and a tool's declared failure is never returned as a success; a for-each with failed items keeps its successes ([ADR-347](docs/architecture/ADR-347-Read-Tool-Data-Reaches-The-Pipeline-Answer-A-Declared-Failure-Is-Never-A-Success.md)).
 - The loop binds its tools by relevance — the detected domains' tools, the best-ranked doors of every other family, the top of the turn's global ranking, a large catalogue such as the settings reached through its own domain — so no family falls off a blind cap and the schemas stop being most of the prompt, and it reads the same knowledge spaces the pipeline reads ([ADR-293](docs/architecture/ADR-293-React-Tools-Bound-By-Relevance.md)).
 - A ReAct turn is judged on its result: every fact the loop set out to obtain ends obtained or declared with the rungs tried. A declared gap buys one bounded recovery pass through a node that calls no model ([ADR-310](docs/architecture/ADR-310-ReAct-Turn-Judged-On-Its-Result.md)).
 - Requested outcomes are checked against canonical structured observations, including the value, operation, account and completeness expected. A draft, opaque result or delegated announcement does not prove completion. Independent eligible reads return checkpointed segments; exact fresh reads may be reused within the same turn, with mutation invalidation and bounded budgets ([ADR-336](docs/architecture/ADR-336-Requested-Outcomes-Checked-Against-Canonical-Observations.md), [ADR-337](docs/architecture/ADR-337-Checkpointed-ReAct-Read-Segments-And-Turn-Local-Reuse.md)).
@@ -403,7 +538,7 @@ the supported surfaces and secure continuation contract.
 
 - Browser control with progressive screenshot streaming ([ADR-059](docs/architecture/ADR-059-Browser-Control.md)).
 - A short Python script run in the skills sandbox when a step needs real computation, ReAct only ([ADR-249](docs/architecture/ADR-249-Ephemeral-Python-In-The-Existing-Sandbox.md)) — and, when the person allows it, reaching the web through one egress proxy that swaps per-run tokens for the person's own connector keys, an unknown host asked with three answers and settled inside the loop ([ADR-298](docs/architecture/ADR-298-Sandbox-Egress-Toolbox.md)).
-- Persistent read-only sub-agents with their own instructions, skills and budgets ([SUB_AGENTS](docs/technical/SUB_AGENTS.md)).
+- Persistent read-only sub-agents with their own instructions, skills and budgets; at their step limit they still write their deliverable from what they found, and a failure says how far it got ([SUB_AGENTS](docs/technical/SUB_AGENTS.md), [ADR-083](docs/architecture/ADR-083-Sub-Agent-Delegation-React.md)).
 
 #### The workboard
 
@@ -439,7 +574,7 @@ A ticket has a lifecycle, a holder and a result ([ADR-276](docs/architecture/ADR
 
 #### A daily briefing
 
-The home page aggregates your sources in parallel with a per-section cache and an LLM synthesis — including a Workboard card with exact counts of what waits on you, what LIA holds and what is overdue — served by a read-only domain outside the agent graph ([BRIEFING_DOMAIN](docs/technical/BRIEFING_DOMAIN.md)).
+The home page opens on the date and LIA's living face, then aggregates your sources in parallel with a per-section cache and an LLM synthesis — an agenda on a timeline, an illustrated weather, a Workboard card with exact counts of what waits on you, what LIA holds, what your connections hold and what is overdue — served by a read-only domain outside the agent graph ([BRIEFING_DOMAIN](docs/technical/BRIEFING_DOMAIN.md)). Meetings and calls read as timelines by day and part of day, and a list that cannot load says so instead of looking empty.
 
 ### Remember
 
@@ -511,7 +646,7 @@ The home page aggregates your sources in parallel with a per-section cache and a
 #### Your data, by construction
 
 - Credentials are encrypted with Fernet. Logs keep facts, never the words of the people they concern; the guard checks the value rather than the field name ([ADR-317](docs/architecture/ADR-317-A-Log-Line-Carries-Facts-Never-The-Words.md)).
-- A full-account GDPR export is available ([ADR-145](docs/architecture/ADR-145-Account-Export.md)). External content keeps its provenance through compaction.
+- A full-account GDPR export is available ([ADR-145](docs/architecture/ADR-145-Account-Export.md)). External content keeps its provenance through compaction, and its envelope holds in every spelling ([ADR-167](docs/architecture/ADR-167-Content-Trust-Registry.md)); mail servers present a verified certificate before any login.
 - Skill scripts run in a throwaway container. Automated backups have a tested one-command restore ([ADR-109](docs/architecture/ADR-109-PostgreSQL-Backup-Strategy.md), [SECURITY](docs/technical/SECURITY.md)).
 
 #### Exact where it must be
@@ -527,6 +662,7 @@ Arithmetic, dates and currencies use tools in both execution modes, never a mode
 - One status vocabulary whose every member is produced and read, one success predicate for the register, the metrics and the ReAct loop, a structural failure marker on the ReAct message, and an honesty directive that names the tool that failed and the exact total, so the response has the recorded failure evidence instead of an unexplained gap ([ADR-303](docs/architecture/ADR-303-Tool-Failure-Restitution.md)).
 - Every act is filed under its own turn and stated to the response as the assistant's own ([ADR-263](docs/architecture/ADR-263-Execution-Authority-Chain-And-Effect-Register.md)).
 - No database transaction stays open while a provider answers ([ADR-304](docs/architecture/ADR-304-No-Transaction-Across-A-Network-Call.md)).
+- A routine never asks a question nobody can see and never repeats an action after a timeout; an e-mail is sent once, and a provider's rate limit is waited out rather than reported as an outage ([ADR-276](docs/architecture/ADR-276-Workboard.md)).
 
 #### Switches, not redeploys
 
@@ -571,7 +707,7 @@ A 24-section panel embedded in the chat, organised into six groups; an empty sec
 
 ### Observability
 
-- **Prometheus**: 618 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric.
+- **Prometheus**: 620 custom metrics (agents, LLM, infrastructure), labelled by route template — a name or a search in an address never becomes a series. A metric nobody can see is a metric nobody acts on: every one must be wired to a Grafana panel, a recording rule or an alert, and a shrink-only ratchet fails the build on a newly blind metric.
 - **Grafana**: 31 dashboards, including product-value and radio cockpits · **Loki**: structured JSON logs that keep facts, never people's words, shipped by Grafana Alloy ([ADR-317](docs/architecture/ADR-317-A-Log-Line-Carries-Facts-Never-The-Words.md)) · **Tempo**: distributed tracing, spans named by the route template · **Langfuse**: LLM tracing with prompt versions. The whole stack runs on supported versions, pinned by digest.
 - **Linked signals, a pipeline that watches itself**: a log line opens its trace, a trace its logs and metrics, a latency point its exemplar; Loki, Alloy, Tempo and Grafana are scraped on closed keep-lists and `LogsNotDelivered` fires when lines go missing; every dashboard opens on seven days (logs and traces on four hours) behind one shared menu — [ADR-333](docs/architecture/ADR-333-Linked-Signals-And-A-Pipeline-That-Watches-Itself.md).
 - **Probes**: liveness (`GET /health`) split from readiness (`GET /ready`, 503 unless PostgreSQL **and** Redis answer) — [ADR-115](docs/architecture/ADR-115-Liveness-Readiness-Probes.md).
@@ -612,10 +748,10 @@ The result is measured, not proclaimed:
 
 |                           |                                         |                                         |                                                                         |
 | ------------------------- | --------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------- |
-| **55** functional domains | **931,000+** source lines (excl. tests) | **59,000+** inventoried automated tests | **342** ADRs                                                            |
-| **280** versions shipped  | **6 languages**, parity enforced in CI  | **618** Prometheus metrics              | [**8.3/10** technical audit, 24 normalized areas](docs/audit/README.md) |
+| **55** functional domains | **960,000+** source lines (excl. tests) | **63,000+** inventoried automated tests | **347** ADRs                                                            |
+| **282** versions shipped  | **6 languages**, parity enforced in CI  | **620** Prometheus metrics              | [**8.3/10** technical audit, 24 normalized areas](docs/audit/README.md) |
 
-Source-line figure: 932,910 physical lines in Python, TypeScript, JavaScript and CSS under `apps/api/src` and `apps/web/src`, excluding test directories and `*.test.*`/`*.spec.*` files (measured 2026-10-12). Test inventory combines backend collection and the frontend suite; release qualification executes the repository's required gates. The published technical audit does not score security.
+Source-line figure: 960,748 physical lines in Python, TypeScript, JavaScript and CSS under `apps/api/src` and `apps/web/src`, excluding test directories and `*.test.*`/`*.spec.*` files (measured 2026-10-17). Test inventory combines backend collection and the frontend suite; release qualification executes the repository's required gates. The published technical audit does not score security.
 
 - **The full story** — method, trade-offs, results and what remains to be done, weaknesses included: [lia.jeyswork.com/story](https://lia.jeyswork.com/story)
 - **The audit itself** — 24 normalized areas mapped to ISO/IEC 25010:2023, every score backed by executed evidence, open worksites included, with the protocol and the full standalone report: [docs/audit/](docs/audit/README.md)
@@ -803,7 +939,7 @@ docs/                     # Architecture, technical documents, guides, runbooks,
 | **Domain taxonomy**        | One declarative `DOMAIN_REGISTRY` (agents, result key, related domains, priority, routability) feeds catalogue filtering, semantic expansion and the initiative phase — never a second hand-maintained table                                                         |
 | **Data registry**          | Tool results live in an in-memory store decoupled from the message history, so aggressive message windowing never loses a `$steps.X.field` reference                                                                                                                 |
 | **Semantic validator**     | A dedicated LLM, distinct from the planner, inspects every plan for hallucinated capabilities, ghost dependencies, cardinality and scope errors before anything runs                                                                                                 |
-| **Adaptive re-planner**    | A rule-based analyser classifies an execution failure and picks a recovery; in _panic mode_ the catalogue expands to every tool for one retry                                                                                                                        |
+| **Re-plan before running** | Validator issues go back to the planner a bounded number of times, and _panic mode_ retries planning once over a wider catalogue; once a plan has run, a failed step is stated in the answer, never replayed                                                         |
 | **Connector abstraction**  | Python protocols and normalisers make Google, Apple and Microsoft interchangeable behind unified domain models; a resolver guarantees one provider per category                                                                                                      |
 | **Published bounds**       | Whatever a validator can reject, its producer can read: every enforced limit is published to the planner, and what is mechanically repairable is repaired before validation ([ADR-184](docs/architecture/ADR-184-Published-Bounds-And-Non-Prescriptive-Verdicts.md)) |
 | **Exact counts**           | A number shown to a person is exact or it does not exist — aggregates over the whole set, pages of rows, never a count derived from a capped page ([ADR-185](docs/architecture/ADR-185-Exact-CRM-Counts-And-Readable-Relayed-Messages.md))                           |
@@ -823,8 +959,8 @@ docs/                     # Architecture, technical documents, guides, runbooks,
 | Backend       | Python 3.14 · FastAPI 0.141.1 · Pydantic 2.13.4 · SQLAlchemy 2.0.54 · Alembic                                         | REST API, SSE streaming, validation, async ORM, migrations        |
 | Orchestration | LangGraph 1.2.14 · LangChain 1.3.15 · `mcp` SDK (Streamable HTTP)                                                     | Multi-agent graph, LLM abstraction, Model Context Protocol        |
 | Data          | PostgreSQL 16 + pgvector · Redis 7.4                                                                                  | Data, checkpoints, vector search · cache, sessions, locks         |
-| Frontend      | Node.js 24 LTS · Next.js 16.3.8 · React 19.3.0 · TypeScript · TailwindCSS · Radix UI · TanStack Query · react-i18next | App Router UI, accessible primitives, server state, six languages |
-| Voice         | ONNX Runtime Web (wake word) · sherpa-onnx (offline Whisper) · Edge TTS · OpenAI · ElevenLabs                         | In-browser detection, server transcription, speech synthesis      |
+| Frontend      | Node.js 24 LTS · Next.js 16.4.1 · React 19.3.0 · TypeScript · TailwindCSS · Radix UI · TanStack Query · react-i18next | App Router UI, accessible primitives, server state, six languages |
+| Voice         | ONNX Runtime Web (wake word) · sherpa-onnx (offline Whisper) · Edge TTS · OpenAI · ElevenLabs · Gemini · Fish Audio   | In-browser detection, server transcription, speech synthesis      |
 | Observability | Prometheus · Grafana · Loki · Tempo · Langfuse · structlog                                                            | Metrics, dashboards, logs, traces, LLM tracing                    |
 | Delivery      | Docker (multi-arch amd64/arm64) · GitHub Actions · Task                                                               | Images, CI/CD, one build tool for every command                   |
 
@@ -867,12 +1003,12 @@ task test:frontend                 # vitest
 task test:e2e                      # Playwright + axe journeys (hermetic, mocked API)
 ```
 
-| Metric                  | Value                                                                                                                                       |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Backend tests           | 40,039 collected over `tests/`, across 2,315 files (`pytest --collect-only -q --no-cov`, 2026-10-06)                                        |
-| Frontend tests (vitest) | 11,066 collected across 892 files (`vitest list --json`, 2026-10-06), plus hermetic Playwright journeys with axe, dark-mode and zoom checks |
-| Coverage floor          | 78% enforced in CI on the backend — a shrink-only ratchet, never lowered; frontend thresholds per glob                                      |
-| Technical audit         | **8.3/10** across 24 normalized areas — [full public report & protocol](docs/audit/README.md)                                               |
+| Metric                  | Value                                                                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Backend tests           | 50,011 collected over `tests/`, across 3,275 files (`pytest --collect-only -q --no-cov`, 2026-10-17)                                                 |
+| Frontend tests (vitest) | 13,128 passing across 1,062 files (`task test:frontend:coverage`, 2026-10-17), plus hermetic Playwright journeys with axe, dark-mode and zoom checks |
+| Coverage floor          | 78% enforced in CI on the backend — a shrink-only ratchet, never lowered; frontend thresholds per glob                                               |
+| Technical audit         | **8.3/10** across 24 normalized areas — [full public report & protocol](docs/audit/README.md)                                                        |
 
 Tests are risk-driven and behavioural: a module never disables itself on a missing provider key, a test double that receives a coroutine owns it, and an unawaited coroutine or a post-summary warning is a failure ([GUIDE_TESTING](docs/guides/GUIDE_TESTING.md)).
 
@@ -883,52 +1019,4 @@ Two layers: a **local pre-commit hook** (fast, on staged files) and a **GitHub A
 ```
 Pre-commit (local)              GitHub Actions CI
 ===================             ==================
-.bak files check                Lint Backend (Ruff + Black + MyPy strict)
-Secrets grep                    Lint Frontend (ESLint + TypeScript)
-Ruff + Black + MyPy             Fast unit tests + coverage floor
-Fast unit tests                 Integration tests (PostgreSQL + Redis)
-Critical pattern detection      Agents suite
-i18n keys sync                  Code hygiene (i18n, Alembic, lockfiles, patterns, docs)
-Alembic migration conflicts     Docker build smoke test
-.env.example completeness       Secret scan (Gitleaks)
-ESLint + TypeScript check       ──────────────────────
-Pre-push: secret scan           Security workflow (weekly)
-                                  CodeQL (Python, JS/TS, Actions)
-                                  Dependency audit (pip-audit + pnpm audit)
-                                  Trivy filesystem scan
-                                  SBOM generation
-                                Dependency watch (weekly, ADR-331)
-                                E2E + a11y matrix: Chromium · Firefox · WebKit (weekly)
-```
-
-| Practice                 | Implementation                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Reproducible builds**  | Universal Python lockfiles (linux/amd64, arm64, Windows), hash-verified installs everywhere, a guard failing manifest edits without lock regeneration ([ADR-112](docs/architecture/ADR-112-Python-Dependency-Locking.md))                                                                                                                                                                                                                             |
-| **Supply chain**         | Every GitHub Action pinned by commit SHA and every production build input by version and digest, `permissions: contents: read`; a weekly watch of the advisories each dependency publishes, a refresh under a cooling-off period that never moves backwards, Dependabot on the same cooldowns ([ADR-331](docs/architecture/ADR-331-Dependency-Watch-And-A-Refresh-That-Never-Goes-Back.md)); the CI's secret scan before every push; SBOM per release |
-| **Shrink-only ratchets** | Coverage, file size, cyclomatic complexity, MyPy debt, React hooks, accessibility and metric visibility can only improve — a baseline is lowered after the work, never raised to absorb a regression                                                                                                                                                                                                                                                  |
-| **Documentation gate**   | Every version, count and threshold a document states is recomputed from the code that owns it and a mismatch fails the build; broken links, stale code paths and unreachable documents too                                                                                                                                                                                                                                                            |
-| **Release pipeline**     | A tag builds candidates; a release is promoted only from a qualified, disposable-machine installer run ([ADR-215](docs/architecture/ADR-215-Self-Host-Installer.md)); multi-arch images on ghcr.io                                                                                                                                                                                                                                                    |
-
-> Full details: [CI/CD documentation](docs/technical/CI_CD.md).
-
-### Security
-
-| Reference                                                                              | Concrete measure                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [GDPR / RGPD](https://eur-lex.europa.eu/eli/reg/2016/679)                              | PII filtering, data minimisation, full-account export and account deletion that also removes linked OAuth grants and transparency records ([privacy guide](docs/knowledge/15_privacy.md))                                                                                                                                                                                                                                                 |
-| [EU AI Act](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) | The interface identifies LIA as AI; approval before mutation and separate records of actions, reads and decisions support transparency and traceability. Applicable duties still depend on the deployment and use case ([traceability boundaries](docs/technical/AI_ACT_TRACEABILITY.md))                                                                                                                                                 |
-| OWASP Top 10                                                                           | XSS, SQL injection and CSRF safeguards; a global Redis-backed rate limit before routes; request bodies bounded before they are read, webhooks included                                                                                                                                                                                                                                                                                    |
-| Prompt injection                                                                       | External content wrapped in safety markers, trust classified by data type rather than by producing tool, and a provenance that survives history compaction — a summary built from third-party text inherits its banner instead of promoting the claim to system authority                                                                                                                                                                 |
-| SSRF & hostile text                                                                    | Every fetched URL is validated, then fetched on the very address the check resolved, one redirect hop at a time; text flatteners run in linear time on hostile input, held by growth and equivalence tests ([ADR-326](docs/architecture/ADR-326-Linear-Flatteners-And-Pinned-Fetches.md))                                                                                                                                                 |
-| OAuth / PKCE                                                                           | PKCE S256, single-use state and issuer/identity checks; grouped Google/Microsoft consent shares grants only within the verified provider account ([ADR-302](docs/architecture/ADR-302-OAuth-Grant-Par-Compte-Et-Consentement-Groupe.md)); linking a federated identity never changes an account's status ([ADR-002](docs/architecture/ADR-002-BFF-Pattern-Authentication.md))                                                             |
-| [MCP](https://modelcontextprotocol.io/) / plugins                                      | Model Context Protocol servers and apps, agentskills.io skills and Agent Plugins v1 packages use documented open interfaces, with separately reviewed trust and sandbox boundaries ([MCP](docs/technical/MCP_INTEGRATION.md), [plugins](docs/technical/PLUGINS_INTEGRATION.md))                                                                                                                                                           |
-| Supply chain                                                                           | Hash-verified universal lockfiles and every build input pinned by digest, pip-audit on the full transitive tree, a weekly watch of each dependency's own advisories and end-of-life dates, a refresh that never moves a version backwards ([ADR-331](docs/architecture/ADR-331-Dependency-Watch-And-A-Refresh-That-Never-Goes-Back.md)), a CycloneDX SBOM per release                                                                     |
-| Untrusted code                                                                         | Skill scripts execute in a throwaway container — no Docker socket, no network, read-only filesystem, unprivileged uid, all capabilities dropped — and no sandbox means no execution, never a weaker fallback; a script the assistant writes, or a skill's command that names its hosts, reaches the web only through one egress proxy holding the keys and the allowlist ([ADR-298](docs/architecture/ADR-298-Sandbox-Egress-Toolbox.md)) |
-
-These references describe implemented controls, not a GDPR/AI Act legal opinion, OWASP or ISO certification, or a security-audit score. The [public 8.3/10 audit](docs/audit/README.md) measures 24 technical-quality areas against an ISO/IEC 25010:2023-inspired grid and explicitly excludes security.
-
-**Reporting a vulnerability** — do not open a GitHub issue. Write to **liamyassistant@gmail.com** with a description, the steps to reproduce and the potential impact; we answer within 48 hours. Policy and supported versions: [SECURITY.md](SECURITY.md).
-
-### Performance
-
-Instrumentation and caching are in place — per-node message windowing, LLM context compaction with a threshold derived from the response model's window, prompt caching shaped for every provider mechanism (breakpoints, explicit markers, implicit prefixes) with an optional cross-turn cache for ReAct, asymmetric Gemini embeddings, parallel execution of independent domains, persistent HTTP pools — all instrumented in production. The perceived response time is dominated by the LLM call cascade (seconds to tens of seconds depending on the request and the hardware); that is the optimisation programme in progress. The [technical audit](docs/audit/README.md) scores performance 7.5/10: no sustained load campaign has been executed yet, and the 
+.bak files check                Lint Backen

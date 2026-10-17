@@ -221,7 +221,7 @@ Only allowlisted PostHog events/properties leave the app, including through the 
 capture and remote feature flags are disabled. No email, API key, password,
 prompt/output, referral code, payment identifier, raw error or exact balance is sent.
 Dashboard payment-flow events additionally allow exact valid selected USD top-up
-amounts (1000–50000 cents), validated crypto bonus/credit offer amounts, and curated
+amounts (500–50000 cents), validated crypto bonus/credit offer amounts, and curated
 button/edit/quote/checkout/dismissal outcomes. Raw input and checkout URLs remain
 excluded. The shared contract and transport are synchronized here; the landing
 does not emit payment-flow events. Consent remains version 1 without re-prompting.
@@ -318,7 +318,7 @@ No real payment or Google conversion is created by these tests.
 
 OpenAI Pixel measures `page_viewed` on route changes and `contents_viewed` on the first homepage model-catalogue expansion in a page lifetime. Collapse, rerender, remount, and subsequent expansions do not emit additional catalogue events. Expanding without consent is never replayed after permission is granted. OpenAI measurement is optional; SDK or identity failures must not block catalogue interaction or navigation. Production pixel debugging is disabled.
 
-The free API key CTA remains available. Paid-model CTAs link to `https://dash.llm7.io/#/billing`, show the $10 minimum top-up, and leave payment initiation to an explicit dashboard action. The dashboard restores the allowlisted billing destination through supported same-tab authentication flows. Its shared pixel helper measures payment-provider choices and `checkout_started` only when a provider checkout is created; registration and verified paid orders are delivered by the server.
+The free API key CTA remains available. Paid-model CTAs link to `https://dash.llm7.io/#/billing`, show the $5 minimum top-up, and leave payment initiation to an explicit dashboard action. The dashboard restores the allowlisted billing destination through supported same-tab authentication flows. Its shared pixel helper measures payment-provider choices and `checkout_started` only when a provider checkout is created; registration and verified paid orders are delivered by the server.
 
 New consent choices are preselected but are only saved after the visitor confirms; previously declined choices stay off. `npm test` covers catalogue expansion/collapse, actual consent-gated event emission, denied-consent non-replay, remount deduplication, and the paid/free CTA destinations. Before releasing, verify shared consent and attribution cookies on real HTTPS landing and dashboard domains; local tests cannot prove cross-domain attribution.
 

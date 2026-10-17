@@ -397,5 +397,252 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "ptrefall/fluid-hierarchical-task-network": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-02-25",
+  "rel_days": 234,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Littlesheepxy/zhigeng": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2026-08-26",
+  "rel_days": 52,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 63,
+   "Swift": 18,
+   "CSS": 8,
+   "C": 6,
+   "Python": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "mezmo/aura": {
+  "commit_90d": 493,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.19",
+  "rel_pub": "2026-10-09",
+  "rel_days": 8,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 22,
+  "lang": {
+   "Rust": 95,
+   "Python": 2,
+   "Shell": 2,
+   "Makefile": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "theaniketgiri/create-llm": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 96,
+   "Shell": 2,
+   "Makefile": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "sgl-project/sglang-jax": {
+  "commit_90d": 157,
+  "commit_7d": 4,
+  "rel_ver": "v0.1.0rc0",
+  "rel_pub": "2026-08-29",
+  "rel_days": 49,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 62,
+  "lang": {
+   "Python": 100,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "intel/intel-extension-for-tensorflow": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.15.0.3",
+  "rel_pub": "2025-03-18",
+  "rel_days": 578,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 50,
+  "lang": {
+   "C++": 64,
+   "Python": 34,
+   "Starlark": 1,
+   "C": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "langchain-ai/langchain-aws": {
+  "commit_90d": 153,
+  "commit_7d": 13,
+  "rel_ver": "langchain-aws==1.9.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-10-02",
+  "sec_ids": [
+   "GHSA-jh3j-8r6h-3qrc(-,medium)"
+  ],
+  "contrib_n": 153,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "robertknight/rten": {
+  "commit_90d": 326,
+  "commit_7d": 21,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Rust": 96,
+   "Python": 3,
+   "JavaScript": 1,
+   "Just": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "lucidrains/clinical-calculator-tooluse": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

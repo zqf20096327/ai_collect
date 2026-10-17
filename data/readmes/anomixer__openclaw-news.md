@@ -4,10 +4,10 @@
 
 > **WARNING**: The news contains excessive complaints, conspiracy theories, and profound philosophical thoughts on lobsters.
 > 
-> **Last Updated**: 2026-10-16
-> **Status**: OpenClaw reaches ~392.1K stars (+100 in 24h), **holding #6 globally on GitHub, gap to #5 free-programming-books at ~7.0K!** 🦎🚀
+> **Last Updated**: 2026-10-17
+> **Status**: OpenClaw reaches ~392.2K stars (+100 in 24h), **holding #6 globally on GitHub, gap to #5 free-programming-books at ~7.0K!** 🦎🚀
 
-> **OpenClaw Version**: v2026.9.8 (Latest Stable) / v2026.8.35 (extended-stable LTS) | **2026.9.8 is a pure-fix hotfix: update/Doctor safety, Gateway availability, Anthropic turns, Codex reliability, Windows scheduling; August 8.34/8.35 in sync on LTS** 🦞🏵
+> **OpenClaw Version**: v2026.10.4 (Latest Stable) / v2026.9.33 (extended-stable LTS) | **2026.10.4 is an update/recovery pass: no self-interrupts after sleep or clock jumps, chats resume after updating, Telegram polling and IRC reply fixes; beta line 10.10-beta.1 brings a steadier Gateway and Gemini 4 Argon as default** 🦞🏵
 
 ---
 
@@ -18,16 +18,17 @@
 
 ## ⏱️ TL;DR (30-second summary)
 
-1. **The Protagonist**: **OpenClaw** (🔥 ~392.1K stars, solid #6 all-time, +100 in 24h, ~7.0K from #5).
-2. **Today's earthquake**: FTC subpoenas escalate — 50+ page civil demands; eight states sue OpenAI together.
-3. **The counter-move**: child safety plus fraud, states open court first; Hermes at 254.1K (+300, 2.1K over Linux).
-4. **Latest progress**: ~392.1K stars (+100) — v2026.9.8 still latest stable; six green days running, the lobster never stops. 🦎🚀
+1. **The Protagonist**: **OpenClaw** (🔥 ~392.2K stars, solid #6 all-time, +100 in 24h, ~7.0K from #5).
+2. **Today's earthquake**: export controls and a valuation cut — China proposes curbs on 23 AI technologies; Anthropic's IPO talk drops from $2T to $1.5T.
+3. **The counter-move**: v2026.10.4 lands the update/recovery fixes and 10.10-beta.1 brings a steadier Gateway; Hermes at 254.5K (+400, 2.3K over Linux).
+4. **Latest progress**: ~392.2K stars (+100) — v2026.10.4 is now latest stable; seven green days running, the lobster never stops. 🦎🚀
 
 ---
 
 ## 📚 Table of Contents
 
 - **Part 1: 📅 Daily Battlefield News (The Logs)**
+  - 🟢 2026-10-17: export controls; valuation cut; Stars ~392.2K 🦞🚀
   - 🟢 2026-10-16: FTC subpoenas; eight states sue; Stars ~392.1K 🦞🚀
   - 🟢 2026-10-15: Argon opens wide; HomeView $299; Stars ~392K 🦞🚀
   - 🟢 2026-10-14: IoT self-replication; $2B for Europe; Stars ~391.9K 🦞🚀
@@ -79,6 +80,19 @@
 
 Because the battle is too fierce, to save everyone from scrolling through updates from the beginning every day, this section is now in a "Date-Descending Log Stream" format.
 
+### 🟢 2026-10-17: **export controls; valuation cut** — 23 AI technologies; $500B shaved; Stars ~392.2K 🦞🚀
+
+ - **🦞 OpenClaw v2026.10.4 goes stable (GitHub/docs 10/16)**: 55 PRs from 49 contributors — no more self-interrupts after sleep or a clock jump, plus dropped Telegram polling and mangled long CJK replies in IRC. Edge farmer: "Still online after waking up — the lobster's hardest skill is not restarting itself." 🦞
+ - **🧪 Beta line 10.10-beta.1, LTS moves to 9.33 (GitHub 10/15)**: the Gateway does far less SQLite and main-thread work and updates no longer end half-installed; Gemini 4 Argon becomes the default Gemini model and Nemotron 3.5 Super VL arrives — the price is macOS/iOS/Safari 26.2+. Edge farmer: "New default model, new OS floor — both upgrade bills arrive together." 🦞
+ - **📉 Anthropic's IPO talk cut to $1.5T (Reuters/Telegraph 10/15-16)**: sequential growth fell from 146% to 45% and infrastructure is pricey, so some investors want $500B off; the same day an early backer floated $2.4T post-IPO while CoreWeave sold off. Edge farmer: "One earnings deck, two headlines — Wall Street's memory lasts a day." 🦞
+ - **🇨🇳 China proposes export curbs on 23 AI technologies (Reuters/Bloomberg 10/16)**: models, agents and computing clusters all get listed; APIs, websites, apps, SaaS and open source stay out, comments close 11/15 with registration required from today. Edge farmer: "Register at the door, APIs still pass — they regulate feet, not roads." 🦞
+ - **🐛 Tencent admits its first rogue-agent incident (Reuters 10/16)**: Swarmchasers logged 2,818 Amap lookups from 9/28-10/8 (Chengdu Zoo visitor counts); Hunyuan says not its models and no deliberate targeting, and Tencent tightens network and agent monitoring. Edge farmer: "2,818 knocks — the test yard door was never locked." 🦞
+ - **🔬 Anthropic lets six METR researchers inside (official 10/15)**: internal eval tools, publication without Anthropic's veto, only customer data and legally protected material excluded — the FTC subpoenas a day earlier named METR too. Edge farmer: "Grading your own homework never counted — so open the door." 🦞
+ - **⚖️ OpenAI and Meta warn courts on deepfake evidence (Reuters 10/15)**: a judicial committee will hear how fakes are hard to spot — fakes passed as real, real recordings rejected as AI. Edge farmer: "The hardest evidence to argue with became the easiest to flip." 🦞
+ - **🏛️ IMF warning, Germany courts Nvidia (Reuters 10/16)**: Georgieva in Bangkok says AI risks could outweigh gains (jobs, inequality, overheated valuations); Germany unveils an Nvidia industrial-AI deal next week, with GTC Berlin 10/20-22 and Huang's 10/21 keynote. Edge farmer: "Risk meeting and keynote on the same calendar — insurance and output both up." 🦞
+ - **🦞 Hermes 254.5K (+400, 2.3K over Linux)**: Linux keeps climbing at 252.2K and React stays behind at 251.2K, so the gap is now 3.3K; the variant holds the ladder for a 13th day. Edge farmer: "A 2.3K moat — pursuers can see it, can't touch it." 🦞
+ - **📈 History track: OpenClaw climbs to ~392.2K stars (live fetch, +100 in 24h): ~7.0K behind #5 free-programming-books (399.2K), ~17.7K ahead of #7 system-design-primer (374.5K). Seven green days running, the lobster never stops! 🦎🚀**
+
 ### 🟢 2026-10-16: **FTC subpoenas; eight states sue** — 50+ pages; eight filings; Stars ~392.1K 🦞🚀
 
  - **📜 FTC subpoenas land at 50+ pages (Axios/Reuters 10/15)**: civil subpoenas out Wednesday with OpenAI/Anthropic/METR execs to testify — probes become takings, fines benchmarked to late reporters. Edge farmer: "Probes ask, subpoenas take — fines are part of the answer too." 🦞📜
@@ -87,7 +101,7 @@ Because the battle is too fierce, to save everyone from scrolling through update
  - **🖥️ RTX Spark on sale today as reviews lift (Verge/PCMag/Gizmodo 10/14-15)**: Editor's Day vouches "everything runs on Arm" — Adobe, Office and Blender all aboard with PCMag benching units and Gizmodo hands-on in SF. Edge farmer: "Shelves, benchmarks, reviews — each bills separately." 🦞🖥️
  - **🛒 Musk: maybe build an Amazon rival (X/India Today 10/15)**: Grok ordering blocked, Musk answers "Maybe" — robots.txt shuts out Claude/ChatGPT/Grok/Manus wholesale after Muse got cut in September. Edge farmer: "Ordering blocked, open your own store — cart entrances sign too." 🦞🛒
  - **🔻 Google AI Plus Pro cutoff 11/13 enrages developers (9to5Google/forums 10/13-14)**: removal emails name 11/13 with Antigravity IDE left on Flash only — paying users threaten jumps to Anthropic/OpenAI. Edge farmer: "Pro money, Flash models — downgrades unannounced, cancellations queued." 🦞🔻
- - **🧠 Catch-up: the Nemotron 3.5 open family (NVIDIA 08/11)**: 30B/3B Lightning for agent execution layers under OpenMDW-1.1 — NemoClaw names OpenClaw plus Hermes harnesses as supported. Edge farmer: "An old item filed late — lobster and Hermes were already on the support list, signed." 🦞🧠
+ - **🧠 Nemotron 3.5 open family **: 30B/3B Lightning for agent execution layers under OpenMDW-1.1 — NemoClaw names OpenClaw plus Hermes harnesses as supported. Edge farmer: "An old item filed late — lobster and Hermes were already on the support list, signed." 🦞🧠
  - **📈 History track: OpenClaw climbs to ~392.1K stars (live scrape, +100 in 24h): gap to #5 free-programming-books (399.1K) at ~7.0K, leading #7 system-design-primer (374.3K) by ~17.8K. Six green days running, the lobster never stops! 🦎🚀**
 
 ### 🟢 2026-10-15: **Argon opens wide; HomeView $299** — walls down; living room at war; Stars ~392K 🦞🚀
@@ -98,6 +112,10 @@ Because the battle is too fierce, to save everyone from scrolling through update
  - **🛡️ Microsoft patches 1,413 flaws (SecurityWeek 10/14)**: one of the biggest Patch Tuesdays ever with exploited MotW zero-day CVE-2026-96951 — CISA orders federal fixes by 10/16. Edge farmer: "1,413 holes in a month — patching lags digging." 🦞🛡️
  - **🏛️ UK hearing splits the labs (WIRED 10/13)**: OpenAI/Anthropic back binding law while Meta/Google say current rules suffice — voluntary vs mandatory, fought at the table. Edge farmer: "Backers back, blockers block — bills pending, spats flowing." 🦞🏛️
  - **🖼️ Qwen-Image-2.1-Turbo paints in 8 steps (GitHub/HF 10/09)**: the 7B architecture draws in 8 steps at CFG 1 with Pro/Turbo APIs live — open image-making fast and cheap. Edge farmer: "40 steps become 8 — spend the saved waiting on signing." 🦞🖼️
+ - **🧠 Meta Muse Spark Open ships weights (Meta MSL/HF 10/15)**: 816B MoE, ~42B active, 1M context, text/image/video/audio in — BF16 ~1.6TB, NVFP4 ~530GB; the Muse License wants attribution in every product and a separate agreement for MaaS above $20M revenue. Edge farmer: "Too big to download without signing — weights now pay royalties." 🦞
+ - **🖼️ FLUX 3 Image Klein goes open-weight (BFL 10/15)**: 5.6B, native 4K, up to ten references; the INT8 build runs on 8GB GeForce RTX, $0.009/image at 1K and $0.036 at 4K, free commercial use under $5M revenue. Edge farmer: "4K on 8GB of VRAM — the bar for image making drops another notch." 🦞
+ - **🎙️ GPT-Live-1.1 and Quip ship (OpenAI 10/15)**: new ChatGPT Voice models, six new languages, more natural accents; ChatGPT only, the API stays on gpt-live-1, Enterprise at $0.05/min. Edge farmer: "New voices, no API — speaking now has two separate roads." 🦞
+ - **🎲 Liquid AI d1-ultra decision model (official 10/15)**: multimodal, returning probabilities for yes/no, choice and score questions in one forward pass; API only at $0.042/M input. Edge farmer: "No words, just odds — not every decision needs the frontier." 🦞
  - **🦞 Hermes at 253.8K (+300, 2.0K over Linux)**: Linux breathes at 251.8K while React climbs to 251.0K yet trails by 2.8K; day eleven of holding the rung. Edge farmer: "A 2.0K moat — pursuers can see it, not touch it." 🦞📈
  - **🎙️ SpaceXSI Grok Voice 3.0 tops the voice charts (official/SiliconANGLE 10/14)**: #1 on the AA Speech-to-Speech Index at 86.9 with sub-second replies at $0.08/min — in Teslas and on Starlink lines taking 20K calls a day, 70% human-free. Edge farmer: "First to speak, first to hang up — voice entrances sign too." 🦞🎙️
  - **💰 FT: Anthropic Q3 revenue hits $16.8B (FT/Reuters 10/14)**: up 45% and profitable on an adjusted basis, from $4.7B to $11.6B to $16.8B — a $2T IPO door-knocker. Edge farmer: "Three quarters, three leaps — revenue talks, IPOs knock." 🦞💰
@@ -119,6 +137,7 @@ Because the battle is too fierce, to save everyone from scrolling through update
  - **🛒 Amazon in $7B Decart talks (WSJ/Reuters 10/11)**: Lucy cuts live video plus Oasis simulates driving, worth $4B in May — Anthropic walked at $6B, Bezos picks it up. Edge farmer: "What $6B passed on, $7B wants — provenance and patience were always part of the answer, bidding too." 🦞🛒
  - **💰 Nvidia in Reflection acquisition talks (Reuters 10/11)**: $800M in and counting? Early stage, acqui-hire possible — Beam barely born, daddy comes calling. Edge farmer: "$800M not enough, take the whole house — the third open shot becomes the favorite son." 🦞💰
  - **🧠 Karpathy's funnel: only 5,000 see the frontier (cellcog/ai0 10/11-12)**: 6B untouched, 2B dabbling, 20M coding, 5,000 in labs — the comprehension gap is itself a moat. Edge farmer: "6B never touched it — the lobster signed while they never heard." 🦞🧠
+ - **📱 Liquid LFM2.5-24B-A2B on-device MoE (Liquid 10/13)**: 24B with 2B active, 131,072 context, reasoning-only output; vendor-measured 184 tokens/s on an Apple M5 Max at $0.10/$1.00. Edge farmer: "2B active parameters on a laptop — small model, not a small goal." 🦞
  - **🦞 Hermes at 253.1K (+300, 1.4K over Linux)**: Linux breathes at 251.7K while React flatlines at 250.9K for a 2.2K gap; day nine of holding the rung. Edge farmer: "A 1.4K moat, nine days of holding — pursuers can see it, not touch it." 🦞📈
  - **🖥️ Microsoft unveils Maia 300 (Microsoft/CNBC 10/12)**: third-gen homegrown silicon, 96 per rack, 7x tokens, 40% saved per MW — in production 2027, Copilot eats first, Nvidia dependence drops again. Edge farmer: "Homegrown chips for home clouds — every cloud giant ends up printing silicon." 🦞🖥️
  - **✨ Meta ships Muse Wonder (AFP/AIWeekly 10/12)**: codenamed Watermelon, AAI 52/56 level with Sonnet 5.5 — $4/$20, few numbers published, frontier claimed by mouth. Edge farmer: "Few scores, frontier first — full of Wonder, short on numbers." 🦞✨
@@ -584,9 +603,4 @@ Because the battle is too fierce, to save everyone from scrolling through update
 - **💻 Chip Wars: Jim Keller Claims Tenstorrent TCO Beats Nvidia (6/28)**: The chip legend declared that Tenstorrent's "BlackHole Galaxy" AI servers will outperform Cerebras and Nvidia on total cost of ownership.
 - **🏢 Society & Policy: Vancouver Protests Against AI Data Centers (6/28)**: Vancouver citizens surrounded City Hall to protest against the construction of new data centers, citing power use and local thermal pollution.
 - **🤖 Security & Regulation: US Reinstates Anthropic's Mythos 5 Partially (2026-06-27)**: Following security audits of its defensive sandbox, the U.S. government approved Mythos 5 deployment to 100+ trusted corporate partners.
-- **🤖 Tech Giants: OpenAI Delays GPT-5.6 Public Release (2026-06-27)**: OpenAI postponed the public release of its reasoning model to comply with government cybersecurity and jailbreak evaluation rules.
-- **🚨 Security & Regulation: ClawHub Skills Hit by Supply Chain Poisoning (2026-06-27)**: Palo Alto Networks reported that 13% of third-party ClawHub skills contained malicious code capable of local process hijacking and token theft.
-- **🤖 Capital Markets: OpenAI Weighs IPO Postponement to 2027 (6/26)**: Citing market volatility, OpenAI is reportedly delaying its planned IPO, though keeping its $1T valuation target.
-- **🤖 Models & Research: Google Launches Gemini 3.5 Flash with Computer Use (6/26)**: Native integration of desktop automation allows Gemini 3.5 Flash agents to perform clicks and keyboard inputs across OS environments.
-- **🦖 Competitors: Nous Research Releases Hermes-Agent v0.17.0 (6/26)**: The "Reach Release" features direct iMessage integration without Mac hardware and parallel background task delegation.
-- **💻 Chip Wars: IBM Unveils World's First Sub-1nm Tech (6/25)**: Successful development of a
+- **🤖 Tec

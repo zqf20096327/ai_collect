@@ -178,6 +178,11 @@ opentax return validate --returnId a1b2c3
 # This does not transmit a return or prove IRS acceptance.
 opentax return export --returnId a1b2c3 --type mef > return.xml
 
+# Package it as a Pub 4164 submission ZIP (manifest/, xml/, attachment/) named
+# by its Submission ID. Needs the originator EFIN, the IRS-assigned Software ID
+# and a reviewed residency JSON (default returns/<id>/residency-review.json).
+opentax return export --returnId a1b2c3 --type mef-submission --efin 123456 --software-id 25000000
+
 # List entries in a return
 opentax form list --returnId a1b2c3
 
@@ -248,6 +253,7 @@ AI agents maintain the codebase:
 - Write node implementations
 - Generate test cases from official IRS exercises
 - Fix regressions
+- Prove each change with the harness before it ships
 
 All traced back to the authoritative IRS source.
 
@@ -255,17 +261,29 @@ All traced back to the authoritative IRS source.
 
 ## Development
 
-Requires [Deno](https://deno.land).
+Requires [Bun](https://bun.sh) 1.4. Run `bun install` once after cloning.
+
+Two CLIs, kept apart: `cli/main.ts` is the product, and the harness is what you
+use while building it. The harness is dev-only and documented in
+[scripts/testing/README.md](scripts/testing/README.md); agent instructions live
+in [AGENTS.md](AGENTS.md).
 
 ```bash
-# Run tests
-deno task test
+# Prove a change before a pull request (what CI runs)
+bun run check:structure   # nodes placed, registered, reachable
+bun run check:cases       # benchmark cases fit their node schemas and cite a source
+bun run check:oracle      # expected values changed only with a cited ledger entry
+bun run check:sandbox     # the binary reaches the network only through restricted fetch
+bun run test:unit         # module graph, type check and typed tests
+bun run test:forms        # node, export and return-processing tests
 
-# Run accuracy benchmark
-deno task bench
+# Run the full test suite and the accuracy benchmark
+bun run test
+bun run bench
 
-# Run the CLI in dev mode
-deno task tax return create --year 2025
+# Run the CLI in dev mode, or build the single-file binary
+bun run tax return create --year 2025
+bun run compile
 ```
 
 ### TY2026 research sources
@@ -298,7 +316,7 @@ Run this first. Shows pass/fail counts, pending root causes, and build phase for
 
 #### `/tax-fix [form:year]`
 
-Autonomous bug-fixing loop. Reads failing benchmark cases, clusters them by root cause, spawns parallel fixer agents, validates, and commits any net-positive improvements. Loops until all cases pass or progress stalls.
+Autonomous bug-fixing loop. Reads failing benchmark cases, clusters them by root cause, spawns parallel fixer agents, validates with the harness, and commits net-positive engine fixes only; benchmark cases are never edited to pass. Loops until all cases pass or progress stalls.
 
 ```
 /tax-fix f1040:2025
@@ -306,7 +324,7 @@ Autonomous bug-fixing loop. Reads failing benchmark cases, clusters them by root
 
 #### `/tax-cases [source]`
 
-Sources test cases from IRS publications (VITA exercises, Pub 17, MeF test packages). Run `/tax-fix` after to see how the engine performs on the new cases.
+Sources test cases from IRS publications (VITA exercises, Pub 17, MeF test packages) and validates what it writes with `bun run check:cases`. Run `/tax-fix` after to see how the engine performs on the new cases.
 
 ```
 /tax-cases vita                            # VITA Pub 4491 training exercises

@@ -573,5 +573,222 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "microblink/blinkid-android": {
+  "commit_90d": 29,
+  "commit_7d": 0,
+  "rel_ver": "v8002.0.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 9,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Kotlin": 99,
+   "Java": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "run-llama/llama-agents": {
+  "commit_90d": 42,
+  "commit_7d": 5,
+  "rel_ver": "llama-index-workflows@2.26.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "Python": 91,
+   "Go": 9,
+   "Makefile": 0,
+   "Starlark": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "kjappelbaum/awesome-chemistry-datasets": {
+  "commit_90d": 11,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "SimplexLab/TorchJD": {
+  "commit_90d": 41,
+  "commit_7d": 3,
+  "rel_ver": "v0.18.0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 9,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "miragecoa/AI-Cubby": {
+  "commit_90d": 28,
+  "commit_7d": 5,
+  "rel_ver": "v0.4.26",
+  "rel_pub": "2026-10-15",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Vue": 45,
+   "TypeScript": 33,
+   "JavaScript": 14,
+   "HTML": 4,
+   "C": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "antirez/gguf-tools": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "C": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "yicheng47/runner": {
+  "commit_90d": 1517,
+  "commit_7d": 146,
+  "rel_ver": "v0.16.4",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Rust": 99,
+   "PowerShell": 0,
+   "Python": 0,
+   "Shell": 0,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Colin-XKL/FeedCraft": {
+  "commit_90d": 44,
+  "commit_7d": 0,
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-08-30",
+  "rel_days": 48,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Go": 53,
+   "Vue": 28,
+   "TypeScript": 16,
+   "MDX": 2,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

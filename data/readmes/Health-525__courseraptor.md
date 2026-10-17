@@ -10,7 +10,7 @@
 [![CI](https://github.com/Health-525/courseraptor/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Health-525/courseraptor/actions/workflows/ci.yml)
 [![下载最新版](https://img.shields.io/github/v/release/Health-525/courseraptor?label=%E4%B8%8B%E8%BD%BD%E6%9C%80%E6%96%B0%E7%89%88&color=orange)](https://github.com/Health-525/courseraptor/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/Health-525/courseraptor?style=social)](https://github.com/Health-525/courseraptor)
+[![Stars](https://img.shields.io/github/stars/Health-525/courseraptor?style=social&v=2)](https://github.com/Health-525/courseraptor)
 
 [简体中文](README.md) · [English](README.en.md)
 
@@ -37,8 +37,6 @@
 
 ## 界面预览
 
-> 截图均为虚构示例数据（演示模式）。
-
 **网页对话** —— 浏览器打开 `http://localhost:3210` 即聊，思考过程与工具调用全程可见：
 
 <p align="center"><img src="docs/screenshots/gui.png" width="800" alt="网页对话：思考卡片、工具调用与课表回复（虚构示例数据）"></p>
@@ -47,7 +45,7 @@
 
 ## 核心特性
 
-开箱工具覆盖课表、课表图、文件表格、文档生成、沙箱计算、记忆、知识库、待办、学习技能库（按需加载）与设置，配置好模型 Key 就能直接对话。完整参数、耗时、环境变量与工具清单见 [能力文档](docs/capabilities.md)。
+开箱工具覆盖课表（查询与调课）、课表图、文件表格、文档生成、沙箱计算、记忆、知识库、待办、学习技能库（按需加载）与设置，配置好模型 Key 就能直接对话。完整参数、耗时、环境变量与工具清单见 [能力文档](docs/capabilities.md)。
 
 - **课表导入** —— 粘贴或上传任意格式课表（文字 / Excel / CSV / PDF / Word），AI 解析成结构化课表；拿不准先追问、不瞎猜，预览逐行确认后入库，今日页、周课表与课表图片都基于它
 - **文件与表格** —— 读本地 Word / PDF / Excel / Markdown，长文分页、关键词定位；千行大表按条件取行，不整本塞给模型

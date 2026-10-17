@@ -21,7 +21,7 @@
      - `counsel-mcp`（判断层）：`https://liki.hk/counsel/mcp`
      - `engine-mcp`（排盘/风水）：`https://liki.hk/engine/mcp`
 
-   > 子域端点 `/engine/mcp/{domain}`、`/counsel/mcp/{domain}`（bazi / ziwei / liuyao / qimen / naming 等）仅供**多专家分域部署**使用——每个领域专家包各自挂自己的子域（见 `expert-packs/*/.mcp.json`），实现"专家只见自己领域工具"；普通整体安装用上面的**两个聚合端点**即可。
+   > 子域端点 `/engine/mcp/{domain}`、`/counsel/mcp/{domain}`（bazi / ziwei / liuyao / qimen / huangli / naming 等）供**自建分域部署**使用；WorkBuddy 四个顶层领域专家（natal / divination / fengshui / naming）不挂子域端点，而是声明依赖上面两个**聚合连接器**。普通整体安装用**两个聚合端点**即可。
 2. **安装 skill（官方托管源）**：
 
    ```bash
@@ -140,7 +140,7 @@ Liki 采用「排盘（计算）与判断（规则）正交化」的两层架构
 
 ### 引擎镜像
 
-发布镜像由本地 `make candidate` 构建并推送，promotion 后按 digest 部署：
+发布镜像由 `release.yml` 在 `vYYYY.MM.DD.N` tag 上构建、签名并推送，按 digest 部署：
 `ghcr.io/ml8s/liki-engine@sha256:...`。本地源码开发使用 `engine/dev/docker-compose.yml`。
 
 ### 领域工具接口
@@ -159,7 +159,7 @@ make test           # 所有测试（pytest + Go 引擎全量，含 MCP 集成�
 make golden         # golden 全量（局部诊断入口）
 ```
 
-发布流程详见 [Release pipeline](./docs/RELEASE_PIPELINE.md)：`gate → candidate → candidate-test → promotion`。
+发布流程详见 [Release pipeline](./docs/RELEASE_PIPELINE.md)：`绿色 main → 打 tag → release.yml（gate/构建/签名/Release）→ 更新 lock 部署`。
 
 ### 设计原则
 

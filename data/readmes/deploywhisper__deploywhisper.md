@@ -1,0 +1,1040 @@
+<p align="center">
+  <img src="docs/assets/deploywhisper_logo_transparent.png" alt="DeployWhisper" width="350"/>
+</p>
+
+----
+
+# DeployWhisper
+
+An open-source pre-deployment risk intelligence platform for infrastructure changes.
+
+DeployWhisper helps platform engineers, DevOps teams, and SREs review deployment artifacts before release. It analyzes Terraform, Kubernetes, Ansible, Jenkins, and CloudFormation inputs, then turns those inputs into a single advisory briefing with risk scoring, blast radius context, rollback guidance, and plain-English narrative output.
+
+<p>
+  <a href="https://github.com/deploywhisper/deploywhisper/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/deploywhisper/deploywhisper/ci.yml?branch=develop&label=CI&style=flat-square" alt="CI"/></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/deploywhisper/deploywhisper"><img src="https://api.scorecard.dev/projects/github.com/deploywhisper/deploywhisper/badge" alt="OpenSSF Scorecard"/></a>
+  <a href="https://github.com/deploywhisper/deploywhisper/stargazers"><img src="https://img.shields.io/github/stars/deploywhisper/deploywhisper?style=flat-square" alt="GitHub stars"/></a>
+  <a href="https://github.com/deploywhisper/deploywhisper/network/members"><img src="https://img.shields.io/github/forks/deploywhisper/deploywhisper?style=flat-square" alt="GitHub forks"/></a>
+  <a href="https://github.com/deploywhisper/deploywhisper/issues"><img src="https://img.shields.io/github/issues/deploywhisper/deploywhisper?style=flat-square" alt="GitHub issues"/></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square" alt="Python 3.11+"/>
+  <img src="https://img.shields.io/badge/runtime-React%20SPA%20%2B%20FastAPI-0f766e?style=flat-square" alt="React SPA plus FastAPI"/>
+</p>
+
+**Quick links:** [Quick Start](#quick-start) · [Skills Registry](https://deploywhisper.github.io/skills-registry/) · [API Endpoints](#api-endpoints) · [Development](#development) · [Contributing](#contributing) · [Open Source](#open-source)
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [How It Works](#how-it-works)
+- [Key Features](#key-features)
+- [Screenshots And Demo](#screenshots-and-demo)
+- [Current Status](#current-status)
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [Docker Deployment](#docker-deployment)
+- [API Endpoints](#api-endpoints)
+- [CLI Usage](#cli-usage)
+- [Configuration](#configuration)
+- [Architecture](#architecture)
+- [Documentation](#documentation)
+- [Development](#development)
+- [CI](#ci)
+- [Contributing](#contributing)
+- [Open Source](#open-source)
+- [Roadmap Signals](#roadmap-signals)
+- [Status](#status)
+
+## Introduction
+
+DeployWhisper exists because deployment risk is rarely visible in a single file. A Terraform change might look safe on its own, a Kubernetes manifest might look routine on its own, and a Jenkins pipeline change might look minor on its own, but the real risk often appears only when those artifacts are reviewed together.
+
+DeployWhisper treats deployment review as a context problem. It combines multi-tool parsing, local-first analysis, tool-specific AI Skills, public risk pattern matching, incident-memory matching, and advisory summaries so teams can make better go/no-go decisions before changes reach production.
+
+The current implementation is built as a single-container application with:
+
+- React 18, Vite, and TypeScript for the operator-facing web UI at `/`
+- FastAPI for the versioned API surface
+- SQLAlchemy and SQLite for persistence
+- Direct SDK adapters for OpenAI, Anthropic, Gemini, and local Ollama narrative generation
+
+## How It Works
+
+1. Upload one or more supported deployment artifacts.
+2. DeployWhisper detects the tool type and filters unsupported or sensitive inputs.
+3. Parsers normalize changes into a shared internal model.
+4. The analysis pipeline scores risk, computes blast radius, generates rollback guidance, and checks built-in public risk patterns plus incident similarity.
+5. A narrative layer produces a plain-English deploy briefing.
+6. The report is persisted with audit metadata before it is shown in the UI or returned through the API or CLI.
+
+At a high level:
+
+```text
+Artifacts -> Parse -> Normalize -> Score -> Blast Radius -> Rollback -> Narrative -> Advisory Report
+```
+
+## Key Features
+
+- Multi-tool intake for Terraform, Kubernetes, Ansible, Jenkins, and CloudFormation
+- Plain-English risk narrative and deploy recommendation
+- Advisory-only output with explicit human-review posture
+- Blast radius analysis using a project-scoped service-topology graph with a shared multi-source import foundation
+- Rollback plan generation with complexity signaling
+- **Day-zero risk patterns**: fresh installs can flag built-in public risk patterns such as wide-open administrative ingress or stateful resource deletion, separately labeled from organization incident memory.
+- **Safe sample incident pack**: optional synthetic incidents for demos, with provenance and limitations documented in `docs/sample-incident-pack.md`.
+- **Incident file import**: project-scoped Markdown, YAML, and JSON incident records with validation for source and redaction metadata, documented in `docs/incident-import.md`.
+- **Scanner imports**: project-scoped SARIF and Semgrep JSON findings are normalized as external scanner evidence, documented in `docs/scanner-imports.md`, with complementary-tool positioning in `docs/comparisons/deploywhisper-alongside-security-tools.md`.
+- Incident-history matching for operational memory
+- API, CLI, and web entrypoints over one shared analysis pipeline
+- Local-first security model that keeps raw IaC local and avoids persisting API keys
+- Prompt-injection trust boundaries and blocking regression gates for untrusted
+  artifact, incident, scanner, pull-request, and docs-like text; see
+  [`docs/ai-safety/prompt-injection-testing.md`](./docs/ai-safety/prompt-injection-testing.md)
+  and the
+  [`docs/security/prompt-injection-threat-model.md`](./docs/security/prompt-injection-threat-model.md)
+- Custom AI Skills for team-specific domain guidance
+- Public Skills Registry for published built-in skills: <https://deploywhisper.github.io/skills-registry/>
+- Analysis history and audit metadata for later review
+
+## Screenshots And Demo
+
+### UI Screenshot
+`Upload flow, risk summary, and advisory result`
+![DeployWhisper dashboard](docs/assets/demo-dashboard.png)
+
+`Saved analyses, filters, and audit metadata`
+![DeployWhisper dashboard](docs/assets/demo-history.png) 
+
+`Provider config, topology upload, and custom skills`
+![DeployWhisper dashboard](docs/assets/demo-settings.png)
+
+<!-- Example future embeds:
+![DeployWhisper dashboard](docs/assets/demo-dashboard.png)
+![DeployWhisper workflow demo](docs/assets/demo-flow.gif)
+-->
+
+## Current Status
+
+DeployWhisper is an open-source project in active development. The current
+released version is useful today for teams that want a local-first, advisory
+review layer before infrastructure changes are shipped.
+
+### Released version `v1.4.0`
+
+What users can use today:
+
+- **Web review workflow**: upload deployment artifacts in the React dashboard and get a persisted advisory report with risk score, severity, recommendation, findings, evidence, public risk pattern/incident matches, context quality, blast radius, rollback guidance, and audit metadata.
+- **Multi-tool analysis**: analyze Terraform, Kubernetes, Ansible, Jenkins, and CloudFormation inputs through one shared pipeline instead of reviewing every tool in isolation.
+- **LLM-assisted narrative**: connect deterministic scoring with plain-English deployment guidance using Ollama, OpenAI, Anthropic, Gemini, OpenRouter, Groq, or xAI provider settings.
+- **Local-first safety posture**: keep raw IaC processing local, avoid storing provider API keys in the database, exclude sensitive files from unsafe handling, and keep every verdict advisory rather than automatically blocking a release.
+- **Evidence-backed confidence**: trace the report back to findings, resource-level contributors, uploaded artifact references, confidence factors, why-not-lower/higher reasoning, parser coverage, topology freshness, context TODOs, and warning signals when context is limited.
+- **Context freshness ledger**: inspect context source freshness, confidence, scope, conflicts, limitations, and evidence-to-context provenance across report, API, and CLI output.
+- **External scanner ingestion**: import SARIF 2.1.0 and Semgrep JSON scanner findings as project/workspace-scoped external evidence with normalized tool, rule, severity, location, source identity, and report-safe metadata.
+- **Scanner-aware report context**: view scanner findings as clearly labeled external context without automatically promoting scanner severity into DeployWhisper findings.
+- **Scanner conflict handling**: surface scanner-vs-deterministic disagreements with scanner source, deterministic source, freshness, verification guidance, uncertainty, and confidence impact while keeping severity governed by DeployWhisper scoring and Evidence Law.
+- **Blast-radius and rollback context**: use service-topology input to explain likely downstream impact and generate rollback steps with complexity scoring.
+- **Analysis history**: review saved reports later, filter previous analyses by project, workspace, time range, risk verdict, toolchain, and analysis status, inspect audit metadata, and compare repeated scans of the same artifact set with new, resolved, persistent, severity-changed, and context-changed findings.
+- **Provider and admin settings UI**: configure LLM provider metadata, upload topology context, manage custom AI Skills, and see provider readiness before running analysis.
+- **REST API and CLI access**: run the same analysis pipeline from `/api/v1` endpoints or the headless CLI for local automation and CI workflows.
+- **Shareable reports**: create read-only report links, optionally protect sensitive shared reports with a password, redact filenames, and compare shared reruns when previous scans exist.
+- **Trusted Skills lifecycle**: inspect manifest-backed trust and deterministic test status, install from configured sources, and review contribution, usage, and deprecation signals.
+- **Bounded AI-agent review**: use advisory agent contracts with explicit AI-generated IaC provenance and prompt-injection screening across review outputs.
+- **Optional policy adapters**: configure thresholds, reporting defaults, and integration-level enforcement separately from the advisory report; deployment enforcement remains opt-in.
+- **Credential-safe administration**: keep provider and connector secrets outside persistent settings and screen prompts, reports, and artifacts for credential disclosure.
+- **Published Skills Registry**: browse published built-in skills at <https://deploywhisper.github.io/skills-registry/> and extend guidance with custom skills.
+- **Published GitHub Action path**: use the dedicated `deploywhisper/analyze-action` pinned to a reviewed full commit SHA to analyze PR artifact changes, post/update an advisory PR comment, and expose report outputs for follow-on workflow steps.
+- **Published container path**: run the released container image `ghcr.io/deploywhisper/deploywhisper:1.4.0` with SQLite-backed persistence for a self-hosted single-container setup.
+- **Project quality baseline**: GitHub Actions CI, Python quality checks, sharded tests, local CI scripts, and optional UI accessibility smoke checks are in place.
+- **Repository supply-chain visibility**: [Scorecard and CodeQL](docs/security/supply-chain-scanning.md) provide maintainer-visible security results and a documented high-priority findings review process.
+
+Why this gives users value:
+
+- Platform and DevOps teams get a faster first-pass deployment review before a human approval meeting.
+- Engineers can see why a change is risky, which resource/file caused it, what to verify, and what rollback concern to discuss.
+- Teams can build trust gradually because reports keep deterministic evidence visible even when LLM narrative is enabled.
+- Open-source users can start locally with Docker or Python, then add provider keys, topology context, custom skills, and GitHub PR automation when they are ready.
+
+What is still evolving:
+
+- Production-grade authn/authz for shared deployments
+- Lightweight project/workspace scoping for cleaner multi-repository history isolation
+- Richer incident ingestion workflows
+- Broader deployment integrations and release automation
+- More complete NFR hardening for shared or internet-facing environments
+
+Planning and design artifacts live under [`_bmad-output/planning-artifacts/`](./_bmad-output/planning-artifacts/).
+
+> This README describes the current implementation honestly. Some sections reflect the implemented foundation, while others point to the intended open-source direction captured in the planning artifacts.
+
+## Prerequisites
+
+- Python 3.11 or newer recommended
+- A virtual environment for local development
+- Optional LLM provider access:
+  - Ollama for fully local mode
+  - or OpenAI / Anthropic / Gemini / OpenRouter / Groq / xAI credentials via environment variables
+
+Tier-1 providers use direct adapters:
+
+- OpenAI via the official `openai` SDK
+- Anthropic via the official `anthropic` SDK
+- Gemini via the official `google-genai` SDK
+- Ollama via the local HTTP adapter
+
+OpenRouter, Groq, and xAI remain on the compatibility path through one explicit OpenAI-compatible adapter. For local-only narrative generation, Ollama is the intended path.
+
+Provider settings and health surfaces also expose explicit capability metadata for structured output, local-only mode, remote MCP, local MCP, and tool approval. These MCP-related flags are planning metadata only for now; DeployWhisper does not execute MCP tools in the current narrative flow.
+
+## Quick Start
+
+### Local Setup
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --require-hashes --only-binary=:all: -r requirements.txt
+python app.py
+```
+
+The app starts on:
+
+- UI: `http://127.0.0.1:8080/`
+- API docs: `http://127.0.0.1:8080/api/v1/docs`
+- Health: `http://127.0.0.1:8080/api/v1/health`
+
+### Local Validation
+
+```bash
+./.venv/bin/python -m unittest discover -q
+```
+
+Credentialed provider smoke tests are opt-in so the default suite remains offline:
+
+```bash
+DEPLOYWHISPER_LIVE_PROVIDER_SMOKE=1 \
+  DEPLOYWHISPER_LIVE_PROVIDER_SMOKE_PROVIDERS=openai \
+  ./.venv/bin/python -m unittest tests.test_llm.test_live_provider_smoke -q
+```
+
+The smoke test loads provider keys from environment variables or `.env` and only
+runs providers with usable keys. Provider-specific model and API-base overrides
+use `DEPLOYWHISPER_LIVE_<PROVIDER>_MODEL` and
+`DEPLOYWHISPER_LIVE_<PROVIDER>_API_BASE`.
+
+## Docker Deployment
+
+DeployWhisper supports a single-container deployment model.
+
+example: Docker compose file `docker-compose.yml`
+
+```bash
+services:
+  deploywhisper:
+    # If you want to use the already published image, uncomment the "image" section and comment out the build section.
+    image: ghcr.io/deploywhisper/deploywhisper:1.4.0
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    init: true
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8080
+      APP_BASE_URL: http://localhost:8080
+      LOG_LEVEL: INFO
+      DATABASE_URL: sqlite:///data/deploywhisper.db
+      DEPLOYWHISPER_SHARE_TOKEN: "DEPLOYWHISPER_API_TOKEN-for-test-123"
+      LLM_PROVIDER: ollama
+      LLM_MODEL: ollama/qwen2.5-coder:3b
+      LLM_API_BASE: http://host.docker.internal:11434
+      LLM_REQUEST_TIMEOUT_SECONDS: 60
+      LLM_API_KEY: ""
+      OPENAI_API_KEY: ""
+      ANTHROPIC_API_KEY: ""
+      GEMINI_API_KEY: ""
+      GOOGLE_API_KEY: ""
+      OPENROUTER_API_KEY: ""
+      GROQ_API_KEY: ""
+      XAI_API_KEY: ""
+    volumes:
+      - deploywhisper-data:/app/data
+
+volumes:
+  deploywhisper-data:
+```
+
+after create this file then run:
+```bash
+docker-compose up -d
+```
+
+Default container behavior:
+
+- Port `8080` exposed from the app container
+- Production React SPA served from the same FastAPI process at `/`, with legacy pre-cutover links redirected
+- SQLite database stored under `/app/data`
+- Default provider set to Ollama directly in `docker-compose.yml`
+- `POST /api/v1/analyses/{id}/share` stays disabled until `DEPLOYWHISPER_SHARE_TOKEN` is set in Compose
+
+Provider settings in the checked-in `docker-compose.yml` are literal container
+environment values. The file does not rely on project-root `.env` interpolation.
+For machine-specific provider settings, create an untracked
+`docker-compose.override.yml` and put only your local overrides there.
+
+Example `docker-compose.override.yml` for OpenAI:
+
+```yaml
+services:
+  deploywhisper:
+    environment:
+      LLM_PROVIDER: openai
+      LLM_MODEL: gpt-4.1-mini
+      LLM_API_BASE: https://api.openai.com/v1
+      LLM_REQUEST_TIMEOUT_SECONDS: 30
+      OPENAI_API_KEY: your-real-key
+```
+
+Example override for Groq:
+
+```yaml
+services:
+  deploywhisper:
+    environment:
+      LLM_PROVIDER: groq
+      LLM_MODEL: groq/qwen/qwen3-32b
+      LLM_API_BASE: https://api.groq.com/openai/v1
+      GROQ_API_KEY: your-real-key
+```
+
+Example override for local Ollama:
+
+```yaml
+services:
+  deploywhisper:
+    environment:
+      LLM_PROVIDER: ollama
+      LLM_MODEL: ollama/qwen2.5-coder:3b
+      LLM_API_BASE: http://host.docker.internal:11434
+      LLM_REQUEST_TIMEOUT_SECONDS: 60
+```
+
+Recommended local model for Docker Compose development is
+`qwen2.5-coder:3b`: it is code-specialized, small enough for fast local
+iteration, and supports the JSON-style Ollama chat calls DeployWhisper uses for
+narrative generation.
+
+Install it on the host before running Compose:
+
+```bash
+OLLAMA_HOST=http://127.0.0.1:11434 ollama pull qwen2.5-coder:3b
+```
+
+For lower cold-start pressure, keep Ollama resident between requests:
+
+```bash
+export OLLAMA_KEEP_ALIVE=-1
+export OLLAMA_MAX_LOADED_MODELS=2
+```
+
+After editing Compose settings, recreate the container:
+
+```bash
+docker compose up -d --force-recreate
+```
+
+If provider settings were already saved in the DeployWhisper settings page,
+those non-secret database settings take precedence over `LLM_PROVIDER`,
+`LLM_MODEL`, and `LLM_API_BASE`. The saved request timeout overrides
+`LLM_REQUEST_TIMEOUT_SECONDS`. API keys remain environment-backed; the settings
+screen shows a masked presence hint and accepts a temporary key only for the
+immediate validation request.
+
+Provider profiles are checked through the shared adapter boundary before saving.
+Unknown providers, blank models, malformed endpoints, credential-bearing URLs,
+and external providers with local-only mode enabled are rejected without replacing
+the active profile. API bases must use HTTP or HTTPS and omit URL credentials,
+query parameters, and fragments. A saved profile may still fail its live probe
+(for example, if a key is missing or Ollama is offline); deterministic analysis
+continues and records degraded narrative status. See
+[provider settings administration](docs/security/provider-settings-administration.md)
+for operator guidance.
+
+Saving the settings page activates the selected provider as the single runtime
+provider.
+
+Do not bake secrets into the image. For local Docker Compose, keep secrets in
+an untracked `docker-compose.override.yml`; for managed deployments, use your
+orchestration platform's secret mechanism.
+
+
+### For a straightforward ad hoc Docker command
+
+Direct `docker run` example:
+
+```bash
+docker run -d \
+  -p 8080:8080 \
+  -e APP_HOST=0.0.0.0 \
+  -e APP_PORT=8080 \
+  -e APP_BASE_URL=https://deploywhisper.example.com \
+  -e DEPLOYWHISPER_SHARE_TOKEN=replace-with-a-long-random-secret \
+  ghcr.io/deploywhisper/deploywhisper:1.4.0
+```
+
+## API Endpoints
+
+### Health Check
+
+```http
+GET /api/v1/health
+```
+
+Response shape:
+
+```json
+{
+  "data": {
+    "status": "ok",
+    "mode": "foundation",
+    "core_status": "ok",
+    "llm": {
+      "status": "ok",
+      "ready": true,
+      "provider": "ollama",
+      "model": "ollama/qwen2.5-coder:3b",
+      "local_mode": true,
+      "requires_api_key": false,
+      "has_api_key": false,
+      "message": "LLM provider connection validated for analysis.",
+      "source": "environment"
+    }
+  },
+  "meta": {
+    "app": "DeployWhisper",
+    "version": "1.4.0"
+  }
+}
+```
+
+### Create Analysis
+
+```http
+POST /api/v1/analyses
+```
+
+Upload one or more artifact files as multipart form-data. New analysis submissions
+must include either `project_key` or `project_id`; missing scope returns a
+structured `missing_project_scope` error before artifact parsing.
+
+Response includes:
+
+- intake summary
+- parse batch
+- evidence items
+- assessment
+- narrative availability/failure notice when the LLM path degrades
+- advisory summary
+- share summary
+- persisted report metadata
+
+### List Analyses
+
+```http
+GET /api/v1/analyses
+```
+
+Supports filtering by:
+
+- `project_id`
+- `project_key`
+- `workspace_id`
+- `workspace_key`
+- `severity`
+- `recommendation`
+- `search`
+- `toolchain`
+- `analysis_status` (`complete`, `degraded`, or `fallback`)
+- `created_from` (timezone-aware ISO 8601 timestamp)
+- `created_to` (timezone-aware ISO 8601 timestamp)
+- `page`
+- `page_size`
+
+Analysis list rows include the persisted report fields plus dashboard-friendly
+aliases for React consumers: `score` (`risk_score`), `verdict`
+(`recommendation`), `filenames` (`audit.files_analyzed`), `workspace_label`,
+`env_label`, `trigger_ref`, and `pr_ref`.
+
+Example:
+
+```http
+GET /api/v1/analyses?project_key=payments&workspace_key=prod&toolchain=terraform&analysis_status=complete&created_from=2026-05-01T00:00:00Z&created_to=2026-05-20T00:00:00Z
+```
+
+### Dashboard Stats
+
+```http
+GET /api/v1/stats/summary
+GET /api/v1/stats/verdict-distribution?days=30
+```
+
+`/api/v1/stats/summary` returns the dashboard KPI card data: total analyses,
+clean-verdict rate, open high/critical count, average time-to-verdict, and
+seven daily buckets for each KPI sparkline. `/api/v1/stats/verdict-distribution`
+returns recommendation counts for the dashboard verdict distribution.
+
+Both endpoints are read-only and accept optional `project_id`, `project_key`,
+`workspace_id`, and `workspace_key` query parameters.
+
+### Projects
+
+```http
+GET /api/v1/projects
+```
+
+Returns the existing project list envelope. Project rows now include
+dashboard-friendly `name` and `env_label` aliases alongside the stable
+`id`, `project_key`, `display_name`, and default-branch metadata.
+
+### Import Scanner Evidence
+
+```http
+POST /api/v1/scanner-imports/sarif
+POST /api/v1/scanner-imports/semgrep
+```
+
+Imports SARIF 2.1.0 or Semgrep native JSON scanner findings for a project. The
+endpoints store normalized external evidence with scanner tool, rule, severity,
+location, project scope, and bounded scanner-specific report context.
+Unsupported scanner structures return field-level correction guidance without
+storing partial findings.
+
+### Fetch One Analysis
+
+```http
+GET /api/v1/analyses/{report_id}
+```
+
+### Agent-Callable Review
+
+```http
+POST /api/v1/agent/analyses
+GET /api/v1/agent/reports/{report_id}
+```
+
+The agent interface is the current MCP-equivalent HTTP surface. It reuses the
+shared analysis and persistence path, returns the stable advisory agent
+contract with explicit collection/string limits, and masks inaccessible and
+missing resources for project-scoped callers. It never echoes raw uploaded
+artifacts or grants approval, deployment, or remediation authority. See
+[MCP Server and Agent Interface](docs/ai-safety/mcp-server.md) and
+[Reviewing AI-Generated and AI-Assisted IaC](docs/ai-safety/reviewing-ai-generated-iac.md).
+
+## CLI Usage
+
+DeployWhisper includes a headless CLI entrypoint for local or CI usage.
+
+### Analyze Artifacts
+
+```bash
+deploywhisper analyze --project payments path/to/plan.json path/to/deployment.yaml
+```
+
+The CLI prints structured JSON containing:
+
+- intake status
+- risk assessment
+- advisory summary
+- share summary
+- persisted report metadata
+
+AI coding agents can request the stable advisory contract:
+
+```bash
+deploywhisper analyze --agent-json --project payments path/to/plan.json
+```
+
+The agent contract is schema-versioned and includes explicit project scope,
+verdict, Evidence Law status, evidence, findings, confidence, uncertainty,
+context TODOs, verification guidance, and immutable fields stating that the
+result is advisory and is not deployment approval. See
+[Agent JSON CLI Output](docs/ai-safety/agent-json-output.md).
+HTTP agent-tool integrations can use the same contract through the
+[MCP Server and Agent Interface](docs/ai-safety/mcp-server.md).
+
+The complete safe workflow, including output interpretation, human review,
+prompt-injection risks, and forbidden auto-approval patterns, is documented in
+[Reviewing AI-Generated and AI-Assisted IaC](docs/ai-safety/reviewing-ai-generated-iac.md).
+
+### Inspect Skill Status
+
+```bash
+python cli.py skills
+```
+
+This shows custom skill status, including overrides of built-in skills. When
+protected projects exist, this administration command requires trusted global
+configuration authority; it cannot use a caller role or local shell invocation
+as a project grant. See [project permissions](docs/infra-automation/permissions.md).
+
+## Configuration
+
+DeployWhisper is configured primarily through environment variables and stored non-secret settings.
+
+Named local accounts and sessions are available through the opt-in
+`DEPLOYWHISPER_IDENTITY_PROFILE` and `DEPLOYWHISPER_IDENTITY_ORIGIN` settings.
+See [local identity setup and recovery](docs/infra-automation/identity.md) for the
+protected CLI bootstrap, HTTPS/proxy configuration, session API and development
+profile. Identity defaults to disabled; a verified account alone grants no
+project permission.
+
+Server-owned project memberships are described in
+[trusted project permissions](docs/infra-automation/permissions.md), including
+first-project administrator bootstrap, membership APIs, role/workspace limits and
+revocation. `DEPLOYWHISPER_AUTHORIZATION_PROFILE=legacy-evaluation` (default)
+preserves unrelated unprotected analysis; protected projects and report context
+always require live membership. `verified` requires membership for all project
+data, and unknown profiles deny. Global settings and custom skill administration
+require a global identity administrator plus unrestricted `settings.manage` in
+every protected project (every project in `verified` mode).
+`DEPLOYWHISPER_IDENTITY_DECISION_MODE=shared` (default) rejects requester
+self-approval; `single-operator` records acknowledgement only. These backend
+contracts do not enable machine credentials or workflow execution.
+
+### Core Runtime Variables
+
+- `APP_NAME`
+- `APP_VERSION`
+- `APP_HOST`
+- `APP_PORT`
+- `LOG_LEVEL`
+- `DATABASE_URL`
+- `TOPOLOGY_PATH`
+
+### LLM Provider Variables
+
+- `LLM_PROVIDER`
+- `LLM_MODEL`
+- `LLM_API_BASE`
+- `LLM_REQUEST_TIMEOUT_SECONDS`
+- `LLM_API_KEY`
+- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
+- `GEMINI_API_KEY`
+- `GOOGLE_API_KEY`
+- `OPENROUTER_API_KEY`
+- `GROQ_API_KEY`
+- `XAI_API_KEY`
+
+### Security Model
+
+DeployWhisper is designed so that:
+
+- raw IaC stays local
+- sensitive files such as `.env`, `.pem`, `.key`, `id_rsa`, `credentials`, and `*.tfstate` are excluded from unsafe downstream handling
+- provider API keys are not stored in the application database
+- advisory results remain non-blocking in v1
+
+Recognizable credentials are redacted from structured prompts and reports;
+sensitive model responses and artifact snapshots are blocked with visible
+redaction notices. See the [secrets and artifact boundary audit](docs/security/secrets-and-artifact-boundaries.md) and the
+[connector credential boundary audit](docs/security/connector-credential-boundaries.md)
+for coverage, local-only operation, and detection limits.
+
+## Architecture
+
+DeployWhisper uses one shared analysis core with three access surfaces:
+
+- Web UI via the React SPA served by FastAPI
+- REST API via FastAPI
+- CLI via `cli.py`
+
+Primary runtime components:
+
+- `parsers/`: tool-specific artifact parsing
+- `analysis/`: risk scoring, blast radius, rollback, and incident matching
+- `services/`: orchestration, persistence, settings, and topology workflows
+- `llm/`: provider routing, prompts, skill context, and narrative generation
+- `frontend/`: React dashboard, reports, history, incidents, skills, and settings screens
+- `api/`: versioned routes and schema envelopes
+
+Key architectural constraints:
+
+- local-first processing for raw artifacts
+- advisory-only decision support in v1
+- single-container deployment model
+- stable API contract under `/api/v1`
+- persisted reports before presentation
+
+For more detail, see [`_bmad-output/planning-artifacts/architecture.md`](./_bmad-output/planning-artifacts/architecture.md).
+
+## Documentation
+
+Project documentation currently lives in a few places:
+
+- [PRD](./_bmad-output/planning-artifacts/prd.md)
+- [Architecture](./_bmad-output/planning-artifacts/architecture.md)
+- [UX Specification](./_bmad-output/planning-artifacts/ux-design-specification.md)
+- [Epics and Stories](./_bmad-output/planning-artifacts/epics.md)
+- [Implementation Readiness Report](./_bmad-output/planning-artifacts/implementation-readiness-report-2026-05-01.md)
+- [Project Model Guide](./docs/concepts/project-model.md)
+- [Project Workspaces](./docs/project-workspaces.md)
+- [Scanner Imports](./docs/scanner-imports.md)
+- [DeployWhisper Alongside Security Tools](./docs/comparisons/deploywhisper-alongside-security-tools.md)
+- [Kubernetes Live-State Connector](./docs/kubernetes-live-state-connector.md)
+- [Evidence Model Foundation](./docs/evidence-model.md)
+- [Workflow v2 Schema and Validation](./docs/infra-automation/workflow-schema.md)
+- [CI Guide](./docs/ci.md)
+- [CI Secrets Checklist](./docs/ci-secrets-checklist.md)
+
+## Development
+
+### Repository Structure
+
+```text
+api/          FastAPI routes and schemas
+analysis/     Risk scoring, blast radius, rollback, incident matching
+cli/          Headless analysis commands
+llm/          Narrative generation and skill context
+models/       ORM tables and repositories
+parsers/      Tool-specific parsers
+services/     Shared orchestration and persistence logic
+infra_automation/ Closed workflow contracts and side-effect-free validation
+frontend/     React 18 + Vite + TypeScript SPA workspace
+tests/        API, CLI, parser, service, frontend, and infra tests
+```
+
+### Common Development Commands
+
+Install dependencies:
+
+```bash
+python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.txt
+```
+
+Run the app:
+
+```bash
+python app.py
+```
+
+Run the full test suite:
+
+```bash
+./.venv/bin/python -m unittest discover -q
+```
+
+Run the local CI-equivalent checks:
+
+```bash
+bash scripts/ci-local.sh
+```
+
+Run the React SPA checks:
+
+```bash
+npm run ui:typecheck
+npm run ui:test
+npm run ui:build
+```
+
+`npm run ui:dev` is an optional coding convenience only. It is not accepted as
+UI verification because it bypasses the FastAPI static mount, the Dockerfile
+frontend stage, and the production asset build.
+
+All UI, Playwright, E2E, a11y, keyboard, and screenshot verification must run
+against the composed application:
+
+```bash
+docker compose up -d --build
+curl -fsSL http://localhost:8080/api/v1/health
+BASE_URL=http://localhost:8080 npm run test:ui-review
+```
+
+Use `http://localhost:8080/` as the testing origin and root SPA routes such as
+`/`, `/history`, `/settings`, `/skills`, `/incidents`, and `/reports/{id}`.
+Do not verify against the Vite dev server or legacy prefixed SPA routes.
+
+Run the browser keyboard/accessibility smoke for the SPA:
+
+```bash
+npm install --prefix frontend
+docker compose up -d --build
+BASE_URL=http://localhost:8080 npm run test:ui-review
+```
+
+This runs the composed React Playwright suite under `frontend/e2e/` against the
+configured `BASE_URL` and includes the axe/keyboard smoke checks owned by the
+SPA migration. `BASE_URL` must point at the composed app on
+`http://localhost:8080`; screenshots from `npm run ui:dev` do not count.
+
+## GitHub CI
+
+GitHub Actions is configured in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
+
+### DeployWhisper Analyze Action
+
+The published GitHub Marketplace action now lives in its own dedicated public
+repository:
+[`deploywhisper/analyze-action@v1`](https://github.com/deploywhisper/analyze-action).
+The app-repo integration contract and canonical output mapping are documented
+in [`docs/github-action.md`](./docs/github-action.md).
+
+Typical PR usage:
+
+```yaml
+name: DeployWhisper
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  deploywhisper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - id: deploywhisper
+        uses: deploywhisper/analyze-action@3b37ed72bfb2d201030bef873268f2170794b160
+        with:
+          api-url: ${{ secrets.DEPLOYWHISPER_API_URL }}
+          project-key: payments
+          workspace-key: prod
+```
+
+What the action does:
+
+- detects changed files from the pull request diff
+- filters to supported DeployWhisper artifacts locally before upload
+- submits those artifacts to the existing `POST /api/v1/analyses` endpoint
+- posts a single markdown PR comment and updates that same comment on re-runs
+- compares the latest report with the previous PR scan so reruns show score and severity deltas in the refreshed comment
+- A valid non-blocking policy decision does not itself request failure; the enforcement-capable Action exits `0` only when all remaining runtime work also succeeds. A validated policy block and every decision-retrieval, validation, or later operational failure exit nonzero.
+- Older Action refs that do not expose enforcement outputs remain advisory-only
+  and exit `0` after successful analysis. Inspect the resolved setting source
+  and configured enforcement mode before installation. If the project default
+  is already blocking and no existing scope shares that project/integration
+  key, create a `github-action` integration-specific `advisory` override before
+  installing or upgrading, then test the pinned enforcement-capable revision
+  before removing that override. If other scopes share the key, use a
+  separate project for advisory testing or complete the new scope's guardrail
+  review without downgrading existing consumers.
+- exposes outputs for follow-on GitHub steps:
+  - `report-id`
+  - `report-link` (optional `/reports/{id}` URL; publicly shareable only
+    when the DeployWhisper server has `APP_BASE_URL` or `PUBLIC_APP_URL`
+    configured, otherwise it may be local/private)
+  - `severity`
+  - `recommendation`
+  - `share-summary-json`
+  - `share-summary-markdown`
+  - `comment-id`
+  - `comment-url`
+  - `comment-updated`
+
+Enforcement-capable revisions additionally expose `policy-status`,
+`configured-mode`, `effective-status`, `should-block`, and the Action-owned
+`failure-kind` discriminator; the published `@v1`
+ref validated on 2026-09-09 (tag object
+`f2e36cef443129e85c55882b9dafc1f20d409284`) does not expose them.
+
+The moving `@v1` reference follows published Action releases and must not be
+used in a protected workflow. Pin the Action and checkout dependencies to
+reviewed full commit SHAs even for advisory workflows; a server-side advisory
+override cannot make mutable third-party code trustworthy. Before enabling
+blocking against a pinned revision, verify all five enforcement outputs above,
+consumption of the server's enforcement-decision endpoint, and pass, block, and
+decision-error behavior with synthetic smoke cases. Follow the pin-resolution,
+diff-review, and smoke procedure in the Action integration guide.
+
+Optional inputs:
+
+- `api-token`: bearer token for protected DeployWhisper APIs
+- `project-key` or `project-id`: required unless your DeployWhisper integration endpoint derives project scope from repository context
+- `workspace-key` or `workspace-id`: optional project-local environment or deployment lane
+- `changed-files`: override auto-detected PR files with a comma or newline separated list
+- `working-directory`: repository root when the checkout is not in `.`
+
+Shared report links now resolve to `/reports/{id}` read-only pages. For sensitive
+reports, configure password protection and opt-in file-name redaction via
+`POST /api/v1/analyses/{id}/share` with the `X-DeployWhisper-Share-Token`
+header. Set `DEPLOYWHISPER_SHARE_TOKEN` before exposing that management API.
+When a prior comparable report exists in the same project, workspace, and
+workflow context, the shared report page also exposes a `Compare with previous`
+view with risk-score, new, resolved, persistent, severity-changed,
+context-changed, and evidence deltas.
+
+### GitHub App Mode
+
+DeployWhisper also supports a GitHub App adapter for webhook-driven PR analysis,
+checks API publishing, and self-hosted app setup. The App adapter is
+documented in [`docs/github-app.md`](./docs/github-app.md) and is designed to
+run in three lanes:
+
+- Action-first: workflow file + Marketplace Action
+- Advanced self-hosted GitHub App: webhook and checks against your own DeployWhisper server, with app creation and installation handled in GitHub's UI
+- Combined mode: Action for explicit workflow control, self-hosted GitHub App for checks and webhook automation
+
+The recommended open-source posture is Action-first. If you want GitHub App
+capabilities, create a private/self-hosted GitHub App in your own account or
+organization and point it at your own DeployWhisper instance. See
+[`docs/github-app-self-hosted-setup.md`](./docs/github-app-self-hosted-setup.md).
+Keep the `DeployWhisper / Risk Analysis` check non-required while its resolved
+configured mode is `advisory` or `warn`. Making the check required is a separate
+operator action for `soft-block` or `hard-block`, but that configured blocking
+mode may be inherited from the project default without an integration-specific
+opt-in. The canonical report remains advisory-only in every mode.
+Before enabling a required blocking check, complete the
+[Enforcement Guardrails](./docs/enforcement-guardrails.md) covering Evidence
+Law, benchmark readiness, false reassurance, human review, and rollback
+ownership.
+
+To scaffold this setup into another repository with a workflow file, README
+update, and optional self-hosted GitHub App notes, run:
+
+```bash
+deploywhisper github init
+```
+
+Example:
+
+```bash
+curl -X POST http://127.0.0.1:8080/api/v1/analyses/17/share \
+  -H "Content-Type: application/json" \
+  -H "X-DeployWhisper-Share-Token: $DEPLOYWHISPER_SHARE_TOKEN" \
+  -d '{"password":"review-only","redact_filenames":true}'
+```
+
+The app repository no longer carries Marketplace action packaging files. Action
+source, release metadata, and consumer smoke verification live in the dedicated
+`deploywhisper/analyze-action` repository.
+
+Current CI stages:
+
+- `quality`
+- `frontend`
+- `changed-tests`
+- `test`
+- `report`
+- `notify-failure`
+
+The CI pipeline includes frontend typecheck, tests, and production build for
+the React workspace. UI PRs must also run the compose-based browser
+verification loop against `http://localhost:8080` using root SPA routes.
+
+For accessibility-sensitive UI changes:
+
+- `BASE_URL=http://localhost:8080 npm run test:ui-review` exercises the SPA Playwright suite, including axe and keyboard smoke coverage, after `docker compose up -d --build`.
+- `BASE_URL=http://localhost:8080 RUN_UI_A11Y=1 bash scripts/ci-local.sh` appends the SPA browser lane locally when `frontend/node_modules` is installed.
+
+## Contributing
+
+Contributions are welcome.
+
+If you want to contribute:
+
+1. Fork the repository
+2. Create a feature branch
+3. Run the local test suite
+4. Open a pull request with clear rationale and verification notes
+
+High-value contribution areas:
+
+- parser coverage and fixture quality
+- risk scoring improvements
+- incident-ingestion workflows
+- topology-management UX
+- authn/authz hardening
+- documentation and examples
+
+### Good First Contributions
+
+- Improve README examples for CLI and API usage
+- Add realistic parser fixtures for one supported tool
+- Strengthen docs around topology JSON and custom skill uploads
+- Add screenshots or a short demo GIF once the UI flow is stable
+- Expand CI or test coverage around one isolated service or route
+
+### Pull Request Expectations
+
+- Keep changes scoped and reviewable
+- Include verification notes
+- Avoid checking in secrets, real infrastructure state, or sensitive sample files
+- Prefer tests for behavior changes
+- Prefer docs updates when behavior or setup changes
+
+### Reporting Bugs Or Requesting Features
+
+Use GitHub Issues for:
+
+- bug reports
+- parser edge cases
+- feature requests
+- documentation gaps
+- architecture or API discussions before larger implementation work
+
+For larger proposals, open an issue first so the implementation direction is discussed before code starts to drift.
+
+## Open Source
+
+DeployWhisper is being developed as an open-source project for DevOps and platform engineering teams.
+
+The intended open-source value proposition is:
+
+- transparent local-first deployment review
+- self-hostable architecture
+- extensible AI Skills model
+- advisory-first automation for CI/CD workflows
+
+If you adopt or extend the project, keep the current maturity in mind: the core analysis path exists, but some production-hardening work is still in progress.
+
+### Open-Source Project Shape
+
+The repository is best understood as:
+
+- a working implementation foundation
+- an evolving open-source DevOps tool
+- a planning-backed project with explicit product and architecture artifacts
+
+That means contributors can help in both code and product-facing areas:
+
+- implementation
+- tests
+- docs
+- examples
+- UX captures
+- integration ideas
+
+### Community-Friendly Improvements Still Needed
+
+- real screenshots and demo media
+- more sample artifacts for supported tools
+- contributor-facing repo metadata such as `LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`
+- broader onboarding docs for first-time contributors
+
+## Roadmap Signals
+
+Near-term directions already visible in the repo and planning artifacts:
+
+- stronger production hardening around auth, observability, and recovery
+- richer CI/CD integration patterns
+- more complete incident-ingestion and trend workflows
+- better contribution and onboarding surfaces for open-source users
+
+## Status as we’re in full swing
+
+### DeployWhisper is under active development, while release `v1.4.0` is stable.
+
+Current implementation state:
+
+- foundation scaffold done.
+- shared analysis pipeline is implemented
+- API, UI, and CLI surfaces exist
+- CI is in place
+- broader production hardening is still underway
+
+
+This repository should be treated as an evolving open-source platform project rather than a fully hardened production product.

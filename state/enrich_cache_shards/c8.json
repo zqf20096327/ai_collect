@@ -402,5 +402,203 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "aws-samples/bedrock-engineer": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.22.0",
+  "rel_pub": "2026-03-20",
+  "rel_days": 211,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 99,
+   "HTML": 1,
+   "JavaScript": 0,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "xpert-ai/xpert": {
+  "commit_90d": 1594,
+  "commit_7d": 231,
+  "rel_ver": "desktop-v0.3.7",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-08-20",
+  "sec_ids": [
+   "GHSA-9jrh-g2f5-vpw9(-,critical)"
+  ],
+  "contrib_n": 23,
+  "lang": {
+   "TypeScript": 86,
+   "HTML": 9,
+   "JavaScript": 4,
+   "SCSS": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "regenrek/codefetch": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2025-11-27",
+  "rel_days": 324,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 8,
+   "Shell": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "athivvat/ai-engineer-guide": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "MDX": 72,
+   "Astro": 21,
+   "JavaScript": 6,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Optimization-AI/LibAUC": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-05-29",
+  "rel_days": 141,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100,
+   "TeX": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "postmanlabs/postman-mcp-server": {
+  "commit_90d": 27,
+  "commit_7d": 5,
+  "rel_ver": "v2.14.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "Nunjucks": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "openai/planttalk": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 92,
+   "CSS": 4,
+   "C++": 3,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

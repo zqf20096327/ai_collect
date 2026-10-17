@@ -730,5 +730,138 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "Curated-Awesome-Lists/awesome-ai-music-generation": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "V1ki/dsh-plugin-subscriptions": {
+  "commit_90d": 259,
+  "commit_7d": 0,
+  "rel_ver": "v0.9.9",
+  "rel_pub": "2026-10-09",
+  "rel_days": 8,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "TypeScript": 98,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "lastsunday/job-hunting": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": "@job-hunting/extension@5.0.2",
+  "rel_pub": "2026-10-09",
+  "rel_days": 8,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "JavaScript": 37,
+   "TypeScript": 35,
+   "Rust": 26,
+   "CSS": 1,
+   "Gherkin": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "FluxML/Metalhead.jl": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.9.6",
+  "rel_pub": "2026-01-05",
+  "rel_days": 285,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "Julia": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "karimz1/imgcompress": {
+  "commit_90d": 133,
+  "commit_7d": 12,
+  "rel_ver": "release_0.9.0",
+  "rel_pub": "2026-08-21",
+  "rel_days": 57,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 66,
+   "Python": 30,
+   "Shell": 2,
+   "Dockerfile": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

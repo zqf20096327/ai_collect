@@ -1014,5 +1014,195 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "statmike/gcp-mlops": {
+  "commit_90d": 174,
+  "commit_7d": 7,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Jupyter Notebook": 95,
+   "HTML": 4,
+   "Python": 1,
+   "JavaScript": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "liguge/Journals-of-Prognostics-and-Health-Management": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "labsai/EDDI": {
+  "commit_90d": 2797,
+  "commit_7d": 131,
+  "rel_ver": "6.5.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 16,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": null,
+  "sec_last": "2025-04-12",
+  "sec_ids": [
+   "GHSA-9v34-frgq-63mv(CVE-2025-32779,medium)",
+   "GHSA-49qh-39wc-4p8j(CVE-2024-53844,medium)"
+  ],
+  "contrib_n": 34,
+  "lang": {
+   "Java": 71,
+   "TypeScript": 26,
+   "JavaScript": 1,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ml-energy/zeus": {
+  "commit_90d": 41,
+  "commit_7d": 0,
+  "rel_ver": "zeus-v0.16.0",
+  "rel_pub": "2026-07-07",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 24,
+  "lang": {
+   "Python": 63,
+   "Rust": 34,
+   "Shell": 2,
+   "Dockerfile": 0,
+   "Mako": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "mohsen1/llm-debugger-vscode-extension": {
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 72,
+   "JavaScript": 23,
+   "Shell": 2,
+   "Python": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ROCm/AMDMIGraphX": {
+  "commit_90d": 212,
+  "commit_7d": 20,
+  "rel_ver": "rocm-10.1",
+  "rel_pub": "2026-10-07",
+  "rel_days": 10,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 118,
+  "lang": {
+   "C++": 92,
+   "Python": 7,
+   "CMake": 1,
+   "C": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "VinAIResearch/Anti-DreamBooth": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 92,
+   "Jupyter Notebook": 4,
+   "Shell": 3,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

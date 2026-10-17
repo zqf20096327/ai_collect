@@ -20,7 +20,7 @@ Each week this repository highlights:
 [![License](https://img.shields.io/github/license/dyronrh/awesome-agentops-landscape?style=for-the-badge)](LICENSE)
 
 <!-- META:START -->
-**Last generated:** 2026-10-16  
+**Last generated:** 2026-10-17  
 **Automation:** GitHub Actions + GitHub API
 <!-- META:END -->
 
@@ -115,14 +115,14 @@ AgentOps platforms are instrumented via **OpenTelemetry**, where each agent sess
 | Tool | Stars | Links |
 |------|------|------|
 | LiteLLM | ⭐ 61.4k | https://github.com/BerriAI/litellm |
-| Langfuse | ⭐ 35.9k | https://github.com/langfuse/langfuse |
-| Promptfoo | ⭐ 26.0k | https://github.com/promptfoo/promptfoo |
-| Opik (Comet) | ⭐ 22.6k | https://github.com/comet-ml/opik |
+| Langfuse | ⭐ 36.0k | https://github.com/langfuse/langfuse |
+| Promptfoo | ⭐ 26.1k | https://github.com/promptfoo/promptfoo |
+| Opik (Comet) | ⭐ 22.7k | https://github.com/comet-ml/opik |
 | DeepEval | ⭐ 18.9k | https://github.com/confident-ai/deepeval |
 | AgentNeo | ⭐ 16.2k | https://github.com/raga-ai-hub/RagaAI-Catalyst |
 | RAGAS | ⭐ 16.0k | https://github.com/explodinggradients/ragas |
 | Phoenix (Arize) | ⭐ 11.9k | https://github.com/Arize-ai/phoenix |
-| Bifrost | ⭐ 8.8k | https://github.com/maximhq/bifrost |
+| Bifrost | ⭐ 8.9k | https://github.com/maximhq/bifrost |
 | Evidently AI | ⭐ 8.0k | https://github.com/evidentlyai/evidently |
 | Guardrails AI | ⭐ 7.5k | https://github.com/guardrails-ai/guardrails |
 | OpenLLMetry | ⭐ 7.5k | https://github.com/traceloop/openllmetry |
@@ -149,13 +149,13 @@ AgentOps platforms are instrumented via **OpenTelemetry**, where each agent sess
 | ai-evaluation | ⭐ 128 | https://github.com/future-agi/ai-evaluation |
 | ax | ⭐ 117 | https://github.com/Necmttn/ax |
 | Agent Barn | ⭐ 110 | https://github.com/aai-labs/agent-barn |
-| RewardHarness | ⭐ 79 | https://github.com/TIGER-AI-Lab/RewardHarness |
+| RewardHarness | ⭐ 81 | https://github.com/TIGER-AI-Lab/RewardHarness |
 | Dunetrace | ⭐ 68 | https://github.com/dunetrace/dunetrace |
 | agent-command-center-sdk | ⭐ 30 | https://github.com/future-agi/agent-command-center-sdk |
 | whatbroke | ⭐ 21 | https://github.com/arthi-arumugam-git/whatbroke |
 | APort | ⭐ 4 | https://github.com/aporthq/aport-integrations |
 | Council of AI GSPC | ⭐ 3 | https://github.com/CSOAI-ORG/councilof-ai |
-| YYLO Benchmark | ⭐ 1 | https://github.com/yylo-dev/yylo-benchmark |
+| YYLO Benchmark | ⭐ 2 | https://github.com/yylo-dev/yylo-benchmark |
 | te-drift-detector | ⭐ 1 | https://github.com/hermes-labs-ai/te-drift-detector |
 | agentcheck | ⭐ 0 | https://github.com/paprika-org/agentcheck |
 | agent-bill-guard | ⭐ 0 | https://github.com/paprika-org/agent-bill-guard |

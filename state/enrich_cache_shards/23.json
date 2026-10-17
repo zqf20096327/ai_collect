@@ -459,5 +459,85 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "CooperJiang/PixelPunk": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-11-17",
+  "rel_days": 334,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Vue": 38,
+   "TypeScript": 34,
+   "Go": 23,
+   "CSS": 3,
+   "SCSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "muellerberndt/cadence": {
+  "commit_90d": 628,
+  "commit_7d": 57,
+  "rel_ver": "v0.83.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 94,
+   "HTML": 6
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "deepset-ai/haystack-tutorials": {
+  "commit_90d": 18,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 71,
+  "lang": {
+   "Jupyter Notebook": 99,
+   "Python": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

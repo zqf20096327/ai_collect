@@ -735,5 +735,147 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "vllm-project/vime": {
+  "commit_90d": 17,
+  "commit_7d": 2,
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-09-07",
+  "rel_days": 40,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 155,
+  "lang": {
+   "Python": 95,
+   "Shell": 4,
+   "Dockerfile": 0,
+   "Cuda": 0,
+   "Just": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "lambdaloop/anipose": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2021-08-19",
+  "rel_days": 1885,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "JavaScript": 64,
+   "Python": 31,
+   "HTML": 3,
+   "CSS": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "milanm/AutoGrad-Engine": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "MidraLab/uDesktopMascot": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2025-09-04",
+  "rel_days": 408,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "C#": 78,
+   "ShaderLab": 18,
+   "HLSL": 4,
+   "Inno Setup": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "michaelwilhelmsen/humla": {
+  "commit_90d": 359,
+  "commit_7d": 21,
+  "rel_ver": "v0.68.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Rust": 47,
+   "TypeScript": 36,
+   "Metal": 8,
+   "C++": 3,
+   "HTML": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

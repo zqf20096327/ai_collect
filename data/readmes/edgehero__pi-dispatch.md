@@ -418,6 +418,19 @@ pi-dispatch import-pi   # stage a credential-free copy of ~/.pi/agent into ./pi-
 - **Jobs can ask and wait.** With `"awaitInput": true` beside `"resume": true`, the agent can post a question and end
   its run; your reply on the issue continues it. Nothing runs or is billed while it waits
   ([`docs/sessions.md`](docs/sessions.md#parked-jobs-the-agent-asks-then-waits)).
+- **Jobs show where they are.** Every running job's turn, steps and running tool show in the console and the panel.
+  With `"progress": true` the agent also names the phase of its plan it is in, and with `"statusComment": true` the
+  worker keeps one comment on the issue up to date with the numbers, never the agent's words
+  ([`docs/triggers.md`](docs/triggers.md#optional-run-fields)).
+- **Lost runs can continue.** With `"recover": true` a run the worker loses part way (a crash, a lost machine, a
+  container that died) continues from its last checkpoint, at most twice, instead of starting over (not for a
+  repository with pi extensions). Checkpoints hold
+  the transcript and the workspace on disk for up to 7 days: read [`docs/durable-runs.md`](docs/durable-runs.md)
+  before you turn it on.
+- **Running jobs can be steered.** With `"steer": true`, `pi-dispatch steer <jobId> "..."` sends a running job a
+  message, which the agent reads after its current tool calls (or, with `--later`, once it would otherwise stop). It
+  reaches the agent as data, never as new rules, and costs only the turns it causes
+  ([`docs/steering.md`](docs/steering.md)).
 
 ## Run as a service
 

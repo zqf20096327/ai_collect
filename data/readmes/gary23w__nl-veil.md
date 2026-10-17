@@ -8,112 +8,14 @@ the Veil (nl-veil) is an open-source desktop app for building software with AI. 
 let specialist agents share the work, and carry project memory
 into your next session. Use the built-in model, Ollama, or an OpenAI-compatible endpoint.
 
-**[Download the desktop app](https://github.com/gary23w/nl-veil/releases/latest)** ·
+**[Download the desktop app](https://github.com/gary23w/nl-veil/releases/tag/v1.1.25)** ·
 **[Get it from the Microsoft Store](https://apps.microsoft.com/detail/9MVQ78SK0CW6)** (Windows) ·
 **[Screenshot walkthrough: setup & build with Cloudflare AI](https://gary23w.github.io/nl-veil/demos/)** ·
-[Installation and requirements](#install) · [Try your first task](#try-your-first-task) · [Email info](mailto:garystimpson03@gmail.com)
+[Installation and requirements](#install) · [Try your first task](#try-your-first-task)
 
-Windows · macOS · Linux · [MIT app code and AGPL security runtime](#license). Local inference needs no provider account or API key;
+Windows · macOS · Linux · [MIT app code](#license). Local inference needs no provider account or API key;
 hosted providers have their own data handling and costs. The built-in model requires a separate
 download, and coding tools require Python on `PATH` (some checks also use Node).
-
-### Stable release: v1.1.21
-
-v1.1.21 builds on v1.1.16; v1.1.17 and v1.1.18 were withdrawn before publication. If you
-installed either, download and run the [v1.1.21 bundle](https://github.com/gary23w/nl-veil/releases/tag/v1.1.21).
-In chat, `NL_TOOL_MAP=1` enables the tool tree; Gary's 4tope is enabled by default. Taters use
-both on their own.
-
-### New in v1.1.21
-
-A veil started while another one already holds its port (another install, or a veil that is still
-quitting) no longer opens onto "server down". It waits a few seconds for the port, then takes the
-next free one and its window follows it. Cloudflare's login says plainly when it cannot finish on
-the new port. Settings › Models has a **Use Cloudflare Workers AI (default)** box: logging in with
-Cloudflare turns it on, and the page then shows just the model and the login. On Windows, the
-[Microsoft Store version](https://apps.microsoft.com/detail/9MVQ78SK0CW6) installs with no
-SmartScreen prompt. [Release notes](docs/release/RELEASE-v1.1.21.md).
-
-### New in v1.1.20
-
-Tater-tots are **Taters** now, and they run the v1.1.16 algorithms in the cloud: past 48 tools
-the belt is a map they walk with `open_tools`, a long step is folded by Gary's 4tope instead of
-cut, and each model's quirks are learned and healed as they show up. A runtime edit can always be
-reverted, and a newer veil's runtime reaches a running account as a revision of its own. Agent
-Garrett connects through its managed dashboard. On hosted reasoning models the effort dial learns
-per model and a starved survey ends planning, and one data directory is served by one veil at a
-time. [Release notes](docs/release/RELEASE-v1.1.20.md).
-
-### Garrett dashboard connections
-
-Connect Agent Garrett from **Settings → Agent Garrett**. Open its dashboard to sign in, choose a plan and deploy, then paste your generated API key or copied MCP configuration. NL-Veil verifies authenticated MCP access and discovers the tools automatically. Your key is encrypted on the local server; cloud agents, memory, billing and updates stay in Garrett. Existing legacy connections are retained until you replace them. [Setup guide](docs/docs-src/guide/security-tools.md).
-
-### New in v1.1.16
-
-**Gary's 4tope** carries a long chat forward by graph instead of by summary. When a turn has to
-compact, the engine reads its working log as a dependency graph, keeps the chain of results the
-current step rests on, and writes the continuation from the turn's own text: the step's last words,
-the files on disk, the calls that failed, and what the work depends on. No model call, no
-paraphrase. The **tool tree** (`NL_TOOL_MAP=1`) turns the belt into a map the model walks seven
-branches at a time, so a small model can use a belt of hundreds of tools. Long chats with Agent
-Garrett compact far less: its belt is 60% smaller and the spend ceiling now scales with it.
-[Release results](docs/release/RELEASE-v1.1.16.md) ·
-[how Gary's 4tope works](https://gary23w.github.io/nl-veil/#doc=worker/chat/net) ·
-[the tool tree](https://gary23w.github.io/nl-veil/#doc=worker/chat/belt).
-
-### New in v1.1.12
-
-Agent Garrett's full **166-tool security catalogue** is available to chats, swarms and tater-tots
-through typed MCP tools. Settings deploys the edge Worker, private Worker, Cloudflare Container and
-R2 storage into your account, then shows progress while the runtime builds. Enable each feature
-separately. Desktop margins, field spacing and past-run card borders are repaired, and Settings
-keeps scrolling with its scrollbar hidden.
-
-Live cloud command execution, shell-session listing and indicator extraction were verified through
-NL-Veil. [Release results](docs/release/RELEASE-v1.1.12.md) ·
-[Security setup and personal defense guide](docs/docs-src/guide/security-tools.md).
-
-### New in v1.1.10
-
-Tater-tot deployment now reconnects a missing or unreachable cached runtime before creating a tot,
-checks its public route, and reports Cloudflare's error when setup fails. Past-run cards have clearer
-spacing and status lines, the activity controls have their own header, and **Remove run** clears an
-entry from history while keeping its files. [Release notes](docs/release/RELEASE-v1.1.10.md).
-
-### New in v1.1.9
-
-Each tater-tot deployment has its own console and run history. Redeploying the same name starts a
-fresh console, while deleted and failed deployments remain under **Past runs** with their events and
-failure details. **Deploy again** opens the form with the previous request. [Release notes](docs/release/RELEASE-v1.1.9.md).
-
-### New in v1.1.8
-
-Tater-tots can read, edit and deploy their shared Worker runtime, including their prompts, tools and
-stop rules. Browser tasks can work through CAPTCHA challenges and continue. Runtime uploads are
-applied by your running, Cloudflare-connected veil; cloud work continues on the last deployed version
-while it is offline.
-
-Admin credentials are checked against durable storage before the listener or Tunnel starts. Legacy
-default passwords are replaced, an explicitly configured admin password is applied to existing
-accounts, and startup stops if a required change cannot be verified. [Release notes](docs/release/RELEASE-v1.1.8.md).
-
-### New in v1.1.7
-
-**Tater-tots**: the veil's goal loop running in your own Cloudflare account, with nobody in it and your computer
-off. Deploy one from the desktop's Taters tab or `veil --tater deploy "<goal>"`; the first is always named Gary.
-[How tater-tots work](#tater-tots---goal-loops-that-run-without-you-in-your-own-account) ·
-[release notes](docs/release/RELEASE-v1.1.7.md).
-
-### New in v1.1.4
-
-A calmer desktop for longer tasks: visible preparation and planning updates, steadier
-bottom-follow while replies stream, and settings grouped into General, Models,
-Connection, Data, and Updates. New chats offer editable starter prompts. Code blocks
-wrap long lines and keep copying faithful to the original text.
-
-This release also fixes an HTTP completion race that could report a false timeout.
-Read the [release notes](docs/release/RELEASE-v1.1.4.md) and
-[desktop guide](docs/DESK-UI.md).
 
 ### Try your first task
 
@@ -136,7 +38,7 @@ code and credentials from anything you share.
 
 <p>
   <a href="https://github.com/gary23w/nl-veil/actions/workflows/release.yml"><img alt="build" src="https://github.com/gary23w/nl-veil/actions/workflows/release.yml/badge.svg"></a>
-  <a href="https://github.com/gary23w/nl-veil/releases"><img alt="release" src="https://img.shields.io/badge/release-v1.1.21-A8241B"></a>
+  <a href="https://github.com/gary23w/nl-veil/releases"><img alt="release" src="https://img.shields.io/badge/release-v1.1.25-A8241B"></a>
   <img alt="zig" src="https://img.shields.io/badge/zig-0.16-F7A41D?logo=zig&logoColor=white">
   <a href="https://huggingface.co/gary23w/the-veil-12b"><img alt="built-in model" src="https://img.shields.io/badge/built--in%20model-the--veil--12b-6E4A27?logo=huggingface&logoColor=white"></a>
   <a href="https://huggingface.co/gary23w/gary-neuron-emergent"><img alt="memory cortex" src="https://img.shields.io/badge/cortex-gary--neuron--emergent-6E4A27?logo=huggingface&logoColor=white"></a>
@@ -446,7 +348,7 @@ so they never cross the public internet and need no API key.
   through them, names the tater-tot in every request it makes and holds it to read-only verification;
   `/leash 3600` holds the goal loop whenever your veil has not been heard from for an hour (the guard goes on)
   and releases it the moment it is back. A tater-tot never runs on with nobody's veil alive.
-- **Agent Garrett, the full security toolkit.** [The agent](https://github.com/gary23w/garrettstimpson.ca/tree/main/agent) contributes 166 tools: 94 existing security tools and 72 Gary tools. **Settings → Models → Deploy security tools** provisions its edge MCP Worker, private execution Worker, dedicated Cloudflare Container and R2 storage in your Cloudflare account. The first cloud build needs no local Docker or separate Linux host; the button shows an animated loading bar during preparation. Existing Cloudflare logins need to reconnect once for Containers permissions.
+- **Agent Garrett, the full security toolkit.** Connect the optional managed security service using its API key in **Settings → Models → Deploy security tools**. Tool availability depends on the connected service. NL-Veil does not bundle its implementation.
   Enable **Agent Garrett: on** beside the chat's auto-loop, or check **Agent Garrett** in the swarm or tater-tot deploy form. Each opted-in feature receives individual `security_<name>` tools with typed arguments; `garrett_tools` and `garrett` remain compatibility wrappers. Chat calls keep the MCP bearer on the server. The cloud filesystem is separate from your local machine, which NL-Veil supplies through its local harness when requested. [Setup, personal defense and lab workflows](docs/docs-src/guide/security-tools.md).
 
 - **A console you can read.** Each event is one line saying what happened; a row that went wrong is red.
@@ -634,32 +536,23 @@ raylib is a *lazy* dependency, so `-Dapp=false` never fetches it at all.
 
 ## Install
 
-**Download it and run it — no toolchain, nothing to build.** Grab your platform's bundle from the
-**[latest release](https://github.com/gary23w/nl-veil/releases/tag/v1.1.21)**, unzip, and run `veil`:
+Download your platform's full application bundle from **[v1.1.25](https://github.com/gary23w/nl-veil/releases/tag/v1.1.25)**, extract it,
+and run `veil.exe` on Windows or `./start` on macOS/Linux. The bundle includes the desktop
+application and memory engine; model weights are downloaded separately in the app.
 
-| You're on | Download | Then run |
-|---|---|---|
-| **Windows** | `veil-…-windows-x86_64.zip` | `veil.exe` |
-| **macOS** (Apple Silicon) | `veil-…-macos-arm64.zip` | `./veil` |
-| **macOS** (Intel) | `veil-…-macos-x86_64.zip` | `./veil` |
-| **Linux** | `veil-…-linux-x86_64.zip` | `./veil` |
+| Platform | Application bundle |
+|---|---|
+| Windows x86-64 | [veil-v1.1.25-windows-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-windows-x86_64.zip) |
+| Linux x86-64 | [veil-v1.1.25-linux-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-linux-x86_64.zip) |
+| macOS Apple Silicon | [veil-v1.1.25-macos-arm64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-macos-arm64.zip) |
+| macOS Intel | [veil-v1.1.25-macos-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.25/veil-v1.1.25-macos-x86_64.zip) |
 
-That single action starts the local server **and** opens the desktop app.
+Choose the full `veil-v…` bundle, rather than GitHub's source archive or the standalone server.
 
-> **Take the `veil-…` bundle for your OS — not "Source code (zip)".** GitHub attaches a source archive
-> to every release automatically: it's the raw repo, building it needs the Zig compiler, and the
-> `install.ps1` inside is a *developer* script. The `veil-server-…` assets are the **headless** server
-> for remote boxes — no desktop app.
+<details><summary>Build from source (requires Zig 0.16+)</summary>
 
-> **The downloads are unsigned.** On Windows, the [Microsoft Store version](https://apps.microsoft.com/detail/9MVQ78SK0CW6) is signed by
-> Microsoft and installs with no prompt. The zip from GitHub shows *"Windows protected your PC"* →
-> **More info → Run anyway**. macOS says the developer can't be verified → **right-click → Open** (or
-> `xattr -dr com.apple.quarantine <folder>`). Signing certificates are still on the list.
-
-<details><summary><b>Build from source instead</b> — contributors (needs Zig 0.16+)</summary>
-
-These installers **clone the repo and build it**, so they need [Zig 0.16+](https://ziglang.org) on
-`PATH`. This is the contributor path, *not* the quick start.
+The source installers clone and build the repository and require [Zig 0.16+](https://ziglang.org)
+on `PATH`.
 
 **macOS / Linux**
 ```sh
@@ -711,8 +604,7 @@ prompt for auth. It is a file readable only by your OS user — opening the port
 make a local file more reachable. **Any `veil <verb>` auto-starts the server if it isn't already up.**
 
 **Where your stuff lives:** a `data/` folder **next to the `veil` binary** — conversations, memory,
-swarm workdirs, logs, all of it. Nothing is written to a system temp dir and nothing leaves the
-machine. Move the folder and you move the whole install; back it up and you've backed up everything.
+swarm workdirs, logs, all of it. Hosted model requests and enabled cloud features send data to the configured services. Cloudflare R2 backup is enabled once connected; review [data handling](docs/privacy.html) before connecting. Move the folder to move local state; back it up to preserve it.
 (From a source checkout it resolves to the repo's own `data/`, so dev and release never share state.)
 
 ## The built-in model — nothing to install
@@ -763,7 +655,7 @@ no restart. An install manifest beside the weights records what is installed and
 
 A tool array is JSON, and on the compact tier it is still ~3 KB of nested schema sitting far behind
 the conversation. Asked whether it has a browser, a 12B does not re-read that JSON — it answers from
-impression. Observed live (`c6a751a54`): the model ran `list_dir` hunting for its browser tools *in
+impression. For example: the model ran `list_dir` hunting for its browser tools *in
 the filesystem*, read the empty directory as proof, and denied a browser it was holding.
 
 So the compact tier appends one generated line naming the belt it was actually handed
@@ -795,15 +687,10 @@ a large model rather than an assumption borrowed from a 12B.
 Written for someone who is not a developer. **If you only want it on your own machine, stop after
 step 5** — the rest is about letting other people in.
 
-### 1. Download and unblock it
+### 1. Download and run the application
 
-Grab the bundle for your OS from the [latest release](https://github.com/gary23w/nl-veil/releases/tag/v1.1.21)
-and unzip it somewhere you'll find again. Builds are unsigned, so:
-
-- **Windows** shows *"Windows protected your PC"* → **More info** → **Run anyway**. The
-  [Microsoft Store version](https://apps.microsoft.com/detail/9MVQ78SK0CW6) is signed by Microsoft and installs without it.
-- **macOS** says the developer can't be verified → **right-click the `veil` file → Open** → **Open**.
-  (Or `xattr -dr com.apple.quarantine <folder>` in Terminal.)
+Follow [Install](#install) to download the full application bundle for your platform and extract
+it to a writable directory. The application and memory engine are included.
 
 ### 2. Run it
 
@@ -834,7 +721,7 @@ On startup the server prints one complete URL per address this machine answers o
 (`src/main.zig:861-889`, using `src/config/lan.zig`):
 
 ```
-neuron-loops 1.1.21 on http://localhost:8787
+neuron-loops 1.1.25 on http://localhost:8787
     open from another machine (phone, laptop) at:
       http://192.168.1.42:8787
 ```
@@ -1138,7 +1025,16 @@ a large model with a 128k window replays 64 KB verbatim, and a small local summa
 fold it cannot hold
 ([context](https://gary23w.github.io/nl-veil/#doc=worker/chat/context)).
 
-**A long turn carries itself forward by graph, not by summary.** When a turn crosses its spend ceiling,
+**Every request is unfolded from the conversation's store.** Each message of a chat lands in the
+conversation's `graph.jsonl` the moment it exists (the ask, each step and its calls, each tool result as
+the model saw it, each answer), and each tool result's payload is indexed in neuron-db as a document of its
+own. A request is then the turn's prefix, one [store](https://gary23w.github.io/nl-veil/#doc=worker/chat/store)
+net laid out over every earlier ask, answer and result from where the work stands, and the newest two rounds
+verbatim, so it stays the same size at turn 5 and at turn 5,000 and nothing older is summarized: a word a later
+step uses links it to the earlier result that holds it, and `recall_node` returns any node whole by its id.
+A message that does not parse is never stored. `NL_CONTEXT=fold` restores the fold-and-carry path below.
+
+**With `NL_CONTEXT=fold`, a long turn carries itself forward by graph, not by summary.** When a turn crosses its spend ceiling,
 [Gary's 4tope](https://gary23w.github.io/nl-veil/#doc=worker/chat/net) reads the turn's working log as a
 dependency graph: each result hangs off the step that asked for it, a step depends on the results it
 reused, and a later read or write of the same file supersedes the earlier one. The longest path back from
@@ -1148,6 +1044,14 @@ ESTABLISHED. No model writes it, so nothing is paraphrased away, and a failure a
 not carried as current. Tool findings reach neuron-db at every step, so the carry is a layout of what is
 already remembered. `NL_HANDOFF=model` restores the model-written state. Before any of that, old tool
 results are stubbed before anything is summarized, and the working span grows with the model's window.
+The same net is the fold *inside* a turn: when the span passes its budget, the older rounds become one
+verbatim note — the chain's results at length, their payload rather than their envelope, the dead ends,
+what an earlier fold carried — and the newest rounds ride whole, with no model call. The carry at the
+ceiling is sized to the model's window (a 262k model carries 24 KB, not 4), every pass carries what the
+passes before it established, and each finished turn's net goes to the conversation's `net.jsonl`, where
+the next turns read what the tools showed — the rolling summary only ever saw the assistant's own words.
+The ceiling itself is floored at a dozen of the fullest prompt the turn may send, with cached tokens
+counted at a quarter, so a wide window is no longer cut sooner than a narrow one.
 
 Inside a turn, a [recall overlay](https://gary23w.github.io/nl-veil/#doc=worker/chat/overlay) keeps a small
 working field of the conversation's memory, your durable notes and the file ledger, grows it with every
@@ -1414,7 +1318,7 @@ model's own claims:
   a reviewed step like every other proposal.
 - **Review closes the loop across casts.** Under a lineage, the end-of-run judge's lessons and skills and
   the mined habits wait in the lineage's quarantine until someone decides: `veil lineage show <id>`, then
-  `veil lineage accept|reject <id> <n>`, or keep/drop on the card in the desktop's Memory pane. An accepted
+  `veil lineage accept|reject <id> <n>`, or keep/drop on the card under the lineage in the desktop's Swarm > Lineages view. An accepted
   proposal goes into the live memory the next cast of that lineage recalls; a rejected one is remembered so
   the judge and the miner do not propose it again. The same habit no longer comes back every run as a new line.
 - **What a lineage keeps is the task, not just the process.** The judge also proposes **facts**: requirements a
@@ -1440,4 +1344,100 @@ The engine stays a fixed floor. What it learns lives in memory, never in an `if`
 
 The hive is also a **side agent for whatever AI you already talk to**. Any assistant that can run a
 shell command can hand off a research question or a side-build, keep working, and pull the progress and
-deliverables from the swarm's event stream instead of grinding through it in its own conte
+deliverables from the swarm's event stream instead of grinding through it in its own context window:
+
+```sh
+# start it and follow the stream to completion
+veil cast "why does saving a note drop the last line? recommend a fix" --follow
+
+# or start it, keep chatting, and tail it later
+veil cast "research WASM memory models and write a brief"
+veil events <id> --follow
+```
+
+Casts made this way run detached, stay bounded (`--minutes` / `--minds`), never post publicly, and are
+graded by the engine's own smoke gate and judge.
+
+**The MCP relationship runs the other way today.** veil is an MCP *client*: `mcp_discover` reads the
+server configs already on your machine (Claude Desktop, Cursor, VS Code) and probes for local AI
+runtimes, and `mcp_call` runs their tools inside a veil turn — config scanning is read-only and never
+returns env values, which is where secrets live. Exposing the hive *as* an MCP server, so another
+client lists `cast` among its tools, is **planned and not yet built**: there is no `veil mcp` command,
+so drive it as a shell command for now.
+
+## How it works
+
+Four pieces, each published on its own, that snap together:
+
+```
+  ┌─────────────────────────────────────────────────────────────┐
+  │  the veil  (this repo)   the swarm engine + the Veil + CLI   │
+  │     │                                                        │
+  │     │  every turn: perceive → recall → act → imprint         │
+  │     ▼                                                        │
+  │  neuron-db               the hive's memory  (one `neuron` bin)│
+  │     ▲                                                        │
+  │     │  bulk-load clean facts; scouts fetch pre-cleaned docs  │
+  │     │                                                        │
+  │  nl-rag                  the knowledge substrate (doc packs) │
+  │                                                              │
+  │  the-veil-12b            the model, served in-process        │
+  └─────────────────────────────────────────────────────────────┘
+```
+
+**the veil** — the engine. Each mind runs a *moment loop*: it perceives the goal and live state,
+recalls what the hive knows, acts (write a file, search, run tests, edit, message a peer), and
+imprints what it learned back into memory. Periodically the hive is integrated into the Veil — a
+single self (*I am / I know / I have / my will*) that persists across runs, answers you, and folds
+your intent into the next move. The engine is a fixed floor; **behaviour emerges from live signals**
+(the mode, the plan, the strategy), never from hardcoded use cases.
+
+**[neuron-db](https://github.com/gary23w/neuron-db)** — the memory. A small associative store
+compiled to one `neuron` binary the engine calls for every recall and observe. It's what makes the
+loop an *oscillation*: perception becomes graph, reasoning becomes graph traversal, and each
+prompt is rebuilt from a trust-weighted recall instead of carried as flat text — so a small local
+model gets a large-model floor to stand on, cheaper in tokens and richer in context. Fetched and
+built for you on first run (needs [Rust](https://rustup.rs)); reused after that. Its semantic cortex
+is published separately as
+**[gary-neuron-emergent](https://huggingface.co/gary23w/gary-neuron-emergent)**.
+
+**It resolves paraphrases.** Recall returning nothing reads to a model as an authoritative *no* and
+overrides what is sitting in its own context, so an empty spreading-activation pass no longer ends the
+lookup: it falls through to a semantic pass with a topic gate, which can match a question sharing **no
+words** with the stored fact. Released bundles build `neuron` with that tier compiled in. Measured
+through the chat stack on isolated conversations with identical seeds and phrasing, grounded answers
+went **0/3 → 2/3 with one partial** — turn-start recall now injects bridges like *"machine that routes
+customer orders" → "the dispatch gateway listens on port 7141"* that a lexical lookup never surfaced.
+
+**[nl-rag](https://github.com/gary23w/nl-rag)** — the knowledge. A curated repository of canonical
+documentation (languages, web, databases, security, ops…) pulled and normalized into clean,
+frontmattered markdown *packs*, each with a `pack.facts` file. The veil's compiled-in source atlas
+points scouts at these packs first, so a small model reads pre-cleaned markdown instead of fighting
+HTML — and you can bulk-load a pack straight into hive memory:
+
+```sh
+neuron import packs/rust/pack.facts --scope knowledge     # from a cloned nl-rag
+```
+
+**[the-veil-12b](https://huggingface.co/gary23w/the-veil-12b)** — the model. Published as GGUF and
+served by the server itself, so the fourth piece needs no runtime of its own: `veil model pull` and
+the app is self-contained. See [the built-in model](#the-built-in-model--nothing-to-install). Any
+other OpenAI-compatible endpoint still works exactly as before — this is the floor, not a lock-in.
+
+Optionally, **hyperspace grounding** (`NL_HYPERSPACE=1`) settles the most relevant memory into a
+warm in-RAM field before each call, so a typical round does *zero* database subprocess calls for
+grounding. It's bounded (~45 KB/mind) and scales down to an IoT profile (`NL_HYPERSPACE_CAP=48`).
+
+## What you can do
+
+The same binary covers very different jobs — the **mode emerges from your words**:
+
+- **Build software, graded by its own tests.** The hive plans a file tree, splits the work, writes
+  the project, runs the tests it wrote, and folds the results into its fitness — it keeps going
+  until the deliverable actually passes. `veil cast "Build a URL shortener with a REST API and tests" --follow`
+- **Research & brief.** In `--style discourse` the minds research the live web, form and argue
+  their own views, and co-write a briefing. `veil cast "Brief me on fusion power in 2026" --style discourse`
+- **Operate a live device.** Point the Veil at a device that drops telemetry on a file bus and it
+  acts to keep it healthy, graded by an **acceptance oracle** — the device's own measured health,
+  which the Veil never sees and can't write, so only a real fix moves the number. The shipped
+  example is a self-healing security daemon (detect → remove persistence → block C2 → verify);

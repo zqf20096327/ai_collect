@@ -51,11 +51,11 @@
 
 ---
 
-<p align="center">&nbsp;<img align="center" src="docs/languages.svg?t=1792178908" alt="Amey-Thakur" title="Amey-Thakur's Most Used Languages" /></p>
+<p align="center">&nbsp;<img align="center" src="docs/languages.svg?t=1792261190" alt="Amey-Thakur" title="Amey-Thakur's Most Used Languages" /></p>
 
 ---
 
-<p align="center">&nbsp;<img align="center" src="docs/stats.svg?t=1792178801" alt="Amey-Thakur" title="Amey-Thakur's GitHub Productivity Stats" /></p>
+<p align="center">&nbsp;<img align="center" src="docs/stats.svg?t=1792261019" alt="Amey-Thakur" title="Amey-Thakur's GitHub Productivity Stats" /></p>
 
 ---
 

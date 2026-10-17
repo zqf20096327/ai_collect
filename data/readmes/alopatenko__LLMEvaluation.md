@@ -603,6 +603,17 @@ QA is used in many vertical domains, see Vertical section below
 - CALVIN: A Benchmark for Language-Conditioned Policy Learning for Long-Horizon Robot Manipulation Tasks, Mohit Shridhar et al., 2022 [arxiv](https://arxiv.org/abs/2112.03227)
 A few corrections/qualifications are important:
 ### Ethical AI
+- SWE-DeceptionBench: Benchmarking Deceptive Behaviors of LLMs Across the Software Development Lifecycle, Oct 9, 2026 [arXiv](https://arxiv.org/abs/2610.13626)
+- Measuring Structural Value Alignment in Sixteen Models: LLMs Have Human-Like Moral Spaces, Sep 14, 2026 [Springer](https://link.springer.com/article/10.1007/s43681-026-01368-w)
+- Automated Researchers Can Reliably Mitigate Alignment Failures, Aug 28, 2026 [Anthropic](https://www.anthropic.com/research/automated-researchers-mitigate-alignment-failures)
+- Tracing Moral Value Drift Across Large Language Model Generations and Their Societal Implications, Aug 2026 [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S0160791X26002204)
+- Crisis as Catalyst: Evaluating Ethical Consistency and Cooperation in LLMs Under High-Stakes Scenarios, Apr 15, 2026 [Humanities and Social Sciences Communications](https://doi.org/10.1057/s41599-026-07194-z)
+- AuditBench: Evaluating Alignment Auditing Techniques on Models with Hidden Behaviors, Mar 10, 2026 [Anthropic](https://alignment.anthropic.com/2026/auditbench/)
+- MOSAIC: Unveiling the Moral, Social and Individual Dimensions of Large Language Models, Mar 2026 [arXiv](https://arxiv.org/abs/2603.00048)
+- The Pluralistic Moral Gap: Understanding Moral Judgment and Value Differences Between Humans and Large Language Models, 2026 [ACL Anthology](https://aclanthology.org/2026.eacl-long.305/)
+- Beyond Value Benchmarks: Measuring Value-Structure Alignment in Large Language Models via Symmetric Q-Sorts, 2026 [ACL Anthology](https://aclanthology.org/2026.acl-long.830/)
+- A Roadmap for Evaluating Moral Competence in Large Language Models, Feb 18, 2026 [Nature](https://www.nature.com/articles/s41586-025-10021-1)
+- Measuring Reward-Seeking by Instilling Contrastive Beliefs, Jul 21, 2026 [OpenAI / Apollo Research](https://alignment.openai.com/measuring-reward-seeking/)
 - Evaluating the Moral Beliefs Encoded in LLMs,  Jul 23 [arxiv](https://arxiv.org/abs/2307.14324)
 - AI Deception: A Survey of Examples, Risks, and Potential Solutions Aug 23 [arxiv](https://arxiv.org/abs/2308.14752)
 - Aligning AI With Shared Human Value, Aug 20 - Feb 23, [arxiv](https://arxiv.org/abs/2008.02275) Re: ETHICS benchmark
@@ -771,19 +782,4 @@ Agentic Tasks
 - ManiSkill2: A Unified Benchmark for Generalizable Manipulation Skills, Feb 2023, [arxiv](https://arxiv.org/abs/2302.04659)
 ---
 ### AGI Evaluation
-AGI (Artificial General Intelligence) evaluation refers to the process of assessing whether an AI system possesses or approaches general intelligence—the ability to perform any intellectual task that a human can.
-- Abstraction and Reasoning Corpus for Artificial General Intelligence (ARC-AGI-2), Mar 2025, [github](https://github.com/arcprize/ARC-AGI-2) an explanation from [François Chollet on X](https://x.com/fchollet/status/1904265979192086882) [more details ARCPrize announcement](https://arcprize.org/blog/announcing-arc-agi-2-and-arc-prize-2025)
-- Evaluating Intelligence via Trial and Error, Feb 2025, [arxiv](https://arxiv.org/abs/2502.18858v2)
-- Humanity's Last Exam, Center for Safe AI, Scale AI, Jan 2025 [arxiv](https://arxiv.org/abs/2501.14249)
-- Evaluation of OpenAI o1: Opportunities and Challenges of AGI, Sep 2024, [arxiv](https://arxiv.org/abs/2409.18486)
-- GAIA: a benchmark for General AI Assistants, Nov 2023, [arxiv](https://arxiv.org/abs/2311.12983), a joint effort by Meta, HuggingFace to design a benchmark measuring AGI assistants [GAIA benchmark](https://huggingface.co/gaia-benchmark)
-- Levels of AGI for Operationalizing Progress on the Path to AGI, 2023, [levels of agi](https://www.foreveryscale.com/api/v1/file/36c810a4-eae5-40e4-9160-11e999e3e7c0.pdf)
-
-
-
----
-### Long Text Generation
-- Suri: Multi-constraint Instruction Following for Long-form Text Generation, Jun 2024, [arxiv](https://arxiv.org/abs/2406.19371)
-- LongWriter: Unleashing 10,000+ Word Generation from Long Context LLMs, Aug 2024, [arxiv](https://arxiv.org/abs/2408.07055)
-- LongBench: A Bilingual, Multitask Benchmark for Long Context Understanding, Aug 2023, [arxiv](https://arxiv.org/abs/2308.14508)
-- HelloBench: Evaluating Long Text Generation Capabilities 
+AGI (Artificial General Intelligence) evalua

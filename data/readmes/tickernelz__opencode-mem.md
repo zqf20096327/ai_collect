@@ -7,7 +7,7 @@
 
 ![OpenCode Memory Banner](.github/pics/banner.png)
 
-Languages: **🇬🇧** | [🇩🇪](./README.de.md) | [🇨🇳](./README.zh.md) | [🇸🇦](./README.ar.md) | [🇹🇷](./README.tr.md) | [🇳🇱](./README.nl.md)
+Languages: **🇬🇧** | [🇩🇪](./i18n/README.de.md) | [🇨🇳](./i18n/README.zh.md) | [🇸🇦](./i18n/README.ar.md) | [🇹🇷](./i18n/README.tr.md) | [🇳🇱](./i18n/README.nl.md)
 
 A persistent memory system for AI coding agents that enables long-term context retention across sessions using local vector database technology.
 
@@ -549,7 +549,7 @@ bun run format
 
 This project is actively seeking contributions to become the definitive memory plugin for AI coding agents. Whether you are fixing bugs, adding features, improving documentation, or expanding embedding model support, your contributions are critical. The codebase is well-structured and ready for enhancement. Please open issues with the Issue or Feature request templates, and fill out the pull request template when you submit a PR — we review and merge contributions quickly.
 
-**README translations:** `README.md` (English) is the source of truth. When you change its content, update the sibling files `README.de.md`, `README.zh.md`, `README.ar.md`, `README.tr.md`, and `README.nl.md` to match.
+**README translations:** `README.md` (English) is the source of truth. When you change its content, update the files under `i18n/` (`README.de.md`, `README.zh.md`, `README.ar.md`, `README.tr.md`, and `README.nl.md`) to match.
 
 ## License & Links
 

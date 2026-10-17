@@ -20,7 +20,7 @@ analysis and editing.
 > organizations below the [license thresholds](#license-at-a-glance).
 
 This page is a short tour, not the reference. It names 35 of the 54 tools an agent
-sees by default; the three [manuals](#documentation) run to 35 chapters, about 36
+sees by default; the three [manuals](#documentation) run to 35 chapters, about 37
 times the length of this page.
 
 ## See it answer a code question
@@ -80,14 +80,14 @@ dump:
 | Prepare to edit | `prepare_task` | The goal-focused context plus covering tests and likely siblings such as a factory or validator |
 | Check the response cost first | `measure` | The exact token count of one or more planned tool answers, without returning their large payloads |
 
-The focused context tools accept a **token budget**. Explicitly named seed symbols
-stay in the package; AICB first reduces method detail and then removes less-relevant
-surrounding content when the budget is tight. It does not cut text in the middle of
-a block, and a leading note discloses types, tests or siblings that were omitted.
-AICB can therefore tell you that a bundle was structurally reduced or capped; it
-cannot certify that the remaining budget is sufficient to solve the task correctly.
-Whole-document rendering can use the same budget pipeline through a pipeline profile,
-including a configurable overshoot allowance and an optional trimming report.
+The focused context tools accept a **token budget**, so a package fits the room your
+agent has. The symbols you name stay in; when the budget is tight, the package
+becomes less detailed around them instead of being cut off in the middle of a block,
+and a leading note says which types, tests or siblings were left out. AICB can
+therefore tell you that a bundle was reduced or capped; it cannot certify that what
+remains is enough to solve the task correctly. Whole-document rendering can use the
+same budget through a pipeline profile, with an allowance for overshoot and an
+optional report of what was trimmed.
 
 The result is **AI-Builder-MD**: structured Markdown for an LLM, containing the
 selected code together with symbol relationships, architecture graphs, semantic
@@ -311,15 +311,15 @@ the .NET 10 SDK, installs the published tool, restores the solution and runs
 written:
 
 ```yaml
-- uses: gregordadera/aicb-roslyn-mcp@v0.5.502.1
+- uses: gregordadera/aicb-roslyn-mcp@v0.5.503.1
   with:
-    version: 0.5.502.1
+    version: 0.5.503.1
     solution: App.sln
     output: artifacts/context.md
     fail-on: "critical>0 OR debt>120min"
 ```
 
-The example pins both halves: `@v0.5.502.1` fixes the action, `version` fixes the package it
+The example pins both halves: `@v0.5.503.1` fixes the action, `version` fixes the package it
 installs. Without `version` the action installs the newest published package, and `@main`
 follows every change to the action, so neither belongs in a build you depend on. A release
 tag can in principle be moved; the full commit SHA of that tag is the immutable form. Further
@@ -496,8 +496,9 @@ runs on the newest .NET - a preview .NET additionally needs
 `DOTNET_ROLL_FORWARD_TO_PRERELEASE=1`.
 
 The Windows downloads are self-contained, but analyzing a solution still needs
-MSBuild from a .NET SDK or Visual Studio. The installer is not code-signed yet, so
-Windows SmartScreen displays a warning; every release provides SHA-256 checksums.
+MSBuild from a .NET SDK or Visual Studio. The installer and the programs are
+code-signed (publisher: Gregor Dadera); Windows SmartScreen can still warn about a new
+release until it has enough download history. Every release provides SHA-256 checksums.
 
 ## Connect a coding agent
 
@@ -718,7 +719,7 @@ issues privately as described in [`SECURITY.md`](https://github.com/gregordadera
 ## Documentation
 
 Everything above is the short version. The three manuals below hold the full reference -
-35 chapters, each manual roughly 70,000 words, together about 36 times the length of this
+35 chapters, each manual 70,000 to 80,000 words, together about 37 times the length of this
 README.
 
 - [Getting started](https://github.com/gregordadera/aicb-roslyn-mcp/blob/main/docs/GETTING-STARTED.md) - install, connect and ask the first question

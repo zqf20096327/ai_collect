@@ -39,9 +39,13 @@ Users sign up, run free models or bring their own OpenRouter key, buy credits wi
   karaoke-style transcript and an MP3 of the whole debate.
 - **📹 YouTube video and a Short in minutes**: a 16:9 episode plus a 9:16 Short cut around the
   strongest moments, rendered right in your browser.
-- **✏️ Visual scenes**: charts, maps, balances, matrices, Venn diagrams, top lists, schemes and
-  pictograms are drawn in the centre of the video exactly when a speaker mentions them — only
-  with numbers the speaker actually said — and the judge's scoreboard crowns the winner.
+- **✏️ Visual scenes**: charts, maps, balances, matrices, Venn diagrams, top lists, schemes,
+  hand-drawn sketches and photos appear next to every turn while the debate runs and in the
+  video exactly when a speaker mentions them — only with numbers the speaker actually said — and
+  the judge's scoreboard crowns the winner. Debaters can ask for visuals and challenge each
+  other's figures on screen.
+- **🔎 Fact-check**: a web search checks the figures and quotes on screen, the opponents and the
+  judge see the result, and the leaderboard shows how accurate each model's figures are.
 - **📝 Transcript export**: take the full debate with you as Markdown.
 
 ### 🌍 Share and discover
@@ -52,6 +56,16 @@ Users sign up, run free models or bring their own OpenRouter key, buy credits wi
   with a new cast.
 - **👤 Your studio**: a library of drafts and finished debates, credits topped up via Stripe, or
   your own OpenRouter key to run models at your own cost.
+
+### 🤖 From the terminal and for AI agents
+- **⌨️ `debatr` CLI**: `uv tool install debatr`, approve your computer in the browser once and run
+  a debate with one command. The turns stream into your terminal; `--json` makes it scriptable,
+  and transcripts and audio export from there too.
+- **🔌 MCP server**: give Claude, Cursor and other agents a debate tool (`debatr mcp`). They can
+  stage a debate between any models to stress-test a decision or see both sides of a question,
+  then read the verdict.
+- **🔑 API tokens**: one per device or agent, each with an optional spending limit and expiry,
+  revocable at any time. A token runs debates but can never touch your password, keys or payments.
 
 ### 🐳 Self-host it
 - One `docker compose up`: Postgres, Redis, API, workers and a Caddy-served frontend.
@@ -100,6 +114,12 @@ Users sign up, run free models or bring their own OpenRouter key, buy credits wi
 - **State/Routing**: React Router, Axios
 - **Streaming**: Server-Sent Events (SSE)
 - **Video**: Remotion Player + `@remotion/web-renderer` (MP4 encoded in the visitor's browser)
+
+### CLI and MCP server
+- **Package**: [`debatr`](cli/README.md) (Python 3.10+, [Typer](https://typer.tiangolo.com/) +
+  [Rich](https://rich.readthedocs.io/), httpx), installable with `uv tool install debatr`
+- **Agents**: [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) (stdio server)
+- **Auth**: personal API tokens (`Authorization: Bearer debatr_…`) and a browser device login
 
 ### DevOps
 - **Containers**: Docker Compose (Postgres, Redis, API, worker, Caddy)
@@ -219,7 +239,7 @@ Run `make` to list every target. The most useful ones:
 1. Open the web interface at `https://your-domain.com` (or `http://localhost`) and create an account
    (new accounts receive `SIGNUP_BONUS_USD` of credits, 0 by default).
 2. Click **"+ New debate"** and walk through the wizard:
-   - **Topic**: type a question or pick one from the library, choose language, rounds and reply length.
+   - **Topic**: type a question or pick one of today's trending topics from the news, choose language, rounds and reply length.
    - **Speakers**: a host plus two or more debaters, each with a model (OpenRouter's free router by
      default), a voice and a persona. The voice engine is chosen here too: free Edge voices or premium
      ElevenLabs voices.
@@ -231,6 +251,25 @@ Run `make` to list every target. The most useful ones:
 4. **Share**: publish the debate to the gallery and copy the share link.
 5. **Account**: top up credits (Stripe), see this month's usage, store a personal OpenRouter key so paid
    models run on your own account instead of credits.
+
+### ⌨️ Terminal and AI agents
+
+The [`debatr` CLI](cli/README.md) talks to any Debatr server over its public API:
+
+```bash
+uv tool install debatr
+debatr login                                  # approve this computer in the browser
+debatr run "Should cities ban cars?" -d anthropic/claude-sonnet-4.5 -d openai/gpt-5
+debatr show <id> --format markdown -o debate.md
+```
+
+For AI agents, `debatr mcp` is an MCP server, e.g. for Claude Code:
+`claude mcp add debatr --scope user -- uvx debatr mcp`. Agents start a debate, wait for it with
+progress per turn and read the verdict. They spend credits only within the token's spending
+limit and `DEBATR_MAX_COST_USD` per debate, and their debates stay private unless they publish.
+
+Scripts and CI can use a token from **Account → API tokens** (`DEBATR_TOKEN`). For a self-hosted
+server pass `--url http://localhost` (or set `DEBATR_URL`).
 
 ### 💳 Credits
 
@@ -264,11 +303,16 @@ The system uses an event-driven architecture to handle long-running LLM generati
    picks highlights for Shorts and writes `timeline.json`. The browser renders MP4s from that timeline.
 8. **Accounts**: the login lives in the signed session cookie; personal OpenRouter keys are stored
    encrypted and only ever handed to the worker through Redis for the duration of a run.
+9. **API tokens**: the CLI, scripts and agents send `Authorization: Bearer debatr_…`. Only a
+   SHA-256 hash is stored; `debatr login` gets its token through a device flow (a short code
+   confirmed in the browser). Runs remember the token that started them, so its spending limit
+   counts their charges; account settings and payments accept only the browser session.
 
 **Configuration** (see `.env.example`): `OPENROUTER_API_KEY`, `ELEVENLABS_API_KEY`, `ALLOWED_ORIGINS`,
 `SIGNUP_BONUS_USD`, `CREDIT_MARKUP`, `TTS_CREDIT_PRICE_PER_1K_CHARS`, `TOPUP_AMOUNTS_USD`,
 `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` (or `DEV_FAKE_PAYMENTS`), `DEBATE_CREATE_RATE_LIMIT`,
-`LOGIN_RATE_LIMIT`, `TURN_JOB_TIMEOUT`, `MEDIA_JOB_TIMEOUT`, `ADMIN_USER` / `ADMIN_PASSWORD`, `SECRET_KEY`.
+`LOGIN_RATE_LIMIT`, `TURN_JOB_TIMEOUT`, `LLM_TURN_TIMEOUT`, `TURN_WORKERS`,
+`MAX_ACTIVE_DEBATES_PER_USER`, `MAX_ACTIVE_MEDIA_PER_USER`, `FREE_MODELS_PER_MINUTE`, `MEDIA_JOB_TIMEOUT`, `ADMIN_USER` / `ADMIN_PASSWORD`, `SECRET_KEY`.
 
 ---
 

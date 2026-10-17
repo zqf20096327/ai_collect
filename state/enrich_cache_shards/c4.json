@@ -606,5 +606,279 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "deepseek-php/deepseek-php-client": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-05-24",
+  "rel_days": 146,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "structurizr/structurizr": {
+  "commit_90d": 21,
+  "commit_7d": 0,
+  "rel_ver": "v2026.09.19",
+  "rel_pub": "2026-09-19",
+  "rel_days": 28,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 60,
+   "JavaScript": 38,
+   "ASL": 1,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "iml-wg/HEPML-LivingReview": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": "v2026.06.01",
+  "rel_pub": "2026-07-27",
+  "rel_days": 82,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "TeX": 96,
+   "Python": 3,
+   "BibTeX Style": 2,
+   "Makefile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "weibocom/rill-flow": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Java": 37,
+   "TypeScript": 25,
+   "Vue": 19,
+   "Groovy": 15,
+   "Less": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "tingly-dev/tingly-box": {
+  "commit_90d": 1174,
+  "commit_7d": 103,
+  "rel_ver": "v1.261022.0-rc1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "Go": 67,
+   "TypeScript": 30,
+   "Python": 2,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ARUNAGIRINATHAN-K/awesome-ai-agents-2026": {
+  "commit_90d": 292,
+  "commit_7d": 29,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-09-15",
+  "rel_days": 32,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 128,
+  "lang": {
+   "TypeScript": 81,
+   "JavaScript": 16,
+   "CSS": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "milisp/mcp-linker": {
+  "commit_90d": 124,
+  "commit_7d": 80,
+  "rel_ver": "v2.7.1",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-07",
+  "sec_ids": [
+   "GHSA-g6rf-qhv3-3rp9(-,critical)"
+  ],
+  "contrib_n": 8,
+  "lang": {
+   "TypeScript": 71,
+   "Rust": 28,
+   "CSS": 1,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "cloudstreet-dev/React-is-Awful": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "CSS": 70,
+   "HTML": 30
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "yandex-research/tabular-dl-tabr": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 83,
+   "Jupyter Notebook": 17
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "praveen-ks-2001/hermes-agent-template": {
+  "commit_90d": 41,
+  "commit_7d": 3,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 67,
+   "HTML": 29,
+   "Dockerfile": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

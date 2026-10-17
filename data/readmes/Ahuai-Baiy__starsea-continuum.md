@@ -10,7 +10,7 @@ Created by **Huai & Baiyuan**.
 [![CI](https://github.com/Ahuai-Baiy/starsea-continuum/actions/workflows/ci.yml/badge.svg)](https://github.com/Ahuai-Baiy/starsea-continuum/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-%3E%3D3.11-7DD3FC)
 ![License](https://img.shields.io/badge/License-Apache--2.0-86EFAC)
-![Status](https://img.shields.io/badge/Status-Public_Preview_v0.4.0-A5B4FC)
+![Status](https://img.shields.io/badge/Status-Public_Preview_v0.5.0-A5B4FC)
 
 Memory systems decide what an AI should remember. Session tools carry the last
 stretch of a conversation into a new window. Continuum answers the question in
@@ -32,6 +32,40 @@ until something changes behind the thread's back:
 Continue the old thread anyway and the model keeps speaking from a world that
 no longer exists. Nothing throws an error. The answers are just quietly wrong
 — and the longer the conversation, the harder it is to notice.
+
+## Why we built this
+
+Continuum comes out of a long-running AI we have talked to every day for over
+a year. Much of what is here exists because things like these happened to us:
+
+- **A regenerated reply was still there.** We regenerated a reply we didn't
+  want. The screen showed the new one, but the thread on the model's side
+  still held the old one.
+  → A regenerate is a rebuild (`operation_regenerate`), and the replaced reply
+  is never carried into a fresh thread (`replaced_version`).
+- **Old records outlived a change of mind.** Something had changed, but older
+  records still said the opposite, and nothing told the assistant which one
+  was current. → Current facts are carried separately, and old statements are
+  labelled as history (`facts_changed`).
+- **A new window forgot the afternoon.** After a window switch, the assistant
+  remembered older summaries but not what had been said a few hours
+  earlier, because that stretch had not been summarized yet. → The gap after
+  the latest checkpoint is carried word for word, with nothing silently cut.
+- **Two models, one conversation.** We use more than one model in the same
+  conversation. When one answered a turn, the other's thread had never seen
+  it. → A turn answered by another backend is caught up, not ignored
+  (`foreign_backend_intervening_turn`), and a model change is a rebuild with
+  the right context carried over (`model_changed`).
+- **Switching to voice lost the thread.** Moving from typing to a voice call
+  started a clean session that had no idea what had just been typed.
+  → A channel change is a rebuild (`channel_changed`), and the fresh thread
+  carries the recent turns instead of starting blank.
+- **Some replies stopped halfway.** A reply that broke off mid-sentence could
+  be picked up next turn as if it had finished. → An unfinished turn is never
+  resumed (`previous_turn_incomplete`) and never carried (`incomplete_reply`).
+
+Our own system runs its own code; Continuum is the part of it we could make
+general, test on its own, and share.
 
 ## What Continuum does
 
@@ -88,7 +122,39 @@ latest valid checkpoint with the exact gap after it, and the last turns
 exactly as they were said. Every piece stays bound to the current branch and
 epoch, so nothing stale slips back in.
 
-Continuum makes the call; your app carries the context.
+Continuum makes the call. Since v0.5 it can also sort the pieces for you:
+give `assemble_fresh_context()` what your app has stored, and it returns the
+parts to send, in order. Separately, it tells you what it left out and why.
+That list is for your logs; it is never part of the context.
+
+```python
+from starsea_continuum import assemble_fresh_context
+
+context = assemble_fresh_context(
+    instructions=current_instructions,
+    epoch=continuity_epoch,
+    facts=current_facts,          # Fact(...)
+    timeline=timeline_entries,    # TimelineEntry(...), absolute dates
+    checkpoints=checkpoints,      # Checkpoint(...)
+    messages=branch_messages,     # Message(...), oldest first
+)
+
+if context.needs_fuller_rebuild:
+    ...                           # the gap is too long to carry exactly
+else:
+    for part in context.parts:    # instructions, facts, timeline,
+        send(part)                # checkpoint, gap, tail — in that order
+
+for item in context.excluded:     # for your logs only, never sent
+    log(item.ref, item.reason)    # e.g. message:5 -> replaced_version
+```
+
+It drops replaced versions, half-finished replies, summaries from an older
+epoch, and hidden reasoning. It also refuses a checkpoint that would leave a
+hole or overlap the recent tail. Like the planner, it is a pure function and
+never sees your storage. You still choose what goes in, and you still talk to
+the model.
+
 [What to carry into a fresh thread](docs/fresh-thread-context.md) walks
 through each part, the budgets, what must never be carried, and what to do
 for every reason code.
@@ -175,13 +241,14 @@ It sits comfortably beside those tools.
 ## What ships today
 
 - **Available now:** the thread-continuity planner (five decisions, rollover
-  limits) and metadata-only observation.
+  limits), the fresh-context assembler (`assemble_fresh_context()`), and
+  metadata-only observation.
 - **Designed, not yet shipped:** checkpoint and recovery validation, keeping
   "current facts" separate from history, and context-selection boundaries.
   These are written up as design documents.
 - **Ideas for later:** a context compiler. Not a commitment.
 
-This is an early public preview (`v0.4.0`), not a production-ready platform.
+This is an early public preview (`v0.5.0`), not a production-ready platform.
 
 ## Design principles
 
@@ -222,9 +289,9 @@ This is an early public preview (`v0.4.0`), not a production-ready platform.
 
 ## Tests
 
-33 synthetic contract tests cover all 35 decision rules, alongside tests for
-observation and smoke tests for every example. CI runs on Python 3.11, 3.12,
-and 3.13.
+Synthetic contract tests cover all 35 decision rules and every exclusion
+rule of the fresh-context assembler, alongside tests for observation and smoke
+tests for every example. CI runs on Python 3.11, 3.12, and 3.13.
 
 ```bash
 python -m unittest discover -s tests -p 'test_*.py'

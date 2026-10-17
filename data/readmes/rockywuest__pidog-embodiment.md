@@ -191,7 +191,9 @@ sudo systemctl start nox-brain
 > - **On the robot itself** (needs a Pi 5): `OPENAI_URL=http://127.0.0.1:11434/v1/chat/completions`.
 >   Field-tested — a Pi 5 runs `llama3.2` well enough for real conversations,
 >   with no network in the loop.
-> - **On a bigger machine**: point `OPENAI_URL` at that machine's IP. **Ollama
+> - **On the same machine as `nox-brain`** (e.g. a desktop running both):
+>   also `127.0.0.1` — no `OLLAMA_HOST` change needed.
+> - **On a bigger machine than the brain**: point `OPENAI_URL` at that machine's IP. **Ollama
 >   only listens on `127.0.0.1` by default** — on the big machine set
 >   `OLLAMA_HOST=0.0.0.0`, restart Ollama, and open port 11434 in its firewall.
 >   If the dog only ever says "I'm still thinking…" while `ollama run` works
@@ -218,6 +220,7 @@ Every key is documented with examples in the file itself.
 | `NOX_API_TOKEN` / `NOX_RATE_LIMIT` | Bridge auth + rate limit (see Security) | off / 600 |
 | `NOX_NO_AUTO` | `1` disables autonomous behavior at boot | autonomous on |
 | `WALK_SPEED` | Gait speed (forward/backward/turns), 1–100 | `95` |
+| `BEHAVIOR_USER_HOLD_S` | Seconds autonomy pauses after your movement command (voice/MCP/API) | `60` |
 
 **Brain — `/etc/default/nox-brain`** (restart: `sudo systemctl restart nox-brain`; verify: `journalctl -u nox-brain | grep Language`)
 
@@ -483,6 +486,19 @@ Every finished phrase is printed with its wake-word verdict, and phrases the
 service would silently drop (too quiet, filler words) say why. If the words on
 screen are wrong, it is the STT model or the microphone — not the brain.
 
+**The dog only ever says it is "still thinking"?** Then the brain reached the
+LLM and failed — and the reason is in the brain's journal, not the voice log.
+Ask the LLM one question exactly the way the brain does, on the machine where
+`nox-brain` runs:
+
+```bash
+sudo python3 scripts/llm_check.py   # reads /etc/default/nox-brain
+```
+
+It prints the answer and how long it took (or the error and how to fix it —
+Ollama not listening on the network, model not pulled, wrong host name), and
+warns when the model ignores the JSON format.
+
 ## 🔌 Claude as the Brain (MCP)
 
 `brain/nox_mcp_server.py` exposes the robot as **MCP tools** — photo (the model
@@ -496,8 +512,17 @@ claude mcp add pidog --env PIDOG_HOST=<robot-ip-or-name> --   python3 /path/to/p
 ```
 
 There is no command syntax to learn: once `/mcp` shows the server connected,
-just **type what you want in the Claude Code chat**, in any language — "fais
-asseoir le chien", "patrol for a minute" — and Claude picks the right tools.
+press **Esc** to close that menu and **type what you want at the `>` prompt of
+the same terminal**, in any language — "fais asseoir le chien", "patrol for a
+minute" — and Claude picks the right tools (the first time, it asks whether it
+may use them: answer yes). Start with *"use dog_status and tell me the
+battery level"* — if that works, everything works.
+
+- The **claude.ai website** does not see an MCP server that runs on your
+  machine — only the Claude Code terminal (or Claude Desktop, below) does.
+- "connected" in `/mcp` only means Claude started the server; the robot is
+  first contacted by a tool call. Test that part on its own:
+  `PIDOG_HOST=<robot> python3 brain/nox_mcp_server.py --check`
 
 Claude Desktop (`claude_desktop_config.json`) and other MCP clients:
 

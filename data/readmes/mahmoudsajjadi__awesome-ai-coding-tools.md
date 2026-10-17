@@ -650,7 +650,30 @@ If you cite or benchmark these foundational tools and literature, use the follow
   year         = {2026},
   howpublished = {\url{https://github.com/mahmoudsajjadi/awesome-ai-coding-tools}}
 }
+
+@article{sajjadi2026sustainable,
+  title     = {Sustainable Smart Grid Resilience and Renewable Integration Using Multi-Agent Reinforcement Learning},
+  author    = {Sajjadi Mohammadabadi, Seyed Mahmoud and Sajjadi, Sayed Mohammad},
+  journal   = {Sustainability},
+  volume    = {18},
+  number    = {20},
+  pages     = {10574},
+  year      = {2026},
+  publisher = {MDPI},
+  doi       = {10.3390/su182010574},
+  url       = {https://www.mdpi.com/2071-1050/18/20/10574}
+}
 ```
+
+### 📄 Author's Foundational Research & Recent Publications
+
+- **Sustainable Smart Grid Resilience and Renewable Integration Using Multi-Agent Reinforcement Learning** — *S. M. Sajjadi Mohammadabadi, S. M. Sajjadi*, *Sustainability* 18(20), 10574 (2026). [[MDPI Open Access](https://www.mdpi.com/2071-1050/18/20/10574)] • [[DOI](https://doi.org/10.3390/su182010574)] • [[Interactive Page](https://mahmoudsajjadi.github.io/papers/sustainable-smart-grid-resilience-marl.html)]
+- **SOLAR: Communication-Efficient Model Adaptation via Subspace-Oriented Latent Adapter Reparametrization** — *S. M. Sajjadi Mohammadabadi, X. Ma, L. Yang, F. Yan, J. Zhang*, *arXiv:2604.08368* (2026). [[arXiv](https://arxiv.org/abs/2604.08368)] • [[Code](https://github.com/mahmoudsajjadi/solar-peft)]
+- **Speed Up Federated Learning in Heterogeneous Environments: A Dynamic Tiering Approach** — *S. M. Sajjadi Mohammadabadi, S. Zawad, F. Yan, L. Yang*, *IEEE Internet of Things Journal* 12(5), 5026–5035 (2024). [[DOI](https://doi.org/10.1109/JIOT.2024.3468511)]
+- **Communication-Efficient Training Workload Balancing for Decentralized Multi-Agent Learning** — *S. M. Sajjadi Mohammadabadi, L. Yang, F. Yan, J. Zhang*, *IEEE ICDCS* (2024). [[DOI](https://doi.org/10.1109/ICDCS60910.2024.00062)]
+- **A Survey of Large Language Models: Evolution, Architectures, Adaptation, Benchmarking, Applications, Challenges, and Societal Implications** — *S. M. Sajjadi Mohammadabadi et al.*, *Electronics* 14(18), 3580 (2025). [[DOI](https://doi.org/10.3390/electronics14183580)]
+
+> 🏛️ Explore all 21 publications and 1-click BibTeX citations at the [**Academic Research Hub**](https://mahmoudsajjadi.github.io/research-hub.html) and [**Google Scholar**](https://scholar.google.com/citations?user=tkhCR5IAAAAJ&hl=en).
 
 ---
 

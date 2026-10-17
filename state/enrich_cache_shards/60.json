@@ -573,5 +573,256 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "MTSWebServices/RecTools": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.19.0",
+  "rel_pub": "2026-06-12",
+  "rel_days": 127,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "nebius/soperator": {
+  "commit_90d": 755,
+  "commit_7d": 71,
+  "rel_ver": "4.1.13",
+  "rel_pub": "2026-10-05",
+  "rel_days": 12,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "Go": 84,
+   "Python": 6,
+   "Shell": 3,
+   "C": 2,
+   "Go Template": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "grll/mcpadapt": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.1.20",
+  "rel_pub": "2025-10-24",
+  "rel_days": 358,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 15,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "kigner/audio.cpp-webui": {
+  "commit_90d": 236,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.0-windows-prebuilt",
+  "rel_pub": "2026-08-14",
+  "rel_days": 64,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 33,
+  "lang": {
+   "C++": 84,
+   "Python": 12,
+   "PowerShell": 1,
+   "JavaScript": 1,
+   "CMake": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "braintrustdata/agentbehavior": {
+  "commit_90d": 10,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 81,
+   "JavaScript": 19
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "micz/ThunderAI": {
+  "commit_90d": 421,
+  "commit_7d": 0,
+  "rel_ver": "v5.1.0pre1",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 31,
+  "lang": {
+   "JavaScript": 80,
+   "CSS": 11,
+   "HTML": 9
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "deepjavalibrary/djl-demo": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 45,
+  "lang": {
+   "Jupyter Notebook": 65,
+   "Java": 20,
+   "Python": 8,
+   "JavaScript": 2,
+   "Scala": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "brycewang-stanford/StatsPAI": {
+  "commit_90d": 1291,
+  "commit_7d": 204,
+  "rel_ver": "v1.23.0",
+  "rel_pub": "2026-08-24",
+  "rel_days": 54,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 93,
+   "R": 3,
+   "TeX": 2,
+   "Stata": 2,
+   "Rust": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "quickpose/quickpose-ios-sdk": {
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-08-26",
+  "rel_days": 52,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Swift": 59,
+   "Objective-C": 38,
+   "C": 2,
+   "Ruby": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

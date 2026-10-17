@@ -35,15 +35,17 @@ performance) — source in
 - `sandboxd/` — per-node control plane (Go): warm pools refilled from golden
   snapshot exports (online-retunable), claim/release/renew/hibernate/fork/
   promote/checkpoint HTTP API, operator-catalog dataset volumes (read-only or
-  writable), signed preview URLs, the HTTP-upgrade byte relays to silkd and
-  to any guest port, claim env with host-side credential injection and
-  per-claim upstream proxies, runtime tenants, config reload (SIGHUP),
-  usage + audit journals, /metrics, reap + restart reconcile with VMM
-  cold restart, memberlist mesh with redirect placement, and an optional
-  shared PostgreSQL meta store for tenants and pools
+  writable; read-only ones change on a running claim), signed preview URLs,
+  the HTTP-upgrade byte relays to silkd and to any guest port, claim env with
+  host-side credential injection and per-claim upstream proxies, runtime
+  tenants, config reload (SIGHUP), usage + audit journals, /metrics, reap +
+  restart reconcile with VMM cold restart, memberlist mesh with redirect
+  placement, and an optional shared PostgreSQL meta store for tenants,
+  pools and the cross-node adoption of archived claims
 - `sdk/go/` — Go SDK: `Connect/New/Lookup`, `Exec/Run`, files,
   `Push/Pull`, sessions, `Find/Replace`, `Watch`, git verbs, `OpenPty`,
   `Renew/Fork/Hibernate/Promote/Checkpoint`, claim env, `DialPort/ProxyPort/PreviewURL`,
+  `GetVolumes/SetVolumes/PatchVolumes`,
   `StartLsp`, `Spawn/Ps/Kill/Logs/Attach`; `protocol/wire` carries the frame
   vocabulary, `sdk/go/silkd` the conn layer, `silkdtest` a test fake
 - `sdk/python/` — Python SDK (stdlib-only, sync), matching the Go guest and
@@ -121,7 +123,8 @@ TEMPLATE=rt:24.04 scripts/sandboxd-e2e.sh
 #   without a Go toolchain.
 # VOLUME_IMAGE=/absolute/dataset.img enables the volumes proof (ro sharing;
 #   the image contains volume-e2e.txt); VOLUME_RW_IMAGE=/absolute/scratch.img
-#   adds the rw claim/release leg. Prebuilt runs also set VOLUME_SMOKE_BIN.
+#   adds the rw claim/release leg; VOLUME_LIVE=1 adds the live volume leg.
+#   Prebuilt runs also set VOLUME_SMOKE_BIN.
 ```
 
 ## CI

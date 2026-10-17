@@ -529,5 +529,145 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "Agent-Field/CodeAF": {
+  "commit_90d": 3199,
+  "commit_7d": 31,
+  "rel_ver": "staging-20261017-922bd9e0902c",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Go": 97,
+   "Python": 2,
+   "Shell": 1,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "yan5xu/codexloom": {
+  "commit_90d": 109,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 65,
+   "TypeScript": 31,
+   "JavaScript": 3,
+   "CSS": 1,
+   "Go Template": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "jihe520/mindpocket": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 96,
+   "Swift": 2,
+   "CSS": 1,
+   "MDX": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "PhilSA/Trove": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "com.trove.spatialqueries/0.2.12",
+  "rel_pub": "2026-04-14",
+  "rel_days": 186,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "C#": 92,
+   "ShaderLab": 6,
+   "HLSL": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "yzr278892/arxiv-daily-researcher": {
+  "commit_90d": 503,
+  "commit_7d": 0,
+  "rel_ver": "v4.7",
+  "rel_pub": "2026-09-26",
+  "rel_days": 21,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 84,
+   "JavaScript": 10,
+   "CSS": 3,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

@@ -582,5 +582,284 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "caura-ai/caura": {
+  "commit_90d": 1287,
+  "commit_7d": 79,
+  "rel_ver": "backend-v3.34.3",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 2,
+  "sec_worst": "critical",
+  "sec_last": "2026-08-30",
+  "sec_ids": [
+   "GHSA-xw4x-jwf5-8m9h(-,high)",
+   "GHSA-wgvw-28pq-jc36(-,critical)"
+  ],
+  "contrib_n": 33,
+  "lang": {
+   "Python": 94,
+   "TypeScript": 5,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "smkalami/prompt-decorators": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "quests-org/quests": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.14.0",
+  "rel_pub": "2026-04-07",
+  "rel_days": 193,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 0,
+   "JavaScript": 0,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "MichaelTMatthews/Craftax": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.6.1",
+  "rel_pub": "2026-06-20",
+  "rel_days": 119,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "PM-Shawn/Abu-Cowork": {
+  "commit_90d": 1909,
+  "commit_7d": 0,
+  "rel_ver": "v0.50.0",
+  "rel_pub": "2026-09-16",
+  "rel_days": 31,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 77,
+   "JavaScript": 17,
+   "Rust": 2,
+   "Python": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "rodrigo-arenas/Sklearn-genetic-opt": {
+  "commit_90d": 90,
+  "commit_7d": 17,
+  "rel_ver": "0.14.0",
+  "rel_pub": "2026-10-10",
+  "rel_days": 7,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 51,
+  "lang": {
+   "Python": 96,
+   "Vue": 2,
+   "TypeScript": 1,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ben-vargas/ai-sdk-provider-claude-code": {
+  "commit_90d": 13,
+  "commit_7d": 0,
+  "rel_ver": "v4.3.3",
+  "rel_pub": "2026-09-28",
+  "rel_days": 19,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "EthanAlgoX/AIStock": {
+  "commit_90d": 204,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 75,
+   "TypeScript": 23,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "neuml/txtchat": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-02-12",
+  "rel_days": 247,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "AhmadHassan-BTed/OpenOPC-Shadow-Adapter": {
+  "commit_90d": 57,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-08-20",
+  "rel_days": 58,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 77,
+   "TypeScript": 22,
+   "CSS": 1,
+   "JavaScript": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

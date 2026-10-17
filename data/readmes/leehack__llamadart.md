@@ -35,13 +35,22 @@ preference falls back to CPU with a warning. See the
 
 ## What It Supports
 
+Chat-template errors name the selected source, including the built-in ChatML
+fallback when model template metadata is empty. See
+[template diagnostics](https://llamadart.leehack.com/docs/guides/template-engine-internals).
+
 - GGUF model loading and generation through llama.cpp.
 - `.litertlm` model loading and generation through LiteRT-LM. Automatic tool
   loops require reliable runtime termination reporting and reject the pinned
   LiteRT-LM native and Web runtimes; use manually managed completion there
   ([tool-calling guide](https://llamadart.leehack.com/docs/guides/tool-calling)).
+- Gemma 2/3/3n and legacy Mistral tool-result retries fold an immediately
+  following user message into the result turn; successfully rendered histories
+  stay unchanged ([tool-result rendering](https://llamadart.leehack.com/docs/guides/tool-calling#tool-results-on-templates-without-a-tool-role)).
 - Native Dart and Flutter targets with downloaded runtime assets.
 - Flutter Web through the experimental WebGPU bridge and LiteRT-LM web runtime.
+  WebGPU rejects invalid request arguments with `LlamaArgumentException`;
+  `scoreNextToken` vocabulary and int32 bounds retain `RangeError`.
   WebGPU `ToolChoice.auto` skips lazy tool-call grammars; tool calls are best-effort.
 - Streaming chat completions, llama.cpp thinking budgets, tool-call parsing
   and a `ChatSession.sendWithTools` loop that runs tool handlers,
@@ -77,13 +86,64 @@ reports what it supports: image and audio input, embeddings, multi-turn chat,
 tools, structured output and grammars, each sampling control
 (`penalty`, `presencePenalty`, `minP`, `thinkingBudget`), and the speculative
 decoding strategies it runs. Branch on these instead of the model's file
-extension or backend name.
+extension or backend name. Native llama.cpp reports thinking-budget support
+only when the runtime exports its reasoning-budget API. Its `mtp` strategy can
+use an external draft model; in-file MTP needs an MTP head and `loadMtp: true`.
+Other draft strategies require `draftModel` and throw `LlamaArgumentException`
+at generation start when it is missing.
+
+For ordered embedding content, use `LlamaEmbeddingInput` with
+`engine.embedContent` / `embedContentBatch` and check
+`await engine.embeddingCapabilities` after loading. Native llama.cpp supports
+image/audio embeddings with EmbeddingGemma-2 and its projector on native
+v0.7.0-1 (qualified macOS CPU/Metal); expanded inputs must fit one micro-batch.
+Web llama.cpp retains text embeddings. LiteRT-LM supports text,
+image and audio embeddings (qualified on macOS arm64 CPU only) with
+`ModelParams(liteRtLmEmbeddingEngine: true)`. Select `ComputeDevice.cpu` on native; native GPU and all Web paths throw
+`LlamaUnsupportedException`. GGUF loaders reject this LiteRT-LM-only flag.
+llama.cpp text-only content follows `embed`, including causal unpooled models.
+Unsupported native media diagnostics name the required v0.7.0-1 ABI. Windows
+requires the complete native DLL bundle; missing media symbols leave text
+embeddings available. Windows media model execution is not yet locally
+qualified.
+Adjacent text parts concatenate verbatim.
+See the
+[embedding guide](https://llamadart.leehack.com/docs/guides/embeddings).
+Native llama.cpp rejects embedding requests on a context with active text-to-speech
+with `LlamaStateException`; await synthesis or its cancellation before reuse.
+LiteRT-LM queues concurrent embedding requests, validates media off the caller
+isolate and cancels batches between items. A timeout cancels only its own request;
+explicit cancellation, unload and dispose cancel active and queued requests.
+`contextSize` selects an encoder
+signature without truncation; unsupported conversation tuning options are rejected.
 
 Native llama.cpp rejects nonzero rollback capacity on recurrent or hybrid
 models before creating a context. Embedding inputs that need one-pass attention
 or MEAN/CLS pooling must fit `microBatchSize`; larger inputs raise a typed error.
 See [performance tuning](https://llamadart.leehack.com/docs/guides/performance-tuning)
 and [embeddings](https://llamadart.leehack.com/docs/guides/embeddings).
+After `cancelGeneration()`, LiteRT-LM Web treats only the runtime's exact
+`Task cancelled` error as a normal end. Other runtime failures still surface as
+`LlamaInferenceException`; keep an error handler after stopping.
+Cancelling a queued native llama.cpp or LiteRT-LM generation before it runs
+makes `getPerformanceContext()` return `null`. LiteRT-LM validation failures,
+early llama.cpp option-validation failures, and failed dispatches also leave
+counters unavailable. Native llama.cpp resets counters before each generation,
+embedding batch, next-token scoring or text-to-speech request executes, so
+counters describe only that request (embedding and scoring report `0` ms).
+Request validation failures in the native worker leave diagnostics unavailable;
+argument checks that fail before dispatch leave them unchanged. LiteRT-LM retains
+its generation-only recovery behavior. Requests rejected because text-to-speech
+is active preserve the synthesis request's counters.
+After an early cancellation, pending or failed embedding, scoring and speech
+calls keep diagnostics unavailable until a call succeeds. Web backends return
+`null` even after successful generation.
+Requests from an unloaded model do not invalidate a reloaded model's counters.
+
+Custom backend load callbacks use `void Function(double progress)?` in 0.14.
+Existing `Function(double progress)?` overrides still compile; prefer the
+explicit `void` signature in custom backends and fakes. Progress notifications
+do not return a control value; see [MIGRATION.md](MIGRATION.md).
 
 Web GGUF completions on bridge assets with `supportsCompletionUsage` (`v0.1.54+`)
 preserve runtime `length` termination: tool loops return `truncated` and roll
@@ -117,9 +177,9 @@ experimental and may change, and the runtime is opt-in.
 - **Flutter iOS/macOS apps** should add the
   `llamadart_stable_diffusion_flutter` companion (see [Install](#install)),
   which links the runtime through Swift Package Manager and selects it without
-  the entry above. Pair companion `0.13.0` with core `0.13.1` and `0.13.0`, `0.0.3` with
-  core `0.12.2`, `0.12.1` and `0.12.0`, and `0.0.2` with core `0.11.1` and
-  `0.11.0`.
+  the entry above. Pair companion `0.14.0` with core `0.14.x`, `0.13.0` with core
+  `0.13.x`, `0.0.3` with core `0.12.2`, `0.12.1` and `0.12.0`, and `0.0.2`
+  with core `0.11.1` and `0.11.0`.
   Without it, `all` leaves the image runtime out of a Flutter iOS/macOS app
   with a build warning. A list naming `stable_diffusion` bundles it through
   the hook instead, and App Store Connect rejects that iOS framework's
@@ -198,18 +258,28 @@ For Dart or Flutter apps:
 
 ```yaml
 dependencies:
-  llamadart: ^0.13.1
+  llamadart: ^0.14.0
 ```
 
 Flutter iOS/macOS apps that should link Apple XCFrameworks through Swift
 Package Manager should also add the runtime companion packages they need:
 
-Pair companion `0.13.0` with core `0.13.1` and `0.13.0`, and `0.0.23` with core `0.12.2`
-for llama.cpp `v0.6.0-3`, and keep `0.0.22` with core `0.12.1` and `0.12.0` for `v0.6.0-2`.
+The unreleased llama.cpp companion source pins `v0.7.0-1`; release
+preparation will assign matching core/companion minor versions.
+
+Pair companion `0.14.0` with core `0.14.x` for llama.cpp `v0.7.0`.
+Use companion `0.13.0` with core `0.13.x`, or `0.0.23` with core `0.12.2`,
+for llama.cpp `v0.6.0-3`. Keep `0.0.22` with core `0.12.1` and `0.12.0`
+for `v0.6.0-2`.
 Keep companion `0.0.21` with core `0.11.1` and `0.11.0` for llama.cpp v0.5.0
 bindings, and core `0.10.0` and `0.9.0` with companion `0.0.20`,
 core `0.8.23` with companion `0.0.18`, and core `0.8.22` with companion
 `0.0.17`.
+
+A fresh macOS SwiftPM build that reports a generated 12.0 floor beside the
+companions' 14.0 requirement needs the
+[Flutter 3.47.1 bootstrap](https://llamadart.leehack.com/docs/getting-started/installation#fresh-macos-swiftpm-bootstrap).
+Keep Runner at 14.0+; the procedure preserves companion artifact verification.
 
 Apple builds verify the resolved companion's SwiftPM runtime pin before native
 symbol lookup. Incompatible companions or unverified local `Artifacts`
@@ -218,20 +288,24 @@ overrides fail the build; resolve the matching companion and rerun
 
 ```yaml
 dependencies:
-  llamadart: ^0.13.1
-  llamadart_llama_cpp_flutter: ^0.13.0 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.13.0 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.13.0 # Apple image generation, opt-in
+  llamadart: ^0.14.0
+  llamadart_llama_cpp_flutter: ^0.14.0 # GGUF / llama.cpp
+  llamadart_litert_lm_flutter: ^0.14.0 # Apple .litertlm / LiteRT-LM targets
+  llamadart_stable_diffusion_flutter: ^0.14.0 # Apple image generation, opt-in
 ```
 
-Pair `llamadart_stable_diffusion_flutter` `0.13.0` with core `0.13.1` and
-`0.13.0`, and
+Pair `llamadart_stable_diffusion_flutter` `0.14.0` with core `0.14.x`,
+`0.13.0` with core `0.13.x`, and
 `0.0.3` with core `0.12.2`, `0.12.1` and `0.12.0`. Keep
 `0.0.2` with core `0.11.1` and `0.11.0`, and `0.0.1` with core `0.10.0`;
 older cores, including `0.9.x`,
 ignore it. Adding it opts iOS and macOS builds into the image generation
 runtime (about 37 MB per Apple target), so leave it out unless the app uses
 `ImageGenerationEngine`.
+
+Pair LiteRT-LM companion `0.14.0` with core `0.14.x` for native `v0.18.0-2`,
+which reduces duplicated words at untimed ASR window boundaries with the
+default overlap. Other boundary and recognition errors can remain.
 
 The LiteRT-LM companion manifest links the complete iOS and macOS SwiftPM
 runtime, including the macOS WebGPU accelerator, so a sandboxed or distributed
@@ -340,13 +414,19 @@ selection, and WebGPU mem64 hints. See
 [Runtime Parameters](https://llamadart.leehack.com/docs/configuration/runtime-parameters)
 for the full list.
 
+Native llama.cpp with `device: ComputeDevice.auto`, `splitMode: ModelSplitMode.none`
+and `mainGpu: -1` reports its CPU placement in backend diagnostics and zero resolved GPU layers.
+Decision heads follow this CPU placement and report `CPU` in
+`DecisionModelInfo.deviceName`; see
+[head placement](website/docs/guides/decision-models.md#current-support-matrix).
+
 Current default runtime pins:
 
 | Runtime | Pin |
 | --- | --- |
-| Native llama.cpp / GGUF | `leehack/llamadart-native@v0.6.0-3` |
-| Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.0` |
-| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.59` |
+| Native llama.cpp / GGUF | `leehack/llamadart-native@v0.7.0-1` |
+| Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.18.0-2` |
+| Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.63` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.18.0` |
 
 Native overrides accept stable `vMAJOR.MINOR.PATCH` releases and preserve
@@ -365,6 +445,14 @@ regardless of GitHub metadata. Nightly cores use canonical decimal spelling
 (`b0` or a nonzero first digit), and rebuild counters start at 1 without leading
 zeros. The default pin above changes only after the matching artifacts,
 bindings, runtime behavior, and docs have been validated together.
+
+Renamed legacy Qwen3 `.litertlm` bundles can opt into native thinking control
+with `ModelParams(chatTemplate: liteRtLmQwen3ChatTemplate)` and
+`enableThinking: false`. The public accessor follows the installed template
+version, so callers do not copy Jinja files. Native runtimes need the
+conversation-template setter. Web `@litert-lm/core@0.18.0` cannot apply this
+override and throws `LlamaUnsupportedException` at load. See the
+[template guide](https://llamadart.leehack.com/docs/guides/chat-template-and-parsing).
 
 ### Alongside Flutter Edge AI
 
@@ -386,7 +474,7 @@ the same libraries. Details and the pub workspace rules:
 | Stream text and collect output | [Generation and streaming](https://llamadart.leehack.com/docs/guides/generation-and-streaming) |
 | Generate typed JSON | [Structured output](https://llamadart.leehack.com/docs/guides/generation-and-streaming#structured-json-output) |
 | Use tool calling | [Tool calling](https://llamadart.leehack.com/docs/guides/tool-calling) |
-| Import a tool input schema | [`ToolDefinition.fromJsonSchema`](https://llamadart.leehack.com/docs/next/guides/tool-calling#import-a-json-schema) |
+| Import a tool input schema (length/item bounds up to 2000) | [`ToolDefinition.fromJsonSchema`](https://llamadart.leehack.com/docs/guides/tool-calling#import-a-json-schema) |
 | Use images, audio, or projectors | [Multimodal](https://llamadart.leehack.com/docs/guides/multimodal) |
 | Transcribe speech on device | [Speech to text](https://llamadart.leehack.com/docs/guides/speech-to-text) |
 | Synthesize speech on device | [Text to speech](https://llamadart.leehack.com/docs/guides/text-to-speech) |
@@ -399,6 +487,15 @@ the same libraries. Details and the pub workspace rules:
 | Write a custom backend or test fake (`package:llamadart/backend.dart`) | [API levels](https://llamadart.leehack.com/docs/guides/api-levels#entrypoints) |
 | Run Flutter Web / WebGPU | [WebGPU bridge](https://llamadart.leehack.com/docs/platforms/webgpu-bridge) |
 | Tune performance | [Performance tuning](https://llamadart.leehack.com/docs/guides/performance-tuning) |
+
+Raw `responseFormat` and `LlamaStructuredOutput` reject unsupported or shadowed
+schema assertions with a schema path before generation. Integer bounds,
+`uuid`/`uuid1`–`uuid5`, date/time formats, supported `allOf` merges and fixed tuples are supported;
+number bounds, other formats and length/item bounds above 2000 are rejected.
+Trivial `uniqueItems: false`, `minProperties: 0` and integer `multipleOf: 1`
+assertions are accepted. Array bounds work without `items`, and unused definitions,
+annotations and unknown vocabulary remain accepted. Nonempty annotation-only untyped schemas
+accept any JSON value. See [0.14 migration](MIGRATION.md) for the breaking changes.
 
 ## Examples
 

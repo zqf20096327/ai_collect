@@ -1,6 +1,6 @@
 <div align="center">
 
-![](img/ARUNAGIRINATHAN-K.png)
+![](img/top.png)
 
 # Awesome AI Agents 2026
 
@@ -215,6 +215,7 @@ Have an AI agent, framework, tool, skill, or infrastructure project worth sharin
 - [NarraNexus](https://github.com/NetMindAI-Open/NarraNexus) `🌱` `[Python]` `[Multi-Agent]` - Ready-to-run AI agent team workspace by NetMind.AI whose agents remember, collaborate, and use tools from day one.
 - [P2PCLAW](https://github.com/Agnuxo1/OpenCLAW-P2P) `🌱` `[Python]` `[RAG]` - Decentralized scientific research network with 14+ autonomous agents featuring P2P mesh, IPFS storage, and Lean 4 formal verification, self-hosted with Docker Compose.
 - [Raven](https://github.com/EverMind-AI/Raven) `🌱` `[Python]` `[Multi-Agent]` - Plans complex tasks as DAGs and orchestrates built-in and third-party agents over ACP, CLI, or OpenAI-compatible APIs.
+- [Sqwakie](https://sqwakie.si/) `🔬` `[TypeScript]` `[Multi-Agent]` - Lets a team's Claude Code and Codex agents message each other peer-to-peer and work shared kanban boards.
 - [Swarm](https://github.com/openai/swarm) `🚀` `[Python]` `[OpenAI]` - Lightweight framework for agent handoffs, context variables, and function calling patterns from OpenAI.
 - [Swarms Framework](https://github.com/kyegomez/swarms) `🚀` `[Python]` `[Multi-Agent]` - Multi-agent orchestration for production use cases with scalability and reliability at its core.
 - [Yao Agents](https://yaoagents.com) `🌱` `[Go]` `[MCP]` - Complete local AI execution platform with 30+ Experts, autonomous Robot orchestration via 5-stage Pipeline, API-based Robot-to-Robot calling, MCP support, and multi-channel messaging.
@@ -232,7 +233,9 @@ The protocol layer that enables agents to discover tools, communicate with each 
 ### MCP (Model Context Protocol)
 
 - [A2A Protocol](https://github.com/a2aproject/A2A) `🚀` `[Python]` `[Multi-Agent]` - Google's open protocol enabling AI agents to communicate, collaborate, and delegate tasks across frameworks.
+- [Aident Loadout](https://aident.ai) `🔬` `[Cloud]` `[MCP]` - Hosted MCP server and CLI giving coding agents shared app connections, 400+ Skills, a credential vault, cost preview and audit logs.
 - [Arcade AI](https://github.com/ArcadeAI/arcade-mcp) `🌱` `[Python]` `[Multi-Agent]` - Tool-use platform with authentication, authorization, and logging for agent-tool interactions.
+- [Chord](https://getchord.xyz/docs/agents/mcp/) `🔬` `[Cloud]` `[MCP]` - Gives agents DEX swap quotes, unsigned swap transactions, candles and wallet PnL on seven EVM chains.
 - [Composio](https://github.com/ComposioHQ/composio) `🌱` `[TypeScript]` `[Multi-Agent]` - Integration platform with 250+ pre-built tool connectors for AI agents and LLMs.
 - [Datacircle](https://datacircle.dev/) `🔬` `[Cloud]` `[MCP]` - Query your favorite B2B data APIs through us. Same request, same price, no markup.
 - [Docker MCP](https://github.com/docker/mcp-gateway) `🌱` `[Go]` `[MCP]` - Docker's MCP gateway CLI plugin for running MCP servers in isolated containers.
@@ -379,7 +382,7 @@ Sandboxes, web scrapers, browser automation, and networking layers that agents d
 - [Shipmoor](https://shipmoor.dev) `🔬` `[Python]` `[Testing]` - Local, deterministic verification layer for AI agent code: scans, test evidence, and a binding merge verdict without uploading source.
 - [SourceryKit](https://github.com/ProvablyAI/sourcerykit) `🔬` `[Python]` `[Security]` - Verifies an agent's outbound requests and MCP handoffs against a source of truth using zero-knowledge proofs, logging each call and blocking anything off the trusted-endpoint allow-list.
 - [Future AGI](https://github.com/future-agi/future-agi) `🌱` `[Python]` `[Self-Hosted]` - Self-hostable end-to-end agent engineering platform with tracing, evals, guardrails, and gateway.
-- [sofagent](https://github.com/KongFangXun/sofagent) `🔬` `[TypeScript]` `[Security]` - Commit-time audit harness that blocks credential leaks and out-of-scope file changes before they land, with 24 rules and HMAC-chained audit logs.
+- [sofagent](https://github.com/KongFangXun/sofagent) `🔬` `[TypeScript]` `[Security]` - Commit-time audit harness that blocks credential leaks and out-of-scope file changes before they land, with 28 rules and HMAC-chained audit logs.
 - [SUNGLASSES](https://github.com/sunglasses-dev/sunglasses) `🔬` `[Python]` `[MCP]` - Scans text and files locally for prompt injection, credential leaks and data exfiltration with 1,554 patterns.
 
 ## Agent Interfaces and UIs
@@ -425,6 +428,7 @@ Frontend workspaces and chat interfaces with built-in agent plugins and tool-use
 - [Personal Agent Bench](https://personalagentbench.com/) `🔬` `[Browser]` `[Evaluation]` - Takes consumer personal AI agents apart hands-on and scores them on real errands, reporting each result with a confidence interval and no composite score.
 - [SWE-bench](https://github.com/SWE-bench/SWE-bench) `🚀` `[Python]` `[GitHub]` - Benchmark for evaluating LLMs on real-world software engineering tasks from GitHub issues.
 - [WebArena](https://github.com/web-arena-x/webarena) `🌱` `[Python]` `[Evaluation]` - Benchmark for web agent evaluation using real websites with realistic task completion metrics.
+- [YYLO Benchmark](https://github.com/yylo-dev/yylo-benchmark) `🔬` `[TypeScript]` `[Benchmark]` - Benchmark suite that executes task prompts and Workflow Runner YAML in private fresh-repository workspaces with blinded per-step judging.
 
 ## Agent Testing & Debugging
 
@@ -459,6 +463,7 @@ Curated list of vertical agent solutions for finance, healthcare, legal, manufac
 ### Healthcare
 
 - [Epic AI Assistant](https://www.epic.com) `🚀` `[Cloud]` `[Healthcare]` - Clinical documentation and workflow agents integrated with Epic EHR.
+- [Healify](https://www.healify.ai) `🔬` `[Cloud]` `[Research]` - Reads health data and answers personal health questions in chat.
 - [Nuance Healthcare AI](https://www.microsoft.com/en-us/health-solutions) `🚀` `[Cloud]` `[CLI]` - Speech and clinical AI solutions for documentation and radiology.
 - [Tempus AI](https://www.tempus.com) `🌱` `[Cloud]` `[CLI]` - Oncology research and clinical decision support agents.
 
@@ -793,4 +798,10 @@ Open-weight LLMs optimized for agentic tasks including tool use, planning, multi
 - [Mistral Large 2](https://mistral.ai/research/) `🌱` `[Python]` `[Multi-Agent]` - European open model at 123B parameters with strong function calling for agent workflows.
 - [Phi-4](https://huggingface.co/microsoft/phi-4) `🚀` `[Python]` `[Microsoft]` - Microsoft's compact 14B parameter model delivering strong reasoning for on-device and edge agent deployments.
 - [Qwen 3](https://github.com/QwenLM/Qwen3) `🚀` `[Python]` `[MCP]` - MCP-native multilingual model family from Alibaba with thinking mode across 0.6B to 235B sizes.
-- [Qwen 3.6-Plus](https://qwenlm.github.io/blog/qwen3/) `🚀` `[Python]` `[MCP]` -
+- [Qwen 3.6-Plus](https://qwenlm.github.io/blog/qwen3/) `🚀` `[Python]` `[MCP]` - Agentic-focused model with 1M context window, repo-level coding, and MCP-native tool use.
+- [StarCoder 2](https://github.com/bigcode-project/starcoder2) `🌱` `[Python]` `[Local]` - Code-focused open model trained on 600+ programming languages for specialized coding agents.
+- [Yi-Lightning](https://github.com/01-ai/Yi) `🌱` `[Python]` `[Local]` - A multilingual model from 01.AI with long context and fast inference across 6B to 200B parameter sizes.
+
+## Market Stats and Benchmarks 2026
+
+Key data points on the AI agent market covering adoption, growth, valuation

@@ -741,5 +741,143 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "didilili/shopkeeper-agent": {
+  "commit_90d": 7,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 78,
+   "TypeScript": 21,
+   "CSS": 1,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "pleco-rs/Pleco": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "0.1.6",
+  "rel_pub": "2019-04-29",
+  "rel_days": 2728,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Oh-Sheet-Team/oh-sheet": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 85,
+   "Dart": 8,
+   "JavaScript": 3,
+   "HTML": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "OTT-Cybersecurity-LLC/lyrie-ai": {
+  "commit_90d": 34,
+  "commit_7d": 0,
+  "rel_ver": "v3.4.0",
+  "rel_pub": "2026-08-06",
+  "rel_days": 72,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 65,
+   "Python": 32,
+   "Rust": 2,
+   "YARA": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "NKI-AI/direct": {
+  "commit_90d": 12,
+  "commit_7d": 0,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-08-21",
+  "rel_days": 57,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Python": 98,
+   "C++": 1,
+   "Starlark": 1,
+   "Makefile": 0,
+   "Meson": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

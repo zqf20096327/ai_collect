@@ -638,5 +638,110 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "ling-stack-org/ling-stack": {
+  "commit_90d": 495,
+  "commit_7d": 74,
+  "rel_ver": "desktop-dev-0.1.2-alpha.1-20261013-dfb61ac",
+  "rel_pub": "2026-10-13",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 60,
+   "JavaScript": 37,
+   "CSS": 2,
+   "C++": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "autonomous-ai/lampOS": {
+  "commit_90d": 2792,
+  "commit_7d": 188,
+  "rel_ver": "v0.1.12",
+  "rel_pub": "2026-10-14",
+  "rel_days": 3,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Python": 46,
+   "Go": 33,
+   "TypeScript": 12,
+   "Shell": 4,
+   "Swift": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Fangx-AI/one-person-company-journal": {
+  "commit_90d": 12,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 47,
+   "JavaScript": 46,
+   "CSS": 6,
+   "HTML": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "xop01/ai_goodpractice": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

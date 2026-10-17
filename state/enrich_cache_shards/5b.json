@@ -673,5 +673,134 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "bytedance/InfiniStore": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "0.2.33",
+  "rel_pub": "2025-03-23",
+  "rel_days": 573,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "C++": 60,
+   "Python": 37,
+   "Meson": 1,
+   "C": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "yzhao062/SUOD": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "RichardScottOZ/mineral-exploration-machine-learning": {
+  "commit_90d": 31,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "agentclientprotocol/python-sdk": {
+  "commit_90d": 40,
+  "commit_7d": 9,
+  "rel_ver": "1.0.0rc3",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "cognesy/instructor-php": {
+  "commit_90d": 142,
+  "commit_7d": 1,
+  "rel_ver": "v2.14.1",
+  "rel_pub": "2026-10-08",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "PHP": 98,
+   "JavaScript": 1,
+   "Shell": 1,
+   "Twig": 0,
+   "Just": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

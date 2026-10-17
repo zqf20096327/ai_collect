@@ -57,6 +57,29 @@ Three hours and two segment switches into the session, one <code>recall</code> c
 Magenta: the full history of the session. Cyan: what the model actually reads on each request. Dashed lines: the two
 segment switches (≈2 minutes each, written handoff notes). Data from the proxy journal, 5 Oct 2026.
 
+## Benchmark: AgentLongBench with a 32K window
+
+[AgentLongBench](https://github.com/euReKa025/AgentLongBench) (kf-c, tool_response, Count Frequency and Find
+Duplicates), 25 questions per type at 64k (~74K-token history) and 128k (~150K): 100 questions, official scorer.
+Qwen3.8 Flash Next IQ3_XXS on Strata 0.1.40, one RTX 4070 Ti 12 GB, seed 1. Four methods: the full history in an
+81,920 / 163,840-token window, and three ways to fit it into 32,768 tokens — this proxy (0.3.5, commit
+[`b8d4920`](https://github.com/lastreload/mnemonic-proxy/commit/b8d4920)), an LLM summary of at most 2,048 tokens
+written by the same model, and truncation. Preregistered test: proxy vs summary, exact McNemar. With the question
+clarified (one sentence saying which tool output "round N" means; answers and scorer unchanged):
+
+| correct | full window | proxy | summary | truncation |
+|---|---|---|---|---|
+| 64k (/50) | 38 | **41** | 27 | 23 |
+| 128k (/50) | 31 | **45** | 20 | 26 |
+| both (/100) | 69 | **86** | 47 | 49 |
+
+Proxy vs summary: 44 questions right only with the proxy, 5 only with the summary (p = 7.6e-9). With the original,
+ambiguous question every method was near chance (51 / 52 / 56 / 44; answering "0 / no" every time scores 50).
+Limits: one model, one engine, one seed, 100 questions; the clarified run exists because of the first one; end to
+end the proxy took a median 136 s / 286 s per question (64k / 128k) vs 70 s / 102 s for the full window, mostly
+replaying the whole history through the proxy before the question.
+Per-question results, logs, scripts and analysis: [mverde73/mnemonic-proxy-agentlongbench](https://huggingface.co/datasets/mverde73/mnemonic-proxy-agentlongbench).
+
 ## How it works
 
 No summaries written by a model, no vector database required.
@@ -925,6 +948,51 @@ alone and the proxy uses `history_recall` (or `load_tools`) instead.
      `python3 -m ctxproxy.kvarchive --root /path/to/kv-archive gc` to drop unreferenced blocks;
   5. the journal is append-only: delete or filter `data/journal.jsonl` (lines with `"conv": "<id>"`).
 
+## Tools: audit the archive and measure restore
+
+Two stand-alone tools, Strata-only for now. Both are read-only against the archive and
+never restart the engine; run them with the Python that has the archive support
+(`.venv314`).
+
+**`tools/check_kv_archive.py`** — is the cold archive healthy, and what is it saving?
+
+```sh
+.venv314/bin/python tools/check_kv_archive.py                 # snapshot now
+.venv314/bin/python tools/check_kv_archive.py --restore-check  # rebuild each archive, compare sha256
+.venv314/bin/python tools/check_kv_archive.py --watch          # follow until it archives
+```
+
+It reports the `sessions/` files, the `kv-archive/` usage with dedup, and how far the
+archiver is from firing (engine idle, file age, file size). It never creates the archive
+directories and never writes to disk: `--restore-check` restores into a private temp dir.
+Exit code 0 when everything is fine, 1 on a problem (a corrupt block, a failed restore,
+a `--watch` that never archived), 2 on a usage error.
+
+**`tools/measure_restore.py`** — how much does the automatic restore save?
+
+```sh
+.venv314/bin/python tools/measure_restore.py --allow-shared-engine
+```
+
+It sends **the same request twice**, each time after B has evicted A from the engine:
+**control** (`autorestore` off) gives the real re-read, **restore** (`autorestore` on)
+gives `restore_ms` plus the few new tokens — both read from the journal, so the speed-up
+is `control_ms / (restore_ms + new_ms)`, not an extrapolation. `--two-phases` is the
+earlier method: it runs a whole A/B cycle per phase and re-sends A with one extra
+message, so its restore path also carries those new tokens — a slightly different
+question, measured with the same journal timings.
+
+Measured with **Strata 0.1.41** and **swift-1.5-iq3_xxs** (window 131072, prompt
+~31.4K tokens) on an **RTX 5060 Ti 16 GB** (PCIe 3.0 x8), an **Intel Xeon E5-2699 v3**
+and **64 GB DDR4-2667 running at 2133 MT/s** (the CPU's memory limit), with three runs
+of each method (six runs in total): the same request gave **~10–12×** (median 11.6×) —
+re-read ~30 s vs restore + new tokens ~2.7 s — and the two-phase method gave ~6.7×
+under the same conditions.
+
+It needs `--allow-shared-engine` because filling the engine with conversation B evicts
+other sessions; it removes only the files it created itself. Exit code 0 when a restore
+was measured, 1 when nothing was restored, 2 on a usage error.
+
 ## Tests
 
 ```sh
@@ -938,6 +1006,12 @@ counting (a tokenizer in `./tok` or `CTX_TOKDIR`, plus `tokenizers`), Strata moc
 through the context manager offline. `tools/state_e2e.py --server PATH/llama-server --model M.gguf --work DIR`
 checks saved state end to end with a real llama-server on any OS (restart, restore from disk vs re-read, and
 `kv_archive` with `--kv-archive`). CI runs the unit tests on Linux and on native Windows.
+
+The two Strata tools have their own tests: `tests/test_kv_archive.py` and
+`tests/test_check_kv_archive.py` build a real archive with the same in-memory helper (no engine
+needed) and check that the audit detects a corrupt block, exits non-zero, and touches nothing;
+`tests/test_measure_restore.py` covers the pure logic (journal filtering, the speed-up from
+`prompt_ms` / `restore_ms`, the CLI guards). The `kv_archive` group needs Python ≥ 3.14.
 
 Partly in Italian: code comments, the dashboard UI and the developer notes in `docs/dev-notes/`. Since 0.3.1 every
 text the proxy writes into the model's prompt — receipts and placeholders of hidden content, the handoff-note

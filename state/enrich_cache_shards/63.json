@@ -697,5 +697,169 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "taovc/pr-cockpit": {
+  "commit_90d": 83,
+  "commit_7d": 0,
+  "rel_ver": "nightly",
+  "rel_pub": "2026-07-01",
+  "rel_days": 108,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 80,
+   "Vue": 18,
+   "JavaScript": 3,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "microsoft/Conversation-Knowledge-Mining-Solution-Accelerator": {
+  "commit_90d": 168,
+  "commit_7d": 0,
+  "rel_ver": "v3.23.4",
+  "rel_pub": "2026-06-23",
+  "rel_days": 116,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 77,
+  "lang": {
+   "Python": 56,
+   "Bicep": 17,
+   "TypeScript": 16,
+   "PowerShell": 8,
+   "CSS": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "MinaSaad1/pbi-cli": {
+  "commit_90d": 104,
+  "commit_7d": 7,
+  "rel_ver": "v3.12.0",
+  "rel_pub": "2026-09-18",
+  "rel_days": 29,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "hiDaDeng/cntext": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "1.7.9",
+  "rel_pub": "2022-09-09",
+  "rel_days": 1499,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "HTML": 23,
+   "Batchfile": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Odevio/Odevio-CLI": {
+  "commit_90d": 45,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2024-02-02",
+  "rel_days": 988,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "microsoft/GUI-Actor": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

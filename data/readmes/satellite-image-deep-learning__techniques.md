@@ -33,6 +33,7 @@ Deep learning has revolutionized the analysis and interpretation of satellite an
 - [SAR](https://github.com/satellite-image-deep-learning/techniques?tab=readme-ov-file#sar)
 - [Explainable Ai (XAI)](https://github.com/satellite-image-deep-learning/techniques?tab=readme-ov-file#explainable-ai-xai)
 - [Large vision & language models (LLMs & LVMs)](https://github.com/satellite-image-deep-learning/techniques?tab=readme-ov-file#large-vision--language-models-llms--lvms)
+- [AI agents](https://github.com/satellite-image-deep-learning/techniques?tab=readme-ov-file#ai-agents)
 - [Foundational models](https://github.com/satellite-image-deep-learning/techniques?tab=readme-ov-file#foundational-models)
 
 #
@@ -1209,6 +1210,4 @@ Orinted bounding boxes (OBB) are polygons representing rotated rectangles. For d
 
 - [SE2-Det](https://github.com/Virusxxxxxxx/SE2-Det) -> Semantic-Edge-Supervised Single-Stage Detector for Oriented Object Detection in Remote Sensing Imagery
 
-- [OrientedRepPoints](https://github.com/LiWentomng/OrientedRepPoints) -> Oriented RepPoints for Aerial Object Detection
-
-- [TS-Conv
+- [OrientedRepPoints](https://github.com/LiWento

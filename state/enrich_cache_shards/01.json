@@ -668,5 +668,167 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "pykale/pykale": {
+  "commit_90d": 140,
+  "commit_7d": 8,
+  "rel_ver": "0.2.0",
+  "rel_pub": "2026-05-11",
+  "rel_days": 159,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "liujuntao123/smart-draw": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.9",
+  "rel_pub": "2025-12-29",
+  "rel_days": 292,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 99,
+   "CSS": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "cloudwego/abcoder": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-01-23",
+  "rel_days": 267,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Go": 61,
+   "TypeScript": 37,
+   "Shell": 1,
+   "Python": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "alondmnt/joplin-plugin-jarvis": {
+  "commit_90d": 56,
+  "commit_7d": 0,
+  "rel_ver": "v0.14.2",
+  "rel_pub": "2026-09-05",
+  "rel_days": 42,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 94,
+   "JavaScript": 4,
+   "CSS": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "tinystruct/tinystruct": {
+  "commit_90d": 47,
+  "commit_7d": 1,
+  "rel_ver": "v1.7.35",
+  "rel_pub": "2026-10-02",
+  "rel_days": 15,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Java": 98,
+   "Shell": 1,
+   "Batchfile": 1,
+   "Lua": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "lehoanglong95/rag-all-in-one": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

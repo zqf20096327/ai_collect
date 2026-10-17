@@ -10,8 +10,8 @@
   <a href="https://pypi.org/project/shibaclaw/"><img src="https://img.shields.io/pypi/v/shibaclaw.svg?style=flat-square&color=orange" alt="version"></a>
   <a href="https://pepy.tech/projects/shibaclaw"><img src="https://static.pepy.tech/personalized-badge/shibaclaw?period=total&units=ABBREVIATION&left_color=YELLOWGREEN&right_color=ORANGE&left_text=downloads" alt="PyPI Downloads"></a>
   <img src="https://img.shields.io/badge/python-%3E%3D3.12-blue?style=flat-square&logo=python&logoColor=white" alt="python">
-  <a href="https://github.com/RikyZ90/ShibaClaw/blob/main/LICENSE"><img src="https://img.shields.io/github/license/RikyZ90/ShibaClaw?style=flat-square&label=license&color=blue" alt="license"></a>
-  <a href="https://deepwiki.com/RikyZ90/ShibaClaw"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+  <a href="https://github.com/RikyZ90/ShibaClaw/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square" alt="Apache 2.0 License"></a>
+  <a href="https://deepwiki.com/RikyZ90/ShibaClaw"><img src="https://img.shields.io/badge/Ask-DeepWiki-4C6EF5?style=flat-square" alt="Ask DeepWiki"></a>
 </p>
 
 <p align="center">
@@ -38,13 +38,17 @@
 ---
 
 <details open>
-<summary>🚀 <b>What's new — v1.0.4</b> (click to expand)</summary>
+<summary>🚀 <b>What's new — v1.0.65</b> (click to expand)</summary>
 
-**Latest release v1.0.4 (2026-10-10):**
+**Version v1.0.65 (2026-10-17):**
 
-- **Subagent task execution** — Adds manage-execute-audit (MEA) runs, with supervision and rollback helpers for multi-step work.
-- **More flexible agent workflows** — Adds optional LLM fallback, a tool-call journal, opt-in self-evolution controls, and a chat-first workspace for desktop and mobile.
-- **Reliability fixes** — Corrects private MEA progress, task cancellation, conversation reset, outage caching, concurrent automation updates and sidebar accessibility during resizing.
+- **Windows installation** — The PowerShell command downloads the per-user setup, verifies its SHA256, and launches it. First-launch startup keeps the native window responsive while the local service starts.
+
+- **v1.0.3 design, restored runtime improvements** — Keeps the original v1.0.3 interface design while reintegrating the non-UI improvements and fixes from v1.0.4/v1.0.5: runtime reliability, provider retries and catalogs, subscription OAuth, automation, subagents, and opt-in self-evolution. Privacy protections, exact Gemini catalog host validation, and dependency security updates are retained. The later interface redesign is not included.
+- **Targeted interface fixes** — Keeps sidebar history and footer controls reachable and moves Settings into the compact footer. The context-usage badge is the single accessible context button. Desktop and wider phones use one composer toolbar; narrow phones use two rows with 44px touch targets, single-line model names, and percentage-only context usage. Model, effort, and collection menus share the theme, follow their buttons, and stay inside the viewport.
+- **Subscription login cards restored** — Claude and Google Gemini login cards are available again in Settings, including code entry and connection status. Gemini still requires server-side `SHIBACLAW_GEMINI_OAUTH_CLIENT_ID` and `SHIBACLAW_GEMINI_OAUTH_CLIENT_SECRET` configuration. Live OAuth sign-in has not been verified for this version.
+- **Evolution status panel restored** — Restores access to the read-only Evolution workspace panel in the retained interface.
+- **Library features restored** — Restores the profile relationship graph and profile details, plus editable You and People documents, within the original visual design. Library uses one compact toolbar, with a section selector on narrow screens. Sidebar navigation uses compact icons with hover/focus names and persistent labels on touch screens.
 
 See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
 
@@ -65,6 +69,7 @@ ShibaClaw is a self-hosted AI agent you run on your own machine or server: a Pyt
 ## Features
 
 - **Security-first core** — encrypted credentials vault, install-time CVE audit, prompt-injection wrapping, SSRF/DNS-rebinding guard
+- **Reliable agent runtime** — provider retries, durable tool journaling, context and resource guards, isolated or forked subagents, and opt-in self-evolution with validation gates
 - **Three-tier memory & WebUI Manager** — working, semantic (FAISS), and procedural memory with interactive WebUI management, live editing, dream diary, and safe quarantine
 - **Human-in-the-loop interactive UX** — structured in-turn prompts (`ask_user`), masked vault credentials, progress cards, and dynamic permission sandboxing
 - **28 providers, native SDKs** — OpenAI, Anthropic, Gemini, DeepSeek, and more, no LiteLLM proxy layer
@@ -88,13 +93,15 @@ One command downloads the latest release, sets up shortcuts, and launches the UI
 irm https://github.com/RikyZ90/ShibaClaw/releases/latest/download/install.ps1 | iex
 ```
 
+Or download and open **[ShibaClaw-Setup.exe](https://github.com/RikyZ90/ShibaClaw/releases/latest/download/ShibaClaw-Setup.exe)**. The PowerShell command downloads the same setup, verifies its SHA256 against the GitHub release asset digest, and starts it.
+
 **🐧 Linux / 🍎 macOS:**
 ```bash
 curl -fsSL https://github.com/RikyZ90/ShibaClaw/releases/latest/download/install.sh | bash
 ```
 
 > [!NOTE]
-> On Windows this downloads the pre-built desktop app from the latest GitHub release — no Python required, with Desktop/Start Menu shortcuts and clean uninstall via Apps & Features. On Linux/macOS the script installs via pip in an isolated virtual environment.
+> On Windows the setup installs the bundled desktop app for your user in `%LocalAppData%\ShibaClaw` — no Python required. Existing data in `%USERPROFILE%\.shibaclaw` is preserved. Installed desktop updates use **Download update**, then **Restart to update** when you are ready. Uninstall through Windows Settings; personal data is retained. The portable ZIP remains available as an advanced option, with manual updates. On Linux/macOS the script installs via pip in an isolated virtual environment. See [Windows installation and local packaging](docs/WINDOWS_INSTALLATION.md).
 
 ### Docker
 
@@ -187,6 +194,7 @@ ShibaClaw uses native SDKs — no LiteLLM proxy — and resolves the provider fr
 | OpenRouter | PKCE browser flow, stores returned API key in provider config | WebUI Settings |
 | GitHub Copilot | Device flow, auto token refresh | `shibaclaw provider login github-copilot` or WebUI Settings |
 | OpenAI Codex | PKCE browser flow | `shibaclaw provider login openai-codex` or WebUI Settings |
+| Claude | PKCE browser flow with authorization-code entry, using the Claude subscription | WebUI Settings |
 | Google Gemini CLI | PKCE browser flow, requires `SHIBACLAW_GEMINI_OAUTH_CLIENT_ID` and `SHIBACLAW_GEMINI_OAUTH_CLIENT_SECRET` env vars. **Note:** Unofficial third-party integration, Google may apply account restrictions. Use a separate account if this is a concern. | WebUI Settings |
 
 For OpenRouter, the callback reuses the current WebUI URL and port by default, so `http://localhost:3000` is not a dedicated OAuth-only port. If you expose the WebUI behind a reverse proxy or need a different public callback origin, set `SHIBACLAW_OPENROUTER_CALLBACK_BASE_URL=https://your-public-webui-host` before starting the server.

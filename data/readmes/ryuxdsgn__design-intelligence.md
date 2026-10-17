@@ -1,6 +1,6 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT License"></a>
-  <img src="https://img.shields.io/badge/version-early__access%20v2.8-1f6feb" alt="Version: early access v2.8">
+  <img src="https://img.shields.io/badge/version-early__access%20v2.9-1f6feb" alt="Version: early access v2.9">
 </p>
 
 # RYUX
@@ -56,6 +56,18 @@ That's a separate question, and RYUX hasn't proven it. In a blind test of a wall
 RYUX and the plain agent scored about the same. The two human designers who have rated later pairs
 mostly preferred the plain agent. RYUX makes no visual-quality claim.
 [What RYUX has not proven](docs/showcase.md#what-ryux-has-not-proven).
+
+**Help judge.** The next results come from blind ratings, and more designers make them worth more.
+Each form shows AI-made work from different setups, shuffled, without saying which is which:
+
+- [Wallet home](https://tally.so/r/1WP6Zb): 3 pairs of finished screens, then 3 sets of early
+  directions. Pick what you would ship.
+- [Motion](https://tally.so/r/M1KMk8): 5 components (menu, dialog, toast, tabs, drawer), three
+  versions each. Pick the motion you would ship.
+- [Typography](https://tally.so/r/Z95QWv): 3 pairs of the same billing page, desktop and mobile.
+  Pick the one you would ship.
+
+Results go here once the ratings are in, with the number of raters.
 
 ## Decisions come with a receipt
 
@@ -223,7 +235,7 @@ pnpm typecheck
 
 ## Status
 
-RYUX 2.8, early access, free. Available now: the skill, the CLI, skills.sh, the Claude Code plugin,
+RYUX 2.9, early access, free. Available now: the skill, the CLI, skills.sh, the Claude Code plugin,
 and the MCP server run locally. Coming: the hosted MCP and a larger reference library.
 
 ## Contributing, security, license

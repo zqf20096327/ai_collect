@@ -324,6 +324,10 @@ novel new <name> --no-interactive [--dir <path>]
 novel new <name> --foundation <yaml_file>         # From YAML file
 novel new <name> --genre <genre> --premise <text> # Command-line args
 
+# Start from a generated world (see "Starting from a worldgen world" below)
+novel new <name> --world <world.json> --no-interactive
+novel new <name> --world <world.json> --languages <languages.json> --no-interactive
+
 # Generate one scene
 novel tick [--project <path>]
 
@@ -333,6 +337,92 @@ novel run --n <count> [--checkpoint-interval 10] [--project <path>]
 # Compile scene summaries
 novel summarize [--project <path>]
 ```
+
+#### Starting from a worldgen world
+
+`--world <path>` seeds a new project from a JSON world written by the
+[world-building](https://github.com/EdwardAThomson/world-building) generator
+(schema `worldgen/sector@0.1`, an SF star sector, or `worldgen/region@0.1`, a
+fantasy region). No LLM is involved in the import; the file is mapped in
+Python (`novel_agent/world_import.py`) and persisted through the normal
+`MemoryManager`/`VectorStore` path, so the planner sees the world exactly as
+it sees entities created during ticks:
+
+- **Region:** each realm becomes a faction (government form, ruler,
+  succession and gender law, population and area, its magic tradition);
+  every city and the largest towns above a population floor become locations
+  (population, realm, biome, river and coast); the magic system, the calendar,
+  each named mountain range and river, and each story hook become lore.
+- **Sector:** each faction becomes a faction (type, tech level, capital,
+  population, fleets, its psionic tradition); every capital's main world and
+  every temperate world become locations (star, gravity, temperature, day and
+  year, plant colour, who holds it); psionics, the FTL model, each chokepoint
+  lane and each story hook become lore.
+
+Ranges and rivers are lore rather than locations because a StoryDaemon
+location is a stage a scene is set on; a 300 km river is something a scene
+refers to. Hooks are lore tagged `hook`: the planner can draw on them, but
+none of them is promoted to the premise.
+
+The foundation's genre and setting default to the world's when you do not
+give them, so `--world region.json --no-interactive` alone yields a project
+that can tick; `--genre`, `--setting`, `--premise`, `--protagonist`, `--tone`
+and the interactive wizard all still win over the world's text. An unknown
+schema or a missing file is refused before any project directory is created.
+The source path and schema are recorded under `world` in `state.json`. How
+many towns or worlds are kept is set by `world.max_towns`,
+`world.town_population_min` and `world.max_worlds` in the config.
+
+**Languages.** World-building can also write every people's constructed
+language (`npm run cli -- region --seed demo --languages-json languages.json`,
+schema `worldgen/languages@0.1`). Pass it with `--languages <path>`; when
+the flag is absent and `<world stem>-languages.json` sits beside the world
+file, it is used and the command says so. The file is keyed by the world's
+realm or faction ids, so one whose peoples do not match the world is refused
+before anything is created (`--languages` without `--world` likewise). Still
+no LLM: `novel_agent/languages_import.py` reduces each language to
+
+- a **notes block** under `world.languages` in `state.json` (language name,
+  family and relatives, word order in a phrase, a dozen everyday words), plus
+  one sentence on who speaks what appended to the world's setting text;
+- a **bank per people** in `memory/languages.json`: the file's meaningful
+  place and person names, its whole lexicon, and its `phrases` array when
+  the export carries one (greetings, farewells, thanks, oaths, curses,
+  toasts, proverbs, questions). `name.generate`, `character.generate` and
+  `location.generate` take an optional `affiliation` (a realm or faction by
+  name) and draw from that people's own tongue; the people is recorded on
+  the character.
+
+No lore is written for a language. The first version wrote one lore item per
+tongue and the fact extractor fed it back into every scene as a paragraph
+about the language; a language is texture in the prose, not a fact the
+reader is told. So the words reach the writer through **two tools, not
+facts**, registered only when languages were imported:
+
+- `language.phrase(people, kind)`: one set phrase of that kind from the
+  people's phrasebook, with its gloss and English. Without a phrasebook it
+  answers with the single nearest word and says so (two lexicon words pasted
+  together are not a phrase).
+- `language.word(people, english)`: one word with its gloss and IPA, exact
+  meaning first, nearest meaning second, `found: false` rather than a coined
+  word.
+
+Both resolve the people the way `name.generate` does (id, people name,
+language name, a near miss, a people named inside the text) and never halt a
+tick. What the plan requested arrives in the writer prompt as a short
+"native speech available this scene" list, and the writer is held to it:
+never explain or describe a language, at most one native word or phrase per
+scene unless the scene is about language, never gloss a word in narration,
+untranslated speech only where the POV character would not understand it.
+
+The POV character's own line is one clause, `speaks Quqo (related to
+Gaipo)`, followed by the scene's **language situation**, computed in Python
+from the POV's people, the realm that holds the location and the characters
+the plan puts in the room: `shared` (one tongue), `related` (same family;
+they follow each other with effort, not fluently), `foreign` (no shared
+tongue; speech reaches the POV as sound) or `unknown` (no data, no line).
+The planner sees the same line, so it can request a phrase or stage a
+misunderstanding on purpose.
 
 ### Project Management Commands
 

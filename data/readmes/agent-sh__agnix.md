@@ -12,9 +12,9 @@
   </p>
 </div>
 
-> ⚡ Running this agent 24/7? [**tiyuvta inference**](https://inference.tiyuvta.ai) — hosted LLM inference built for always-on agents, OpenAI/Anthropic-compatible APIs.
+> Running open models for your company? [**Tiyuvta**](https://tiyuvta.ai/services/) helps with model choice, deployment and optimization, and fine-tuning on your hardware or cloud account.
 
-<p align="center">Catch broken agent configs before your AI tools silently ignore them.<br>455 rules across Claude Code, Codex CLI, OpenCode, Cursor, Copilot, and more -<br>validating CLAUDE.md, SKILL.md, hooks, MCP configs, and other agent files.</p>
+<p align="center">Catch broken agent configs before your AI tools silently ignore them.<br>702 rules across Claude Code, Codex CLI, OpenCode, Cursor, Copilot, and more -<br>validating CLAUDE.md, SKILL.md, hooks, MCP configs, and other agent files.</p>
 
 <p align="center"><strong>Auto-fix</strong> | <strong><a href="https://github.com/marketplace/actions/agnix-ci">GitHub Action</a></strong> | <strong><a href="https://marketplace.visualstudio.com/items?itemName=avifenesh.agnix">VS Code</a> + <a href="https://plugins.jetbrains.com/plugin/30087-agnix">JetBrains</a> + <a href="https://github.com/agent-sh/agnix.nvim">Neovim</a> + <a href="https://zed.dev/extensions?query=agnix">Zed</a></strong></p>
 
@@ -39,7 +39,7 @@
 
 **Bad patterns get amplified.** AI assistants don't ignore wrong configs - they [learn from them](https://www.augmentcode.com/guides/enterprise-coding-standards-12-rules-for-ai-ready-teams).
 
-agnix validates all of it - 455 rules sourced from official specs, academic research, and real-world breakage patterns. Auto-fix included.
+agnix validates all of it - 702 rules sourced from official specs, academic research, and real-world breakage patterns. Auto-fix included.
 
 > **Want to try it first?** [Open the playground](https://agent-sh.github.io/agnix/playground) - paste any agent config, see diagnostics instantly. No install, runs in your browser.
 
@@ -112,25 +112,31 @@ agnix --dry-run --show-fixes .  # Preview fixes with inline diff output
 agnix --strict .     # Strict mode (warnings = errors)
 agnix --format github .  # GitHub Actions annotations
 agnix explain MCP-018    # Explain a rule and its evidence
-agnix --target claude-code .  # Legacy target preset (primarily affects CC-* rules)
-agnix --target kiro .         # Legacy target preset (use tools = [...] for tool-only filtering)
+agnix --target claude-code .  # Only Claude Code rules plus generic ones, like tools = ["claude-code"]
+agnix --target kiro .         # Only Kiro rules plus generic ones, like tools = ["kiro"]
 ```
 
 [Full CLI reference](https://agent-sh.github.io/agnix/docs/configuration) | [Full rules reference](https://agent-sh.github.io/agnix/docs/rules)
+
+Kiro permission YAML templates at `.kiro/settings/permissions.yaml` are lintable. The actual user policy is `~/.kiro/settings/permissions.yaml`; workspace policies live outside the repository at `~/.kiro/workspace-roots/<hash>/permissions.yaml`. Lint those paths explicitly to check the active policies.
 
 ## Supported Tools
 
 | Tool | Rules | Count | Config Files |
 |------|-------|-------|--------------|
-| [Agent Skills](https://agentskills.io) | AS-\*, CC-SK-\* | 31 | SKILL.md |
-| [Claude Code](https://docs.anthropic.com/en/docs/build-with-claude/claude-code) | CC-\* | 53 | CLAUDE.md, hooks, agents, plugins |
-| [GitHub Copilot](https://docs.github.com/en/copilot) | COP-\* | 6 | .github/copilot-instructions.md, .github/instructions/\*.instructions.md |
-| [Cursor](https://cursor.com) | CUR-\* | 16 | .cursor/rules/\*.mdc, .cursorrules, .cursor/hooks.json, .cursor/agents/\*\*/\*.md, .cursor/environment.json |
-| [Kiro](https://kiro.dev) | KIRO-\*, KR-SK-\*, KR-AG-\*, KR-HK-\*, KR-PW-\*, KR-MCP-\* | 53 | .kiro/steering/\*\*/\*.md, .kiro/skills/\*\*/SKILL.md, .kiro/agents/\*\*/\*.{json,md}, .kiro/hooks/\*.kiro.hook, .kiro/settings/mcp.json, .kiro/powers/\*/POWER.md |
-| [MCP](https://modelcontextprotocol.io) | MCP-\* | 12 | \*.mcp.json |
-| [AGENTS.md](https://agentsmd.org) | AGM-\*, XP-\* | 13 | AGENTS.md, AGENTS.local.md, AGENTS.override.md |
-| [Cline](https://docs.cline.bot) | CLN-\* | 4 | .clinerules, .clinerules/\*.md, .clinerules/\*.txt |
-| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | GM-\* | 9 | GEMINI.md, GEMINI.local.md, .gemini/settings.json (hooks), gemini-extension.json (extensions), .geminiignore |
+| [Agent Skills](https://agentskills.io) | AS-\*, XP-SK-\* | 26 | SKILL.md |
+| [Claude Code](https://code.claude.com/docs) | CC-\* | 170 | CLAUDE.md, .claude/rules/\*.md, settings.json, hooks, agents, skills, output styles, plugins, marketplace.json, .mcp.json |
+| [GitHub Copilot](https://docs.github.com/en/copilot) | COP-\*, CP-SK-\* | 35 | .github/copilot-instructions.md, .github/instructions/\*.instructions.md, .github/agents/, .github/prompts/, .github/hooks/\*.json, copilot-setup-steps.yml, plugin.json, .github/skills/ |
+| [Cursor](https://cursor.com) | CUR-\*, CR-SK-\* | 40 | .cursor/rules/\*.mdc, .cursorrules, .cursor/hooks.json, .cursor/agents/, .cursor/environment.json, .cursor/cli.json, permissions.json, .cursor-plugin/, .cursorignore, .cursor/skills/ |
+| [Codex CLI](https://developers.openai.com/codex) | CDX-\*, CX-SK-\* | 89 | AGENTS.md, .codex/config.toml, .codex/hooks.json, .codex/agents/\*.toml, .codex/rules/\*.rules, requirements.toml, .codex-plugin/plugin.json, .agents/skills/ |
+| [OpenCode](https://opencode.ai) | OC-\* | 67 | opencode.json(c), .opencode/agents/, .opencode/commands/, .opencode/tools/, .opencode/plugins/, .opencode/skills/ |
+| [Kiro](https://kiro.dev) | KIRO-\*, KR-SK-\*, KR-AG-\*, KR-HK-\*, KR-PW-\*, KR-MCP-\*, KR-SET-\*, KR-PM-\*, KR-WF-\*, KR-IGN-\* | 141 | .kiro/steering/\*\*/\*.md, .kiro/skills/\*\*/SKILL.md, .kiro/agents/\*\*/\*.{json,md}, .kiro/hooks/\*.kiro.hook, .kiro/hooks/\*.json, .kiro/settings/mcp.json, .kiro/settings/cli.json, .kiro/settings/permissions.yaml (or .json), .kiro/powers/\*/POWER.md and published POWER.md, power plugin.json and mcp.json, .kiro/workflows/\*.workflow.{json,yaml,yml}, .kiroignore |
+| [MCP](https://modelcontextprotocol.io) | MCP-\* | 30 | .mcp.json and the MCP server blocks of client configs |
+| [AGENTS.md](https://agents.md) | AGM-\*, XP-\* | 13 | AGENTS.md, AGENTS.local.md, AGENTS.override.md |
+| [Cline](https://docs.cline.bot) | CLN-\*, CL-SK-\* | 16 | .clinerules/, .cline/rules/, .cline/workflows/, .cline/hooks/, .clineignore, cline_mcp_settings.json, .cline/skills/ |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | GM-\* | 35 | GEMINI.md, .gemini/settings.json, gemini-extension.json, extension hooks and agents, .gemini/commands/\*.toml, policies, .gemini/agents/, .geminiignore |
+| [Windsurf / Devin Desktop](https://docs.devin.ai) | WS-\* | 17 | .devin/rules/, .devin/workflows/, .devin/hooks.json (and the legacy .windsurf/ layout), .windsurfrules, global_rules.md, .windsurf/skills/ |
+| [Amp](https://ampcode.com) | AMP-\* | 12 | .agents/checks/\*.md, .amp/settings.json(c), skills and skill mcp.json |
 
 ## Architecture
 
@@ -145,6 +151,39 @@ Rust workspace crates:
 ## Contributing
 
 Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the development guide.
+
+### Local development loop
+
+Run `bash scripts/preflight.sh` while editing. It checks formatting, rule
+bookkeeping, count tables, locale copies, instruction copies, and schema copies
+before any compilation. It requires Rust with rustfmt, Node.js, Python 3, and
+Bash. Missing tools fail the check instead of silently skipping it.
+
+Before pushing, run `bash scripts/preflight.sh --full`. This adds Clippy, workspace
+tests, the rule efficacy evaluation, the Kiro gate, packaging script tests,
+generated schema comparison, and source-built agent configuration validation.
+It reports each check's elapsed time and stops at the first failure. Schema
+comparison uses a temporary file and never overwrites local edits. Cargo builds,
+Rust tests, and Rayon default to two workers each; set `CARGO_BUILD_JOBS`,
+`RUST_TEST_THREADS`, or `RAYON_NUM_THREADS` to override these local defaults.
+
+The existing optional hook installer, `sh scripts/setup-hooks.sh`, installs a
+pre-push hook that calls the same full preflight. Git worktrees share the hooks
+directory, and the installer replaces the existing pre-push hook.
+
+Track the change in an issue, then open a PR with the tested commit, commands,
+results, and any limits of the evidence. Local preflight does not replace hosted
+Linux, Windows, macOS, CodeQL, dependency, or review gates. Review the diff and
+record a factual self-review comment, wait for successful `revuto-review` and
+CI, and address every review comment before merging through the PR. A changed
+head needs fresh checks and review. Report a specific blocker when a required
+gate cannot finish; keep branch protection intact.
+
+CI and Security cancel superseded runs of the same PR. Their main and scheduled
+runs use separate groups so newer runs cannot cancel them. The docs deployment
+workflow keeps its existing shared concurrency group. CodeQL uses Rust's buildless
+extraction, which runs build scripts and proc macros itself; release binaries are
+still built by the release workflow.
 
 [Report a bug](https://github.com/agent-sh/agnix/issues/new) | [Request a rule](https://github.com/agent-sh/agnix/issues/new) | [Good first issues](https://github.com/agent-sh/agnix/labels/good%20first%20issue)
 

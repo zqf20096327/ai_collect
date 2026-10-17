@@ -1457,4 +1457,4 @@ embeddings = llama_client.generate_embeddings(req).embeddings  # 768 floats
 Notes:
 
 - `context.n_parallel: 1` is required: pooled embeddings are only correct when the whole multimodal prompt is decoded as a single sequence in a single batch. The service rejects media otherwise.
-- The whole prompt (text + media) must fit i
+- The whole prompt (text + media) must fit in `min(context.n_batch, context.n_ubatch)`. An

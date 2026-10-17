@@ -105,6 +105,7 @@
 - [Kamply](https://kamplyapp.com) - Mac desktop app that puts a marketing crew on top of your Claude Code or Codex plan to make social posts, carousels, video reels, ads and decks in your own branding. Paid; Apple silicon, macOS 11 or later.
 - [Pinrail](https://github.com/forgeplane/pinrail) - Open-source desktop app where Claude Code, Codex, Cursor, and other coding agents ask for a review before they act, show it in a view made for its content, and get back structured decisions.
 - [Wardlume](https://wardlume.github.io) - Locks your Mac's keyboard, mouse, and trackpad while Claude Code, Codex, Cursor or Gemini CLI keep running in view, so you can step away without anyone typing into the session. Unlocks with Touch ID or Apple Watch; free for personal use, sandboxed with no network access.
+- [Appto](https://appto.store) - Mac app that takes an iPhone app from idea to the App Store on your own Claude Code or Codex plan. It checks the niche on live App Store data, writes native SwiftUI, makes store screenshots and text in every language and fills in App Store Connect after you confirm. Paid; free demo in the app, macOS on Apple silicon and Intel.
 
 ## Plugins and Extensions
 
@@ -188,6 +189,8 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [VibeFix](https://vibe-fixer.com/) - An AI agent uses your live, published app like a first customer (sign-up, the main flow, checkout, on a phone and a computer) and lists what breaks, with a fix prompt to paste into your AI builder and a re-test of the live app. First test free, no account; also an MCP server at `https://vibe-fixer.com/mcp`.
 - [Nutilz Security Headers](https://nutilz.com/security-headers) - Free browser-based security headers grader and validator (CSP, HSTS, CORS, X-Frame-Options) with copy-paste remediation snippets to test and fix missing headers before launch. No signup required.
 - [VibeLocked](https://vibelocked.com/) - Free in-browser scanner that finds exposed OpenAI, Stripe, Supabase service role, AWS, and GitHub keys in a public GitHub repo, plus plain-language security guides and checklists for Supabase RLS, Firebase rules, Stripe webhooks, and AI API routes.
+- [SealMyApp](https://sealmyapp.com/) - Read-only security scan for apps built with Lovable, Bolt, Cursor, Replit and v0 that only runs after you verify you own the app (DNS record or file). Checks for Supabase tables readable without login, open Firebase rules, secret keys in the JS bundle and exposed `.env`/`.git` files. Free scan and free tools (key checker, Supabase RLS audit SQL); paid tiers add builder-specific fix prompts with a verified re-scan and daily monitoring.
+- [nextjs-supabase-stripe-security-checker](https://github.com/edtrackai/nextjs-supabase-stripe-security-checker) - MIT-licensed local CLI and GitHub Action (`npx github:edtrackai/nextjs-supabase-stripe-security-checker .`) with 24 checks for Next.js + Supabase + Stripe apps: leaked or service-role keys in client code, missing RLS and grants, and unverified Stripe webhooks. No account, nothing uploaded.
 
 ## Documentation for AI Coding
 
@@ -197,12 +200,14 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [CodeGuide](https://www.codeguide.dev/) - Creates detailed Documentation for your AI Coding Projects.
 - [LegacyDoc AI](https://www.romanticode.com/legacydoc-ai/) - VS Code extension that generates documentation, architecture maps, and AI-ready context packs for vibe-coded codebases.
 - [ContextStream](https://contextstream.io) - Shared project context for Cursor, Claude Code, Codex, Grok. Remote MCP: https://mcp.contextstream.io/mcp. Intelligence isn’t the bottleneck. Context is.
+- [AGENTS.md Generator](https://agentkitco.com/tools/agents-md-generator/) - Free in-browser tool that writes AGENTS.md plus matching CLAUDE.md, Cursor rule and Copilot instructions files for your stack.
 - [Codex First Task Prompt Generator](https://ronnie2025.github.io/ai-agent-workbench-starter-pack/codex-first-task-prompt-generator.html) - Free browser tool for turning a vague Codex CLI project goal into a scoped first-task prompt with file boundaries, constraints, and acceptance checks.
 - [Pineflow](https://dotsystems.dev/pineflow) - Free, open source path from an idea to a mobile app in the App Store with Claude Code and Expo: 12 chapters with exact commands, prompts and checks, plus AGENTS.md, PRD and hooks templates. MIT licensed. Formerly vibeprompt.
 - [Wikivibe](https://wikivibe.ru/en/) - Practical knowledge base for AI-assisted development with guides, a glossary, jobs, and a public MCP endpoint.
 - [QuotaBurn](https://quotaburn.com/) - Free, source-linked tracker of AI coding agent prices and usage limits (Claude Code, Cursor, Codex, Copilot, Windsurf, Devin, Gemini CLI) with a monthly cost calculator and 18 model API prices.
 - [Vibe Coding with Confidence](https://zalt.me/guides/vibe-coding) - Web handbook on building AI-assisted apps that work beyond the demo: plan, build, debug, harden, ship, operate, and scale.
 - [OrcaPromptVault](https://github.com/Continuum-AI-Corp/OrcaPromptVault) - Dated archive of what the coding agents themselves are told: system prompts and tool schemas from 43 products, 44 of them recorded off the wire with a command that reproduces each. Useful when an AGENTS.md or CLAUDE.md is not having the effect you expect and you want to read what it is competing with.
+- [StackShip](https://stackship.app) - Dated, sourced picks for vibe coders: one winner per goal, head-to-head comparisons, tool pages with prices from official pricing pages, and a monthly stack cost calculator.
 
 - [breaking-coding-chaos](https://github.com/bo-cao/breaking-coding-chaos) - Human-in-the-loop dual-loop control-plane skill suite for coding agents (Claude Code, Codex, Cursor, and more): throughline progress on disk, plan-spar alignment, then minimal clean-cut implement.
 - [Ariadne Loop](https://github.com/zhangzeyu99-web/ariadne-loop) - Local-first Loop Engineering workbench for writing verifiable AI coding-agent specs, verifier gates, rollback rules, and JSON reports.
@@ -223,6 +228,8 @@ AI-generated apps often ship with exposed secrets, open databases, or missing se
 - [Learn Magic](https://learnmagic.ai) - Beginner guide to building with Claude Code for people who have never coded: a live demo, setup in the Claude desktop app with no terminal, starter builds for teachers, parents, small businesses and freelancers, and a page on the walls beginners hit. Free to read; building needs a paid Claude plan.
 - [Nebutra Sailor](https://github.com/Nebutra/Nebutra-Sailor) - Open SaaS starter for agent-built software whose AGENTS.md, CLAUDE.md and shrink-only lint guards keep coding agents inside its rules: one provider per domain, business endpoints in one Hono gateway, design tokens instead of raw values. Next.js 16, Better Auth, Creem plus WeChat Pay/Alipay billing, generated Postgres RLS; runs locally with an empty `.env`. Scaffolded projects are MIT.
 - [VibePicks](https://vibepicks-ruddy.vercel.app) - Free, dated picks for the best AI coding agent, app builder, code reviewer and deploy target per job, with MCP and open-source status.
+- [VibeToolRank](https://vibetoolrank.com/) - Independent hands-on tests of AI coding tools on the same standard tasks, with scores, timings and free-tier limits.
+- [Internal tool blueprints](https://github.com/samclaassen/internal-tool-blueprints) - Free, build-tested Markdown specs for internal tools (CRM, approvals, help desk, time off and more) with phased prompts and click-through acceptance checks for Claude Code, Cursor, Lovable and other builders.
 
 ## News and Social Media
 

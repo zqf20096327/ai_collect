@@ -1025,8 +1025,9 @@ RuntimeManager.Configure(new RuntimeManagerOptions
 ### Asking whether a model is ready, and downloading it on consent
 
 A host that must not download before the user agrees asks each model package the same three questions through
-`LMSupply.Lifecycle.IModelArtifacts` — `GeneratorArtifacts(options)` and `EmbedderArtifacts(options)`, built with the options
-the later load will use:
+`LMSupply.Lifecycle.IModelArtifacts` — `GeneratorArtifacts(options)`, `EmbedderArtifacts(options)`, `RerankerArtifacts(options)`,
+`TranscriberArtifacts(options)`, `CaptionerArtifacts(options)` and `OcrArtifacts(options)` (its id is a language code, as for
+`LocalOcr.LoadForLanguageAsync`), built with the options the later load will use:
 
 ```csharp
 using LMSupply;
@@ -1048,6 +1049,9 @@ await using var model = await LocalGenerator.LoadAsync("gguf:default", new Gener
 
 «Available offline» is exactly what a load with `DisableAutoDownload` needs, so that load then makes no network request.
 `GetRemainingDownloadBytesAsync` counts model files only (llama-server is a shared runtime of a few hundred MB, fetched once).
+For a transcriber whose options preload speaker diarization, its model pair is part of «available offline» and of the download.
+A host that loads from a path rather than an id finds the path after the download from the cache alone — for example
+`LocalGenerator.DownloadModelAsync(id, new GeneratorOptions { DisableAutoDownload = true })` returns it without a request.
 
 A host that shows several models to a user keeps them in one `ModelLifecycle`: each model's status (`Missing`, `Downloading`
 with progress, `Ready`, or `Failed` with the exception), a stream of every change for the UI, downloads that two callers share
@@ -1056,11 +1060,19 @@ and any caller can cancel (`CancelDownload` — partial files stay and resume), 
 is being deleted). It never downloads on its own; a status read looks at the cache only.
 
 ```csharp
+using LMSupply.Captioner;
 using LMSupply.Embedder;
 using LMSupply.Generator;
 using LMSupply.Lifecycle;
+using LMSupply.Ocr;
+using LMSupply.Reranker;
+using LMSupply.Transcriber;
 
-var models = new ModelLifecycle([new GeneratorArtifacts(), new EmbedderArtifacts()]);
+var models = new ModelLifecycle(
+[
+    new GeneratorArtifacts(), new EmbedderArtifacts(), new RerankerArtifacts(),
+    new TranscriberArtifacts(), new CaptionerArtifacts(), new OcrArtifacts(),
+]);
 
 var status = await models.GetStatusAsync("generator", "gguf:default");       // Missing / Downloading / Ready / Failed
 _ = Task.Run(async () =>
@@ -1077,8 +1089,11 @@ A `gguf:` registry alias deletes the file it loads on this host (every shard of 
 `gguf:gemma4-balanced` are two quantizations of one repository, and deleting one keeps the other; any other id names one
 model per repository and deletes LMSupply's files of it. A delete removes LMSupply's own files only — another tool's snapshot
 in the shared cache, a local path and llama-server stay (a model still `Ready` after `DeleteAsync` loads from those). Without
-a lifecycle, `LocalGenerator.DeleteModel(id, options)` and `LocalEmbedder.DeleteModel(id, cacheDir)` resolve the id the way
-`IsModelDownloaded` does and call `CacheManager.DeleteModelFiles(cacheDir, repoId, files)` or `CacheManager.DeleteModel`. On Windows a file a running server has open cannot be deleted (`IOException`) — dispose the model
+a lifecycle, `LocalGenerator.DeleteModel(id, options)`, `LocalEmbedder.DeleteModel(id, cacheDir)`,
+`LocalReranker.DeleteModel(id, cacheDir)`, `LocalTranscriber.DeleteModel(id, options)` and `LocalCaptioner.DeleteModel(id, options)`
+resolve the id the way their `IsModelDownloaded`/`IsModelDownloadedAsync` does (OCR: `LocalOcr.DeleteLanguageModel(language, options)`
+deletes that language's recognizer and keeps the detection model every language shares; languages of one script share a
+recognizer) (a transcriber keeps the shared diarization pair) and call `CacheManager.DeleteModelFiles(cacheDir, repoId, files)` or `CacheManager.DeleteModel`. On Windows a file a running server has open cannot be deleted (`IOException`) — dispose the model
 first.
 
 ### Behind a proxy

@@ -773,5 +773,148 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "Tencent-Hunyuan/Hy-Memory": {
+  "commit_90d": 19,
+  "commit_7d": 19,
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 61,
+   "TypeScript": 35,
+   "JavaScript": 2,
+   "CSS": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "taruma/SceneFlow": {
+  "commit_90d": 166,
+  "commit_7d": 1,
+  "rel_ver": "v2.5.0",
+  "rel_pub": "2026-09-16",
+  "rel_days": 31,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "context-hub/generator": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "1.34.0-beta5",
+  "rel_pub": "2026-03-11",
+  "rel_days": 220,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "PHP": 98,
+   "PowerShell": 1,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "chainreactors/cyber-harness": {
+  "commit_90d": 650,
+  "commit_7d": 14,
+  "rel_ver": "v1.0.0-rc8",
+  "rel_pub": "2026-10-05",
+  "rel_days": 12,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Go": 80,
+   "TypeScript": 19,
+   "CSS": 1,
+   "JavaScript": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "liyupi/ai-promo-video-maker": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 77,
+   "TypeScript": 15,
+   "JavaScript": 4,
+   "CSS": 3,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

@@ -5,26 +5,16 @@
 
   # ORBIT
 
-  **The self-hosted AI backend for private data and tool-using agents.**
+  **Open Retrieval-Based Inference Toolkit**
 
-  Connect your data and tools to local or hosted models through one OpenAI-compatible API.
-  Configure with YAML. Deploy on your own infrastructure.
-
-  <p>
-    <a href="https://orbit.schmitech.ca/?utm_source=github&utm_medium=readme&utm_campaign=try_orbit&utm_content=hero">
-      <img src="https://img.shields.io/badge/Try_ORBIT_Sandbox-Open_live_demo_%E2%86%92-2563eb?style=for-the-badge" alt="Try ORBIT Sandbox →" />
-    </a>
-    <br />
-    <sub>Explore interactive demos in your browser. No installation or account required.</sub>
-  </p>
+  Connect your data and tools to local or hosted models through one API.
+  Deploy on your own infrastructure.
 
   <p>
     <a href="#quick-start">Quick start</a>
     &nbsp;·&nbsp;
     <a href="docs/">Documentation</a>
   </p>
-
-  <p>⭐ Building with private data or AI agents? <strong>Star ORBIT</strong> to bookmark it and help others discover it.</p>
 </div>
 
 <p align="center">
@@ -41,13 +31,11 @@
 
 ## Why ORBIT
 
-Build a chat app over private documents, an agent that calls your tools, or a triage workflow—with the same backend.
-
 | | What you get |
 | :--- | :--- |
 | **Your data, connected** | Files, SQL, NoSQL, vector stores, APIs, and MCP tools through YAML-configured adapters. |
 | **Your choice of models** | Switch between local and hosted providers behind one OpenAI-compatible API. |
-| **Your infrastructure** | Self-host on-premises or in a private cloud; use local models for air-gapped deployments. |
+| **Your infrastructure** | Self-host on-premises or in a private cloud, use local models for air-gapped deployments. |
 | **Operations built in** | Authentication, quotas, audit logs, provider fallbacks, monitoring, and an admin UI. |
 
 Explore the [capability matrix](docs/ORBIT_CAPABILITY_MATRIX.md) for a detailed comparison.
@@ -86,10 +74,12 @@ Choose **one** flavor:
 | **OpenAI** | `schmitech/orbit-openai:latest` | `OPENAI_API_KEY` exported in your shell. |
 | **Gemini** | `schmitech/orbit-gemini:latest` | `GOOGLE_API_KEY` exported in your shell. |
 | **OpenRouter** | `schmitech/orbit-openrouter:latest` | `OPENROUTER_API_KEY` exported in your shell. Free models. |
+| **Cohere** | `schmitech/orbit-cohere:latest` | `COHERE_API_KEY` exported in your shell. |
 
 **Ollama**
 
 ```bash
+docker pull schmitech/orbit-ollama:latest
 docker run -d --name orbit \
   -p 127.0.0.1:5173:5173 -p 127.0.0.1:3000:3000 \
   -v orbit-data:/orbit/data \
@@ -100,6 +90,7 @@ docker run -d --name orbit \
 **OpenAI**
 
 ```bash
+docker pull schmitech/orbit-openai:latest
 docker run -d --name orbit \
   -p 127.0.0.1:5173:5173 -p 127.0.0.1:3000:3000 \
   -e OPENAI_API_KEY \
@@ -110,6 +101,7 @@ docker run -d --name orbit \
 **Gemini**
 
 ```bash
+docker pull schmitech/orbit-gemini:latest
 docker run -d --name orbit \
   -p 127.0.0.1:5173:5173 -p 127.0.0.1:3000:3000 \
   -e GOOGLE_API_KEY \
@@ -120,11 +112,23 @@ docker run -d --name orbit \
 **OpenRouter**
 
 ```bash
+docker pull schmitech/orbit-openrouter:latest
 docker run -d --name orbit \
   -p 127.0.0.1:5173:5173 -p 127.0.0.1:3000:3000 \
   -e OPENROUTER_API_KEY \
   -v orbit-data:/orbit/data \
   schmitech/orbit-openrouter:latest
+```
+
+**Cohere**
+
+```bash
+docker pull schmitech/orbit-cohere:latest
+docker run -d --name orbit \
+  -p 127.0.0.1:5173:5173 -p 127.0.0.1:3000:3000 \
+  -e COHERE_API_KEY \
+  -v orbit-data:/orbit/data \
+  schmitech/orbit-cohere:latest
 ```
 
 Once startup completes, open [OrbitChat](http://localhost:5173) to chat or upload a document. The API is available at [http://localhost:3000](http://localhost:3000), with the bundled `multimodal` API key for the document-chat adapter.
@@ -141,8 +145,8 @@ See the [Docker guide](docker/README.md#flavor-images-recommended-pull-and-run) 
 **Prerequisites:** Python 3.12+, an internet connection for downloads, and [Ollama](https://ollama.com/) installed and running. If needed, run `ollama serve` in a separate terminal. On Windows, follow the [installation guide](install/windows.md).
 
 ```bash
-curl -LO https://github.com/schmitech/orbit/releases/download/v2.18.4/orbit-2.18.4.tar.gz
-tar -xzf orbit-2.18.4.tar.gz && cd orbit-2.18.4
+curl -LO https://github.com/schmitech/orbit/releases/download/v2.18.5/orbit-2.18.5.tar.gz
+tar -xzf orbit-2.18.5.tar.gz && cd orbit-2.18.5
 ./install/setup.sh --profile default
 
 ollama pull gemma4:e2b
@@ -242,4 +246,4 @@ Maintained by [Remsy Schmilinsky](https://www.linkedin.com/in/remsy/).
 
 ## License
 
-ORBIT (Open Retrieval-Based Inference Toolkit) is licensed under the [Apache License 2.0](LICENSE).
+ORBIT is licensed under the [Apache License 2.0](LICENSE).

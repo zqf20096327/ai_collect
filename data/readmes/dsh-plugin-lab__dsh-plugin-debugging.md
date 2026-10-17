@@ -5,7 +5,7 @@
 <h1 align="center">dsh-plugin-debugging</h1>
 
 <p align="center">
-  <img src="assets/banner.png" alt="dsh-plugin-debugging: letting a DSH agent inspect and fix its own runtime" width="600">
+  <img src="assets/banner.gif" alt="dsh-plugin-debugging: letting a DSH agent inspect and fix its own runtime" width="600">
 </p>
 
 <div align="center">
@@ -45,7 +45,11 @@ This plugin lets the agent decide which case you're in, and what to do next.
 
 ## What it does
 
-After installation, the agent gains a set of tools and a skill document. The skill loads on demand.
+After installation, the agent gains a set of tools and a skill document. The skill loads on demand; you invoke it with a slash command.
+
+<p align="center">
+  <img src="assets/invoke-skill.png" alt="Invoking the skill with a slash command" width="600">
+</p>
 
 ### Tools
 

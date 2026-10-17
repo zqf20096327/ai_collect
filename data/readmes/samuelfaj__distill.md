@@ -20,14 +20,10 @@ OpenAI-compatible protocol.
 
 ## Benchmarks
 
-| Agent | Models and effort | Total time | Estimated cost (USD) |
-|---|---|---:|---:|
-| Distill | GPT-6.1 Sol auto + GPT-6 Luna auto | 308.18 s (**-33.8%**) | $0.19 (**-67.2%**) |
-| Codex | GPT-6.1 Sol high | 465.27 s  | $0.59 | 
+[![Distill benchmarks: same quality at up to 87% lower cost and up to 76% less time versus native GPT-6 Astra, GPT-6.1 Sol, Claude Opus 5.5 and DeepSeek V4.1 max baselines](docs/images/benchmarks.webp)](BENCHMARKS.md)
 
-Same quality and 9/9 passing runs.
-
-See more in [BENCHMARKS.md](BENCHMARKS.md) .
+See [BENCHMARKS.md](BENCHMARKS.md) for the full results tables, definitions,
+methodology, cost bounds, reproduction commands, and source JSON.
 
 ## Install
 

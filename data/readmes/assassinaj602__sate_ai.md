@@ -114,6 +114,7 @@ reliability before shipping to production.
 
 - 11 fault injectors covering memory, I/O, thermal, and network failure modes
 - Adaptive Chaos Injection modulated by live device CPU, RAM, and thermal telemetry
+- Stress test cost and resource estimation for duration, memory, battery, and cloud API spend
 - Model Quantization Analyzer for ONNX and TFLite models
 - 8 model adapters: MockAdapter, OnnxAdapter, TFLiteAdapter, FllamaAdapter,
   MediaPipeAdapter, CoreMLAdapter, GoogleMLKitAdapter, and custom adapters
@@ -126,7 +127,8 @@ reliability before shipping to production.
 - SQLite storage for historical report tracking
 - CI/CD status badges (SVG)
 - Custom report templates (JSON/YAML)
-- Retry and flaky test detection
+- Interactive guided onboarding tutorial in the Flutter example app
+- Project showcase gallery featuring real-world deployments and edge AI benchmarks
 - Stress scheduler (cron)
 - VS Code extension
 
@@ -311,13 +313,26 @@ sate_ai --model model.gguf --injectors memoryPressure \
 
 # Generate a custom injector
 sate_ai create injector MyCustomInjector
+
+# Pre-flight stress test cost estimation
+sate_ai --estimate --injectors memoryPressure,thermalThrottle --estimate-profile edge
 ```
+
+## Showcase
+
+Discover how teams, researchers, and developers use SATE AI to harden on-device models:
+
+- **[Project Showcase Gallery](https://assassinaj602.github.io/sate_ai/showcase.html)**: Interactive web gallery with filterable categories, testimonials, and reliability metrics.
+- **[SHOWCASE.md](SHOWCASE.md)**: Submission guidelines, project details, and official "Tested with SATE AI" badge snippets for your README.
 
 ## Documentation
 
 - [Website](https://assassinaj602.github.io/sate_ai/)
+- [Project Showcase Gallery](https://assassinaj602.github.io/sate_ai/showcase.html)
 - [API Reference](https://pub.dev/documentation/sate_ai)
 - [Research Paper](https://assassinaj602.github.io/sate_ai/paper.html)
+- [Cost and Resource Estimation Cookbook](cookbook/cost_estimation.md)
+- [Adaptive Chaos Testing Cookbook](cookbook/adaptive_chaos_testing.md)
 - [Contributing Guide](CONTRIBUTING.md)
 
 ## Citation

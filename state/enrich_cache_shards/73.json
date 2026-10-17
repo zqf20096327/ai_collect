@@ -828,5 +828,256 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "EvoScientist/EvoSkills": {
+  "commit_90d": 30,
+  "commit_7d": 0,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-09-30",
+  "rel_days": 17,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 94,
+   "HTML": 2,
+   "JavaScript": 2,
+   "TeX": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "growthxai/output": {
+  "commit_90d": 96,
+  "commit_7d": 7,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "JavaScript": 57,
+   "TypeScript": 42,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "minthcm/minthcm": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": "4.3.4",
+  "rel_pub": "2026-10-08",
+  "rel_days": 9,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 9,
+  "sec_worst": "high",
+  "sec_last": "2026-10-07",
+  "sec_ids": [
+   "GHSA-xr52-pf8x-g6gg(-,medium)",
+   "GHSA-2x7c-c259-w6wg(-,high)",
+   "GHSA-m28h-qhpf-82g8(-,medium)",
+   "GHSA-j5g7-7p63-h3r7(-,medium)",
+   "GHSA-3c8h-76hj-x79g(-,high)",
+   "GHSA-987r-qrpc-r33m(-,high)",
+   "GHSA-84h4-hxq5-pw52(-,medium)",
+   "GHSA-5j37-j3xc-frm4(-,low)"
+  ],
+  "contrib_n": 7,
+  "lang": {
+   "PHP": 67,
+   "JavaScript": 15,
+   "CSS": 6,
+   "Smarty": 4,
+   "SCSS": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "SpatiaOS/Procedura": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "Python": 11,
+   "Shell": 1,
+   "OpenSCAD": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "lhh737/LangChain-ReAct-Agent": {
+  "commit_90d": 4,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "barun-saha/slide-deck-ai": {
+  "commit_90d": 13,
+  "commit_7d": 0,
+  "rel_ver": "v8.2.4",
+  "rel_pub": "2026-10-03",
+  "rel_days": 14,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "TakatoHonda/sui-lang": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2025-12-11",
+  "rel_days": 310,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 78,
+   "HTML": 22
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "day50-dev/streamdown": {
+  "commit_90d": 11,
+  "commit_7d": 2,
+  "rel_ver": "v0.36.3",
+  "rel_pub": "2026-06-12",
+  "rel_days": 127,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "mosaxiv/clawlet": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.10",
+  "rel_pub": "2026-03-24",
+  "rel_days": 207,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Go": 97,
+   "Shell": 1,
+   "Go Template": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

@@ -92,6 +92,8 @@ Before installing, confirm the target repo carries the **`#dsh`** GitHub topic s
 
 _Highlights personally recommended by **Tianyi Cui** ([@tianyi](https://x.com/tianyi)), DeepSeek Harness team lead, in his **【DSH 社区插件推荐】** series on X. Newest first; each entry links the original post. Kept in sync with [README.zh-CN.md](./README.zh-CN.md)._
 
+- [oh-my-dsh/dsh-plugin-upgrade-skill](https://github.com/oh-my-dsh/dsh-plugin-upgrade-skill) — Upgrade skills for DSH plugin authors: 195 versioned upgrade cards (0.1.0-rc.8 → 0.2.0-rc.1) and 11 skills that list breaking changes, patch the plugin, test and publish — so Claude Code / Codex / Gemini can migrate an old plugin to a new DSH release, scored by a 63-task public benchmark.  `⭐287` · Team pick 2026-10-05 · [post](https://x.com/tianyi/status/2107030904233460208)
+
 ### 🔍 Plugin Directories (team pick #3 · 2026-09-28)
 
 - [dshfind](https://dshfind.com/) · [hikariming/dshfind](https://github.com/hikariming/dshfind) — Learning site + plugin marketplace in one: a systematic course from the basics to Cordis papers, plus a marketplace auto-aggregated from the GitHub `dsh-plugin` topic, S/A/B/C ratings, a dev guide, and an author leaderboard.  `⭐280`
@@ -329,11 +331,17 @@ _DSH's core composition mechanism: a **profile** stacks bundle patch layers, the
 - [higekibaka/dsh-vertex-argon](https://github.com/higekibaka/dsh-vertex-argon) — Vertex Argon — a Google Vertex AI & Gemini API dual-route Gemini 4 Argon plugin for DeepSeek Harness (DSH): native Low/Medium/High thinking levels, thought summaries, signed tool-call replay and a dedicated Settings UI.
 - [lion231226/dsh-freellmapi](https://github.com/lion231226/dsh-freellmapi) — FreeLLMAPI (Auto) provider route for DeepSeek Harness: pick the auto model and a local FreeLLMAPI gateway chooses the best free model, fails over automatically and streams back as native DSH chunks.
 - [ZelotsNullzwei/dsh-ofm-updater](https://github.com/ZelotsNullzwei/dsh-ofm-updater) — One-click updater for the Our Free Model plugin in DSH Desktop: just double-click; handles the PATH, slow-network and integrity-check pitfalls.
+- [shuang-ying/dsh-ThirdApi-ThinkingMode](https://github.com/shuang-ying/dsh-ThirdApi-ThinkingMode) — DSH bundle that syncs per-model thinking levels from each endpoint's own model listing.
+
+- [zhengqiuyang/dsh-freeze](https://github.com/zhengqiuyang/dsh-freeze) — Hermetic composition lock for DeepSeek Harness: profile fingerprint; drifted compositions warn or fail in strict mode.
+- [taxueseek/dsh-router-flash](https://github.com/taxueseek/dsh-router-flash) — Explore-mode DeepSeek V4 Flash agent preset: channel-agnostic matching, a narrowed first-round tool surface, and declared-line delivery.
 
 ## Harnesses & Runtimes
 
 _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime-level infrastructure (diagnostics, ops, session management, approval policies)._
 
+- [2151649856sjs-create/joycode-proxy](https://github.com/2151649856sjs-create/joycode-proxy) — OpenAI-compatible local proxy that exposes JoyCode (JD Cloud JoyCoder) credits, plus a DSH model-provider plugin.
+- [2151649856sjs-create/qoder-proxy](https://github.com/2151649856sjs-create/qoder-proxy) — OpenAI-compatible local proxy that exposes Qoder CN credits as a /v1/chat/completions API, plus a DSH model-provider plugin.
 - [CSUNX233/qwen3.8-27b-ninfer-5070tilaptop-kvmem-local-agent](https://github.com/CSUNX233/qwen3.8-27b-ninfer-5070tilaptop-kvmem-local-agent) — Run Qwen3.8-27B on an RTX 5070 Ti Laptop 12GB: NInfer + KVMem, 256K logical context, RAM KV, MTP, fast cache resumption and a local dsh agent / search / browsing. Includes source, Windows deployment and measurements.
 
 - [BaronCyrus/dsh-packycode-api](https://github.com/BaronCyrus/dsh-packycode-api) — Use a PackyCode (PackyAPI) API key in DeepSeek Harness: built-in multi-protocol model route, ordered API-key rotation, and balance display.
@@ -553,4 +561,4 @@ _DeepSeek-native or DeepSeek-first agent harnesses / coding agents, plus runtime
 - [030611/dsh-telemetry-redactor](https://github.com/030611/dsh-telemetry-redactor) — Fail-closed export-copy redaction for DeepSeek Harness session telemetry.
 - [cnyac/dsh-polling](https://github.com/cnyac/dsh-polling) — Polling/scheduled-task plugin: cron scheduled tasks as real sessions, natural-language creation, model tools (`polling_*`), and a Web UI.
 - [cpj-dev/dsh-plugin-cc](https://github.com/cpj-dev/dsh-plugin-cc) — Bridges DeepSeek Harness into Claude Code for review, critique, delegation, and session import.
-- [khiqwq/dsh-system-proxy](https://github.com/khiqwq/dsh-system-proxy) — Host plugin 
+- [khiqwq/dsh-system-proxy](https://github.com/khiqwq/dsh-system-proxy) — Host plugin for smart outbound HTTP(S)

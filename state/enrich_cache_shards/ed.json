@@ -707,5 +707,324 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "aaryansamanta/nextgen-ai": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 78,
+   "CSS": 12,
+   "PHP": 9,
+   "JavaScript": 1,
+   "Hack": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "jfilter/split-folders": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "0.6.1",
+  "rel_pub": "2026-01-28",
+  "rel_days": 262,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Tiberriver256/mcp-server-azure-devops": {
+  "commit_90d": 36,
+  "commit_7d": 3,
+  "rel_ver": "mcp-server-azure-devops-v0.1.49",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "TypeScript": 98,
+   "Shell": 2,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "squall01337/mixamo-llm-mocap": {
+  "commit_90d": 28,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "sarulab-speech/UTMOSv2": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-02-23",
+  "rel_days": 236,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 99,
+   "Jupyter Notebook": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "mcneel/RhinoAI": {
+  "commit_90d": 399,
+  "commit_7d": 15,
+  "rel_ver": "plugin-v0.3.0",
+  "rel_pub": "2026-09-30",
+  "rel_days": 17,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "C#": 80,
+   "TypeScript": 11,
+   "JavaScript": 6,
+   "CSS": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "qianlima-lab/awesome-lifelong-llm-agent": {
+  "commit_90d": 18,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "emoss08/Trenova": {
+  "commit_90d": 2672,
+  "commit_7d": 841,
+  "rel_ver": "v0.10.5",
+  "rel_pub": "2026-10-13",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-09-10",
+  "sec_ids": [
+   "GHSA-3r6h-w3x4-fm4c(-,high)"
+  ],
+  "contrib_n": 7,
+  "lang": {
+   "Go": 63,
+   "TypeScript": 32,
+   "JavaScript": 1,
+   "Rust": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "JonasGeiping/breaching": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "FaqFirebase/pi-desktop": {
+  "commit_90d": 350,
+  "commit_7d": 7,
+  "rel_ver": "v0.2.0-alpha",
+  "rel_pub": "2026-10-15",
+  "rel_days": 2,
+  "rel_n90": 11,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 0,
+   "CSS": 0,
+   "Shell": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "dondai44423/bladebro": {
+  "commit_90d": 388,
+  "commit_7d": 33,
+  "rel_ver": "v4.6.4",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 84,
+   "Python": 10,
+   "JavaScript": 4,
+   "HTML": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "NousResearch/hermes-official-plugins": {
+  "commit_90d": 189,
+  "commit_7d": 95,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 48,
+  "lang": {
+   "Python": 96,
+   "JavaScript": 3,
+   "TypeScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

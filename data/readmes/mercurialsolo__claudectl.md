@@ -295,6 +295,12 @@ Enabled by default. For the minimal sync-only build, use `cargo build --no-defau
 # Ownership leases — prevent two agents from editing the same file
 claudectl coord claim --session sess_1 --path src/app.rs --mode exclusive
 claudectl coord release lease_123
+# Any resource, not only paths; wait in line instead of failing
+claudectl coord claim --session sess_2 --resource res:dev-db --wait --timeout 300
+# Leases expire after --ttl (default 300s) unless the owning session is running
+claudectl coord renew lease_123 --ttl 900
+# Fleet-wide: one machine is [relay] lease_authority; every peer claims through it
+claudectl coord claim --fleet --session sess_3 --resource res:staging-deploy --wait
 
 # Handoffs — structured context transfer between sessions
 claudectl coord handoff --from sess_1 --to sess_2 --task task_1 --summary 'Fix path normalization'
@@ -363,11 +369,16 @@ claudectl supervisor submit \
 
 # Batch submission from a TOML file
 claudectl supervisor run tasks.toml --dry-run    # preview
-claudectl supervisor run tasks.toml              # commit
+claudectl supervisor run tasks.toml              # commit (queues; doesn't run)
+
+# Run the queue: a session per task (in its own worktree when it names a
+# git_ref), watched until it ends, then its verifiers. Touches no other session.
+claudectl supervisor work --until-idle
 
 # Inspect fleet state
 claudectl supervisor status
 claudectl supervisor status --state RUNNING
+claudectl supervisor status --graph              # the depends_on tree, with why a task is blocked
 claudectl supervisor logs <task_id>              # full transition log + verifier history
 
 # Lifecycle controls
@@ -388,19 +399,54 @@ model       = "sonnet"
 budget_usd  = 3.00
 max_retries = 2
 timeout_min = 45
+git_ref     = "main"          # run in a new worktree from this ref, on its own branch
+branch      = "feat/auth"     # optional; default claudectl/<name>-<id>
+permission_mode = "acceptEdits"   # optional; passed to claude --permission-mode
+depends_on  = ["user-schema"] # start only after these tasks (by name, same file) are DONE
+requires    = ["docker", "node>=22"]   # tools the relay probes, or tags a machine advertises
 
   [[task.verify]]
-  run  = "cargo test --all-targets"            # exit code is the verdict
+  run  = "cargo test --all-targets"            # exit code is the verdict, run in the worktree
 
   [[task.verify]]
   brain = "Review the diff for auth-coverage gaps. PASS or FAIL with reasons."
-                                                # routed to the local brain — free
+                                                # local brain, shown the task's diff — free
 
   [[task.verify]]
   agent = "Adversarial review: find a request that bypasses the middleware."
-  model = "haiku"                               # headless claude -p, own budget
+  model = "haiku"                               # headless claude -p in the worktree, read-only
   budget_usd = 0.25
 ```
+
+When a verifier fails, the task goes back to work in the same worktree with the failing verifier's output added to its prompt, up to `max_retries`; after that it's NEEDS_HUMAN. A session that dies is resumed with a prompt that tells it to assess the worktree before continuing. A task with `depends_on` starts once each dependency is DONE, and its prompt names each dependency's branch and closing summary; if a dependency is cancelled or needs a human, the tasks after it move to NEEDS_HUMAN with the reason (`dependency_cancelled:<name>`).
+
+<img src="assets/fleet-supervisor.gif" alt="A laptop hands two Claude Code tasks to a Mac mini: one fails its verifier on the mini, is retried there with the failure, and passes" width="100%" />
+
+The full guide, with a two-machine walkthrough: [docs/fleet-supervisor.md](docs/fleet-supervisor.md).
+
+**Where tasks run.** Each machine has a slot policy in `~/.claudectl/coord/policy.toml`, and a task starts only where it fits. Without the file, this machine runs four tasks at a time, as before.
+
+```toml
+stale_after_secs = 90          # a peer heard from longer ago is skipped
+
+[local]                        # this machine
+max_tasks = 4
+min_free_mem_mb = 2048         # floors; an unmeasured value never counts as room
+max_load_per_core = 1.5
+min_free_disk_mb = 5120
+mem_per_task_mb = 1024         # assumed per task until the next measurement
+drain = false                  # same as `supervisor drain`
+
+[peers]                        # defaults for every relay peer
+max_tasks = 2
+
+[peers.baradas-mac-mini-508f9c0e]
+max_tasks = 6
+```
+
+`relay serve` advertises its machine's free memory, load per core, free disk, running tasks, its own `max_tasks` and `[relay] tags` on every heartbeat, and `relay peers` shows what each peer last said. A task goes to the eligible machine with the most free memory, here or on a peer; `peer = "…"` pins it. A task that can't start says why in `supervisor work`'s output, once per change of reason: `this machine is running 4 of 4 tasks`, ``this machine lacks `docker`; mini is running 2 of 2 tasks``.
+
+**Running on a peer.** The supervisor sends the task over the relay, and the peer runs `claude` and then the task's `run =` verifiers, in its own worktree, sending the verdicts back. Both machines need `relay serve` running, both on a build with `supervised-task` (each `relay serve` logs the features a link agreed). The task's `cwd` is used on the peer as-is, so keep the repo at the same path on both; the work stays on the task's branch in the peer's worktree, and the handoff names it. A retry goes back to the same peer and worktree. A task with a `role`, or with a `brain =` or `agent =` verifier, runs on this machine only. A peer that declines a task (it's at its own `max_tasks`, say) doesn't use up a retry: the task is placed again.
 
 Tasks are submittable three ways: this CLI, a `task.created` bus message addressed to the `supervisor` role, or the `submit_task` MCP tool from inside a Claude Code session. All three land as the same SQLite row.
 

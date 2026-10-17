@@ -5,7 +5,7 @@
 > Handpicked AI tools — no fluff, no mediocre apps. Every tool carefully selected for quality, innovation, and real-world impact.
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-[![Tools](https://img.shields.io/badge/tools-1529-f97316?style=flat-square)](https://github.com/best-of-ai/best-of-ai)
+[![Tools](https://img.shields.io/badge/tools-1534-f97316?style=flat-square)](https://github.com/best-of-ai/best-of-ai)
 [![Categories](https://img.shields.io/badge/categories-143-f97316?style=flat-square)](https://github.com/best-of-ai/best-of-ai)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
@@ -17,7 +17,7 @@
 
 ## What is this?
 
-**Best of AI** is a curated, community-driven directory of the best AI tools across 143 categories. We track 1529+ tools and hand-pick the ones worth your time — filtering out the noise so you can find tools that actually deliver.
+**Best of AI** is a curated, community-driven directory of the best AI tools across 143 categories. We track 1534+ tools and hand-pick the ones worth your time — filtering out the noise so you can find tools that actually deliver.
 
 What makes this list different:
 
@@ -59,7 +59,7 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
   - [Weather](#weather) (4)
   - [Writing Assistants](#writing-assistants) (46)
   - [Models](#models) (16)
-  - [AI Directories](#ai-directories) (14)
+  - [AI Directories](#ai-directories) (15)
   - [Others](#others) (2)
   - [3D](#3d) (15)
   - [3D Printing](#3d-printing) (3)
@@ -76,7 +76,7 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
   - [Background Remover](#background-remover) (4)
   - [Biotech](#biotech) (3)
   - [Business Tools](#business-tools) (22)
-  - [CRM](#crm) (13)
+  - [CRM](#crm) (14)
   - [Calendar Scheduling](#calendar-scheduling) (7)
   - [Character Design](#character-design) (3)
   - [Chatbot Builders](#chatbot-builders) (5)
@@ -117,7 +117,7 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
   - [Home Design](#home-design) (6)
   - [Identity](#identity) (5)
   - [Image Editing](#image-editing) (24)
-  - [Image Generation](#image-generation) (34)
+  - [Image Generation](#image-generation) (35)
   - [Infographics](#infographics) (5)
   - [Insurance](#insurance) (5)
   - [IoT](#iot) (4)
@@ -165,7 +165,7 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
   - [Talking Avatar Generator](#talking-avatar-generator) (9)
   - [Tax & Accounting](#tax-accounting) (4)
   - [Telemedicine](#telemedicine) (3)
-  - [Text to Speech](#text-to-speech) (9)
+  - [Text to Speech](#text-to-speech) (10)
   - [Transcription](#transcription) (11)
   - [Translator](#translator) (10)
   - [Travel](#travel) (5)
@@ -176,7 +176,7 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
   - [Voice Cloning](#voice-cloning) (9)
   - [Web3](#web3) (3)
   - [Website Builders](#website-builders) (6)
-  - [Wellness](#wellness) (3)
+  - [Wellness](#wellness) (4)
   - [Workflow Automation](#workflow-automation) (8)
 - [👔 AI for Professionals](#ai-for-professionals)
 
@@ -587,7 +587,7 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
 - **[AI For Developer](https://aifordevelopers.org)** — [review](https://bestofai.io/tools/ai-for-developer/) — AI tools and resources specifically curated for developers ![Free](https://img.shields.io/badge/-Free-3fb950?style=flat-square)
 - **[AIDir.wiki](https://aidir.wiki)** — [review](https://bestofai.io/tools/aidir-wiki/) — Comprehensive wiki directory of AI tools and resources ![Free](https://img.shields.io/badge/-Free-3fb950?style=flat-square)
 - **[Altern](https://altern.ai)** — [review](https://bestofai.io/tools/altern/) — AI tools directory and discovery platform ![Free](https://img.shields.io/badge/-Free-3fb950?style=flat-square)
-- *[View all 14 AI Directories tools on bestofai.io →](https://bestofai.io/categories/ai-directories/)*
+- *[View all 15 AI Directories tools on bestofai.io →](https://bestofai.io/categories/ai-directories/)*
 
 ---
 
@@ -783,7 +783,7 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
 - **[Salesforce](https://salesforce.com)** — [review](https://bestofai.io/tools/salesforce/) — AI-powered CRM with Einstein intelligence ![Paid](https://img.shields.io/badge/-Paid-8b949e?style=flat-square)
 - **[Pipedrive](https://pipedrive.com)** — [review](https://bestofai.io/tools/pipedrive/) — AI sales CRM with predictive insights ![Paid](https://img.shields.io/badge/-Paid-8b949e?style=flat-square)
 - **[Zoho CRM](https://zoho.com/crm)** — [review](https://bestofai.io/tools/zoho-crm/) — AI-powered customer relationship management ![Freemium](https://img.shields.io/badge/-Freemium-d29922?style=flat-square)
-- *[View all 13 CRM tools on bestofai.io →](https://bestofai.io/categories/crm/)*
+- *[View all 14 CRM tools on bestofai.io →](https://bestofai.io/categories/crm/)*
 
 ---
 
@@ -1071,4 +1071,18 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
 > AI tools for product listing optimization, personalization, and online store management.
 
 - **[Shopify](https://shopify.com)** — [review](https://bestofai.io/tools/shopify/) — AI-enhanced ecommerce platform with smart features ![Paid](https://img.shields.io/badge/-Paid-8b949e?style=flat-square)
-- **[BigCommerce](https://bigcommerce.com)** — [review](https://bestofai.io/tools/bigcommerce/) — AI-powered ecommerce platform for online stores ![Paid](https://img
+- **[BigCommerce](https://bigcommerce.com)** — [review](https://bestofai.io/tools/bigcommerce/) — AI-powered ecommerce platform for online stores ![Paid](https://img.shields.io/badge/-Paid-8b949e?style=flat-square)
+- **[Dynamic Yield](https://dynamicyield.com)** — [review](https://bestofai.io/tools/dynamic-yield/) — AI experience optimisation for retail and e-commerce ![Paid](https://img.shields.io/badge/-Paid-8b949e?style=flat-square)
+- **[Magento](https://magento.com)** — [review](https://bestofai.io/tools/magento/) — AI-powered open-source ecommerce platform ![Freemium](https://img.shields.io/badge/-Freemium-d29922?style=flat-square)
+- *[View all 16 E-Commerce tools on bestofai.io →](https://bestofai.io/categories/e-commerce/)*
+
+---
+
+## [Email Assistants](https://bestofai.io/categories/email-assistants/)
+
+> AI email tools for composing, summarizing, and managing email communications faster.
+
+- **[ActiveCampaign AI](https://activecampaign.com)** — [review](https://bestofai.io/tools/activecampaign-ai/) — Marketing automation with AI-driven personalisation ![Paid](https://img.shields.io/badge/-Paid-8b949e?style=flat-square)
+- **[Boomerang](https://boomerangmail.com)** — [review](https://bestofai.io/tools/boomerang/) — AI email scheduling and response assistant ![Freemium](https://img.shields.io/badge/-Freemium-d29922?style=flat-square)
+- **[Brevo AI](https://brevo.com)** — [review](https://bestofai.io/tools/brevo-ai/) — AI marketing platform for email, SMS, and CRM ![Freemium](https://img.shields.io/badge/-Freemium-d29922?style=flat-square)
+- **[Klaviyo AI](https://klaviyo.com)** — [review](https://bestofai.io/tools/klaviyo-ai/) — AI-powered email and SMS marketing for e-commerce ![Freemium](ht

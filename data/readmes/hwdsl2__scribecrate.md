@@ -1,4 +1,4 @@
-[English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [Русский](README-ru.md)
+[English](README.md) | [简体中文](docs/README-zh.md) | [繁體中文](docs/README-zh-Hant.md) | [Русский](docs/README-ru.md)
 
 # ScribeCrate
 
@@ -195,6 +195,8 @@ This Docker image uses the following variables, that can be declared in an `env`
 | `WHISPER_LOG_LEVEL` | Log level: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. | `INFO` |
 | `WHISPER_BEAM` | Beam size for transcription and translation decoding. Higher values may improve accuracy at the cost of speed. Use `1` for fastest (greedy) decoding. | `5` |
 | `WHISPER_MAX_REQUEST_BEAM` | Maximum beam size allowed for the per-request `beam` override. Set to `0` to disable this limit. | `10` |
+| `WHISPER_CONDITION_ON_PREVIOUS_TEXT` | Condition decoding windows on previous text. Set `false` to reduce repetition feedback loops; may reduce cross-window consistency. | `true` |
+| `WHISPER_NO_REPEAT_NGRAM_SIZE` | Restrict repeated token n-grams within decoding. `0` disables this restriction; canonical decimal integer `0` through `2147483647`. N-grams are token sequences, not words. | `0` |
 | `WHISPER_MAX_UPLOAD_MB` | Maximum uploaded audio file size in MB. Requests above this limit return HTTP 413. Set to `0` to disable the limit. | `1024` |
 | `WHISPER_LOCAL_ONLY` | When set to any non-empty value (e.g. `true`), disables all HuggingFace model downloads. For offline or air-gapped deployments with pre-cached models. | *(not set)* |
 | `WHISPER_WORD_TIMESTAMPS` | When set to `true`, enables word-level timestamps globally for all requests. The `verbose_json` output will include a top-level `words` array with per-word timing and confidence. Can also be enabled per-request via `timestamp_granularities[]=word`. | *(not set)* |
@@ -204,6 +206,12 @@ This Docker image uses the following variables, that can be declared in an `env`
 | `WHISPER_DISABLE_USAGE_COUNTS` | Set to `1` to disable anonymous aggregate usage counts. | *(not set)* |
 
 **Note:** In your `env` file, you may enclose values in single quotes, e.g. `VAR='value'`. Do not add spaces around `=`. If you change `WHISPER_PORT`, update the `-p` flag in the `docker run` command accordingly.
+
+The repetition controls apply to transcription and translation, both batch and SSE. Defaults preserve existing decoding settings. For repetition-prone recordings, optionally try `WHISPER_CONDITION_ON_PREVIOUS_TEXT=false` and `WHISPER_NO_REPEAT_NGRAM_SIZE=3`. This may suppress legitimate repetition or reduce consistency; it does not guarantee hallucination-free output.
+
+These two new options trim surrounding ASCII whitespace and at most one matching quote pair, then trim again. Empty values use defaults; booleans accept ASCII case-insensitive `true`/`false`. Integers reject signs, leading zeros and non-ASCII digits. Invalid nonempty values stop startup before model loading. This does not change legacy option parsing or add per-request fields.
+
+Use an image containing this feature. If a patched `api_server.py` is bind-mounted, remove or rebase that mount first: it hides the image's updated API. After editing a bind-mounted `/whisper.env`, restart the container; if its file mount is stale, recreate only that container. Changes to Docker/Compose container environment or image selection require recreation using the same volumes and Compose project. A plain restart does not apply new container environment or switch images. Removing the options restores defaults; older code ignores them. Do not delete model volumes to update or roll back.
 
 Example using an `env` file:
 

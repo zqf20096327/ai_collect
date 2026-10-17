@@ -1,0 +1,277 @@
+# Decision Models Lab
+
+Fast decisions with Jev and Decision-1, careful reasoning with Claude, and a clear rule for when to hand over.
+
+[![CI](https://github.com/shashikantdev3/decision-models-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/shashikantdev3/decision-models-lab/actions/workflows/ci.yml)
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-1D2A3F.svg)](LICENSE)
+[![Site](https://img.shields.io/badge/site-GitHub%20Pages-1D2A3F.svg)](https://shashikantdev3.github.io/decision-models-lab/)
+
+## Hello World in 5 minutes
+
+You need git, Node.js 20.12 or newer, and an OpenRouter key with a little credit.
+
+**1. Get a key.** Sign up at [openrouter.ai](https://openrouter.ai), add credit at [openrouter.ai/settings/credits](https://openrouter.ai/settings/credits) ($5 is more than enough: one Hello World run costs about $0.00003), then create a key at [openrouter.ai/settings/keys](https://openrouter.ai/settings/keys) with a credit limit. One key covers both models.
+
+**2. Clone, install and add the key.**
+
+```bash
+git clone https://github.com/shashikantdev3/decision-models-lab.git
+cd decision-models-lab
+npm install
+cp .env.example .env          # PowerShell: Copy-Item .env.example .env
+```
+
+Open `.env` and set `OPENROUTER_API_KEY=sk-or-v1-...`. Git ignores this file.
+
+**3. Run it.**
+
+```bash
+npm run hello
+```
+
+One real request to each model: a support ticket and three typed questions. You get something like this (the first real answers recorded for this lab; yours will differ a little):
+
+```text
+Ticket:   Checkout returns HTTP 500 for all users since 10:05.
+Asking:   urgent (yes/no), team (payments, auth, infra), severity (Cosmetic to Critical)
+
+TypeSafe Jev 1.14
+model     typesafe/jev-1.14-20261014
+urgent    yes 0.95
+team      payments 0.97   confidence 0.95   (payments 0.97, infra 0.03, auth 0.00)
+severity  Critical 0.99   position 2.98 on 0 to 3
+cost      $0.0000184 for 438 input tokens (output is free)
+time      1086 ms
+
+Microsoft Decision-1
+model     microsoft/microsoft-decision-1-20261009
+urgent    yes 1.00
+team      payments 0.62   confidence 0.43   (payments 0.62, infra 0.38, auth 0.00)
+severity  Critical 0.98   position 2.98 on 0 to 3
+cost      $0.0000055 for 132 input tokens (output is free)
+time      730 ms
+
+Next: `npm run dev` opens the site on http://localhost:5173. To pick something to build, see CONTRIBUTING.md.
+```
+
+**4. Open the whole lab.** `npm run dev` starts the site at http://localhost:5173 and reads the key from your `.env`, so Live mode works straight away. Only the local dev server does this; the published site never contains a key.
+
+**5. Pick something to build:** a [good first issue](https://github.com/shashikantdev3/decision-models-lab/issues?q=is%3Aopen+label%3A%22good+first+issue%22), [a new model](docs/09-extending.md), [a new dataset](data/README.md) or [a new metric](docs/09-extending.md). Run `npm run check` before you open a pull request; [CONTRIBUTING.md](CONTRIBUTING.md) has the rest.
+
+**No credit yet?** `npm run hello -- --mock` runs offline with no key and no cost. It replays the answers above, recorded from the real API, and says so. `npm test`, `npm run triage -- --mock` and `npm run dev` (Replay and Mock modes) also work without a key.
+
+The [Hello World page](https://shashikantdev3.github.io/decision-models-lab/#/hello) walks through the same steps, with Windows commands and every field of the answer explained.
+
+![The Triage Desk: tickets as strips on a board, confident ones in team bays, unsure ones on Claude's desk (recorded run, 2026-10-15)](docs/screenshots/desk-1440-light.png)
+
+## What you will learn
+
+- What a decision model is, and how it differs from asking a chat model.
+- The three question types (`noul`, `choice`, `score`) and how to write them well.
+- How to combine a fast decision model with Claude: decide, escalate, reason, verify.
+- How to choose a confidence threshold from data instead of guessing.
+- How to measure what matters: accuracy, calibration, wording sensitivity, speed and cost.
+
+## Decision models in 60 seconds
+
+You send context and a set of typed questions. The model returns a probability for every allowed answer, in one pass, returns a few output tokens, and charges for input tokens only.
+
+```text
+in:   state     ["Ticket: Checkout returns HTTP 500 for all users since 10:05."]
+      questions urgent (noul), team (choice: payments | auth | infra), severity (score: Cosmetic..Critical)
+
+out:  urgent    noul 0.97
+      team      choice payments, confidence 0.91, { payments 0.94, auth 0.01, infra 0.05 }
+      severity  score 2.87, { Cosmetic 0.00, Minor 0.02, Major 0.09, Critical 0.89 }
+      usage     212 tokens in, 2 out
+```
+
+(Values above illustrate the documented response shape; they are not a measurement.)
+
+| Model                | Pinned id                                 | Context        |
+| -------------------- | ----------------------------------------- | -------------- |
+| TypeSafe Jev 1.14    | `typesafe/jev-1.14`                       | 262,144 tokens |
+| Microsoft Decision-1 | `microsoft/microsoft-decision-1-20261009` | 32,768 tokens  |
+
+Both listed at $0.042 per million input tokens, output free, on OpenRouter on 15 October 2026.
+
+## No Node.js? One-file examples
+
+[`examples/hello-world`](examples/hello-world) has the same request as a single file in PowerShell, curl, Python and plain Node.js, with nothing to install:
+
+```powershell
+$env:OPENROUTER_API_KEY = "sk-or-..."
+powershell -ExecutionPolicy Bypass -File examples/hello-world/hello.ps1
+```
+
+```bash
+OPENROUTER_API_KEY=sk-or-... python examples/hello-world/hello.py microsoft/microsoft-decision-1-20261009
+```
+
+## The demo: Contoso Triage Desk
+
+48 fictional support tickets for Contoso arrive in a queue.
+
+1. **Decide (fast).** One decision call per ticket answers team, urgency, customer blocked and personal data.
+2. **Route or escalate.** Confident tickets go straight to a team. Unsure ones, likely critical ones and ones with unclear personal data go to Claude.
+3. **Reason (slow).** Claude settles the labels, writes a short reason and drafts a reply.
+4. **Verify (fast again).** The decision model checks Claude's draft for a non-answer, leaked personal data, unapproved promises and tone. A failed check goes to a person.
+5. **Record.** Every step logs model, version, time, tokens and cost.
+
+On the site each ticket is a strip on an air traffic control style board. Printed fields are the fast model's calls; a pencil note is Claude's reasoning. Move the threshold slider and strips slide between the team bays and Claude's desk.
+
+**Live site:** https://shashikantdev3.github.io/decision-models-lab/ (works with no key in Replay and Mock modes; Live mode uses your own keys, held only in the tab's memory).
+
+## Architecture
+
+```mermaid
+flowchart LR
+  T[Ticket] --> D[Decision model<br/>Jev or Decision-1]
+  D -->|probabilities| P{Escalation policy}
+  P -->|confident| R[Auto-route]
+  P -->|unsure or critical| C[Claude<br/>Haiku / Sonnet / Opus]
+  C -->|labels + draft reply| V[Decision model<br/>verifies the draft]
+  V -->|passes| S[Send]
+  V -->|fails| H[Human review]
+```
+
+`packages/core` holds the types, model adapters, escalation policy, pipeline and metrics, and runs in both Node and the browser. `packages/cli` has the `hello`, `bench`, `triage` and `wording` commands. `site/` is the Vite and React site. `config/` lists the models, dated prices and default thresholds. `data/` holds the tickets, question set and dataset card. `results/` holds recorded runs, which power the site's Replay mode. More in [docs/08-architecture.md](docs/08-architecture.md).
+
+## Results snapshot
+
+Recorded 2026-10-15 UTC (2026-10-16 IST) from Noida, India. 48 tickets x 3 runs per model, labels cross-checked by a second model with disagreements reviewed by the owner. Served versions: `typesafe/jev-1.14-20261014`, `microsoft/microsoft-decision-1-20261009`, `claude-haiku-4-5-20251001`.
+
+| Model | Team | Urgency | Blocked | Personal data | Team macro-F1 | Urgency MAE | ECE | p50 | p95 | Per 1,000 decisions |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Decision-1 | 93.8% | 88.9% | 97.9% | 100% | 0.935 | 0.18 | 0.015 | 619 ms | 1,208 ms | $0.019 |
+| Jev 1.14 | 89.6% | 83.3% | 97.9% | 100% | 0.895 | 0.19 | 0.037 | 477 ms | 943 ms | $0.032 |
+| Claude Haiku 4.5 as decider | 89.6% | 85.4% | 95.8% | 97.9% | 0.891 | 0.28 | 0.066 | 2,078 ms | 2,184 ms | $2.47 |
+
+How to read it:
+
+- **One ticket is about 2 points.** Decision-1's lead over Jev on team is two tickets. Treat it as a hint, not a ranking.
+- **Accuracy did not move across the 3 runs** for any model. The decision models' probabilities shifted slightly from run to run, but never enough to change a top answer.
+- **Both decision models were better calibrated than Claude's written probabilities** (ECE 0.015 and 0.037 against 0.066), at about 1/75th to 1/130th of the cost per decision.
+- **Latency includes the network from India** and is per call, measured in the client after warm-up.
+
+**The full loop** (Decision-1 deciding, Claude Sonnet 5.5 writing, threshold 0.8, run with `--draft-all` so every ticket has a Claude draft):
+
+| | Result |
+|---|---|
+| Routed automatically | 34 of 48 (70.8%), team correct on 33 |
+| Escalated to Claude | 14: 12 by the likely-critical rule, 2 by low team confidence |
+| Team correct after Claude | 11 of 14 escalated; the decision model alone had 12 of those 14 right |
+| Claude drafts that failed the decision model's checks | 0 of 14 |
+| Claude draft time | 5.0 s median, 9.7 s slowest |
+
+Claude did not improve team routing on this set: on T-002 and T-035 it overrode a decision model answer, once wrongly and once agreeing with a wrong one, and on T-040 it agreed with the decision model's wrong answer. What Claude added was the reason and the draft reply, which is the part a decision model cannot do.
+
+**Wording test:** asking the same four questions in three other wordings changed the top answer in 17.5% of cases for Jev and 7.3% for Decision-1. The biggest mover was Jev on `customer_blocked` (35.4%), driven by a rewording that asks the question in reverse ("Does the customer have a workaround?").
+
+Full charts on the [Results page](https://shashikantdev3.github.io/decision-models-lab/#/results); raw files and `VERIFY.md` in [`results/2026-10-15/`](results/2026-10-15/). Method: [docs/11-results-methodology.md](docs/11-results-methodology.md).
+
+## Limitations
+
+> [!WARNING]
+> **Decision-1 reads at most 33K tokens. Jev reads up to 262K.**
+> Keep each ticket's context short if you want to compare both fairly. Long inputs will fail on Decision-1 and push Jev into its slower long-context mode (text over about 32,000 bytes).
+
+> [!IMPORTANT]
+> **Both models are new and the Decisions API is in alpha.**
+> Pin exact versions (`typesafe/jev-1.14`, `microsoft/microsoft-decision-1-20261009`). Aliases like `~typesafe/jev-latest` and `microsoft/microsoft-decision-1` can change behaviour without warning, which also changes any thresholds you tuned.
+
+- **Wording changes answers.** Microsoft's own docs warn that results can change with question wording. The wording test in this repo measures it.
+- **No reasons.** Decision models return probabilities, not explanations. If you need to explain a decision to a person, keep a reasoning model in the loop or log the inputs carefully.
+- **Confidence is not safety.** A confident answer can be wrong. Choose thresholds from the cost of each kind of mistake, tune them on labelled data, and keep humans on high-impact decisions.
+- **Vendor claims are claims.** Speed, cost, "can't hallucinate" and benchmark wins come from the vendors. This repo reports only what it measured, and only on its own small dataset.
+- **Text first.** Image questions (box) exist only on Jev 1.14, are an early feature, and run in the slower long-context mode. Decision-1 does not support them.
+- **Claude's probabilities are written, not calibrated.** When Claude acts as a decider it writes numbers down. Compare its reliability diagram before trusting them.
+- **Keys and cost.** Never put a key in a public site. Live mode keeps keys in your browser session only. Set spending limits on your OpenRouter key and Anthropic workspace.
+
+## Cost
+
+From the recorded run above (input tokens as reported by each API; prices in `config/pricing.json`, checked 15 October 2026):
+
+| Model | Mean tokens in / out per call | One pass over 48 tickets | Per 1,000 decisions |
+|---|---|---|---|
+| Decision-1 | 444 / 4 | $0.0009 | $0.019 |
+| Jev 1.14 | 770 / 106 | $0.0016 | $0.032 |
+| Claude Haiku 4.5 as decider | 1,604 / 174 | $0.12 | $2.47 |
+
+Decision models bill input tokens only. Jev counts about 1.7 times as many input tokens as Decision-1 for the same tickets, which is why it costs more at the same price per token.
+
+The whole benchmark (3 models x 3 runs, plus pilot and warm-up calls) cost about $0.37, nearly all of it Claude. The triage run with a Claude Sonnet draft for every ticket cost $0.31; with drafts only for the 14 escalated tickets it would have been $0.09. Both wording tests together cost under $0.01.
+
+Spending caps: use a dedicated OpenRouter key with a credit limit, set a monthly limit on your Anthropic workspace, and keep the CLI's `--max-usd` (default $2). The CLI prints its estimate and asks before any run over 10 tickets.
+
+## Run it yourself
+
+Prerequisites: Node 20.12+, git. Python 3.10+ only for `hello.py`.
+
+```bash
+git clone https://github.com/shashikantdev3/decision-models-lab.git
+cd decision-models-lab
+npm install
+cp .env.example .env          # add OPENROUTER_API_KEY and, for Claude, ANTHROPIC_API_KEY
+
+npm run hello                 # Hello World, live, both models
+npm run hello -- --mock       # Hello World, offline, no key
+npm test                      # unit tests, offline
+npm run triage -- --mock      # whole pipeline, offline, no key
+npm run bench -- --models jev,decision-1,claude-haiku --runs 3
+npm run triage -- --decider decision-1 --writer claude-sonnet --threshold 0.8
+npm run wording -- --model jev
+npm run dev                   # site at http://localhost:5173
+```
+
+## Extend it
+
+- **Add a model:** one entry in `config/models.json`; a new adapter only if the API differs. Template in [docs/09-extending.md](docs/09-extending.md).
+- **Add a question type:** extend `QuestionType`, the adapter mapping, and one UI widget.
+- **Add a dataset:** same JSONL shape plus a dataset card. Ideas: HR requests, IT access requests, content moderation, invoice exceptions, pull-request triage on public repos.
+- **Add a chart or metric:** pure functions in `packages/core/src/metrics/`, one Recharts component on the Results page.
+- **Add a language:** tickets in Hindi or another language, to test how both models handle it.
+
+## Reuse it
+
+- Import `@decision-models-lab/core` in your own Node or browser app for the adapters, the escalation policy and the metrics. See [docs/10-reusing-the-core.md](docs/10-reusing-the-core.md).
+- Copy the escalation pattern: decision model first, LLM on low confidence, decision model to verify the LLM.
+- Reuse the dataset format and the bench CLI to evaluate decision models on your own labelled data before you trust a threshold.
+
+## Contribute
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Good first issues:
+
+1. Add an adapter for Jev box questions with an image example.
+2. Add an HR requests dataset with a dataset card.
+3. Add a Hindi ticket set and compare results.
+4. Add a confusion-matrix chart for `team`.
+5. Add a "cost of mistakes" threshold picker (set the cost of a false auto-route, get a suggested threshold).
+6. Add an export of a run as CSV.
+7. Add a TypeSafe SDK adapter (System One API) and compare it with the Decisions API.
+8. Add a clear error panel for rate limits in Live mode.
+9. Add keyboard shortcuts to the Triage Desk.
+10. Translate the Learn page.
+
+## Roadmap
+
+- More tickets, so differences of a few points mean something.
+- Demo GIF and short video of the loop, the slider and the race.
+- Jev `box` questions with images.
+- A second dataset and a Hindi ticket set.
+- Publish `@decision-models-lab/core` to npm.
+
+## Sources and acknowledgements
+
+- OpenRouter, [Jev guide](https://openrouter.ai/docs/guides/community/jev) and [Jev tutorial](https://openrouter.ai/docs/guides/community/jev-tutorial)
+- OpenRouter, [Decisions API reference](https://openrouter.ai/docs/api/api-reference/alphadecisions/submit-a-decisions-questions-and-answers-request)
+- OpenRouter, [Microsoft-Decision-1 model page](https://openrouter.ai/microsoft/microsoft-decision-1) and [Jev Router](https://openrouter.ai/typesafe/jev-router)
+- InfoWorld, [Microsoft separates decision-making from generative AI with a new model](https://www.infoworld.com/article/4234290/microsoft-separates-decision-making-from-generative-ai-with-a-new-model.html)
+- The New Stack, [TypeSafe Jev "System One"](https://thenewstack.io/typesafe-jev-system-one/)
+- SiliconANGLE, [TypeSafe AI exits stealth](https://siliconangle.com/2026-09-16/typesafe-ai-exits-stealth-with-40m-to-build-ai-for-use-by-software/)
+- [TypeSafe documentation](https://docs.typesafe.ai) and [Anthropic API documentation](https://docs.claude.com)
+- Type: [B612](https://github.com/polarsys/b612) by Airbus and [Kalam](https://fonts.google.com/specimen/Kalam) by Indian Type Foundry
+
+## Disclaimer
+
+Not affiliated with TypeSafe, Microsoft or Anthropic. Contoso and all ticket data are fictional. Numbers are from our own runs on the stated dates; vendor figures are labelled as vendor claims. Code under the [MIT licence](LICENSE); dataset under CC BY 4.0.

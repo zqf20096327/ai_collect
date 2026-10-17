@@ -325,6 +325,9 @@ Other agent infrastructure by the same author:
   framework-agnostic Python memory layer with traits and bond evolution.
 - [truenas-mcp](https://github.com/spranab/truenas-mcp) — 278 actions behind
   one hierarchical MCP tool; the same "don't show the model everything" idea.
+- [openclaw-memory-yantrikdb](https://github.com/yantrikos/openclaw-memory-yantrikdb) —
+  the other OpenClaw plugin by the same author: persistent memory instead of
+  adaptive tool routing, same gateway.
 
 ## License
 

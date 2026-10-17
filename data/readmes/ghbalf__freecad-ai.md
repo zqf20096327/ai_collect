@@ -223,6 +223,17 @@ The **Model Parameters** table in Settings lets you set arbitrary sampling param
 
 Click **Load Defaults** to reset to the provider's recommended values. For most providers the only default is `temperature: 0.3`. Moonshot ships with pre-configured values required by Kimi-K2.5.
 
+For OpenAI Chat Completions, o-series and GPT-5+ models automatically use
+`max_completion_tokens` and omit `temperature`. Older GPT models retain
+`max_tokens` and their configured temperature. This applies to streaming,
+non-streaming, and tool-calling requests.
+
+Other OpenAI-compatible providers retain their existing parameters. For a
+custom endpoint or deployment alias that requires the newer token parameter,
+add a `max_completion_tokens` row to the profile's **Model Parameters** table.
+That explicit value takes precedence, and `max_tokens` is omitted so the request
+never contains both token-limit parameters.
+
 #### Strip thinking from history
 
 The **"Strip thinking from conversation history"** checkbox in Settings controls whether thinking/reasoning content is removed from previous turns before sending to the API. Some models (e.g. Gemma 3/4) reject thinking content in multi-turn conversations, while others (e.g. Kimi-K2.5) require it.

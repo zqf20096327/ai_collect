@@ -378,10 +378,11 @@ fedit -file b.go -op insertafter -match '// helpers' -sourcefile a.go -sourceblo
 `fedit guided` takes the source, the verb and the destination in plain order and turns them into the explicit `-op` command, which it prints to stderr before running it. It is a CLI shortcut only: there is no MCP tool for it, and the engine and the explicit flags are unchanged.
 
 ```
-fedit guided SRCFILE SRCBLOCK copy|move DESTFILE [before TARGET | after TARGET | at-end] [silent]
+fedit guided SRCFILE SRCBLOCK copy|move DESTFILE [before TARGET | after TARGET | at-end] [silent|report-only]
 fedit guided SRCFILE SRCBLOCK replace DESTFILE [TARGET]
 fedit guided SRCFILE SRCBLOCK insertbefore|insertafter DESTFILE TARGET
 fedit guided "new text" insertbefore|insertafter FILE TARGET
+fedit guided
 
 fedit guided a.go Helper copy b.go before Init
 fedit guided a.go Helper move "b.go,c.go" after Init
@@ -394,7 +395,9 @@ fedit guided a.go Helper replace b.go
 - Each destination is handled on its own. A missing file is created, and a missing anchor (or no position at all) appends at the end, with a note. A move runs its copies first and the move last, so the source is erased only after a write succeeded.
 - Block names are matched by substring, as everywhere else. If a name matches several blocks, a single exact match wins (a note says so); otherwise you get a numbered choice in a terminal, or the list of candidates and exit code 2 when there is no terminal. The chosen block is then addressed by line numbers.
 - `replace` overwrites TARGET (default: the same name as the source) in each destination and skips a destination that does not have it.
-- `silent` runs the plan with `-quiet`; the engine report for `-dest` still prints.
+- `silent` runs the plan with `-quiet`: no echo, no notes, and no engine report when every file succeeded (skips and errors still print).
+- `report-only` runs the plan without the verify output and without the echo line, but keeps the notes and the engine's own summary. Both modifiers go last and work with every verb.
+- Bare `fedit guided` (no other arguments) asks the questions one at a time: the operation, the source file and block, the destination, the position, then the modifier. Operation and position can be answered by name or by number, and a wrong choice is asked again (three tries). The prompts go to stderr and the answers are read from stdin, one per line, so piped input works. If the input ends before the last answer, nothing is changed.
 
 ### -cleanfirst — Truncate before writing (v1.6.0)
 
@@ -587,7 +590,7 @@ Most mappers detect **duplicates** (functions, tables, keys, header columns, blo
 | -lang LANG | Language for map and for -block operations |
 | -v | Verify: show affected lines after edit |
 | -endmatch "s" | Content-anchor end of range (show/replace/delete/move/copy) |
-| -quiet | Suppress stdout on success; exit code signals result |
+| -quiet | Suppress output on success, including the per-file report of multi-file and -dest runs (skips and errors still print); exit code signals result (since v1.11.0) |
 | -texthex HEX | Hex-encoded UTF-8 content, bypasses shell quoting (v1.6.0) |
 | -matchhex HEX, -endmatchhex HEX | Hex-encoded -match and -endmatch anchors, for anchors that contain double quotes (v1.8.1) |
 | -match-regex P | replaceall: regex with capture groups ($1 $2) |
@@ -612,11 +615,11 @@ Most mappers detect **duplicates** (functions, tables, keys, header columns, blo
 
 With `-block NAME` (and `-sourceblock`, `-destblock`, `-beforeblock`, `-afterblock`) the range of a block comes from a scanner for the language. Python and Ruby blocks do not use brace counting and are not affected. Go, JS and TS, Rust, Java, C#, PHP, HCL and Nix count braces (and brackets in Nix), and the count ignores:
 
-- Strings, including multi-line ones: backtick strings (Go raw strings, JS template literals), C# verbatim (`@"..."`) and raw (`"""`) strings, Java text blocks, Rust raw strings (`r"..."`, `r#"..."#`), HCL heredocs (`<<EOT`, `<<-EOT`) and Nix indented strings (two single quotes).
+- Strings, including multi-line ones: backtick strings (Go raw strings, JS template literals), C# verbatim (`@"..."`) and raw (`"""`) strings, Java text blocks, Rust raw strings (`r"..."`, `r#"..."#`), HCL heredocs (`<<EOT`, `<<-EOT`), PHP heredocs and nowdocs (`<<<EOT`, `<<<'EOT'`, with an indented closing marker allowed) and Nix indented strings (two single quotes). In a Java text block a backslash escapes the next character, so an escaped `\"""` does not end the block.
 - Rust char literals, lifetimes and loop labels.
-- Comments: `//` and `/* */` (nested in Rust), and `#` in HCL and Nix. Nix has no `//` comment, because `//` is its update operator.
+- Comments: `//` and `/* */` (nested in Rust), and `#` in PHP, HCL and Nix (in PHP, `#[` starts an attribute and is not a comment). Nix has no `//` comment, because `//` is its update operator.
 
-Known gaps: PHP heredoc and nowdoc strings, a Java text block that contains an escaped `"""`, a JS regular expression with an unescaped `/*`, and a block comment that opens outside any block. For a block like that, check the range with `show` first and fall back to `-line`.
+Known gaps: a JS regular expression with an unescaped `/*`, and a block comment that opens outside any block. For a block like that, check the range with `show` first and fall back to `-line`.
 
 ## Real-World Examples
 

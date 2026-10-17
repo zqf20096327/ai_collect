@@ -50,63 +50,6 @@
 - 帮我自动填写这个表单
 - 帮我在 Twitter 上发一条推文
 - 帮我截图当前页面
-- 帮我在这个富文本编辑器里写一段评论并提交
-- 帮我用 iPhone 14 的尺寸截一张移动端效果图
-
-### 两大新特性（v1.1.0）
-
-**1. 原生键盘输入管线**：通过 CDP 发送可信的底层输入事件，让页面把它当成真人敲键盘。可以往 Slate / ProseMirror / Medium / Notion 这类复杂富文本编辑器里真实输入文字，也能发送 Enter、Tab、Backspace、Escape 等特殊按键。
-
-```bash
-tt-bridge focus "div[contenteditable='true']"   # 让目标元素取得原生焦点
-tt-bridge type "这是一段评论内容。"              # 注入可信文本（触发真实 input 事件）
-tt-bridge key Enter                              # 发送特殊按键
-```
-
-**2. 移动端与多设备视口仿真**：内置 8 款设备预设，也可以自定义宽高、DPR、touch 与 User-Agent，用于响应式测试和移动端截图。
-
-```bash
-tt-bridge emulate iphone14                       # 套用设备预设
-tt-bridge emulate 390 844 --dpr 3 --mobile       # 自定义视口
-tt-bridge emulate reset                          # 恢复桌面默认
-tt-bridge screenshot mobile.png --device iphone14   # 单次仿真截图（截完自动 reset）
-```
-
-内置预设：`iphone14`、`iphone14pro`、`iphone14promax`、`iphonese`、`ipad`、`ipadpro`、`pixel7`、`galaxys23`。
-
-### 多窗口与多 Profile 切换（v1.4.0 引入）
-
-在实际工作流中，我们常常会开启多个 Chrome 窗口或在多个 Profile 之间切换（如个人、工作、海外账号）。v1.4.0 引入了跨 Profile / 跨窗口的全局感知、秒级切换与热重载能力：
-
-1. **窗口感知（Window Awareness）**：
-   - `tt-bridge window list`：跨 Profile 全局列出所有 Chrome 窗口（显示 IDX、实例名、Profile 显示名、窗口 ID、焦点状态、窗口状态、标签数、活动标签），`→` 指示当前目标窗口，实例名后 `*` 标识 owner 实例。
-   - `tt-bridge window status`：查看当前目标窗口的详细信息。
-
-2. **Profile 感知（Profile Awareness）**：
-   - `tt-bridge profile list`：列出本机所有 Chrome Profile 目录、显示名、脱敏邮箱、对应实例名、在线状态与窗口数。
-   - **显示名来源**：Chrome 扩展自身在沙箱中无法获取 Profile 显示名。扩展连接时上报 `email` 与 `gaia_id`，由 daemon 直接读取宿主 Chrome 的 `Local State`（`profile.info_cache`）自动映射出显示名；映射不到保持空白/unknown，绝不盲目猜测。
-
-3. **目标窗口切换（Window Shift）**：
-   - `tt-bridge window use <index|label:windowId>`：秒级切换接管目标（支持跨 Profile），**默认不抢焦点**，静默完成切换不打扰人类工作。
-   - `tt-bridge window focus <index|label:windowId>` 或加上 `--focus`：切换并请求置顶窗口；v1.4.1 起 macOS 上由 daemon 调系统级 activate 真正把 Chrome 拉到最前，JSON 响应含 `osActivated` 字段。
-   - **越界保护**：输入不存在的序号会给出明确的合法范围提示（如 `Window index 99 out of range (valid range: 0..2)`）。
-
-4. **扩展一键热重载（Hot Reload）**：
-   - `tt-bridge reload [--all|--instance <label>]`：扩展自我热重载，代码升级后无需去各个 Profile 的 `chrome://extensions` 页面逐个手动点刷新。
-
-
-### v1.4.1 修复
-
-1. **重连自愈（P0）**：daemon 重启后扩展自动恢复连接，无需人工点开插件（service worker 冷启动后顶层 alarm/手势监听先初始化再判断连接状态）。
-2. **保活心跳**：连接期间每 0.5 分钟（Chrome 强制最小 30 秒）ping/pong，浏览器静置也不会被 MV3 的 30 秒空闲回收踢下线（实测静置 60s 仍在线）。
-3. **macOS 真置顶**：`tt-bridge window focus` / `window use --focus` 由 daemon 调系统级 activate 真正把 Chrome 拉到最前，JSON 响应含 `osActivated` 字段。
-4. **实例身份**：扩展上报稳定 `profileId`，两个 Profile 即使实例名相同也不会互相踢下线；同名时内部 key 自动去重。
-
-### v1.4.2 加固
-
-1. **最小化窗口截图拦截**：目标窗口最小化时 `screenshot` 直接报错（避免 CDP 30s 卡死或黑屏），并提示用 `--restore`；`tt-bridge screenshot --restore`（仅 human 模式）先把窗口恢复为 normal 再截图。
-2. **tab new --mute**：`tt-bridge tab new <url> --mute` 新建 tab 并静音（human 与 workspace 模式均可用），JSON 输出含 `muted` 字段；默认不静音。
-3. **cookies 默认脱敏**：新增 `tt-bridge cookies [--domain <d>] [--url <u>]` 命令，value 默认掩码（前 6 字符 + `***`，空值保持空，≤6 字符只显示 `***`），JSON 每项带 `masked` 字段；`--show-values` 才打印明文（明文是真实会话凭据，严禁贴进日志或模型上下文）。
 
 ---
 
@@ -179,7 +122,7 @@ Mac/Linux：
 
 ```bash
 # 下载 CLI zip 到下载文件夹
-curl -L -o "[下载目录]/tt-bridge-cli.zip" https://github.com/mymark21/tt-bridge/releases/download/v1.1.0/tt-bridge-cli.zip
+curl -L -o "[下载目录]/tt-bridge-cli.zip" https://github.com/mymark21/tt-bridge/releases/download/v1.0.6/tt-bridge-cli.zip
 
 cd "[下载目录]"
 rm -rf tt-bridge-cli
@@ -193,7 +136,7 @@ npm install -g .
 Windows PowerShell：
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/mymark21/tt-bridge/releases/download/v1.1.0/tt-bridge-cli.zip" -OutFile "$env:USERPROFILE\Downloads\tt-bridge-cli.zip"
+Invoke-WebRequest -Uri "https://github.com/mymark21/tt-bridge/releases/download/v1.0.6/tt-bridge-cli.zip" -OutFile "$env:USERPROFILE\Downloads\tt-bridge-cli.zip"
 cd "$env:USERPROFILE\Downloads"
 Remove-Item .\tt-bridge-cli -Recurse -Force -ErrorAction SilentlyContinue
 Expand-Archive .\tt-bridge-cli.zip . -Force
@@ -220,7 +163,7 @@ Mac/Linux：
 
 ```bash
 # 下载扩展 zip 到下载文件夹
-curl -L -o "[下载目录]/tt-bridge-extension.zip" https://github.com/mymark21/tt-bridge/releases/download/v1.1.0/tt-bridge-extension.zip
+curl -L -o "[下载目录]/tt-bridge-extension.zip" https://github.com/mymark21/tt-bridge/releases/download/v1.0.6/tt-bridge-extension.zip
 
 # 在下载文件夹里解压
 cd "[下载目录]"
@@ -233,7 +176,7 @@ unzip -o tt-bridge-extension.zip
 Windows PowerShell：
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/mymark21/tt-bridge/releases/download/v1.1.0/tt-bridge-extension.zip" -OutFile "$env:USERPROFILE\Downloads\tt-bridge-extension.zip"
+Invoke-WebRequest -Uri "https://github.com/mymark21/tt-bridge/releases/download/v1.0.6/tt-bridge-extension.zip" -OutFile "$env:USERPROFILE\Downloads\tt-bridge-extension.zip"
 cd "$env:USERPROFILE\Downloads"
 Remove-Item .\tt-bridge-chrome-extension -Recurse -Force -ErrorAction SilentlyContinue
 Expand-Archive .\tt-bridge-extension.zip . -Force
@@ -329,37 +272,10 @@ tt-bridge eval "JSON.stringify({url: location.href, text: document.body.innerTex
 tt-bridge click "button.submit"
 tt-bridge eval "document.querySelector('#search').value = 'hello'"
 
-# 原生键盘输入管线：往富文本编辑器里真实输入
-tt-bridge focus "div[contenteditable='true']"    # 让目标元素取得原生焦点
-tt-bridge type "这是一段评论内容。"               # 注入可信文本（触发真实 input 事件）
-tt-bridge key Enter                               # 发送特殊按键（Enter/Tab/Backspace/Escape）
-
-# 移动端与多设备视口仿真
-tt-bridge emulate iphone14                        # 套用内置设备预设
-tt-bridge emulate 390 844 --dpr 3 --mobile        # 自定义宽高、DPR、mobile
-tt-bridge emulate reset                           # 恢复桌面默认视口与 UA
-
-# 截图（可用 --device / --viewport 做单次仿真截图，截完自动 reset）
+# 截图
 tt-bridge screenshot /tmp/page.png --full-page
-tt-bridge screenshot /tmp/mobile.png --device iphone14
-tt-bridge screenshot /tmp/wide.png --viewport 1280x720
-tt-bridge screenshot /tmp/page.png --restore      # 目标窗口最小化时先恢复 normal 再截图（仅 human 模式）
 
-# 多窗口与多 Profile 切换（v1.4.0 引入）
-tt-bridge window list                             # 列出跨 Profile 的所有窗口（IDX / 实例 / Profile / 标签 / 活动页）
-tt-bridge window use 0                            # 切换目标窗口（默认不抢焦点）
-tt-bridge window use 1 --focus                    # 切换并请求置顶目标窗口
-tt-bridge window focus 1                          # 等价于 use --focus
-tt-bridge window status                           # 查看当前目标窗口详情
-tt-bridge profile list                            # 列出本机 Chrome 所有 Profile 及连接状态
-tt-bridge reload --all                            # 热重载所有已连接 Profile 的扩展
-tt-bridge reload --instance <label>               # 热重载指定 Profile 的扩展
-
-# Cookie 查看（value 默认掩码，--show-values 打印明文=真实会话凭据，别贴进日志/模型上下文）
-tt-bridge cookies --domain localhost
-tt-bridge cookies --domain localhost --show-values --json
-
-# 默认 workspace 为 human，会操作用户当前可见的普通 Chrome 窗口。
+# 默认会操作用户当前可见的普通 Chrome 窗口。
 # 如需隔离自动化任务，显式指定 workspace：
 tt-bridge open "https://example.com" --workspace mytask
 tt-bridge close-window --workspace mytask
@@ -367,22 +283,6 @@ tt-bridge close-window --workspace mytask
 # 兼容性别名；默认已经是 human：
 tt-bridge eval "document.title" --human
 ```
-
-
-### 内置设备预设
-
-| 预设名 | 规格 |
-|--------|------|
-| `iphone14` | 390×844，DPR 3 |
-| `iphone14pro` | 393×852，DPR 3 |
-| `iphone14promax` | 430×932，DPR 3 |
-| `iphonese` | 375×667，DPR 2 |
-| `ipad` | 820×1180，DPR 2 |
-| `ipadpro` | 1024×1366，DPR 2 |
-| `pixel7` | 412×915，DPR 2.625 |
-| `galaxys23` | 360×780，DPR 3 |
-
-移动端预设默认开启 `mobile` 与 `touch`，并附带对应的移动端 User-Agent。`emulate` 支持 `--dpr <n>`、`--mobile`、`--touch`、`--user-agent <str>` 覆盖预设值；显式尺寸与预设参数冲突时，以显式参数为准。预设名不区分大小写与分隔符，`iPhone 14 Pro`、`iphone-14-pro`、`iphone14pro` 均可匹配。
 ````
 
 <!-- END AGENT INSTRUCTIONS -->

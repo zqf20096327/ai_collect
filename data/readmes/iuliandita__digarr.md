@@ -82,7 +82,7 @@ For Compose, backend selection, and updates, follow the [Docker guide](deploy/do
 
 ## Your first recommendations
 
-1. Sign in, then choose Lidarr, Emby, or discovery-only in the setup wizard and configure your AI provider. Requested settings, connections, and targets save together; a failed save leaves setup retryable.
+1. Sign in, then choose Lidarr, Emby, or discovery-only in the setup wizard and configure your AI provider, or skip it and rely on the listening sources you connect later. Requested settings, connections, and targets save together; a failed save leaves setup retryable.
 2. Connect a listening source in Settings. Add library sources and targets when needed.
 3. Run a scan from Dashboard or Discover.
 4. Preview, approve, or reject suggestions. Adjust genre priorities in **Settings > Recommendations** if needed. Personal saves work for non-admins and global metadata controls are admin-only. Use Release Radar or Library Gap-Fill for albums. The net-new album toggle defaults to off and persists when saved.
@@ -119,13 +119,15 @@ Selecting a backup in Settings > Administration opens a replacement confirmation
 | Synology NAS | [`docs/guides/synology.md`](docs/guides/synology.md) | DSM 7.1+ (Docker/Container Manager). SSH or GUI. |
 | Docker Desktop | [`docs/guides/docker-desktop.md`](docs/guides/docker-desktop.md) | macOS and Windows (WSL 2 or PowerShell). |
 
+Any PostgreSQL you supply yourself must be version 15 or newer: migrations create `NULLS NOT DISTINCT` unique indexes. The bundled stacks use PostgreSQL 17.
+
 Check [image signatures and SBOM coverage](deploy/docker/README.md#verifying-image-signatures) before running a release.
 
 ## Documentation
 
 - [Configuration and operations](docs/OPERATIONS.md)
 - [Authentication, SSO, and user management](docs/AUTHENTICATION.md)
-- [API reference](docs/API.md) and [architecture](docs/ARCHITECTURE.md)
+- [API reference](docs/API.md), [architecture](docs/ARCHITECTURE.md), and [name normalization](docs/NORMALIZATION.md)
 - [Recommendation quality evaluation](docs/RECOMMENDATION-QUALITY.md)
 - [Switching database backends](docs/guides/switching-backends.md) and [encryption-key rotation](docs/runbooks/encryption-key-rotation.md)
 - [Changelog](CHANGELOG.md), [roadmap](docs/ROADMAP.md), and [screenshots](docs/SCREENSHOTS.md)

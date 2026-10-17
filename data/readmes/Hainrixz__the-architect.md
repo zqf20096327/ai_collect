@@ -73,7 +73,7 @@ There are two entry points, and the difference is real. Choose before you start.
 | | [`/architect-quick`](commands/architect-quick.md) | [`/architect`](commands/architect.md) |
 |---|---|---|
 | **Questions** | 3, in one message | 12–16, across 6–7 messages |
-| **How long, end to end** | ~10 minutes | ~40–60 minutes |
+| **How long, end to end** | ~15–25 minutes | ~40–60 minutes |
 | **Use it when** | You already know the stack, or the build is small and you mostly want the plan written down | You intend to hand the result to an autonomous builder and walk away |
 | **What you give up** | Smart defaults for everything you weren't asked | Nothing — but it costs you an hour |
 | **What you keep** | Both gates, EARS acceptance criteria, verify commands, the confirmation gate | Same |
@@ -89,13 +89,13 @@ Four phases. You talk, it designs, it generates.
 | Phase | What happens | What you do |
 |---|---|---|
 | **1. Discovery** | 2–3 questions. Classifies your project into one of **14 shapes**, and asks first whether this is new code or existing code. | Answer |
-| **2. Deep dive** | Shape-specific questions. Picks the runtime track and the capabilities. The `stack-researcher` subagent verifies every version against the live registries. | Answer 3–5 |
+| **2. Deep dive** | Shape-specific questions. Picks the runtime track and the capabilities. | Answer 3–5 |
 | **3. Architecture** | One dense message: stack table, how it fits together, what v1 includes and what it explicitly excludes, rough build phases. **Both gates run here.** | Confirm or adjust |
-| **4. Generate** | Picks bundle or single file from the step count and says which. Then: `blueprint-writer` composes, `blueprint-validator` audits until it returns PASS, files are written to `./blueprints/`. | Wait |
+| **4. Generate** | Picks bundle or single file from the step count and says which. Then: `stack-researcher` verifies every version against the live registries, `blueprint-writer` composes, `blueprint-validator` audits until it returns PASS, files are written to `./blueprints/`. | Wait |
 
-### How long Phase 4 takes: 20–30 minutes, silently
+### How long Phase 4 takes: 25–35 minutes, silently
 
-This is the part nobody warns you about, so here it is up front. Once you confirm the architecture, generation runs **roughly 20–30 minutes for a bundle, 10–15 for a single file**, and produces no output until it is finished. That time is real work — a live registry call for every version pin, a full composition pass, and at least one validator round trip — but from your side it looks like nothing happening.
+This is the part nobody warns you about, so here it is up front. Once you confirm the architecture, generation runs **roughly 25–35 minutes for a bundle, 12–20 for a single file**, and produces no output until it is finished. That time is real work — a live registry call for every version pin, a full composition pass, and at least one validator round trip — but from your side it looks like nothing happening.
 
 The Architect is required to tell you the estimate before it starts. If it doesn't, that's a bug. Go make coffee; what comes back is a file path and the first command to run.
 
@@ -120,43 +120,38 @@ A blueprint with **20 fixed sections**. Section 9, the build order, is what the 
 Here's one real step, abridged from the worked example in [`templates/blueprint-template.md`](templates/blueprint-template.md):
 
 ````markdown
-#### Step 7 — Stripe checkout and subscription webhook
+#### Step 7 — Subscription webhook handler
 
 **Do**
-Wire paid signup end to end. Create:
-- `src/lib/stripe.ts` — the SDK client, reading `STRIPE_SECRET_KEY`
-- `src/app/api/checkout/route.ts` — creates a Checkout Session for the signed-in user
+Receive Stripe's subscription events and keep `subscriptions` in sync (the checkout route shipped in step 6). Create:
 - `src/app/api/webhooks/stripe/route.ts` — signature-verified receiver, raw-body parsing
 - `src/lib/billing/sync-subscription.ts` — the single writer to `subscriptions`
-- migration `007_subscriptions.sql` — `subscriptions` + `webhook_events` (dedupe ledger)
+- the migration `pnpm db:generate` emits for `subscriptions` + `webhook_events` (dedupe ledger)
+- `test/fixtures/stripe-events.json` and `route.test.ts` — recorded events, replayed and signed in-test
 
 **Done when**
-- [ ] WHEN a POST arrives at `/api/webhooks/stripe` with an invalid `Stripe-Signature` header THE SYSTEM SHALL respond `400` and write zero rows to `subscriptions`.
-- [ ] WHEN `checkout.session.completed` is received for a known customer THE SYSTEM SHALL upsert exactly one `subscriptions` row with `status='active'` and a non-null `current_period_end`.
-- [ ] WHEN the same Stripe event `id` is delivered twice THE SYSTEM SHALL return `200` both times and leave the `subscriptions` row count unchanged.
-- [ ] WHEN `STRIPE_WEBHOOK_SECRET` is unset at boot THE SYSTEM SHALL fail startup with a named error, not serve traffic that silently accepts unsigned payloads.
+- [ ] WHEN a request reaches the handler with an invalid `Stripe-Signature` header THE SYSTEM SHALL respond `400` and write zero rows to `subscriptions`.
+- [ ] WHEN the recorded `checkout.session.completed` fixture is replayed THE SYSTEM SHALL upsert exactly one `subscriptions` row with `status='active'` and a non-null `current_period_end`.
+- [ ] WHEN the same event `id` is replayed a second time THE SYSTEM SHALL respond `200` both times and leave the `subscriptions` row count unchanged.
+- [ ] WHEN an unhandled event type is replayed THE SYSTEM SHALL respond `200` and log at `info` — never a 5xx, which makes Stripe retry for days.
 
 **Verify**
 ```bash
-pnpm test src/app/api/webhooks/stripe          # expect: 6 passed, 0 skipped
-pnpm typecheck                                  # expect: exit 0
-
-stripe listen --forward-to localhost:3000/api/webhooks/stripe &
-stripe trigger checkout.session.completed
-psql "$DATABASE_URL" -c \
-  "select status, count(*) from subscriptions group by status;"
-# expect: active | 1
-
-stripe trigger checkout.session.completed       # same fixture, replayed
-psql "$DATABASE_URL" -c "select count(*) from subscriptions;"
-# expect: 1  (idempotent — not 2)
+pnpm db:migrate                                   # expect: exit 0
+pnpm test src/app/api/webhooks/stripe             # expect: exit 0 — the assertions live in the test
+status=0; grep -rnE '\.(skip|only)\(' src/app/api/webhooks/stripe || status=$?
+test "$status" -eq 1                              # 1 = no skipped/focused test · 2 = grep error, which now fails
+pnpm typecheck                                    # expect: exit 0
 ```
+
+Nothing here leaves the machine. The live `stripe listen` + `stripe trigger` round trip needs an
+account and the network, so it is on the post-build launch checklist, not a build gate.
 
 **Checkpoint**
 ```bash
-git add -A && git commit -m "step 7: stripe checkout + subscription webhook"
-git tag step-07-billing
-# rollback target if step 8 goes wrong: git reset --hard step-07-billing
+git add -A && git commit -m "step 7: subscription webhook handler"
+git tag step-07-webhooks
+# rollback target if step 8 goes wrong: git reset --hard step-07-webhooks
 ```
 ````
 
@@ -390,6 +385,8 @@ Contributions welcome — open an [issue or PR](https://github.com/Hainrixz/the-
 
 Two rules for any PR touching `knowledge/`: **no version number outside `runtime-tracks/`**, and **every build step gets an observable "Done when".**
 
+Before a PR, read [CONTRIBUTING.md](CONTRIBUTING.md). Releases are versioned per [VERSIONING.md](VERSIONING.md) and listed in [CHANGELOG.md](CHANGELOG.md). Found a prompt-injection or a hostile install command? Report it privately — see [SECURITY.md](SECURITY.md).
+
 ---
 
 ## License
@@ -453,7 +450,7 @@ Hay dos puntos de entrada y la diferencia es real. Elige antes de empezar.
 | | [`/architect-quick`](commands/architect-quick.md) | [`/architect`](commands/architect.md) |
 |---|---|---|
 | **Preguntas** | 3, en un solo mensaje | 12–16, en 6–7 mensajes |
-| **Cuánto tarda, de punta a punta** | ~10 minutos | ~40–60 minutos |
+| **Cuánto tarda, de punta a punta** | ~15–25 minutos | ~40–60 minutos |
 | **Úsalo cuando** | Ya sabes qué stack quieres, o el build es chico y solo quieres el plan por escrito | Vas a entregarle el resultado a un constructor autónomo y te vas a ir |
 | **Qué sacrificas** | Defaults inteligentes en todo lo que no te preguntó | Nada — pero te cuesta una hora |
 | **Qué conservas** | Los dos gates, criterios EARS, comandos de verificación, el gate de confirmación | Igual |
@@ -469,13 +466,13 @@ Cuatro fases. Tú hablas, él diseña, él genera.
 | Fase | Qué pasa | Qué haces tú |
 |---|---|---|
 | **1. Descubrimiento** | 2–3 preguntas. Clasifica tu proyecto en uno de los **14 shapes**, y pregunta primero si es código nuevo o código existente. | Respondes |
-| **2. Profundización** | Preguntas específicas del shape. Elige el runtime track y las capabilities. El subagente `stack-researcher` verifica cada versión contra los registros en vivo. | Respondes 3–5 |
+| **2. Profundización** | Preguntas específicas del shape. Elige el runtime track y las capabilities. | Respondes 3–5 |
 | **3. Arquitectura** | Un solo mensaje denso: tabla de stack, cómo encaja todo, qué incluye v1 y qué excluye explícitamente, fases de construcción. **Aquí corren los dos gates.** | Confirmas o ajustas |
-| **4. Generar** | Elige bundle o archivo único según el número de pasos y te dice cuál. Luego: `blueprint-writer` compone, `blueprint-validator` audita hasta dar PASS, los archivos se escriben en `./blueprints/`. | Esperas |
+| **4. Generar** | Elige bundle o archivo único según el número de pasos y te dice cuál. Luego: `stack-researcher` verifica cada versión contra los registros en vivo, `blueprint-writer` compone, `blueprint-validator` audita hasta dar PASS, los archivos se escriben en `./blueprints/`. | Esperas |
 
-### Cuánto tarda la Fase 4: 20–30 minutos, en silencio
+### Cuánto tarda la Fase 4: 25–35 minutos, en silencio
 
-Esta es la parte que nadie te advierte, así que va por delante. Una vez que confirmas la arquitectura, la generación corre **unos 20–30 minutos para un bundle, 10–15 para un archivo único**, y no produce nada hasta terminar. Ese tiempo es trabajo real — una llamada en vivo al registry por cada versión, una pasada completa de composición, y al menos una vuelta del validador — pero desde tu lado se ve como si no pasara nada.
+Esta es la parte que nadie te advierte, así que va por delante. Una vez que confirmas la arquitectura, la generación corre **unos 25–35 minutos para un bundle, 12–20 para un archivo único**, y no produce nada hasta terminar. Ese tiempo es trabajo real — una llamada en vivo al registry por cada versión, una pasada completa de composición, y al menos una vuelta del validador — pero desde tu lado se ve como si no pasara nada.
 
 The Architect está obligado a darte el estimado antes de empezar. Si no lo hace, es un bug. Ve por un café; lo que regresa es una ruta de archivo y el primer comando que hay que correr.
 
@@ -500,43 +497,38 @@ Un blueprint con **20 secciones fijas**. La Sección 9, el orden de construcció
 Aquí un paso real, abreviado del ejemplo trabajado en [`templates/blueprint-template.md`](templates/blueprint-template.md):
 
 ````markdown
-#### Step 7 — Stripe checkout and subscription webhook
+#### Step 7 — Subscription webhook handler
 
 **Do**
-Wire paid signup end to end. Create:
-- `src/lib/stripe.ts` — the SDK client, reading `STRIPE_SECRET_KEY`
-- `src/app/api/checkout/route.ts` — creates a Checkout Session for the signed-in user
+Receive Stripe's subscription events and keep `subscriptions` in sync (the checkout route shipped in step 6). Create:
 - `src/app/api/webhooks/stripe/route.ts` — signature-verified receiver, raw-body parsing
 - `src/lib/billing/sync-subscription.ts` — the single writer to `subscriptions`
-- migration `007_subscriptions.sql` — `subscriptions` + `webhook_events` (dedupe ledger)
+- the migration `pnpm db:generate` emits for `subscriptions` + `webhook_events` (dedupe ledger)
+- `test/fixtures/stripe-events.json` and `route.test.ts` — recorded events, replayed and signed in-test
 
 **Done when**
-- [ ] WHEN a POST arrives at `/api/webhooks/stripe` with an invalid `Stripe-Signature` header THE SYSTEM SHALL respond `400` and write zero rows to `subscriptions`.
-- [ ] WHEN `checkout.session.completed` is received for a known customer THE SYSTEM SHALL upsert exactly one `subscriptions` row with `status='active'` and a non-null `current_period_end`.
-- [ ] WHEN the same Stripe event `id` is delivered twice THE SYSTEM SHALL return `200` both times and leave the `subscriptions` row count unchanged.
-- [ ] WHEN `STRIPE_WEBHOOK_SECRET` is unset at boot THE SYSTEM SHALL fail startup with a named error, not serve traffic that silently accepts unsigned payloads.
+- [ ] WHEN a request reaches the handler with an invalid `Stripe-Signature` header THE SYSTEM SHALL respond `400` and write zero rows to `subscriptions`.
+- [ ] WHEN the recorded `checkout.session.completed` fixture is replayed THE SYSTEM SHALL upsert exactly one `subscriptions` row with `status='active'` and a non-null `current_period_end`.
+- [ ] WHEN the same event `id` is replayed a second time THE SYSTEM SHALL respond `200` both times and leave the `subscriptions` row count unchanged.
+- [ ] WHEN an unhandled event type is replayed THE SYSTEM SHALL respond `200` and log at `info` — never a 5xx, which makes Stripe retry for days.
 
 **Verify**
 ```bash
-pnpm test src/app/api/webhooks/stripe          # expect: 6 passed, 0 skipped
-pnpm typecheck                                  # expect: exit 0
-
-stripe listen --forward-to localhost:3000/api/webhooks/stripe &
-stripe trigger checkout.session.completed
-psql "$DATABASE_URL" -c \
-  "select status, count(*) from subscriptions group by status;"
-# expect: active | 1
-
-stripe trigger checkout.session.completed       # same fixture, replayed
-psql "$DATABASE_URL" -c "select count(*) from subscriptions;"
-# expect: 1  (idempotent — not 2)
+pnpm db:migrate                                   # expect: exit 0
+pnpm test src/app/api/webhooks/stripe             # expect: exit 0 — the assertions live in the test
+status=0; grep -rnE '\.(skip|only)\(' src/app/api/webhooks/stripe || status=$?
+test "$status" -eq 1                              # 1 = no skipped/focused test · 2 = grep error, which now fails
+pnpm typecheck                                    # expect: exit 0
 ```
+
+Nothing here leaves the machine. The live `stripe listen` + `stripe trigger` round trip needs an
+account and the network, so it is on the post-build launch checklist, not a build gate.
 
 **Checkpoint**
 ```bash
-git add -A && git commit -m "step 7: stripe checkout + subscription webhook"
-git tag step-07-billing
-# rollback target if step 8 goes wrong: git reset --hard step-07-billing
+git add -A && git commit -m "step 7: subscription webhook handler"
+git tag step-07-webhooks
+# rollback target if step 8 goes wrong: git reset --hard step-07-webhooks
 ```
 ````
 
@@ -769,6 +761,8 @@ Las contribuciones son bienvenidas — abre un [issue o PR](https://github.com/H
 - **Traducciones** — la entrevista corre en el idioma del usuario; más cobertura ayuda
 
 Dos reglas para cualquier PR que toque `knowledge/`: **ningún número de versión fuera de `runtime-tracks/`**, y **cada paso de construcción lleva un "Done when" observable.**
+
+Antes de un PR, lee [CONTRIBUTING.md](CONTRIBUTING.md). Las versiones siguen [VERSIONING.md](VERSIONING.md) y se listan en [CHANGELOG.md](CHANGELOG.md). ¿Encontraste un prompt injection o un comando de instalación hostil? Repórtalo en privado — ver [SECURITY.md](SECURITY.md).
 
 ---
 

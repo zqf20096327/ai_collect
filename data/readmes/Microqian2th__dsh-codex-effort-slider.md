@@ -7,11 +7,27 @@
 **一档一色、越往右越"通电"**：填充从蓝渐变到紫罗兰，高档位亮起紫色星云与星尘粒子，
 连官方那一行的数值文字也跟着变色（`Off` 档保持官方灰）。
 
+## 怎么用
+
+1. **拖**：在模型菜单里那条滑条上按住拖动 —— 跟手连续运动，**拖到哪一档就即时变成哪一档**
+   （滑过档位边界就把官方档位切过去，不用等松手）。
+2. **右键**：在**滑条上点右键**打开设置面板 👇
+3. 设置**即时生效并记住**；出问题时点一下「复制诊断」把逐帧记录导出。
+
+<img src="https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/screenshots/context-menu.png" width="330" alt="右键滑条打开设置面板：动画效果（快速/简洁/完整，三档都不受系统减少动态影响）、已到达档位的刻度点（亮白/同色/隐藏）、复制诊断 / 恢复默认 / 关闭">
+
+| 设置项 | 可选 | 说明 |
+|---|---|---|
+| **动画效果** | **快速动画** / 简洁动画 / 完整动画 | 三种**都不受系统「减少动态效果」影响**（否则系统一开就退化成"瞬跳"）。**快速**复刻 Codex 桌面版手感 —— 旋钮**不跟手**、停在档位格上，指针越过 1/3 档距才切下一格（后退要退回 2/3，带滞回），**约 70~85ms 吸附到位且无回弹**；**简洁**更干脆；**完整**最跟手、惯性更长 |
+| **已到达档位的刻度点** | 亮白显示 / 与未到达同色 / 隐藏 | 控制轨道上那些定位小点的可见性 |
+| | | **复制诊断**（逐帧记录，反馈问题时用）/ **恢复默认** / **关闭** |
+
 ## 装好之后长这样（真机截图）
 
-收起状态：档位就在输入框里那枚模型席按钮上，**点开之前**也按档位着色。
+收起态：档位就在输入框里那枚模型席按钮上，**点开之前**也按档位着色。
 
 ![收起态：输入框里的档位显示](https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/screenshots/shot-01.png)
+
 点开模型菜单后（左列浅色主题 / 右列深色主题，四档从上到下）：
 
 | 档位 | 浅色主题 | 深色主题 |
@@ -22,24 +38,9 @@
 | **Off** | ![浅色 Off](https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/screenshots/shot-05.png) | ![深色 Off](https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/screenshots/shot-09.png) |
 
 对比度都算过（最高档的数值文字：白底 **4.23:1**、深色底 **4.02:1**）。
-**不用安装也能先玩**：浏览器打开 [`preview/panel.html`](https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/panel.html)，可拖动、切浅深色、切 4/2/6 档模型
+**不用安装也能先玩**：**[▶ 在线试玩](https://htmlpreview.github.io/?https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/panel.html)** —— 或者下载仓库后**双击本地** `preview/panel.html`。可拖动、切浅深色、切 4/2/6 档模型，动画三档（快速 / 简洁 / 完整）都能试。
+> ⚠️ 直接点 `raw.githubusercontent.com` 的链接只会看到**源码** ✗ —— 它以文本形式返回文件；要看效果请用上面的「在线试玩」或本地打开。
 （另有脚本生成的实现示意图：[`preview/seat-color.png`](https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/seat-color.png)、[`preview/distribution.png`](https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/distribution.png)）。
-
-## 怎么用
-
-1. **拖**：在模型菜单里那条滑条上按住拖动 —— 跟手连续运动，**拖到哪一档就即时变成哪一档**
-   （滑过档位边界就把官方档位切过去，不用等松手）。
-2. **右键**：在**滑条上点右键**打开设置面板 👇
-3. 设置**即时生效并记住**；出问题时点一下「复制诊断」把逐帧记录导出。
-<img src="https://raw.githubusercontent.com/Microqian2th/dsh-codex-effort-slider/main/preview/screenshots/context-menu.png" width="330" alt="右键滑条打开设置面板：动画（简洁/完整）、已到达档位的刻度点（亮白/同色/隐藏）、复制诊断 / 恢复默认 / 关闭">
-
-| 设置项 | 可选 | 说明 |
-|---|---|---|
-| **动画** | 简洁动画 / 完整动画 | 两种**都不受系统「减少动态效果」影响**（否则系统一开就退化成"瞬跳"）。完整动画更跟手、惯性更长；简洁动画更干脆 |
-| **已到达档位的刻度点** | 亮白显示 / 与未到达同色 / 隐藏 | 控制轨道上那些定位小点的可见性 |
-| | | **复制诊断**（逐帧记录，反馈问题时用）/ **恢复默认** / **关闭** |
-
-
 
 它不新增入口：**直接改造官方模型菜单里的「推理等级」那一行** ——
 那一行被加高上下内距、允许折行，滑条作为第二行铺满整行宽度；拖到最高档时整条轨道亮起紫色能量层。

@@ -10,7 +10,7 @@
     面向 Windows 平台的 AI 预编译 Python 轮子合集
     <br />
     <br />
-    <strong>⏱️ 最后自动更新（UTC）：<!-- START_LAST_UPDATED -->2026-10-16T05:17:10.133278+00:00<!-- END_LAST_UPDATED --></strong>
+    <strong>⏱️ 最后自动更新（UTC）：<!-- START_LAST_UPDATED -->2026-10-17T05:11:33.452688+00:00<!-- END_LAST_UPDATED --></strong>
   </p>
 </div>
 
@@ -731,4 +731,35 @@ SageAttention 的升级版本，引入更先进的量化策略和优化算法，
 | `0.1.0.post4` | `2.9.0` | `13.0` | woct0rdho | [Link](https://github.com/woct0rdho/SpargeAttn/releases/download/v0.1.0-windows.post4/spas_sage_attn-0.1.0%2Bcu130torch2.9.0andhigher.post4-cp39-abi3-win_amd64.whl) |
 <!-- END_SPARGEATTN_TABLE -->
 </details>
-<p align="right">(<a href="#readme-t
+<p align="right">(<a href="#readme-top">返回顶部</a>)</p>
+<hr />
+
+<a id="️-nunchaku"></a>
+### ⚙️ Nunchaku
+MIT 开发的 Transformer 推理加速库，专注于提升解码速度和吞吐量。
+*   **官方仓库**： [mit-han-lab/nunchaku](https://github.com/mit-han-lab/nunchaku/releases)
+*   **预编译来源**： <!-- START_NUNCHAKU_SOURCES -->[nunchaku-tech](https://github.com/nunchaku-tech/nunchaku/releases)、[Wildminder](https://huggingface.co/Wildminder/AI-windows-whl/tree/main)<!-- END_NUNCHAKU_SOURCES -->
+
+<details>
+  <summary>展开已收录的 Nunchaku</summary>
+
+<!-- START_NUNCHAKU_TABLE -->
+| Package Version | Python Ver | PyTorch Ver | Source | Download Link |
+|:---:|:---:|:---:|:---:|:---:|
+| `0.2.0` | `3.10` | `2.5` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.5-cp310-cp310-win_amd64.whl) |
+| `0.2.0` | `3.10` | `2.6` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.6-cp310-cp310-win_amd64.whl) |
+| `0.2.0` | `3.10` | `2.7` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.7-cp310-cp310-win_amd64.whl) |
+| `0.2.0` | `3.10` | `2.8` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.8-cp310-cp310-win_amd64.whl) |
+| `0.2.0` | `3.11` | `2.5` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.5-cp311-cp311-win_amd64.whl) |
+| `0.2.0` | `3.11` | `2.6` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.6-cp311-cp311-win_amd64.whl) |
+| `0.2.0` | `3.11` | `2.7` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.7-cp311-cp311-win_amd64.whl) |
+| `0.2.0` | `3.11` | `2.8` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.8-cp311-cp311-win_amd64.whl) |
+| `0.2.0` | `3.12` | `2.5` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.5-cp312-cp312-win_amd64.whl) |
+| `0.2.0` | `3.12` | `2.6` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.6-cp312-cp312-win_amd64.whl) |
+| `0.2.0` | `3.12` | `2.7` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.7-cp312-cp312-win_amd64.whl) |
+| `0.2.0` | `3.12` | `2.8` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.8-cp312-cp312-win_amd64.whl) |
+| `0.2.0` | `3.13` | `2.6` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.6-cp313-cp313-win_amd64.whl) |
+| `0.2.0` | `3.13` | `2.7` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.7-cp313-cp313-win_amd64.whl) |
+| `0.2.0` | `3.13` | `2.8` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.2.0/nunchaku-0.2.0%2Btorch2.8-cp313-cp313-win_amd64.whl) |
+| `0.3.0` | `3.10` | `2.5` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.3.0/nunchaku-0.3.0%2Btorch2.5-cp310-cp310-win_amd64.whl) |
+| `0.3.0` | `3.10` | `2.6` | nunchaku-tech | [Link](https://github.com/nunchux-ai/nunchaku/releases/download/v0.3.0/nu

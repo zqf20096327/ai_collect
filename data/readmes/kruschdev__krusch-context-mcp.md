@@ -8,6 +8,7 @@
 [![Storage: SQLite-First](https://img.shields.io/badge/Storage-SQLite--First%20(zero--Docker)-lightgrey.svg)](docs/ARCHITECTURE.md)
 [![Article: What Makes It Special](https://img.shields.io/badge/Article-What%20Makes%20It%20Special-cyan.svg)](https://krusch.dev/articles/what-makes-krusch-context-mcp-special.html)
 [![Docs: What Makes It Special](https://img.shields.io/badge/Docs-What%20Makes%20It%20Special-purple.svg)](docs/WHAT_MAKES_IT_SPECIAL.md)
+[![M8ven Score](https://m8ven.ai/badge/mcp/kruschdev/krusch-context-mcp)](https://m8ven.ai/mcp/kruschdev/krusch-context-mcp?s=readme)
 
 > 📖 **Read the Systems Deep Dive**: Check out the published architecture essay [**Beyond Flat Vector RAG: What Makes krusch-context-mcp Special**](https://krusch.dev/articles/what-makes-krusch-context-mcp-special.html) on krusch.dev, or the local companion guide in [`docs/WHAT_MAKES_IT_SPECIAL.md`](docs/WHAT_MAKES_IT_SPECIAL.md).
 
@@ -94,6 +95,7 @@ To prevent memory hallucination and database pollution:
 2. **Near-Duplicate Detection**: If a proposed memory matches an existing active record ($\ge 0.85$ cosine similarity), the memory is saved with a warning proposing `revise(action: 'supersede', target_id: ...)`. This protects contrasting rules (e.g., "Allow CORS" vs "Do not allow CORS") while flagging twin facts.
 3. **Compulsory Invalidation Reasons**: Calling `revise(action: 'invalidate')` strictly requires a non-empty `reason`.
 4. **Focused Audits**: `nudge` caps findings at 3 with concrete evidence, rejecting `every_turn` triggers to eliminate auditor nagware.
+5. **Span-Grounded Provenance & Drift Self-Healing**: Passing `provenance: { file, locator, quoted_sentence }` to `remember` computes a normalized SHA-256 `anchor_hash` and line range (`start_line..end_line`). On subsequent `retrieve(include_state: true)` calls, the engine verifies the span on disk—automatically healing line numbers when code shifts above it, or flagging `[DRIFTED]` when the underlying code changes.
 
 ---
 

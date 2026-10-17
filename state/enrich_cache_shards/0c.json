@@ -558,5 +558,138 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "vibeinging/dsh-desktop": {
+  "commit_90d": 381,
+  "commit_7d": 15,
+  "rel_ver": "v0.2.0-rc.2.20261010.1",
+  "rel_pub": "2026-10-10",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "z91772524-ai/pojia-next": {
+  "commit_90d": 89,
+  "commit_7d": 6,
+  "rel_ver": "v8.18",
+  "rel_pub": "2026-10-15",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "HTML": 8,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "rllm-team/rllm": {
+  "commit_90d": 21,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "cohere-ai/cohere-python": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "7.1.0",
+  "rel_pub": "2026-08-26",
+  "rel_days": 52,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 49,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Mag1cFall/AIStudio2API": {
+  "commit_90d": 95,
+  "commit_7d": 21,
+  "rel_ver": "v0.2.13",
+  "rel_pub": "2026-10-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Go": 81,
+   "TypeScript": 9,
+   "Vue": 7,
+   "JavaScript": 3,
+   "CSS": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

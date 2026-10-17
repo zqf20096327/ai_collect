@@ -92,7 +92,7 @@ Using npm:
 npm install -g mcp-accessibility-scanner --allow-scripts=re2
 ```
 
-npm 12 does not run dependency install scripts unless you allow them. The scanner depends on [`re2`](https://www.npmjs.com/package/re2), a native module whose install script downloads or builds `re2.node`; without it the server fails to start with `Cannot find module './build/Release/re2.node'`. Pass `--allow-scripts=re2` to `npm install -g` and `npx` (older npm versions accept and ignore the flag), or, when you add the package to a project, run `npm install-scripts approve re2` followed by `npm rebuild re2` (approving does not run the script that was already skipped). To allow it for every global install, run `npm config set allow-scripts=re2 --location=user`.
+npm 12 does not run dependency install scripts unless you allow them. The scanner depends on [`re2`](https://www.npmjs.com/package/re2), a native module whose install script downloads or builds `re2.node`; without it the server fails to start with `Cannot find module './build/Release/re2.node'`. Pass `--allow-scripts=re2` to `npm install -g` and `npx` (older npm versions accept and ignore the flag). For a project dependency on npm 12 or later, run `npm install-scripts approve re2` followed by `npm rebuild re2` (approving does not run the script that was already skipped). On npm 11 and earlier, install scripts run by default; use `npm rebuild re2` to restore a missing binary, provided scripts have not been explicitly disabled. To allow it for every global install on npm 12, run `npm config set allow-scripts=re2 --location=user`.
 
 ### Installation with Docker
 
@@ -493,7 +493,7 @@ At most 50 elements are annotated per scan. The result text always reports how m
 
 The default set is the WCAG and Section 508 tags only, so a default report means "this fails a conformance criterion". Category tags are opt-in for that reason: Axe matches requested tags with OR, so asking for `cat.keyboard` also pulls in best-practice rules such as `region` and `skip-link` that carry both tags. No live conformance rule is lost by leaving them out: the only rules reachable *only* through a `cat.*` tag are `duplicate-id` and `duplicate-id-active`, which Axe marks deprecated because WCAG removed SC 4.1.1. Add `best-practice` (landmark structure, heading order, `tabindex` hygiene) or a `cat.*` tag when you want that broader review.
 
-The same OR semantics apply to `experimental`, with one deliberate exception: five experimental rules -- `css-orientation-lock` (SC 1.3.4), `label-content-name-mismatch` (SC 2.5.3), `p-as-heading`, `table-fake-caption` and `td-has-header` (SC 1.3.1) -- also carry a `wcag*` tag and so run in the default set. In Axe, `experimental` describes how settled the heuristic is, not whether the criterion is real, so these are kept rather than filtered out. Adding the `experimental` tag pulls in the remaining experimental rules, which have no conformance tag of their own.
+The same OR semantics apply to `experimental`, with one deliberate exception: four experimental rules -- `css-orientation-lock` (SC 1.3.4), `p-as-heading`, `table-fake-caption` and `td-has-header` (SC 1.3.1) -- also carry a `wcag*` tag and so run in the default set. In Axe, `experimental` describes how settled the heuristic is, not whether the criterion is real, so these are kept rather than filtered out. Adding the `experimental` tag pulls in the remaining experimental rules, which have no conformance tag of their own. Axe 4.14 no longer marks `label-content-name-mismatch` (SC 2.5.3) as experimental; it still runs by default.
 
 **Scan scoping:**
 `scan_page`, `audit_site`, and `scan_page_matrix` accept `includeSelectors` and `excludeSelectors` to limit what Axe looks at. Use `includeSelectors` to audit one component (`["#checkout-form"]`) and `excludeSelectors` to drop third-party noise that pollutes every report (`["#cookie-banner", "iframe.intercom-frame"]`). Exclusions are applied after inclusions, so you can carve a widget out of an included subtree.
@@ -603,6 +603,9 @@ Inspects the browser's accessibility tree (`page.ariaSnapshot`), accessible name
 - `filename-as-accessible-name`: image alt text that is a file name, e.g. `IMG_1234.jpg`, `DSC00123` (WCAG 1.1.1). Only images are checked: a link or button legitimately named after the file it downloads (`logo.png`) is not a defect.
 - `label-in-name-mismatch`: the accessible name does not contain the visible label, which breaks voice control (WCAG 2.5.3). The visible label of `<input type="submit|button|reset">` is read from its `value`, and a web component's label is read from its open shadow root.
 - `duplicate-accessible-name`: sibling links with the same name that lead to different URLs (WCAG 2.4.4)
+
+Name comparisons normalize canonically equivalent Unicode text, so composed and
+decomposed spellings such as `Café` are treated consistently.
 
 **Check (`checkReadingOrder`)**
 - `reading-order-mismatch`: accessibility tree order (what is read) versus visual position (WCAG 1.3.2), i.e. `order`, `flex-direction: row-reverse`, absolute positioning
@@ -759,7 +762,8 @@ Emulate CSS media features on the current page without resetting omitted feature
 
 #### `browser_tabs`
 Manage browser tabs in one tool.
-- Parameters: `action` (`list`, `new`, `close`, `select`) and optional `index` (for `close` and `select`).
+- Parameters: `action` (`list`, `new`, `close`, `select`), optional `index` (for `close` and `select`), and optional `isolatedContext` (upstream `@playwright/mcp` compatibility).
+- Only `"default"` (or omitting `isolatedContext`) is accepted; other names are rejected rather than ignored. For a separate browser context, use [Browser Session Tools](#browser-session-tools): call `browser_session_open` and pass the returned `browserSessionId`.
 - If the browser context closes during tab creation, the request fails. Late-created pages receive bounded close attempts that verify whether the target closed; an unresponsive target cannot hold shutdown indefinitely.
 
 ### Browser Session Tools
@@ -946,6 +950,15 @@ cd mcp-accessibility-scanner
 npm install
 ```
 
+On npm 12 or later, check `npm install-scripts list` after upgrading a native
+dependency. If an updated `re2` version is blocked by the pinned `allowScripts`
+approval, run `npm install-scripts approve re2` and then `npm rebuild re2`. Commit
+the updated approval with the dependency update. The `install-scripts` command
+is not available on npm 11 and earlier; those versions run install scripts by
+default, so use `npm rebuild re2` to restore a missing binary, provided scripts
+have not been explicitly disabled. Rebuild `re2` after changing Node.js versions
+as well.
+
 `npm run knip` checks the server's sources, tests, benchmarks and tooling.
 
 Tests use Node or Playwright rather than `happy-dom`, and Chrome protocol types are
@@ -953,6 +966,16 @@ defined locally. See the [dependency review](docs/dependency-review-2026-10.md) 
 the removal rationale and validation results.
 
 ### Playwright upgrade gate
+
+The Linux `test` and `webkit-regressions` CI jobs use the official
+`mcr.microsoft.com/playwright:v1.63.0-noble` image with its preinstalled browsers
+and system dependencies, rather than downloading browsers during each job.
+They run as `pwuser` so Firefox can use GitHub's user-owned home directory.
+Keep both image tags in `.github/workflows/ci.yml` aligned with the pinned
+`playwright` and `playwright-core` versions. Native-runner browser matrices and
+the package's Docker smoke test remain separate; branded Chrome and Edge are
+not included in the Playwright image. See the
+[Playwright Docker guidance](https://playwright.dev/docs/docker).
 
 The September 16, 2026 review keeps `playwright` and `playwright-core` paired at
 **1.63.0**, the [latest stable release](https://github.com/microsoft/playwright/releases/tag/v1.63.0)
@@ -1052,38 +1075,4 @@ npm run test:mcp:luna -- --skip-optional --limit 1
 ```
 
 The prompt suite covers all 34 core/install tools, including session management,
-media emulation, network request details, drop actions, and screen-reader audits.
-The optional `browser_install` prompt is included by default and enables the
-server's `install` capability for that prompt only; use `--skip-optional` to omit it.
-
-Results are written under `test-results/mcp-direct-harness-results/` or
-`test-results/mcp-tool-loop-results/`. Set `MCP_HARNESS_RESULTS_DIR` to use another output root.
-The Luna harness checks Codex login before starting any prompts. Its site-audit
-prompt uses a local HTTP fixture, not a public website.
-PASS requires a completed target MCP call, no failed or unfinished MCP calls,
-and a successful structured result. Invalid logs, failed turns, and timeouts
-fail the run. Non-fatal startup notices about ignored malformed local agent
-roles remain in the logs; they do not count as tool failures. Recovered Codex
-connection retries are accepted only when the turn completes successfully.
-Canceling the run exits with status 130.
-
-### Benchmarking tool latency
-
-`bench/mcp-bench.mjs` measures what a client actually waits for: it serves a fixed
-synthetic site, speaks MCP to the built server over stdio, and times real
-`tools/call` round trips for navigation, interaction, snapshots and every audit
-tool. Build first — it runs the compiled server from `lib/`.
-
-```bash
-npm run build
-npm run bench -- --out after.json --label after
-```
-
-Useful flags: `--iterations <n>` and `--warmups <n>` (defaults 5 and 1),
-`--browser`/`--executable-path` when the browser lives outside Playwright's own
-download directory, and `--server <path/to/cli.js>` plus `--lib <path/to/lib>`
-(supplied together) to point at a different build — that is how revisions compare:
-
-```bash
-git worktree add /tmp/baseline main && (cd /tmp/baseline && npm install && npm run build)
-npm run bench -- --server /tmp/baseline/cl
+media emulation, network request details,

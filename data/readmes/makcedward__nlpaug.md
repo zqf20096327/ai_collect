@@ -124,6 +124,11 @@ DownloadUtil.download_glove(model_name='glove.6B', dest_dir='.')
 DownloadUtil.download_fasttext(model_name='wiki-news-300d-1M', dest_dir='.')
 ```
 
+Troubleshooting SIGILL (exit code 132) on import (issue #309): this signal
+means a native dependency was compiled for CPU instructions your CPU lacks
+(typically AVX via faiss/numpy/torch wheels). Reinstall CPU-appropriate
+wheels for your platform and avoid mixing conda/pip BLAS builds.
+
 If you use `SynonymAug` with PPDB, download the language pack from:
 ```bash
 http://paraphrase.org/#/download
@@ -174,6 +179,9 @@ Or use the repo scripts directly:
 ```
 
 ## Recent Changes
+
+### 2.0.7 Oct 17, 2026
+*   Backward compatible bug-fix release: BackTranslation max_length clamp, long-doc chunking, macOS single-process pipelines, Lambada dir validation, WordEmbs OOV handling, XLNet decode fix, GloVe/conda fixes, VBZ inflection, aug_p docs
 
 ### 2.0.6 Oct 16, 2026
 *   Fix TF-IDF term frequency to use count-based TF (`count(word)/len(tokens)`) matching UDA reference

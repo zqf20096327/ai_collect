@@ -644,5 +644,110 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "deepqmc/deepqmc": {
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": "1.3.0",
+  "rel_pub": "2026-07-20",
+  "rel_days": 89,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "droidrun/mobilerun-portal": {
+  "commit_90d": 50,
+  "commit_7d": 0,
+  "rel_ver": "v0.7.25",
+  "rel_pub": "2026-08-18",
+  "rel_days": 60,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Kotlin": 98,
+   "Python": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "iflytek/astronclaw-tutorial": {
+  "commit_90d": 8,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "rush-db/rushdb": {
+  "commit_90d": 48,
+  "commit_7d": 1,
+  "rel_ver": "@rushdb/mcp-server@2.13.0",
+  "rel_pub": "2026-08-31",
+  "rel_days": 47,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "TypeScript": 97,
+   "EJS": 1,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

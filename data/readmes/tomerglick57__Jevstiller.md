@@ -95,7 +95,7 @@ Python 3.10+. CPU works out of the box; a GPU only speeds up the encoder.
 Run Jevstiller next to your services and point the Jev SDK at it:
 
 ```bash
-docker run -d -p 8080:8080 -v jevstiller-data:/data ghcr.io/tomerglick57/jevstiller:0.5.1
+docker run -d -p 8080:8080 -v jevstiller-data:/data ghcr.io/tomerglick57/jevstiller:0.5.2
 # or: pip install jevstiller && jevstiller serve --config deploy/jevstiller.toml
 ```
 
@@ -117,18 +117,21 @@ Performance of one process (16 vCPU, bge-small on CPU, [docs/benchmarks.md](docs
 Operations: a TOML config, an admin API and CLI (`jevstiller admin ...`), Prometheus `/metrics`, `/readyz`, JSON logs, `jevstiller backup`, and a Docker image and Kubernetes manifest. Docs: [deploy](docs/deploy.md), [operations](docs/operations.md), [the proxy](docs/proxy.md), [configuration](docs/configuration.md), [security](docs/security.md), [compatibility](docs/compatibility.md). Website: [jevstiller.pages.dev](https://jevstiller.pages.dev).
 
 ## How it compares
+<!-- title: How Jevstiller compares with stuntd, TRACER, Distil Labs, routers, caches and open Jev models -->
+<!-- description: Where Jevstiller differs from stuntd (the closest project), from TRACER, from Distil Labs and cloud distillation, from LLM routers and semantic caches, from open Jev-compatible models, and from the research it builds on, with a detailed page for each of the first three. -->
 
-As of September 2026:
+As of October 2026. The first three have a detailed page each.
 
-- **[stuntd](https://github.com/bladedevoff/stuntd)** is the closest project. It is also a local Jev-compatible proxy that learns a head per question (on the Laya encoder) and checks 2% of live traffic. The differences:
+- **[stuntd](https://github.com/bladedevoff/stuntd)** is the closest project. It is also a local Jev-compatible proxy that learns a head per question (on the Laya encoder or a stock sentence encoder) and checks 2% of live traffic. The differences ([in full](docs/compare/stuntd.md)):
   - **Guarantee:** Jevstiller picks its threshold with a finite-sample bound on disagreement over all requests; stuntd uses a point estimate on a holdout.
-  - **Automation:** Jevstiller trains, shadow-tests and promotes by itself; stuntd uses `stuntd train` / `stuntd enable`.
+  - **Automation:** Jevstiller trains, shadow-tests and promotes by itself; stuntd uses `stuntd train` / `stuntd enable` by default, with opt-in `auto_retrain` and `auto_promote` settings.
   - **Training data:** Jevstiller learns from Jev's full probability distributions and gates unfamiliar inputs.
   - **Question identity:** Jevstiller identifies a question by its exact content; stuntd uses its name.
   - **Keys:** Jevstiller answers locally only for API keys Jev has accepted.
   - **Deployment:** Jevstiller serves many tenants from one server, on CPU.
-  - **Where stuntd goes further:** it also speaks the OpenAI API, and can answer with no provider at all (zero-shot Laya).
-- **[Distil Labs](https://www.distillabs.ai/) and cloud "distillation"** (Amazon Bedrock, OpenAI, Azure) train a small replacement model from your traffic as a separate job, then swap the whole model. There is no per-request fallback to the large model, no bound, and no Jev API.
+  - **Where stuntd goes further:** it also speaks the OpenAI and Anthropic APIs, learns `score` questions, and can answer with no provider at all (zero-shot Laya).
+- **[TRACER](https://github.com/adrida/tracer)** (MIT, [arXiv 2604.14531](https://arxiv.org/abs/2604.14531)) is a Python library that fits a classical-ML student on your LLM traces with a learned acceptance policy and certifies it once with a Clopper–Pearson lower bound on agreement among the requests it accepts. It takes any teacher and is not a proxy: your application embeds, routes and falls back. Jevstiller bounds disagreement over all requests, re-certifies on every retrain, and keeps a 2% audit on live traffic ([in full](docs/compare/tracer.md)).
+- **[Distil Labs](https://www.distillabs.ai/) and cloud "distillation"** (Amazon Bedrock, OpenAI, Azure) post-train a small replacement model from your traffic as a separate job, then switch traffic to it. Distil Labs' endpoint falls back to your production model when the small one fails or times out, not when it is unsure; none of them states a bound, and none speaks Jev's API ([in full](docs/compare/distil-labs.md)).
 - **Routers** (RouteLLM, Not Diamond, OpenRouter Auto) choose between existing models. **Semantic caches** (GPTCache, Portkey, [jevcache](https://github.com/hyperspaceai/jevcache)) reuse answers to near-identical inputs. Neither learns to answer new inputs.
 - **Open Jev-compatible models** (Laya, Kev, jeff) replace Jev outright, at lower zero-shot accuracy.
 - **Research:**
@@ -231,6 +234,8 @@ python experiments/run.py --dataset banking77 --teacher oracle --encoder base   
 See [experiments/README.md](experiments/README.md).
 
 ## TypeSafe's terms
+<!-- title: TypeSafe's terms and Jevstiller -->
+<!-- description: TypeSafe's Master Customer Agreement §2.3(b) restricts training on Jev's output. What the clause says, why we read Jevstiller's small per-question classifiers as outside it, and why you should decide for your own deployment. -->
 
 Jevstiller runs on your own Jev key and your own traffic, so TypeSafe's [Master Customer Agreement](https://typesafe.ai/legal/mca) applies to how you use it. Read it first. §2.3(b) says a customer may not use Jev's output to "perform model distillation, train a model to imitate the output of the Services, or develop (or to facilitate the development of) a similar or competing product or service", and §6(a) lets TypeSafe suspend access over a breach.
 
@@ -247,6 +252,10 @@ This is our reading, not legal advice, and TypeSafe hasn't reviewed it. If your 
 - **You ran it on a real task**: post the status report in [Discussions › Show and tell](https://github.com/tomerglick57/Jevstiller/discussions/categories/show-and-tell) or open a [result report](https://github.com/tomerglick57/Jevstiller/issues/new?template=result.md). This is the most useful thing you can do for the project.
 - **Bugs**: [open an issue](https://github.com/tomerglick57/Jevstiller/issues/new?template=bug.md). PRs welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 - **Security**: see [SECURITY.md](SECURITY.md), not a public issue.
+
+## Citing
+
+If Jevstiller is part of research, cite it with the metadata in [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository" button renders it as BibTeX or APA). The method is described in [A bound, not a threshold](https://jevstiller.pages.dev/posts/the-guarantee/) and [DESIGN.md](DESIGN.md); the prior art it builds on is listed under [How it compares](#how-it-compares).
 
 ## License
 

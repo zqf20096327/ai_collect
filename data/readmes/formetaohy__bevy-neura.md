@@ -15,6 +15,32 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT license"></a>
 </p>
 
+<table align="center">
+  <tbody>
+    <tr>
+      <td align="center" valign="top">
+        <a href="examples/mnist/README.md"><img src="docs/assets/mnist.gif" width="372" alt="mnist example"></a><br>
+        <a href="examples/mnist/README.md"><strong>mnist</strong></a><br>
+        Handwritten digit recognition
+      </td>
+      <td align="center" valign="top">
+        <a href="examples/speech/README.md"><img src="docs/assets/speech.gif" width="298" alt="speech example"></a><br>
+        <a href="examples/speech/README.md"><strong>speech</strong></a><br>
+        Live speech transcription
+      </td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td align="center" valign="top">
+        <a href="examples/tictactoe/README.md"><img src="docs/assets/tictactoe.gif" width="308" alt="tictactoe example"></a><br>
+        <a href="examples/tictactoe/README.md"><strong>tictactoe</strong></a><br>
+        Play against the trained AI
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 ## What is bevy-neura?
 
 **bevy-neura** is built on **[Neura](https://github.com/formetaohy/Neura)**, using **DX12, Metal, and Vulkan** for neural network training and inference, enabling you to build **AI-native games** in **[Bevy](https://bevy.org)**.

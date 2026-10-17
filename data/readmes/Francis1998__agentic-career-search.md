@@ -192,6 +192,18 @@ This project solves those issues with explicit agent engineering primitives:
 ![ChildcareSubsidyGapAdvisor](assets/demo/childcare-subsidy-gap-advisor.gif)
 | Levels.fyi/Blind/Rippling unlimited-PTO utilization planners bury related math in closed UIs | Workers lack a local days_taken vs peer_median_days band | `UnlimitedPtoUtilizationGapAdvisor` bands offline days_taken vs peer_median_days for HITL review and never auto-enrolls |
 ![UnlimitedPtoUtilizationGapAdvisor](assets/demo/unlimited-pto-utilization-gap-advisor.gif)
+| Rippling/Culture Amp/Lattice conference-budget planners bury related math in closed UIs | Workers lack a local offered_budget_usd vs needed_budget_usd band | `ConferenceBudgetGapAdvisor` bands offline offered_budget_usd vs needed_budget_usd for HITL review and never auto-enrolls |
+![ConferenceBudgetGapAdvisor](assets/demo/conference-budget-gap-advisor.gif)
+| Levels.fyi/Blind/Rippling summer-Friday planners bury related math in closed UIs | Workers lack a local offered_fridays vs peer_median_fridays band | `SummerFridayGapAdvisor` bands offline offered_fridays vs peer_median_fridays for HITL review and never auto-enrolls |
+![SummerFridayGapAdvisor](assets/demo/summer-friday-gap-advisor.gif)
+| Rippling/Gusto/BambooHR floating-holiday planners bury related math in closed UIs | Workers lack a local offered_days vs needed_days band | `FloatingHolidayGapAdvisor` bands offline offered_days vs needed_days for HITL review and never auto-enrolls |
+![FloatingHolidayGapAdvisor](assets/demo/floating-holiday-gap-advisor.gif)
+| Lattice/Rippling/BambooHR pet-bereavement leave planners bury related math in closed UIs | Workers lack a local offered_days vs needed_days band | `PetBereavementLeaveGapAdvisor` bands offline `offered_days` vs `needed_days` for HITL review and never auto-approves |
+![PetBereavementLeaveGapAdvisor](assets/demo/pet-bereavement-leave-gap-advisor.gif)
+| Rippling/WellnessLiving/Levels.fyi gym-membership planners bury related math in closed UIs | Workers lack a local offered_usd vs needed_usd band | `GymMembershipGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-enrolls |
+![GymMembershipGapAdvisor](assets/demo/gym-membership-gap-advisor.gif)
+| Rippling/Guild/Levels.fyi learning-stipend planners bury related math in closed UIs | Workers lack a local offered_usd vs needed_usd band | `LearningStipendGapAdvisor` bands offline `offered_usd` vs `needed_usd` for HITL review and never auto-enrolls |
+![LearningStipendGapAdvisor](assets/demo/learning-stipend-gap-advisor.gif)
 | Rippling/Gusto/Levels.fyi parking-stipend planners bury related math in closed UIs | Workers lack a local offered_parking_usd vs needed_parking_usd band | `ParkingStipendGapAdvisor` bands offline offered_parking_usd vs needed_parking_usd for HITL review and never auto-enrolls |
 ![ParkingStipendGapAdvisor](assets/demo/parking-stipend-gap-advisor.gif)
 ![RsuSupplementalWithholdingGapAdvisor](assets/demo/rsu-supplemental-withholding-gap-advisor.gif)

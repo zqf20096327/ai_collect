@@ -191,7 +191,6 @@ XmaxSDK currently supports [**CocoaPods**](#cocoapods) and
 Add the following to your application's `Podfile`:
 
 ```ruby
-source 'https://github.com/volcengine/volcengine-specs.git'
 source 'https://cdn.cocoapods.org/'
 
 platform :ios, '15.0'
@@ -201,7 +200,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/XingMai/XmaxSDK-iOS.git',
-      :tag => '1.0.7'
+      :tag => '1.0.8'
 end
 
 post_install do |installer|
@@ -222,7 +221,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.0.7.xcframework.zip`](https://github.com/XingMai/XmaxSDK-iOS/releases/download/1.0.7/XmaxSDK-1.0.7.xcframework.zip),
+[`XmaxSDK-1.0.8.xcframework.zip`](https://github.com/XingMai/XmaxSDK-iOS/releases/download/1.0.8/XmaxSDK-1.0.8.xcframework.zip),
 then follow the [manual integration guide](./docs/installation.md#manual-integration)
 to add the required dependencies and configure your Xcode target.
 
@@ -259,11 +258,10 @@ let client = XmaxClient(
 )
 
 let realtime = client.createRealtimeManager(
-    options: RealtimeConfiguration(model: .x2_0)
+    options: RealtimeConfiguration(model: .x2_1_1_preview_cn)
 )
 
 let localStream = try await realtime.createLocalCameraStream(
-    videoFormat: RealtimeVideoFormat(width: 704, height: 1280, fps: 24),
     position: .front
 )
 
@@ -384,7 +382,7 @@ local video files.
 
 ## Dependencies
 
-- <ins><strong>VolcEngine RTC SDK for iOS</strong></ins> enables low-latency, real-time audio and video communication.
+- <ins><strong>Agora RTC SDK for iOS</strong></ins> enables low-latency, real-time audio and video communication.
 - <ins><strong>Tencent Cloud COS SDK</strong></ins> handles media upload and download via object storage.
 
 <br>

@@ -78,6 +78,7 @@ Security work involving AI benefits from a shared vocabulary, a lifecycle view, 
 | [AI Incident Database](https://incidentdatabase.ai/) | Incident resource | Documented AI incidents to inform risk discovery and governance exercises. |
 | [AVID Taxonomy](https://avidml.org/taxonomy/) | Risk taxonomy | Structured vocabulary for AI risk identification and documentation. |
 | [MLSecOps Top 10](https://ethical.institute/security.html) | Practice guide | Security perspective on the ML lifecycle and operational controls. |
+| [Orca AI Incident Archive](https://github.com/Continuum-AI-Corp/Orca-AI-Incident-Archive) | Incident resource | Open database of AI agent security incidents (prompt injection, agent supply chain, MCP, rogue agent actions); each record links at least one primary source and labels confirmed harm and AI involvement. Classifications are the editors', not official findings. |
 
 ## Security for AI Systems
 
@@ -248,6 +249,7 @@ These are not plug-and-play endorsements. Prefer read-only access, minimal scope
 | [OpenCTI MCP Server](https://github.com/CooperCyberCoffee/opencti_mcp_server) | Threat intelligence | Begin with a read-only service identity and audit access to intelligence data. |
 | [Wazuh MCP Server](https://github.com/gensecaihq/Wazuh-MCP-Server) | SOC operations | Separate telemetry queries from response or configuration capabilities. |
 | [Semgrep MCP](https://github.com/semgrep/mcp) | Code security | Integration for static-analysis workflows. |
+| [REA](https://github.com/morluto/rea) | Reverse engineering | Local CLI and MCP tools for native binaries, JavaScript/Electron apps, and .NET assemblies; returns evidence provenance and limitations. Review required; see [catalog metadata](docs/RESOURCE_CATALOG_SUPPLEMENT.md#additional-mcp-discovery-and-review-resources). |
 | [radare2 MCP](https://github.com/radareorg/radare2-mcp) | Binary analysis | Use isolated sample handling and read-only mounts. |
 | [VirusTotal MCP](https://github.com/w0h1v/mcp-virustotal) | Threat intelligence | Protect API credentials and comply with data-sharing terms. |
 | [MCP Servers](https://github.com/modelcontextprotocol/servers) | Discovery | Official project collection and references; apply the same review to every server. |

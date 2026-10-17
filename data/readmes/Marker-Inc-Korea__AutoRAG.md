@@ -140,8 +140,9 @@ does, and searches them right alongside your files:
   or connect your own provider key and pay the provider directly.
 
 > [!TIP]
-> **The app's source lives in [NomaDamas/AutoRAG-app](https://github.com/NomaDamas/AutoRAG-app)**
-> (Electron + React, AGPL-3.0). It depends on `@autorag/librarian` from this
+> **The Dazzi desktop app's source lives in [NomaDamas/AutoRAG-app](https://github.com/NomaDamas/AutoRAG-app)**
+> (Electron + React, [Fair Source](https://fair.io/) under `FSL-1.1-MIT`). It
+> depends on the open-source `@autorag/librarian` engine (Apache-2.0) from this
 > repository; build, run, and file app issues there.
 
 ### One engine, every surface
@@ -150,7 +151,7 @@ The app is one way in. The same librarian runs everywhere else:
 
 | Surface | Use it for | Start here |
 |---|---|---|
-| **Desktop app** | Browsing and asking in one window | [NomaDamas/AutoRAG-app](https://github.com/NomaDamas/AutoRAG-app) |
+| **Desktop app (Dazzi)** | Browsing and asking in one window | [NomaDamas/AutoRAG-app](https://github.com/NomaDamas/AutoRAG-app) (Fair Source, FSL-1.1-MIT) |
 | **Terminal UI** | Interactive, steerable search sessions | [`autorag tui`](#2-search-from-cli) |
 | **CLI** | Scripts, indexing, health checks | [CLI Command Reference](#cli-command-reference) |
 | **MCP server** | Feeding retrieval to Claude Code, Codex, and other agents | [AutoRAG Lite MCP Server](#autorag-lite-mcp-server) |
@@ -262,6 +263,25 @@ autorag refresh
 # Check indexing health
 autorag status
 ```
+
+### Excluding files and folders
+
+Leave generated workspaces or archives out when initializing:
+
+```bash
+autorag init --search-paths "$HOME/Documents" \
+  --exclude "$HOME/Documents/Build output" \
+  --exclude "$HOME/Documents/Archive, old"
+```
+
+Repeat `--exclude` for each file or folder. Each argument is one complete path,
+including spaces and commas; relative paths resolve from the current directory.
+Excluding a folder also excludes its descendants. Paths are literal, not globs.
+
+For an existing configuration, edit its `excludePaths` array and run
+`autorag refresh` to update the indexes. File-name search applies exclusions to
+native fsearch and Everything results as well as the filesystem walk. See the
+[exclusion configuration examples](docs/minsync-setup.md#excluding-files-and-folders).
 
 ### Document languages and parsers
 

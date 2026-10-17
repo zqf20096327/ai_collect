@@ -108,6 +108,13 @@ uvx kicad-mcp-pro dashboard --open
 uvx kicad-mcp-pro --transport streamable-http --port 3334
 ```
 
+### KiCad PCB Editor Companion (development preview)
+
+The existing KiCad PCM Companion is being upgraded to a KiCad 10 IPC toolbar
+plugin in [packages/kicad-plugin/](packages/kicad-plugin/). It reads the active
+PCB and links to the existing local dashboard. The IPC upgrade is read-only;
+live desktop acceptance and release are pending.
+
 ### Web Dashboard
 
 ```bash
@@ -284,6 +291,10 @@ All changes must pass `task verify` before opening a pull request.
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request. All
 changes must pass the repository's format, lint, type-check, test, workflow,
 security, and package metadata gates.
+
+## Independent industry coverage
+
+- **JLCPCB (October 14, 2026)** — [KiCad MCP: How to Design a PCB with Claude Code](https://jlcpcb.com/blog/kicad-mcp-how-to-design-a-pcb-with-claude-code) documents a hands-on KiCad MCP Pro workflow for an XL4015/LM358 buck-converter design, including checks and limitations. The board was not fabricated or bench-tested. This is independent coverage, not a JLCPCB endorsement or partnership; reported issues are being evaluated in [#1314](https://github.com/oaslananka/kicad-mcp-pro/issues/1314).
 
 ## Cite this software
 

@@ -6,9 +6,9 @@
 
 A curated collection of **reverse-engineering projects, experiments, and ideas**: revive old devices, rebuild apps, preserve games, and understand hidden behavior.
 
-## 297 cases & projects
+# 401 cases & projects
 
-**Collection updated / count snapshot:** October 16, 2026, 20:09 · Beijing time (UTC+8)
+**Latest case update / maintenance:** October 18, 2026, 04:09 · Beijing time (UTC+8). Counts as of this update.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -23,15 +23,15 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 **10 worth reading**, selected for practical use, evidence, and recency—not an automated ranking. Dates refer to featured sources or author updates, not collection dates.
 
 1. **[Plustek scanner & ThinkPad camera](cases/en/schaller-opticfilm-thinkpad-linux.md)** · `2026-10-16` — Use Windows reference behavior to improve Linux drivers. Published measurements also disclose low-light and exposure defects. `In progress`
-2. **[Sonic 3D Blast: recreate the compiler first](cases/en/sonic-3d-blast-saturn-opus-port.md)** · `2026-10-16` — The author clarifies: **a native port from decompiled code, not static recompilation**, after months of AI-assisted work. Visual defects remain; November 20 is a release plan. `In progress`
-3. **[ReaCut](cases/en/reacut-jianying-open-editor.md)** · `2026-10-16` — An independent editor with project-reported exports and plugin tests. The author now stresses **licensed assets and AI APIs remain bottlenecks**; signing and platform limits remain. `In progress`
-4. **[LASRecomp](cases/en/links-awakening-claude-pc-port-report.md)** · `2026-10-15` — An AI-assisted Link’s Awakening port for desktop. Requires the original game; beta crashes and untested platform support are documented. `Public project`
-5. **[A plate reader brought back to work](cases/en/plate-reader-filter-wheel-claude-repair.md)** · `2026-10-15` — Claude reportedly investigated communication and reset firmware after a startup fault. **No independent or clinical validation.** `Author report`
-6. **[ScanSnap iX500](cases/en/scansnap-ix500-claude-mac.md)** · `2026-10-15` — A reported Claude-built replacement Mac app with Wi-Fi scanning, hardware-button support, and OCR. Protocol details and independent tests are absent. `Author report`
-7. **[KEF LSX II volume keys](cases/en/kef-lsx-ii-volume-fixer.md)** · `2026-10-15` — A USB/LAN bridge improves desktop volume control without patching signed firmware. Latency figures are the author’s measurements. `Public implementation`
-8. **[Two Feishu accounts on one Mac](cases/en/feishu-dual-instance-codex-rea.md)** · `2026-10-15` — Codex/REA research supports isolated app copies. Local signing and disabled updates bring maintenance risks. `Author-tested`
-9. **[crashlens](cases/en/crashlens-rea-crash-triage-idea.md)** · `2026-10-16` — Turn core dumps and stack traces into evidence reports for coding agents. A **public early prototype**, not independently tested; the Hermes integration is still proposed. `REA`
-10. **[Test the CSV evaluator first](cases/en/rea-csv-evaluator-mutation-test.md)** · `2026-10-16` — Three deliberately broken exporters reportedly passed simple tests; **215 byte comparisons** exposed them. A useful acceptance-testing experiment, without published test inputs or code. `REA test`
+2. **[Where NIST curve seeds came from](cases/en/nist-ecdsa-origin-claude-report.md)** · `2026-10-16` — Anthropic reports Claude traced public parameters to **lrand48 and timestamps**, publishing code and unresolved questions. **Not an ECDSA break**; not independently recomputed here. `Research report`
+3. **[LeanREA: direct CLI vs MCP](cases/en/leanrea-cli-skill-benchmark.md)** · `2026-10-17` — Trace Notion features, inspect a native lock and identify Go dependencies. The public **36-run comparison** reports lower time and cost, but scores are **74/75 vs 75/75**, not identical accuracy. One model and machine; not independently rerun. `Analysis test`
+4. **[Frontkick vs Rikugan](cases/en/synacktiv-frontkick-rikugan-crebench.md)** · `2026-10-13` — Recover algorithms and keys from AES/ChaCha20 binaries. Synacktiv publishes per-run results, but **unequal library prompts confound the comparison**—not proof that CodeAct beats tool calling. Two tasks only; not independently rerun. `Analysis test`
+5. **[Open Scrantic: Johnny Castaway returns](cases/en/johnny-castaway-rust-rea.md)** · `2026-10-17` — REA and Claude Code help recover a Windows 3.1 screensaver engine in Rust for three platforms. **Public code and successful project CI**; original assets required, known-build limits and deliberate behavior differences remain. `In progress`
+6. **[NJFE: an ear camera on your PC](cases/en/njfe-claude-ear-camera-usb.md)** · `2026-10-10` — Claude-assisted USB bridging turns a cheap Wi-Fi camera into an inspection scope, **building on prior otoscope protocol work**. One device tested by the project; camera Wi-Fi remains open. `Public implementation`
+7. **[Gears of War 3](cases/en/gears3-ai-graphics-recompile.md)** · `2026-10-17` — AI-assisted Linux graphics work through **mechanical PowerPC-to-C++ translation, not recovered original source**. The reported 4K WIP still drops frames in combat. `In progress`
+8. **[ArkWeb: Spider-Man in Gotham](cases/en/arkweb-spiderman-arkham-report.md)** · `2026-10-03` — Run two owned games together, stream collision and composite the character. Public code and Claude setup guidance; **experimental, version-bound, REA use unconfirmed**. `In progress`
+9. **[Sonic 3D Blast: recreate the compiler first](cases/en/sonic-3d-blast-saturn-opus-port.md)** · `2026-10-16` — **A native port from decompiled code, not static recompilation**, according to the author. Visual defects remain; November 20 is a release plan. `In progress`
+10. **[ReaCut](cases/en/reacut-jianying-open-editor.md)** · `2026-10-16` — An independent editor with project-reported exports and plugin tests. **Licensed assets and AI APIs remain bottlenecks**; signing and platform limits remain. `In progress`
 
 ## Classic cases
 
@@ -46,10 +46,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **69** |
-| [Hardware & interoperability](categories/en/hardware.md) | **65** |
-| [Applications & clients](categories/en/apps.md) | **135** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **28** |
+| [Games & preservation](categories/en/games.md) | **87** |
+| [Hardware & interoperability](categories/en/hardware.md) | **90** |
+| [Applications & clients](categories/en/apps.md) | **184** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **40** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 
@@ -57,7 +57,7 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 <summary><strong>Update & evidence notes</strong></summary>
 
 - **Continuous resolved-material cutoff:** October 15, 2026, 16:00, Beijing time. Older unresolved sources can hold this cutoff back while newer entries are added; it is not a verification date for every project.
-- Searches run six times daily with keyword and pagination limits; coverage is not exhaustive. Source dates, evidence boundaries, and any engagement snapshots are recorded in case details.
+- Searches run six times daily with keyword and pagination limits; coverage is bounded, not exhaustive, and some linked evidence remains unresolved. Source dates, evidence boundaries, and engagement snapshots are recorded in case details.
 - Full descriptions, sources, and language switching are available on every case page.
 
 </details>

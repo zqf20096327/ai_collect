@@ -103,12 +103,12 @@ What makes it defensible — four things `.dotagents`-style sharing lacks:
 
 ### Install into any agent
 
-| Framework               | How the brain lands                                                                                     | Status  |
-| ----------------------- | ------------------------------------------------------------------------------------------------------- | ------- |
-| **Claude Code**         | skills → `.claude/skills`, persona+memory → `AGENTS.md`, MCP → `.mcp.json`                              | ✅ v1   |
-| **Hermes**              | persona → `SOUL.md`, **bounded** memory (prioritized + trimmed, reported), MCP/channels → `hermes.json` | ✅ v1   |
-| **OpenClaw**            | persona → `SOUL.md`, memory → `MEMORY.md`, skills → `skills/`, MCP/channels → `openclaw.json`           | ✅ v1   |
-| Codex · Cursor · Gemini | —                                                                                                       | planned |
+| Framework               | How the brain lands                                                                                                          | Status  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **Claude Code**         | skills → `.claude/skills`, persona+memory → `AGENTS.md`, MCP → `.mcp.json`                                                   | ✅ v1   |
+| **Hermes**              | into `$HERMES_HOME`: persona → `SOUL.md`, **bounded** memory (prioritized + trimmed, reported), MCP/channels → `config.yaml` | ✅ v1   |
+| **OpenClaw**            | into the state dir: persona + memory + skills → `workspace/`, MCP/channels → `openclaw.json`                                 | ✅ v1   |
+| Codex · Cursor · Gemini | —                                                                                                                            | planned |
 
 ---
 
@@ -124,7 +124,7 @@ npm i -g @uniqent/cli      # or use npx @uniqent/cli <command>
 | `install <file\|url\|slug>`            | Install a brain into `--target <claude-code\|hermes\|openclaw>` (`--root <dir>`, `--cred ref=val`). |
 | `inspect <file>`                       | Show a bundle's manifest, components, and permissions.                                              |
 | `export --root <dir>`                  | Capture a running agent into a `.uniqent` (auto-detects the framework).                             |
-| `import-vault <dir>`                   | Turn an Obsidian / second-brain vault into a signed brain.                                          |
+| `import-vault <dir>`                   | Turn an Obsidian / second-brain vault into a brain (`--sign` / `--key <k>` to sign it).             |
 | `pack <dir>` · `validate <dir\|file>`  | Build / check a brain from a source directory.                                                      |
 | `search <q>` · `hub <mcp\|skills> <q>` | Find brains in a registry index; discover MCP servers + skills across hubs.                         |
 | `keygen` · `sign <file>`               | Generate an Ed25519 keypair; sign a bundle.                                                         |
@@ -136,25 +136,67 @@ A few real flows:
 uniqent install my-brain.uniqent --target claude-code --root .
 
 # Install straight from a raw URL (no registry needed):
-uniqent install https://example.com/dev-powerpack.uniqent --target openclaw --root .
+uniqent install https://example.com/dev-powerpack.uniqent --target openclaw --root ~/.openclaw
 
 # Or by slug from any hosted index.json:
 export UNIQENT_REGISTRY=https://raw.githubusercontent.com/RiggdAI/uniqent/main/registry/index.json
-uniqent search coding && uniqent install dev-powerpack --target hermes --root . --cred github_pat=…
+uniqent search coding && uniqent install dev-powerpack --target hermes --root ~/.hermes --cred github_pat=…
 ```
 
 ## Studio (visual builder)
 
+Studio runs as a native desktop app (Tauri). It needs a clone — see
+[Build from source](#build-from-source) below.
+
 ```bash
-pnpm --filter @uniqent/studio start   # local-first; open the URL it prints
+pnpm --filter @uniqent/studio native:dev   # native app with hot reload
 ```
 
 ## Build from source
 
-Requires Node 22.13+ and pnpm (`corepack enable` provisions the pinned version).
+**Prerequisites**
+
+- Node.js **22.13+** and **pnpm 12** — `corepack enable` provisions the exact pnpm pinned in
+  `package.json`.
+- For the native Studio app only: **Rust** (stable, via [rustup](https://rustup.rs)) and, on macOS,
+  the Xcode Command Line Tools (`xcode-select --install`). macOS is the supported desktop target
+  today.
+
+**Build and test**
 
 ```bash
-pnpm install && pnpm build && pnpm test
+git clone https://github.com/RiggdAI/uniqent.git && cd uniqent
+corepack enable
+pnpm install
+pnpm build                       # all packages + Studio
+
+pnpm test                        # every package's tests
+pnpm typecheck && pnpm lint && pnpm format:check
+(cd apps/studio/src-tauri && cargo test)   # native app's Rust tests
+```
+
+**Run the CLI from source**
+
+```bash
+node packages/cli/dist/bin.js --help
+node packages/cli/dist/bin.js try research-analyst --target claude-code --root /tmp/demo --yes
+```
+
+**Run Studio**
+
+```bash
+pnpm --filter @uniqent/studio native:dev   # native app, dev mode (Vite hot reload + Rust backend)
+pnpm --filter @uniqent/studio native:build # release build → Studio.app + .dmg
+```
+
+The release build lands in `apps/studio/src-tauri/target/release/bundle/` (`macos/Uniqent Studio.app`
+and `dmg/*.dmg`). Builds are unsigned for now: the first time, right-click the app → **Open**.
+
+**Regenerate generated files** (only after changing their sources)
+
+```bash
+pnpm --filter @uniqent/spec gen             # JSON Schema + docs/SPEC.md, after editing packages/spec
+pnpm --filter @uniqent/studio fixtures:ports # cross-language parity fixtures, after changing ported TS logic
 ```
 
 ---

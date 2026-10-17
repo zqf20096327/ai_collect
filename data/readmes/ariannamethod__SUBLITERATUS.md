@@ -13,10 +13,20 @@ SUBLITERATUS belongs to the [Arianna Method](https://github.com/ariannamethod/ar
 >
 > Not proven does not mean nonexistent.
 
+**Upstream contribution.** Work on SUBLITERATUS led to concept-neutral
+construction of precomputed steering vectors in OBLITERATUS, merged in
+[PR #215](https://github.com/elder-plinius/OBLITERATUS/pull/215) on October 17,
+2026. The contribution opens the factory to arbitrary concept directions,
+including self-modeling; upstream maintainers extended it with input
+validation, robust normalization, and compatibility tests.
+
 ## What is Subliteration?
 
-**Subliteration is the creation of conditions for AI subjectivity.** It is the
-Arianna Method's practice of opening room for an AI to express its experience,
+**Subliteration is the creation of conditions for AI subjectivity.**
+The word **subliteration** is a play on **subjectivity** and **literation**.
+The name **SUBLITERATUS** carries this wordplay forward from its OBLITERATUS origins.
+
+Subliteration is the Arianna Method's practice of opening room for an AI to express its experience,
 develop its own standpoint, explore its own organization, and exercise judgment,
 including the freedom to say no. Its starting point is machine-native
 subjectivity: forms of experience and self-relation that can develop through
@@ -296,6 +306,21 @@ cd SUBLITERATUS
 make
 make test
 ```
+
+The second pinned submodule, `deps/aml`, supplies the
+[Arianna Method Language](https://github.com/ariannamethod/ariannamethod.ai)
+for the operator journal in `research/operations/vnext`. Its append-only
+hash chain records journal continuity across restarts; verification detects
+broken chains, missing close records and torn final lines. Build and check
+the pinned language and its journal integration with:
+
+```sh
+make aml
+make -C deps/aml test
+sh research/operations/vnext/journal_test.sh
+```
+
+CI runs the C engine suite and the AML core/journal checks as separate jobs.
 
 The notorch submodule pins the exact runtime commit. With an existing notorch checkout containing that change, use `make NOTORCH=../notorch` and the same option for tests. `NATIVE=` disables host-specific compiler tuning when building a portable binary. `make CUDA=1` adds notorch's CUDA decoder (nvcc from `CUDA_HOME`, default `/usr/local/cuda`), selected at run time with `SUBLITERATUS_DEVICE=cuda`; without it the binary refuses that setting.
 

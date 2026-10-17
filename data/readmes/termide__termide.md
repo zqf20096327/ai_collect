@@ -65,6 +65,7 @@ Editor, LSP, terminal, git and project layouts are a given among terminal editor
 
 - **Editor** - Syntax highlighting for 23 languages, LSP completion, hover, go to definition, references, rename and diagnostics; toggle comment, auto-indent, auto-close brackets; optional Vim mode
 - **Outline and diagnostics** - Structural navigation synced with the cursor (`Alt+O`) and an LSP diagnostics panel (`Alt+I`)
+- **Debugger** - Breakpoints in the gutter (`Ctrl+F8`), `F5` to run to them; a debug panel with the call stack, variables and stepping over DAP (lldb-dap, GDB, debugpy, Delve), or lldb, gdb, Delve and pdb in a terminal
 - **Search and replace** - Live preview, match counter, regex
 - **Docs next to the code** - Rendered Markdown, HTML (a text-mode browser that saves pages as Markdown) and Mermaid diagrams drawn as text; `Ctrl+E` switches to the source
 - **Hex editor** - Hex/ASCII view with a byte cursor, selection and search; overwrite editing with a `.bak` backup
@@ -75,7 +76,7 @@ Editor, LSP, terminal, git and project layouts are a given among terminal editor
 - **Bring your own model** - Any OpenAI- or Anthropic-compatible endpoint: llama.cpp, Ollama, vLLM, omlx on your machine, or a hosted provider
 - **Nothing changes without you** - Permission per tool call, or a reviewer model in auto mode; `/undo` and checkpoints take edits back
 - **Plan mode and subagents** - The agent settles open decisions with you before it writes a plan; subagents work in parallel
-- **Tools** - Read, edit, shell, web search and fetch, `recall` over earlier sessions, git history and project files, and MCP servers
+- **Tools** - Read, edit, shell, web search and fetch, `recall` over earlier sessions, git history and project files, the debugger, and MCP servers
 - **Other agents in the same panel** - Claude Code, Codex and Gemini CLI over the Agent Client Protocol
 - **Extend it in files** - Skills, prompt templates, command scripts, hooks and project instructions
 - **Headless** - `termide --prompt "..." --output json` runs the same agent in scripts and CI
@@ -153,37 +154,37 @@ Download the latest release for your platform from [GitHub Releases](https://git
 
 ```bash
 # Linux x86_64 (also works in WSL)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.42.0-x86_64-unknown-linux-gnu.tar.gz
-tar xzf termide-0.42.0-x86_64-unknown-linux-gnu.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.43.0-x86_64-unknown-linux-gnu.tar.gz
+tar xzf termide-0.43.0-x86_64-unknown-linux-gnu.tar.gz
 ./termide
 
 # Linux x86_64 (static musl — Alpine, distroless containers, any glibc-free system)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.42.0-x86_64-unknown-linux-musl.tar.gz
-tar xzf termide-0.42.0-x86_64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.43.0-x86_64-unknown-linux-musl.tar.gz
+tar xzf termide-0.43.0-x86_64-unknown-linux-musl.tar.gz
 ./termide
 
 # macOS Intel (x86_64)
-curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.42.0-x86_64-apple-darwin.tar.gz
-tar xzf termide-0.42.0-x86_64-apple-darwin.tar.gz
+curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.43.0-x86_64-apple-darwin.tar.gz
+tar xzf termide-0.43.0-x86_64-apple-darwin.tar.gz
 ./termide
 
 # macOS Apple Silicon (ARM64)
-curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.42.0-aarch64-apple-darwin.tar.gz
-tar xzf termide-0.42.0-aarch64-apple-darwin.tar.gz
+curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.43.0-aarch64-apple-darwin.tar.gz
+tar xzf termide-0.43.0-aarch64-apple-darwin.tar.gz
 ./termide
 
 # Linux ARM64 (Raspberry Pi, ARM servers)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.42.0-aarch64-unknown-linux-gnu.tar.gz
-tar xzf termide-0.42.0-aarch64-unknown-linux-gnu.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.43.0-aarch64-unknown-linux-gnu.tar.gz
+tar xzf termide-0.43.0-aarch64-unknown-linux-gnu.tar.gz
 ./termide
 
 # Linux ARM64 (static musl — Android/Termux, Alpine ARM, any glibc-free ARM64)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.42.0-aarch64-unknown-linux-musl.tar.gz
-tar xzf termide-0.42.0-aarch64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.43.0-aarch64-unknown-linux-musl.tar.gz
+tar xzf termide-0.43.0-aarch64-unknown-linux-musl.tar.gz
 ./termide
 
 # Windows x86_64 (download .zip from Releases, extract, run in Windows Terminal)
-# https://github.com/termide/termide/releases/latest/download/termide-0.42.0-x86_64-pc-windows-msvc.zip
+# https://github.com/termide/termide/releases/latest/download/termide-0.43.0-x86_64-pc-windows-msvc.zip
 ```
 
 </details>
@@ -194,13 +195,13 @@ tar xzf termide-0.42.0-aarch64-unknown-linux-musl.tar.gz
 TermIDE runs natively on Windows 10+ via ConPTY. Use **Windows Terminal** for
 the best experience.
 
-1. Download `termide-0.42.0-x86_64-pc-windows-msvc.zip` from [GitHub Releases](https://github.com/termide/termide/releases).
+1. Download `termide-0.43.0-x86_64-pc-windows-msvc.zip` from [GitHub Releases](https://github.com/termide/termide/releases).
 2. Extract the archive.
 3. Run `termide.exe` in Windows Terminal.
 
 Configuration, project layouts and logs live under `%APPDATA%\termide\`.
 
-Alternatively, in **WSL/WSL2** use the Linux x86_64 build (`termide-0.42.0-x86_64-unknown-linux-gnu.tar.gz`) as on any Linux.
+Alternatively, in **WSL/WSL2** use the Linux x86_64 build (`termide-0.43.0-x86_64-unknown-linux-gnu.tar.gz`) as on any Linux.
 
 </details>
 
@@ -211,8 +212,8 @@ Download and install the `.deb` package from [GitHub Releases](https://github.co
 
 ```bash
 # x86_64 only (ARM64 use tar.gz above)
-wget https://github.com/termide/termide/releases/latest/download/termide_0.42.0-1_amd64.deb
-sudo dpkg -i termide_0.42.0-1_amd64.deb
+wget https://github.com/termide/termide/releases/latest/download/termide_0.43.0-1_amd64.deb
+sudo dpkg -i termide_0.43.0-1_amd64.deb
 ```
 
 </details>
@@ -224,8 +225,8 @@ Download and install the `.rpm` package from [GitHub Releases](https://github.co
 
 ```bash
 # x86_64 only (ARM64 use tar.gz above)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.42.0-1.x86_64.rpm
-sudo rpm -i termide-0.42.0-1.x86_64.rpm
+wget https://github.com/termide/termide/releases/latest/download/termide-0.43.0-1.x86_64.rpm
+sudo rpm -i termide-0.43.0-1.x86_64.rpm
 ```
 
 </details>
@@ -296,8 +297,8 @@ glibc `aarch64-unknown-linux-gnu` build won't run on Android's Bionic libc):
 
 ```bash
 pkg install git openssh   # tools termide shells out to (plus any LSP servers)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.42.0-aarch64-unknown-linux-musl.tar.gz
-tar xzf termide-0.42.0-aarch64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.43.0-aarch64-unknown-linux-musl.tar.gz
+tar xzf termide-0.43.0-aarch64-unknown-linux-musl.tar.gz
 ./termide
 ```
 
@@ -358,8 +359,8 @@ the same code, just compiled against musl.
 The easiest way is to grab the pre-built tarball from the release:
 
 ```bash
-wget https://github.com/termide/termide/releases/latest/download/termide-0.42.0-x86_64-unknown-linux-musl.tar.gz
-tar xzf termide-0.42.0-x86_64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.43.0-x86_64-unknown-linux-musl.tar.gz
+tar xzf termide-0.43.0-x86_64-unknown-linux-musl.tar.gz
 ./termide
 
 # Verify it's fully static — no shared libraries

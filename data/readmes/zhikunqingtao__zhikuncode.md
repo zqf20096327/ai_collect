@@ -398,7 +398,7 @@ LLM_PROVIDER_ZENMUX_API_KEY=your-zenmux-api-key-here
 | 服务商 | Base URL | 推荐模型 | 备注 |
 |--------|----------|----------|------|
 | **千问/DashScope** | `https://dashscope.aliyuncs.com/compatible-mode/v1` | qwen3.8-max-0902 | 按量计费 Provider，国内直连 |
-| **阿里云百炼 Token Plan** | `https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1` | qwen3.8-max / qwen3.8-flash / deepseek-v4-pro-0813 / deepseek-v4-flash-0731 / deepseek-v4.1-flash | 使用独立 `sk-sp-` Key；模型均标注“百炼”。V4.1 Flash 为服务端 `app.model.default`、快速查询及图片兜底的默认值；前端初始模型偏好仍为 `qwen3.8-max-0902`，用户配置／会话选择优先 |
+| **阿里云百炼 Token Plan** | `https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1` | qwen3.8-max / qwen3.8-flash / deepseek-v4.1-flash | 使用独立 `sk-sp-` Key；模型均标注“百炼”。V4.1 Flash 为服务端 `app.model.default`、快速查询及图片兜底的默认值；前端初始模型偏好仍为 `qwen3.8-max-0902`，用户配置／会话选择优先 |
 | **DeepSeek** | `https://api.deepseek.com/v1` | deepseek-flash | 国内直连；DeepSeek V4.1 Flash，支持思考、工具调用与原生视觉 |
 | **Moonshot（Kimi）** | `https://api.moonshot.cn/v1` | kimi-k3 | 国内直连；kimi-k3 支持 1M 上下文和原生视觉 |
 | **Zhipu（智谱 GLM）** | `https://open.bigmodel.cn/api/paas/v4/chat/completions` | glm-5.3, glm-5.3-flash | 国内直连 |
@@ -1327,4 +1327,576 @@ ZhikunCode 通过 Bridge 模块提供跨端桥接（Cross-Platform Bridge）能�
 
 WORKTREE 不包含父工作区未提交的修改，也不会自动 stash 或提交父目录；实际执行目录与提示一致，原 Project 授权边界不扩大。授权根必须是有效仓库根；其内部子目录可映射到新树执行，无初始提交或 detached HEAD 不支持自动交付。
 
-只有执行正常完成、受管工作已停止且目标分支、历史与工作区状态通过核验时才自动合回。已交付但清理失败仍为完成并附警告；未交付、冲突、超时或停止未确认会保留工作区与分支，并返回实际恢复位置。Git 自然退出后不会为清理终止 hook 后台进程。Linux 和 macOS 对仍在受管进程组内的普通后台后代保留目录；主动脱离该组的守护进程不在此保证内。其他平台沿用原有尽力跟踪能力，不承诺同等级的后代停止证明。停止服务也不删除 worktree 或代理分支。 自动交付遵守 Git 忽略规则：ignored 文件不会强制加入提交，正常清理时可能随目录删除；需要保留的交付文件应放在非忽略路径。子模
+只有执行正常完成、受管工作已停止且目标分支、历史与工作区状态通过核验时才自动合回。已交付但清理失败仍为完成并附警告；未交付、冲突、超时或停止未确认会保留工作区与分支，并返回实际恢复位置。Git 自然退出后不会为清理终止 hook 后台进程。Linux 和 macOS 对仍在受管进程组内的普通后台后代保留目录；主动脱离该组的守护进程不在此保证内。其他平台沿用原有尽力跟踪能力，不承诺同等级的后代停止证明。停止服务也不删除 worktree 或代理分支。 自动交付遵守 Git 忽略规则：ignored 文件不会强制加入提交，正常清理时可能随目录删除；需要保留的交付文件应放在非忽略路径。子模块内部未提交内容会阻止交付，不递归提交。
+
+`Worktree remove` 仅安全清理本进程登记、属于当前项目且已无占用的空树或已交付工作区，不提供强制丢弃。保留目录不是永久归档，也不承诺跨重启自动恢复管理。手动清理还会保守检查创建会话与当前会话的受管后台任务；同会话中无关的后台任务也可能使清理暂缓。内部串行化不覆盖外部 Git 或其他工具的并发写入。
+
+
+### 后台 Task 与计划清单
+
+`TaskCreate` 立即提交实际后台执行，返回任务 ID 和创建回执；任务是否成功由执行结果决定。支持 `agent`、`shell`，以及单次通用子代理兼容类型 `local_workflow`、`monitor_mcp`、`dream`；后三者不提供周期监控或特殊优先级。
+
+任务通常经历 `PENDING → RUNNING → COMPLETED / FAILED / CANCELLED`；开始前取消可直接进入 `CANCELLED`。运行中的取消先登记请求，待执行与所属受管资源退出后发布终态。单任务默认 **30 分钟**超时，超时退出记为 `FAILED` 并保留超时原因。Task 在服务进程内共享 **10 个**并发名额，满额立即返回 `TASK_CAPACITY_REACHED`，不会排队等待空位；这一限额独立于 Agent 并发限制。
+
+| 工具 | 职责 | 结果与边界 |
+|------|------|-----------|
+| **TaskCreate** | 创建并启动后台任务 | 用返回的 `taskId` 跟踪；创建成功不代表执行成功 |
+| **TaskList** | 列出当前会话的任务 | 查看状态与输出摘要，可按状态筛选 |
+| **TaskGet** | 查询当前会话内指定任务 | 获取状态、已保存的输出和可用错误信息，以及取消请求和停止确认字段；返回内容受长度限制 |
+| **TaskUpdate** | 替换任务的存储输出 | 不改变执行状态；运行中的临时说明可被最终执行输出替换 |
+| **TaskStop** | 按 `taskId` 请求取消当前会话的任务 | 回执表示请求已发出，继续用 TaskGet 确认退出 |
+| **TodoWrite** | 维护计划与进度清单 | 记录待办与完成情况，不启动后台执行 |
+
+Task 的执行状态由 `TaskCoordinator` 管理，查询区分“已请求取消”（`cancellationRequested`）与“停止已确认”（`terminationConfirmed`）。任务记录保存在服务进程内存中；输出与错误的存储、查询返回各有长度限制，超过时可能截断。`TaskUpdate` 可在任务结束后修订输出，但不会改写状态或错误；`TaskStop` 使用 Task 记录的任务 ID，后台 Agent 回执中的代理 ID 属于另一条执行链路。
+
+典型用法：并行探索后，由主 Agent 汇总并决定自行实现或委派，再通过验证证据完成交付。
+
+```text
+并行探索：多个 explore Agent 分别调查
+  -> 主 Agent 汇总结论与实施方案
+  -> 实现（主 Agent 完成或委派）
+  -> verification Agent 执行验证
+  -> 提交命令、输出与验证结论
+  -> 主 Agent 审阅证据并交付
+```
+
+需要单独跟踪长命令或后台代理任务时，用 `TaskCreate` 启动、`TaskList`／`TaskGet` 查询，必要时用 `TaskStop` 请求取消。计划拆解与进度展示使用 `TodoWrite`。
+
+---
+
+## 🧩 MCP 工具扩展
+
+ZhikunCode 实现了标准的 [MCP（Model Context Protocol）](https://modelcontextprotocol.io/) 协议，支持 Client + Server 双向模式，通过 4 种传输方式（StdIO/SSE/WebSocket/HTTP）连接外部 MCP 服务：
+
+### 预置 MCP 服务
+
+当前注册表包含 17 个服务、83 个白名单工具。服务是否在运行时开放由独立的服务级开关控制；实际可用性还取决于百炼 API Key、控制台开通状态和账户额度。
+
+- **默认开启（4 个）**：智谱联网搜索、高德地图、千问图像、万相视频。
+- **默认关闭（13 个）**：新闻、法律、企业信息、文本内容审核、A 股金融数据、企业知识产权、万方文献、arXiv、1688 选品、物流、贵金属、零售洞察、旅游消费。
+- **上下文隔离**：关闭的服务不连接、不注册、不注入模型工具上下文，直接调用返回拒绝结果。
+- **用户控制**：点击页面顶部的 **MCP** 徽章进入 **MCP 管理**。开关即时生效，状态默认保存在 `~/.zhikun/mcp-service-states.json`；Docker 使用持久化路径 `/app/data/mcp-service-states.json`。
+
+| 工具 | 说明 | 来源 |
+|------|------|------|
+| **高德地图（13 项）** | IP 定位、天气、地理编码、地点搜索、距离与路线规划 | DashScope MCP |
+| **千问图像生成（3 项）** | 文生图、单图编辑和多图融合 | DashScope Streamable HTTP MCP |
+| **万相视频生成（8 项）** | 文生视频、图生视频、数字人和首尾帧视频的异步提交与查询 | DashScope Streamable HTTP MCP |
+| **网络搜索 Pro** | 联网搜索，返回网页摘要 | DashScope MCP |
+| **OneKey 新闻 / 法律 / 企业 / 内容审核（13 项）** | 外部数据查询与文本安全 | DashScope Streamable HTTP MCP |
+| **东方财富妙想（11 项）** | 股票行情、公告、研报、财务、资金与市场数据查询 | DashScope Streamable HTTP MCP |
+| **企业知识产权（1 项）** | 企业知识产权信息查询 | DashScope Streamable HTTP MCP |
+| **万方文献（2 项）** | 学术文献检索与详情查询 | DashScope Streamable HTTP MCP |
+| **arXiv 论文（4 项）** | 论文搜索、详情、作者与分类查询 | DashScope SSE MCP |
+| **1688 选品（1 项）** | 商品选品与货源查询 | DashScope Streamable HTTP MCP |
+| **物流快递（2 项）** | 快递物流查询与轨迹跟踪 | DashScope SSE MCP |
+| **贵金属行情（6 项）** | 黄金、白银等贵金属行情与市场数据 | DashScope Streamable HTTP MCP |
+| **连锁商业 / 茶饮洞察（8 项）** | 连锁品牌、门店、商圈与茶饮市场洞察 | DashScope Streamable HTTP MCP |
+| **旅游洞察（10 项）** | 景区、客流、酒店与旅游市场数据分析 | DashScope Streamable HTTP MCP |
+
+### 可选外部 MCP 服务
+
+GitHub、Context7 和 Alibaba Cloud Ops 通过 `.env` 中的 `ZHIKUN_MCP_SERVERS` 配置。配置只会让服务进入可选列表，三个服务均默认关闭，必须由用户在 **MCP 管理** 页面手动启用。不要使用 `MCP_SERVERS`：该名称会与 Spring Boot 的 `mcp.servers` 配置绑定冲突。完整 JSON 模板见 [`.env.example`](.env.example)，真实密钥不得提交到 Git。
+
+| 服务 | 默认状态（配置后） | 工具白名单 |
+|------|------------------|------------|
+| **GitHub MCP Server** | 默认关闭，需在管理页手动启用 | `get_me`、`get_file_contents`、`search_code`、`list_branches`、`list_commits`、`list_pull_requests`、`pull_request_read`；强制只读和 Lockdown 模式 |
+| **Context7** | 默认关闭，需在管理页手动启用 | `resolve-library-id`、`query-docs` |
+| **Alibaba Cloud Ops** | 默认关闭，需在管理页手动启用 | `ECS_DescribeInstances`、`ECS_DescribeRegions`、`ECS_DescribeSecurityGroups`、`OSS_ListBuckets`、`OSS_ListObjects` |
+
+```bash
+# 仅示例占位符；请将真实值放入已被 Git 忽略的 .env
+CONTEXT7_API_KEY=your-context7-api-key
+ALIBABA_CLOUD_ACCESS_KEY_ID=your-access-key-id
+ALIBABA_CLOUD_ACCESS_KEY_SECRET=your-access-key-secret
+GITHUB_TOOLS=get_me,get_file_contents,search_code,list_branches,list_commits,list_pull_requests,pull_request_read
+GITHUB_READ_ONLY=1
+GITHUB_LOCKDOWN_MODE=1
+ALIBABA_CLOUD_OPS_VISIBLE_TOOLS=ECS_DescribeInstances,ECS_DescribeRegions,ECS_DescribeSecurityGroups,OSS_ListBuckets,OSS_ListObjects
+# ZHIKUN_MCP_SERVERS=<从 .env.example 复制 JSON 模板>
+```
+
+修改 `.env` 或外部 MCP 连接配置后需要重启；重启后还需在 **MCP 管理** 页面手动启用所需服务。之后在管理页启用或关闭服务无需再次重启。
+
+### 自定义 MCP 工具
+
+管理员可在 `configuration/mcp/mcp_capability_registry.json` 中注册新的 MCP 工具。这里的 `enabled` 是工具白名单，不是用户服务开关：
+
+```json
+{
+  "id": "mcp_your_tool",
+  "name": "你的工具名称",
+  "toolName": "mcp_server_tool_name",
+  "url": "https://your-mcp-server/mcp",
+  "transportType": "HTTP",
+  "domain": "your_domain",
+  "category": "MCP_TOOL",
+  "enabled": true
+}
+```
+
+### MCP 协议能力增强
+
+- **MCP Roots 安全边界**：声明工作区文件系统根，防止 MCP 服务器越界访问
+- **MCP 长操作进度追踪**：实时显示 MCP 工具执行进度，支持用户取消
+- **MCP Schema 智能压缩**：自动压缩大型工具参数描述，减少 LLM 上下文占用
+- **MCP 服务级上下文隔离**：关闭的服务不会建立连接、注册工具或向模型上下文注入 Schema
+- **MCP 失败处理**：远端工具报告错误时保留失败状态及诊断；连接不可用、超时或调用异常时返回对应错误，不以历史成功结果替代。
+
+### MCP 协议传输层
+
+ZhikunCode 支持 MCP 协议的 Client + Server 双向模式，覆盖 4 种传输方式：
+
+| 传输方式 | 方向 | 适用场景 |
+|---------|------|----------|
+| **StdIO** | Client | 本地进程通信，启动外部 MCP Server |
+| **SSE (Server-Sent Events)** | Client | 远程 HTTP 长连接，如 DashScope 托管 MCP |
+| **WebSocket** | Client/Server | 双向实时通信 |
+| **HTTP (Streamable)** | Client/Server | 标准 HTTP 请求响应 |
+
+---
+
+## 🛠️ 内置工具集
+
+ZhikunCode 提供 **40+ 内置工具**，并支持 MCP、插件与平台条件工具动态扩展；最终可用集合以当前部署、Feature Flag 和已连接的 MCP Server 为准：
+
+| 分类 | 工具 | 说明 |
+|------|------|------|
+| **文件操作** | Read、Write、Edit、NotebookEdit | 读取、写入、编辑文件（原子写入+SHA-256冲突检测），支持 Jupyter Notebook；Read 支持大图片自动外置化（>50KB 转 JSON 引用，由 ImageRefInjector 按需注入） |
+| **代码搜索** | Grep、Glob、ToolSearch、LSP、Snip | 正则搜索、文件匹配、工具搜索、LSP 语言服务（含调用层级分析）、代码片段、智能分层搜索（作用域感知 4 层优先级路由） |
+| **命令执行** | Bash、PowerShell、REPL | Shell 沙箱执行（动态超时分类 + 受控恢复提示，不自动重试）、Windows PowerShell、交互式 REPL 会话 |
+| **Git 操作** | Git、Worktree | Git 命令执行、Worktree 管理 |
+| **Web 工具** | WebSearch、WebFetch、WebBrowser | 网络搜索、网页抓取、浏览器自动化 |
+| **Agent 委派** | Agent | 五种角色、独立上下文、并行执行、同步或后台结果回收 |
+| **任务管理** | TaskCreate、TaskGet、TaskList、TaskUpdate、TaskStop | 当前会话的后台执行、状态与结果查询、输出更新和取消请求 |
+| **交互** | AskUserQuestion、Brief、Sleep、TodoWrite | 用户提问、基础上下文展示、等待、任务清单；多选问题须显式设置 multiSelect |
+| **定时任务** | CronCreate、CronList、CronDelete | 定时任务管理 |
+| **计划工具** | EnterPlanMode、ExitPlanMode、VerifyPlanExecution | EnterPlanMode／ExitPlanMode 尚未接入权限切换，返回 PLAN_MODE_UNAVAILABLE；VerifyPlanExecution 提供文件、内容与命令结果检查 |
+| **配置** | Config、SyntheticOutput | 配置管理、合成输出 |
+| **监控** | Monitor、CtxInspect、TerminalCapture | 系统监控、上下文检查、终端输出捕获 |
+| **验证** | VerifyJourney | 运行时验证 — 浏览器端到端测试、HTTP API 断言链、混合模式自动切换；内部由 BrowserVerifier、HttpApiVerifier 策略实现 |
+| **MCP 扩展** | MCP 工具适配器 | 连接外部 MCP 服务（动态注册） |
+
+`PLAN` 权限模式仍然可用，与计划面板相互独立。`/plan` 和 `/plan on [名称]` 显示前端计划面板，`/plan off` 隐藏面板；这些命令不会改变会话权限。`EnterPlanMode`／`ExitPlanMode` 工具也不会切换权限、提交审批或展示计划文件。
+
+后台任务的创建、查询、输出更新与取消流程，以及它们和 `TodoWrite` 的用途区别，见上文“Agent 委派与后台任务”。
+
+`Edit` 更新已有文件时要求非空匹配；已有空文件请用 `Write` 填入内容。不存在的文件仍可通过 `Edit` 的空 `old_string` 创建。
+
+---
+
+## 📈 可视化
+
+ZhikunCode 提供多种可视化能力，展示 AI 编程过程中的数据和状态：
+
+| 功能 | 说明 |
+|------|------|
+| **Mermaid 图表渲染** | AI 回复中的 mermaid 代码块自动渲染为交互式矢量图，支持复制 SVG / 下载 PNG |
+| **API 序列图** | 自动从会话中提取工具调用记录，生成 Mermaid 序列图，支持过滤和详情查看 |
+| **Git 时间线** | 可视化 Git 提交历史，支持 Diff 查看和 Blame 视图，commit 类型自动着色 |
+| **工具进度可视化** | 工具执行过程显示进度条、ETA 预估和迷你日志查看器 |
+| **文件树导航** | 侧边栏项目文件树，支持搜索过滤、虚拟滚动、文件类型图标 |
+| **代码复杂度 Treemap** | 基于 recharts 的交互式矩形面积图，面积映射代码行数(LOC)，颜色映射风险等级(A-E)，支持钻取导航、语言/风险过滤、统计卡片，Python radon + tree-sitter 多语言分析 |
+| **变更影响链路** | 基于 @xyflow/react 的 DAG 可视化，展示代码变更的影响传播路径，LibCST 精准解析 Python 调用图，BFS 逐层传播分析，节点类型/置信度/影响层级一目了然 |
+| **API 契约可视化** | 自动合并 Java + Python 双端 OpenAPI 规范，端点列表按 Tag 分组、HTTP 方法颜色编码、Schema 递归展示，支持 All/Java/Python 数据源切换 |
+| **代码→图表自动生成** | 输入代码文件路径自动生成 Mermaid 时序图/流程图，Python LibCST + tree-sitter 多语言解析，调用链 BFS 遍历自动识别 Controller/Service/Repository 参与者，五维置信度评分(0-1)，Monaco Editor 实时编辑源码，SVG 复制 / PNG 下载导出，支持 1-5 级遍历深度控制 |
+| **代码路径追踪可视化** | 基于 @xyflow/react 的代码调用路径追踪可视化，Python CodePathTracer 正向 BFS 追踪 + 六层分层标注（Controller/Service/Repository/Database/External/Utility），dagre TB 布局算法自动排列节点，自定义 LayerNode 按层级着色，MiniMap 全局导览 + LayerStatsBar 层级统计，支持 API 端点扫描、参数追踪、节点点击详情、maxDepth 深度控制，通过侧边栏"代码路径" Tab 进入 |
+| **运行时验证进度面板** | JourneyVerifyPanel — 实时显示验证步骤执行状态（waiting/executing/passed/failed）、STOMP 推送进度、证据链关联 |
+| **RV-4 证据包查看器** | EvidenceBundleView — 7 类证据（screenshot / command / console / test / video / har / diff）按类型分 Tab 展示；MobileApprovalSheet 订阅 STOMP `verify_attention` 通知（`/user/queue/messages`），移动端底部弹层支持一键审批/驳回；REST API：`GET /api/evidence/{bundleId}`、`GET /api/evidence/session/{sessionId}`、`GET /api/evidence/blob/{sha256}` |
+| **Activity Panel 活动面板** | 三层卡片展示（L1 紧凑 → L2 展开 → L3 Portal），实时显示工具执行状态、Signal 风险标记、审批决策状态 |
+
+> **v9.3 新增**：`/visualize` 命令通过 VisualizationAutoRouter 自动推送三种格式（mermaid / json / text），WS STOMP `/app/command` 端到端延迟 p50 < 3ms。
+
+---
+
+## ⚙️ 配置说明
+
+### 模型选择与路由
+
+主对话使用用户选择的模型；子 Agent 按显式 `model` → 父查询模型 → `premium` 别名解析模型。快速查询与压缩摘要使用各自配置：快速查询默认百炼 `deepseek-v4.1-flash`，压缩摘要默认 DeepSeek 官方直连 `deepseek-flash`；只有当前模型不支持图片时才触发视觉兜底。百炼与 DeepSeek 直连的模型 ID、端点和 Key 独立。
+
+百炼 V4.1 Flash 的流式请求、快速查询和压缩摘要统一发送 `thinking.type=enabled`、字符串 `reasoning_effort="max"`；DeepSeek 官方直连的流式请求与压缩摘要同样发送该参数组合（`chatSync` 非流式快速查询不注入 thinking）。2026-09-15 Token Plan 实测接受 `"max"`、拒绝整数；未验证内部数值映射。
+
+### 环境变量
+
+环境变量通过 `.env` 文件管理。复制 `.env.example` 后按需修改：
+
+**多 Provider 配置（推荐）：**
+
+| 变量 | 必填 | 默认值 | 说明 |
+|------|:---:|--------|------|
+| `LLM_PROVIDER_DASHSCOPE_API_KEY` | — | — | 千问/DashScope API Key |
+| `LLM_PROVIDER_DASHSCOPE_TOKEN_PLAN_API_KEY` | — | — | 阿里云百炼 Token Plan 专属 API Key |
+| `LLM_PROVIDER_DEEPSEEK_API_KEY` | — | — | DeepSeek API Key |
+| `LLM_PROVIDER_MOONSHOT_API_KEY` | — | — | Moonshot/Kimi API Key |
+| `LLM_PROVIDER_KIMI_CODE_API_KEY` | — | — | Kimi Code 订阅 API Key；留空不注册订阅渠道 |
+| `LLM_PROVIDER_KIMI_CODE_MODELS` | — | k3,kimi-for-coding | Kimi K3 / K2.8 Preview 订阅模型列表 |
+| `LLM_PROVIDER_ZHIPU_API_KEY` | — | — | 智谱 GLM API Key |
+| `LLM_PROVIDER_OPENROUTER_API_KEY` | — | — | OpenRouter API Key；留空不注册此 Provider |
+| `LLM_PROVIDER_OPENROUTER_MODELS` | — | openrouter/anthropic/claude-fable-5.1 | OpenRouter 可用模型列表（逗号分隔） |
+| `LLM_DEFAULT_MODEL` | — | deepseek-v4.1-flash | 默认模型（百炼 Token Plan）；不可用时回退到当前 Provider 的有效默认模型 |
+| `LLM_FAST_MODEL` | — | deepseek-v4.1-flash | 快速辅助查询与分类器回退优先使用的模型 |
+| `LLM_COMPACT_MODEL` | — | deepseek-flash | 对话压缩摘要模型（DeepSeek 官方直连），独立于快速模型选择 |
+| `LLM_COMPACT_PROVIDER` | — | deepseek | 压缩摘要 Provider；需已注册该 Provider，配合 `LLM_COMPACT_MODEL` 使用 |
+| `LLM_VISION_FALLBACK_MODEL` | — | deepseek-v4.1-flash | 当前模型不支持图片时优先使用的视觉模型 |
+
+> 多 Provider 模式下至少配置一个 Provider 的 API Key 即可。前端支持自由切换已配置的 Provider。
+
+**WebSearch 配置（本地启动与 Docker Compose 均支持）：**
+
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `WEB_SEARCH_BACKEND` | auto | `auto`：已连接的 MCP zhipu-websearch → disabled；`deepseek`：显式启用 DeepSeek；也支持 `mcp`、`disabled` |
+| `WEB_SEARCH_DEEPSEEK_API_KEY` | 空 | 专用 Key；未设置、空串或仅空白时复用 `LLM_PROVIDER_DEEPSEEK_API_KEY` |
+| `WEB_SEARCH_DEEPSEEK_BASE_URL` | https://api.deepseek.com | API 根地址，不附加 `/v1` 或 `/v1/tools/search`；未设置或空白时使用默认值 |
+
+设置 `WEB_SEARCH_BACKEND=deepseek` 并重启后启用收费搜索；`auto` 不会因存在 DeepSeek Key 自动启用它，调用失败也不自动切换后端。选定的 Key 来源按逗号拆分、trim、去空后固定使用首项，不参与 LLM Key 轮换；非空白专用值若没有可用项（如 `,,`）则禁用搜索。
+
+DeepSeek 仅接入 Search，`include_content` 默认关闭。收到 HTTP 408、429、500–599 时最多 3 次尝试（含首次），单次请求 45 秒超时；可解析的 `Retry-After` 与本地退避取较大值，单次等待超过 30 秒或无法解析时停止重试，不提前重发。重试产生的等待会计入整个工具调用的实际耗时，但不占用单次请求的超时。
+
+**OpenRouter / Claude Fable 5.1：** 在 `.env` 中填写 `LLM_PROVIDER_OPENROUTER_API_KEY`，重启服务后从模型列表选择 `Claude Fable 5.1（OpenRouter）`（`openrouter/anthropic/claude-fable-5.1`）。如需设为默认模型，增加 `LLM_DEFAULT_MODEL=openrouter/anthropic/claude-fable-5.1`。本地启动与 Docker Compose 均支持上述变量。
+
+本次模型目录精简由项目主动进行，不表示供应商下架。OpenRouter **Provider 默认模型**从免费预览的 Union Alpha 改为收费的 Claude Fable 5.1，仅影响使用该 Provider 默认回退的请求；全局 `app.model.default` 与 `LLM_DEFAULT_MODEL` 的默认值仍为百炼 `deepseek-v4.1-flash`。Fable 价格参考见下文。
+
+接入复用现有 `llm.providers.*` → `MultiProviderConfiguration` → `OpenAiCompatibleProvider` 链路，端点为 `https://openrouter.ai/api/v1`，沿用流式输出、图片输入、工具调用和 Key 轮换。能力由 `ModelRegistry` 统一提供给 `/api/models`，无需新增前端分支。
+
+**OpenRouter 强推理模型与渠道隔离：**
+
+| 界面名称 | ZhikunCode 模型 ID | 上游模型 ID | 上下文 / 最大输出 |
+|---|---|---|---|
+| Claude Fable 5.1（OpenRouter） | `openrouter/anthropic/claude-fable-5.1` | `anthropic/claude-fable-5.1` | 1,000,000 / 128,000 |
+
+Claude Fable 5.1 使用已有 OpenRouter Key，默认请求 `reasoning.effort=max`、`exclude=false`，不受通用 thinking 关闭开关降档；官方当前标记该模型为强制推理模型。上下文使用官方完整窗口，仍保留现有输出预留、压缩阈值和安全余量。单次输出预算由现有运行配置决定，上表是模型支持上限，并非每次都生成该长度。
+
+内部 ID 的 `openrouter/` 前缀只用于路由、能力、会话与重试隔离，发送请求时去掉；现有 ZenMux 的 `openai/gpt-6-astra`、`anthropic/claude-fable-5.1` 路由保持不变。OpenRouter 的模型列表若填写官方原始 ID `anthropic/claude-fable-5.1`，启动时也会自动规范化并去重，避免注册顺序决定渠道。其他重复 ID 明确拒绝歧义路由。
+
+流式 thinking 使用现有展示事件；`reasoning_details`（含签名/加密数据）按原序保存，并仅对同 Provider、同模型的后续请求回传，切换渠道或模型不复用。价格按官方普通上下文参考录入，当前输入 $10/M、输出 $50/M。
+
+规格与推理参数核对日期：2026-09-17。参考：[Fable](https://openrouter.ai/anthropic/claude-fable-5.1)、[Reasoning 文档](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens)。
+
+**单 Provider 配置（向后兼容）：**
+
+| 变量 | 必填 | 默认值 | 说明 |
+|------|:---:|--------|------|
+| `LLM_API_KEY` | ✅ | — | LLM 服务商的 API Key |
+| `LLM_BASE_URL` | — | DashScope | LLM API 地址 |
+| `LLM_DEFAULT_MODEL` | — | qwen3.8-max-0902 | 默认模型 |
+| `LLM_MODELS` | — | 千问系列 | 可用模型列表（逗号分隔） |
+
+> 如 `LLM_PROVIDER_*` 均为空，系统自动回退到单 Provider 模式。
+
+**通用配置：**
+
+| 变量 | 必填 | 默认值 | 说明 |
+|------|:---:|--------|------|
+| `ZHIKUN_PORT` | — | 8080 | Docker 映射的宿主机端口 |
+| `SPRING_PROFILES_ACTIVE` | — | production | Spring 配置文件 |
+| `JAVA_OPTS` | — | -Xms256m -Xmx1024m | JVM 参数 |
+| `WORKSPACE_PATH` | — | ./workspace | 挂载到容器的工作目录 |
+| `ZHIKUN_DEFAULT_WORKSPACE` | — | 服务进程目录；`./start.sh` 为仓库根 | 非 Web 客户端未指定 Project 时的服务端兜底目录，不自动授予普通编辑权限 |
+| `ZHIKUN_WORKSPACE_ALLOWED_ROOTS` | — | 空 | 允许登记和浏览的服务端根目录，多个目录用逗号分隔；远程登记时必须配置 |
+| `ZHIKUN_LOCAL_PICKER_ENABLED` | — | false（后端）；true（`./start.sh` 且两个相关变量均无非空配置） | 仅供直连本机桌面服务浏览本机文件系统；显式 `false` 和 allowed roots 配置均会保留，反向代理和生产部署应保持关闭并配置 allowed roots |
+| `ZHIKUN_GLOBAL_DB_PATH` | — | `~/.config/ai-code-assistant/global.db` | Project 授权和全局配置数据库文件路径 |
+| `ZHIKUNCODE_DATABASE_PROJECT_ROOT` | — | Project 工作目录 | Session 数据库根目录；Docker Compose 固定为 `/app/data` |
+| `ALLOW_PRIVATE_NETWORK` | — | true（Docker） | Docker 环境下允许私有网段免认证访问 |
+| `LOG_DIR` | — | /app/log | 容器内日志目录 |
+| `MCP_REGISTRY_PATH` | — | 自动配置 | MCP 能力注册表文件路径 |
+
+**高级配置：**
+
+| 变量 | 必填 | 默认值 | 说明 |
+|------|:---:|--------|------|
+| `FEATURE_BACKGROUND_AGENT_WAIT` | — | true | 等待并汇总当前父 Run 的后台 Agent 结果；设为 false 关闭 |
+| `AGENT_TIMEOUT_MAX_WAIT_MINUTES` | — | 31 | 每批后台 Agent 结果的等待预算，单位分钟；不修改子 Agent 执行超时 |
+| `ZHIKUN_COORDINATOR_MODE` | — | 0 | Feature flag，启用协调器模式（0=关闭，1=开启） |
+| `ZHIKUN_DELETE_CONFIRM_CODE` | — | 空 | 删除会话二次确认验证码；配置后 Web 删除会话须输入该验证码，未配置保持原确认流程 |
+| `LLM_PROVIDER_DASHSCOPE_MODELS` | — | qwen3.8-max-0902 | 按量计费 DashScope 可用模型列表（逗号分隔；实际目录可动态扩展） |
+| `LLM_PROVIDER_DASHSCOPE_TOKEN_PLAN_MODELS` | — | qwen3.8-max,qwen3.8-flash,deepseek-v4.1-flash,bailian/glm-5.3 | 百炼 Token Plan Provider 可用模型列表；与普通 DashScope、DeepSeek 直连配置相互独立 |
+| `LLM_PROVIDER_DEEPSEEK_MODELS` | — | deepseek-flash | DeepSeek 可用模型列表；默认使用 V4.1 Flash（逗号分隔） |
+| `LLM_PROVIDER_MOONSHOT_MODELS` | — | kimi-k3 | Moonshot 可用模型列表（逗号分隔） |
+| `LLM_PROVIDER_ZHIPU_MODELS` | — | glm-5.3,glm-5.3-flash | 智谱 GLM 可用模型列表（逗号分隔） |
+
+上述两个后台等待变量需进入后端进程环境；Docker 部署须通过 Compose override 的 `environment` 显式传入，仅写入项目 `.env` 不会自动透传。
+
+**上下文管理配置（application.yml）：**
+
+| 配置项 | 默认值 | 说明 |
+|--------|--------|------|
+| `context.cascade.incremental-collapse.enabled` | true | 启用增量折叠 |
+| `context.cascade.incremental-collapse.segment-turns` | 10 | 折叠触发间隔（轮数） |
+| `context.cascade.incremental-collapse.session-timeout-minutes` | 30 | 会话超时时间 |
+| `features.flags.CACHED_MICROCOMPACT` | true | 启用微压缩服务 |
+| `features.flags.TOKEN_BUDGET` | false | Token 预算控制（默认关闭，需要时手动开启） |
+| `features.flags.SELF_CORRECTION_LOOP` | false | 执行失败自动诊断修复循环（编译错误/测试失败，最多重试3次） |
+| `features.flags.PRECISE_TOKENIZER` | false | 精确 Token 计数（调用 Python tiktoken，替代字符估算） |
+| `features.flags.GIT_DIFF_TRACKER` | false | Git 变更追踪与编辑历史聚合 |
+| `features.flags.SEARCH_STRATEGY_ROUTER` | false | 作用域感知分层搜索策略路由 |
+| `RUNTIME_VERIFICATION` | true | 启用运行时验证框架（开启后前端显示验证进度面板，需同时配合 BROWSER_AUTOMATION 或 HTTP_API 能力域） |
+
+### Docker 资源限制
+
+默认资源配置（可在 `docker-compose.yml` 中调整）：
+
+| 配置项 | 默认值 |
+|--------|--------|
+| 内存上限 | 4GB |
+| 内存预留 | 1GB |
+| 健康检查间隔 | 30s |
+| 启动等待时间 | 60s |
+
+> **注意：** 首次构建镜像期间需要更多内存（Maven 编译 + npm build）。如果构建失败，请在 Docker Desktop 设置中增加内存分配至 6GB 以上。运行时容器内存上限为 4GB（可在 docker-compose.yml 中调整）。
+
+---
+
+## ❓ FAQ
+
+<details>
+<summary><b>Q1：支持哪些大模型？</b></summary>
+
+支持所有兼容 OpenAI API 格式的模型，包括：
+
+- **千问 / DashScope**（国内直连，默认推荐）
+- **DeepSeek**（国内直连）
+- **Moonshot / Kimi**（国内直连）
+- **智谱GLM**（国内直连）
+- **MiniMax**（国内直连）
+- **OpenAI gpt-5.6-sol / gpt-5.4-mini**（需外网访问）
+- **Anthropic Claude**（通过 OpenAI 兼容 API）
+- **本地模型**（通过 Ollama、vLLM 等）
+
+只要是兼容 OpenAI API 格式的服务商，配置好 `LLM_BASE_URL` 和 `LLM_API_KEY` 就能用。
+
+</details>
+
+<details>
+<summary><b>Q2：Docker 部署需要什么配置？</b></summary>
+
+**最低要求：**
+- Docker 20.10+
+- Docker Compose V2
+- 4GB+ 可用内存
+- 网络能访问 LLM API 端点（用千问的话国内网络就行）
+
+**部署只需 3 步：**
+```bash
+git clone https://github.com/zhikunqingtao/zhikuncode.git && cd zhikuncode
+cp .env.example .env  # 编辑填入 API Key
+docker compose up -d  # 启动
+```
+
+打开 `http://localhost:8080` 即可使用。
+
+</details>
+
+<details>
+<summary><b>Q3：数据存在哪里？安全吗？</b></summary>
+
+**应用状态和数据库保存在本地**；提示词、相关代码上下文和其他模型输入会发送给你配置的 LLM 服务商：
+
+- **会话数据** — SQLite 数据库，存储在 Docker Volume `zhikun-data` 中
+- **项目代码** — 通过 Volume 挂载你本地的项目目录
+- **API Key** — 只存在你的 `.env` 文件和运行中的容器环境变量中
+
+> **首次升级：** Compose 现在把 Session 数据库和全局配置数据库分别持久化到 `zhikun-data` 中的 `/app/data/.ai-code-assistant` 和 `/app/data/global.db`。已有部署如需保留旧容器内的数据，请先停止并备份 `/app/.ai-code-assistant` 和 `/app/.config/ai-code-assistant/global.db`，再按以下步骤恢复；全程不要使用 `docker compose down -v`。
+>
+> ```bash
+> docker compose stop zhikuncode
+> docker cp zhikuncode:/app/.ai-code-assistant ./ai-code-assistant.backup
+> docker cp zhikuncode:/app/.config/ai-code-assistant/global.db ./global.db.backup
+> docker compose down
+> docker compose create --build zhikuncode
+> docker cp ./ai-code-assistant.backup \
+>   zhikuncode:/app/data/.ai-code-assistant
+> docker cp ./global.db.backup \
+>   zhikuncode:/app/data/global.db
+> docker compose run --rm --user root --entrypoint chown \
+>   zhikuncode -R zhikun:zhikun \
+>   /app/data/.ai-code-assistant /app/data/global.db
+> docker compose start zhikuncode
+> ```
+>
+> `docker compose create` 只创建、不启动新容器；必须在首次 `start` 前完成恢复和 `chown`。旧路径不存在时可跳过对应的 `docker cp` 和恢复目标。确认 Session、配置和已授权 Project 正常后再删除本地备份。
+
+ZhikunCode 不运行任何遥测服务。API Key 直连你配置的 LLM 服务商，中间不经过任何代理或中转服务器。
+
+</details>
+
+<details>
+<summary><b>Q4：支持内网 / 离线部署吗？</b></summary>
+
+**支持。** Docker 部署后完全在内网运行。
+
+- **使用国产模型（千问/DeepSeek）：** 国内网络直连，无需科学上网
+- **完全离线：** 搭配 Ollama 运行本地模型，`LLM_BASE_URL=http://host.docker.internal:11434/v1`
+- **企业内网：** 只需确保服务器能访问 LLM API 端点即可
+
+</details>
+
+<details>
+<summary><b>Q5：Agent 委派与后台任务怎么用？</b></summary>
+
+在对话中说明任务、分工范围和预期结果，例如：
+
+> “让两个 explore Agent 并行调查认证接口和前端登录流程，分别给出文件位置与风险；你汇总结论后提出修改方案。实现完成后，再让 verification Agent 执行已授权的测试并报告证据。”
+
+主 Agent 可同步等待子任务，或通过 `run_in_background=true` 在推进其他工作后收集当前 Run 的结果。需要隔离文件修改时可指定 `isolation=worktree`，执行基于已提交 HEAD 的独立工作区，并在安全检查通过后合回。
+
+需要持续查询的后台执行，可要求“用 TaskCreate 运行测试，随后用 TaskGet 查询结果”；取消时按该任务 ID 使用 TaskStop，并查询停止是否确认。TodoWrite 用于计划清单。具体角色、模型选择与交付边界见上文“Agent 委派与后台任务”。
+
+</details>
+
+<details>
+<summary><b>Q6：和 VS Code 插件（Copilot/Cline）冲突吗？</b></summary>
+
+**不冲突。** ZhikunCode 是独立的 Web 应用，不依赖任何 IDE，不需要安装插件。
+
+你可以同时使用：
+- **VS Code + Copilot** —— 做行级代码补全
+- **ZhikunCode** —— 做对话式 Agent 编程、复杂任务编排
+
+两者互补，不冲突。
+
+</details>
+
+<details>
+<summary><b>Q7：怎么贡献代码？</b></summary>
+
+欢迎贡献！详细流程见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+简单步骤：
+1. Fork 仓库
+2. 创建功能分支 (`git checkout -b feature/your-feature`)
+3. 提交代码
+4. 创建 Pull Request
+
+推荐从标记为 `good first issue` 的 Issue 开始。
+
+**开发环境需要：** JDK 21、Node.js 22+、Python 3.11~3.12、Maven 3.9+
+
+</details>
+
+<details>
+<summary><b>Q8：为什么选择 Java + React + Python 三端架构？</b></summary>
+
+每种技术选型都有明确的理由：
+
+- **Java 21 + Spring Boot（后端）：**
+  - 强类型 + 成熟的企业级生态，代码可维护性强
+  - Spring WebSocket 原生支持实时通信
+  - Virtual Thread（虚拟线程）天然适合多 Agent 并发执行
+  - 企业 IT 团队容易接受和部署
+
+- **React 18 + TypeScript（前端）：**
+  - 组件化开发，状态管理成熟（Zustand）
+  - TypeScript 提供类型安全
+  - Vite 构建速度快，开发体验好
+  - TailwindCSS 实现高效的 UI 开发
+
+- **Python FastAPI（分析服务）：**
+  - Python 生态在代码分析、AST 解析方面成熟
+  - FastAPI 异步性能好
+  - 作为独立服务，不影响主后端的稳定性
+
+</details>
+
+<details>
+<summary><b>Q9：Docker 部署遇到问题怎么排查？</b></summary>
+
+**容器启动后显示 unhealthy：**
+
+```bash
+# 查看容器状态
+docker ps -a
+
+# 查看启动日志（Java 启动通常需要 30-60 秒）
+docker logs zhikuncode
+
+# 查看健康检查详情
+docker inspect --format='json .State.Health' zhikuncode | python3 -m json.tool
+```
+
+**常见启动失败原因：**
+- `LLM_API_KEY is not configured` — 未配置 API Key，请检查 .env 文件
+- `Unable to access jarfile` — 镜像构建不完整，尝试 `docker compose up --build`
+- 内存不足 — 默认需要 4GB，可在 docker-compose.yml 中调整 `deploy.resources.limits.memory`
+
+**查看运行时日志：**
+```bash
+# 实时跟踪日志
+docker logs -f zhikuncode
+
+# 进入容器查看日志文件
+docker exec -it zhikuncode ls -la /app/log/
+docker exec -it zhikuncode tail -100 /app/log/app.log
+```
+
+**关于 `ALLOW_PRIVATE_NETWORK`：**
+
+此变量控制是否允许 Docker 桥接网络内的请求免认证访问。在 Docker 环境中默认为 `true`，因为容器网络本身已提供隔离。如需更严格的安全策略（如多租户环境），可设置为 `false`，此时所有非 localhost 请求都需要 Bearer Token 认证。
+
+**调整 JVM 内存：**
+
+在 `.env` 中设置：
+```bash
+JAVA_OPTS=-Xms512m -Xmx2048m --enable-preview
+```
+
+</details>
+
+<details>
+<summary><b>Q10：8080 端口被占用怎么办？</b></summary>
+
+修改 `.env` 文件中的端口配置：
+
+```bash
+ZHIKUN_PORT=9090  # 改为任意未被占用的端口
+```
+
+然后重新启动：
+```bash
+docker compose down
+docker compose up -d
+```
+
+访问 `http://localhost:9090` 即可。
+
+</details>
+
+---
+
+## 🤝 贡献
+
+我们欢迎任何形式的贡献 —— Bug 修复、新功能、文档改进都可以。
+
+详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+---
+
+## 📄 开源协议
+
+本项目使用 [MIT License](LICENSE) 开源协议。
+
+---
+
+## 📬 联系
+
+- **邮箱：** alizhikun@gmail.com
+- **GitHub Issues：** [提交问题](https://github.com/zhikunqingtao/zhikuncode/issues)
+
+---
+
+## ⭐ Star History
+
+如果这个项目对你有帮助，欢迎点个 Star ⭐
+
+<div align="center">
+  <a href="https://star-history.com/#zhikunqingtao/zhikuncode&Date">
+    <img src="https://api.star-history.com/svg?repos=zhikunqingtao/zhikuncode&type=Date" alt="Star History Chart" width="600" />
+  </a>
+</div>
+
+---
+
+<div align="center">
+  <p>用 ❤️ 和 AI 构建</p>
+</div>

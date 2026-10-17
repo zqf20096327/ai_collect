@@ -60,7 +60,7 @@ so you can add to it or delete it. To try it without installing anything but uv:
 
 | | |
 |---|---|
-| **Add documents** | Drop `.txt`, `.md` or `.pdf` files anywhere on the page. Each one lands in the right folder, merged with what the wiki already knows. |
+| **Add documents** | Drop text, Markdown, PDF, Word, PowerPoint, Excel or OpenDocument files anywhere on the page. Each one lands in the right folder, merged with what the wiki already knows; a spreadsheet gives a note per sheet. |
 | **Ask questions** | Type a question. The answer cites the notes it used: click one to read it. |
 | **See the brain** | A live map of your folders, notes and links. |
 | **Delete** | Hover a note or folder in the sidebar and press the bin, or **Delete note** at the foot of a note. Links to it go from the other notes. **Empty the wiki** on the home page starts over. |
@@ -140,8 +140,12 @@ With Docker the settings come from `.env`; the page shows them but cannot change
 **The web UI** at http://localhost:8000 shows the folder tree, renders each note
 (with its See-also links and sources), answers questions with clickable
 citations, and shows the tokens spent by the LLM and by the classifier. Drop
-`.txt`, `.md` or `.pdf` files anywhere on the page and each one is catalogued
-automatically; PDFs need a text layer (scanned PDFs need OCR first).
+text (`.txt`, `.md`), PDF, Word (`.docx`), PowerPoint (`.pptx`), Excel (`.xlsx`) or
+OpenDocument (`.odt`, `.ods`) files anywhere on the page and each one is catalogued
+automatically; PDFs need a text layer (scanned PDFs need OCR first). A spreadsheet gives
+one note per sheet, which describes it; its rows stay in the raw copy as CSV, and
+questions get the rows they need. Old binary formats (`.doc`, `.xls`, `.ppt`) are not
+read: save them as `.docx`, `.xlsx` or `.pptx`.
 
 The same through the API:
 
@@ -154,8 +158,7 @@ curl -X POST localhost:8000/ask -H 'content-type: application/json' \
 ```
 
 The wiki is plain Markdown files you can read, edit and keep in git (`./wiki`
-with Docker). The API docs are at http://localhost:8000/docs; with Docker the
-CLI runs in the same image: `docker compose run --rm wiki llmwiki2 check`.
+with Docker). With Docker the CLI runs in the same image: `docker compose run --rm wiki llmwiki2 check`.
 To file a note elsewhere or reword a folder's description from the terminal: `llmwiki2 move finance/pricing.md /sourcing` and `llmwiki2 describe /finance "Money in and out."`.
 In CROW mode, `llmwiki2 audit [--min-confidence 0.7] [--apply]` lists the notes the classifier would file in another folder today (no LLM call; it moves them only with `--apply`), and `llmwiki2 health [--min-filed 5] [--max-share 0.3]` shows, from `log.md`, the folders that keep needing new subfolders or the LLM fallback. Every new note carries a stable `id` in its frontmatter (`wiki.find_note(id)`).
 
@@ -163,7 +166,7 @@ In CROW mode, `llmwiki2 audit [--min-confidence 0.7] [--apply]` lists the notes 
 |---|---|
 | `GET /` | the web UI |
 | `POST /ingest` `{text, title?, resource?, origin?}` | file a source (an `origin` `{source, account?, id, link?, version?, modified?}` makes a repeat with the same content or version return `"unchanged"`); returns the note, folders created, links and token usage |
-| `POST /upload?filename=…` (raw file body) | file a `.txt`, `.md` or `.pdf` file |
+| `POST /upload?filename=…` (raw file body) | file a text, Markdown, PDF, Office or OpenDocument file (a spreadsheet: its other sheets in `parts`) |
 | `POST /ask` `{question}` | answer with citations; returns the notes read and token usage |
 | `GET /tree` · `GET /note?path=…` | folder tree · one note (frontmatter and Markdown body) |
 | `GET /check` · `GET /graph` | lint problems · the wiki as nodes and links (JSON) |
@@ -189,7 +192,7 @@ wiki = Wiki.from_env(bundle="./wiki")        # OKF_* variables and the provider'
 wiki.init()
 
 result = wiki.ingest(open("meeting.md").read(), title="Pricing meeting")
-wiki.ingest_file(open("minutes.pdf", "rb").read(), "minutes.pdf")   # .txt, .md or .pdf
+wiki.ingest_file(open("minutes.pdf", "rb").read(), "minutes.pdf")   # also .docx, .pptx, .xlsx, .odt, .ods
 print(result.action, result.note, result.created_folders, result.related)
 
 answer = wiki.ask("What did we decide about enterprise pricing?")
@@ -202,7 +205,7 @@ The same operations are on the command line:
 
 ```bash
 llmwiki2 --bundle ./wiki init
-llmwiki2 --bundle ./wiki ingest meeting.md     # or a .txt / .pdf
+llmwiki2 --bundle ./wiki ingest meeting.md     # or a .txt, .pdf, .docx, .pptx, .xlsx, .odt, .ods
 llmwiki2 --bundle ./wiki sync ~/OneDrive       # file a folder and keep the wiki in step with it
 llmwiki2 --bundle ./wiki --mode classic ask "What did we decide about pricing?"
 llmwiki2 --bundle ./wiki check        # lint: OKF conformance, index drift, broken links

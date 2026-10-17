@@ -541,5 +541,140 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "tugcantopaloglu/godot-mcp": {
+  "commit_90d": 4,
+  "commit_7d": 0,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-07-13",
+  "rel_days": 96,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 61,
+   "GDScript": 38,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "AndraxDev/speak-gpt": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": "v4.39",
+  "rel_pub": "2026-07-19",
+  "rel_days": 90,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Kotlin": 100,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "deepseek-ai/deepseek-recipe": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 86,
+   "Python": 9,
+   "JavaScript": 3,
+   "CSS": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "owndev/Open-WebUI-Functions": {
+  "commit_90d": 142,
+  "commit_7d": 34,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 6,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Python": 97,
+   "Shell": 3
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "DebarghaG/proofofthought": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.0.0rc1",
+  "rel_pub": "2026-06-12",
+  "rel_days": 127,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

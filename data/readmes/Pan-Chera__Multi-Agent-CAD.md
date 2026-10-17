@@ -179,6 +179,11 @@ The default configuration targets an OpenAI-compatible DashScope endpoint.
 Other providers are covered in the
 [single-part configuration guide](multi_agent_cad/README.md#configuration-and-model-providers).
 
+The bundled cadpy runtime currently requires OCP 7.x, so installation constrains
+`build123d` to `<0.13`. Version 0.13 switches to OCP 8 and cannot load the current
+STEP runtime. If an existing environment has already upgraded, run
+`python -m pip install "build123d>=0.8,<0.13"` to restore compatible dependencies.
+
 > **pip users (no conda)**: `aider-chat` pins `numpy==1.26.4`, but `build123d>=0.8` requires `numpy>=2,<3` — these conflict in pure pip. Use this workaround (verified on macOS arm64 + Python 3.11):
 >
 > ```bash
@@ -189,7 +194,7 @@ Other providers are covered in the
 > # Verified: aider 0.82.3 imports cleanly on numpy 2.x — the pin is over-cautious upstream.
 > pip install "aider-chat==0.82.3"
 > pip install --no-deps --force-reinstall "numpy>=2,<2.3"
-> pip install "build123d>=0.8" "langgraph>=0.2,<0.3" "langgraph-checkpoint>=2.0,<3.0" \
+> pip install "build123d>=0.8,<0.13" "langgraph>=0.2,<0.3" "langgraph-checkpoint>=2.0,<3.0" \
 >             "pydantic>=2.5" "openai>=1.20.0" "anthropic>=0.30" \
 >             "trimesh>=4.0" "rtree>=1.1" "scipy>=1.10" "scikit-learn>=1.3" \
 >             "fastapi>=0.110" "uvicorn[standard]>=0.27" "ipython>=8.15" "pytest>=7.4"
@@ -218,6 +223,18 @@ pip install -e ".[web]"
 python -m multi_agent_cad.web
 ```
 
+The provider selector includes OpenRouter (`https://openrouter.ai/api/v1`).
+Switching presets fills suggested stage and Aider model names; models you have
+edited manually are preserved. Existing endpoint and model settings are loaded
+from `config.py` when the page opens. For OpenRouter, Aider uses an
+OpenAI-compatible model name such as `openai/qwen/qwen3-max`.
+
+If the key field is blank, the Web UI uses the server's `DASHSCOPE_API_KEY`,
+then `DS_API_KEY` from `config.py`. Explicit form keys take priority; API clients
+can also supply the existing `config.DS_API_KEY` request field. Server keys are
+never included in the configuration schema response or written to job config
+files. Use a key for the selected provider.
+
 The UI listens on `127.0.0.1` by default. It executes generated Python with
 your user account's permissions, so do not expose it directly to an untrusted
 network. Copying results to an arbitrary local directory is disabled unless
@@ -234,7 +251,7 @@ returns `403`:
 curl -X POST http://127.0.0.1:8000/api/run \
   -H "X-MAC-CSRF: 1" \
   -H "Content-Type: application/json" \
-  -d '{"user_request": "a 30 mm cube"}'
+  -d '{"prompt": "a 30 mm cube", "api_key": "YOUR_API_KEY"}'
 ```
 
 `GET` endpoints (`/api/health`, `/api/jobs`, status polling) are unaffected.
@@ -249,7 +266,7 @@ The following environment variables control Web UI behavior:
   OpenAI-compatible `DS_BASE_URL` hosts: vLLM on a private hostname, a
   corporate gateway, or Ollama / LM Studio on a non-loopback address. Default
   off; otherwise the host must match the provider allowlist (loopback,
-  `api.openai.com`, `api.deepseek.com`, `generativelanguage.googleapis.com`,
+  `api.openai.com`, `api.deepseek.com`, `openrouter.ai`, `generativelanguage.googleapis.com`,
   `.aliyuncs.com`, `.googleapis.com`). Scheme (`http`/`https`) is always
   enforced.
 - `MAC_WEB_ALLOW_DEST_PATH=1` — opt in to the `dest_path` artifact-copy
@@ -261,9 +278,15 @@ The following environment variables control Web UI behavior:
   `HTTP_PROXY,HTTPS_PROXY` on a corporate network). The default allowlist is
   `PATH`, `HOME`, `TMPDIR`, `TMP`, `TEMP`, `LANG`, `LC_ALL`, `LC_CTYPE`,
   `PYTHONPATH`, `PYTHONIOENCODING`, `LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`,
-  plus `ITERATION` set per child. **Never list API keys or credentials
+  `SYSTEMROOT`, `WINDIR`, plus `ITERATION` set per child. This applies to
+  deterministic / Aider-assisted cadpy generation as well as the LLM fallback
+  and repair runners. **Never list API keys or credentials
   here** — env-var stripping reduces secret leakage but does not sandbox
   the subprocess; see [SECURITY.md](SECURITY.md).
+
+Generated CAD execution, including the cadpy runner, uses `CAD_SCRIPT_TIMEOUT`
+from `multi_agent_cad/config.py`. Increase it for models whose geometry or export
+needs more time; execution failures continue through the existing repair flow.
 
 ### Generate an assembly
 

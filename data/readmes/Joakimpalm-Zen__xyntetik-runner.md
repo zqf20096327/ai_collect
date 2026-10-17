@@ -72,7 +72,7 @@ It takes about a minute to try: [quick start](#quick-start).
   <a href="docs/community-results.md">Community results</a>
 </p>
 
-> **Version `1.4.1`.** The command line, the HTTP API, the record formats and
+> **Version `1.4.2`.** The command line, the HTTP API, the record formats and
 > the model files that load stay compatible across 1.x
 > ([versioning policy](docs/versioning.md)). This page is the short version;
 > every flag, endpoint, limit and measurement is in the [manual](MANUAL.md).
@@ -335,6 +335,7 @@ merge into a 4-bit grid rounds the fine-tune away (1.8% of it survived in
 the measured study, against 99.5% into Q8_0), so that merge is refused.
 Same data, seed and build write the same adapter bytes; a different build
 can change them, which is a stated limit, not a promise broken.
+[Every adapter feature, explained](docs/lora.md) ·
 [Walkthrough](docs/train-lora-on-quantized-gguf.md) ·
 [What is covered and what is refused](MANUAL.md#adaptation)
 
@@ -439,7 +440,7 @@ passing evaluation made for those exact bytes.
 git clone https://github.com/Joakimpalm-Zen/xyntetik-runner
 cd xyntetik-runner
 make
-./runner --version   # -> runner 1.4.1
+./runner --version   # -> runner 1.4.2
 ```
 
 Linux, macOS and Windows. NVIDIA GPUs need a driver with CUDA 13.0 support

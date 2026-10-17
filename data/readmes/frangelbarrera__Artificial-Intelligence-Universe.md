@@ -617,6 +617,7 @@ For cross-provider comparisons, consult independent benchmark methodologies in a
 - **[WebChatGPT](https://chrome.google.com/webstore/detail/webchatgpt-chatgpt-with-i/lpfemeioodjbpieminkklglpmhlngfcn)**: Augment your ChatGPT prompts with relevant results from the web.
 - **[GPT for Sheets and Docs](https://workspace.google.com/marketplace/app/gpt_for_sheets_and_docs/677318054654)**: ChatGPT extension for Google Sheets and Google Docs.
 - **[YouTube Summary with ChatGPT](https://chrome.google.com/webstore/detail/youtube-summary-with-chat/nmmicjeknamkfloonkhhcjmomieiodli)**: Use ChatGPT to summarize YouTube videos.
+- **[SummarizAI](https://summarizai.ink)**: Chrome extension for on-page YouTube AI summary, chapters, chat, and Study flashcards.
 - **[ChatGPT Prompt Genius](https://chrome.google.com/webstore/detail/chatgpt-prompt-genius/jjdnakkfjnnbbckhifcfchagnpofjffo)**: Discover, share, import, and use the best prompts for ChatGPT & save your chat history locally.
 - **[ChatGPT for Search Engines](https://chrome.google.com/webstore/detail/chatgpt-for-search-engine/feeonheemodpkdckaljcjogdncpiiban)**: Display ChatGPT response alongside Google, Bing, and DuckDuckGo search results.
 - **[ShareGPT](https://sharegpt.com/)**: Share your ChatGPT conversations and explore conversations shared by others.
@@ -973,6 +974,7 @@ For cross-provider comparisons, consult independent benchmark methodologies in a
 - **[Phoenix](https://phoenix.arize.com/)**: Open-source observability and evaluation platform for AI applications.
 - **[Opik](https://www.comet.com/site/products/opik)**: Platform for evaluating, testing, and monitoring LLM applications.
 - **[Promptfoo](https://github.com/promptfoo/promptfoo)**: Open-source toolkit for evaluating and red-teaming LLM applications.
+- **[YYLO Benchmark](https://github.com/yylo-dev/yylo-benchmark)**: Open-source benchmark suite that evaluates coding-agent harnesses on typed tasks with blinded per-step judging.
 
 ### Local & Private AI
 - **[LM Studio](https://lmstudio.ai)**: Graphical interface to discover and run local models (GGUF).

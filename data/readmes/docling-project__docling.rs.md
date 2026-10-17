@@ -136,6 +136,11 @@ Same options, same outputs on every surface — every option in
 - **AutoGen:** `pip install "docling-rs[autogen]"` — `DoclingIndexer` fills
   any AutoGen memory with chunks that carry their pages, `DoclingConvertTool`
   lets an agent read documents ([details](./crates/docling-py/README.md#autogen)).
+- **Your own formats:** register a backend for a format docling.rs does not
+  read — or to read one of its formats your way — from Rust, Python
+  (`@docling_rs.register_backend(extensions=["rtf2"])`, and MarkItDown's
+  `register_converter` and plugins) or Node.js, ahead of the built-in formats
+  ([pluggable backends](./crates/docling/README.md#pluggable-backends)).
 - **RAG:** `docling-rag` — chunk, embed and search with a REST API and a web
   UI ([RAG subsystem](#rag-subsystem)).
 - **Runs where you are:** Linux x64 / arm64 / s390x and Windows prebuilt (CLI,
@@ -284,6 +289,7 @@ One engine, several front doors, the same options and outputs everywhere.
 | anything that speaks HTTP | [`docling-serve`](./crates/docling-serve/README.md), OpenAPI 3.1 | `ghcr.io/docling-project/docling-rs-serve` · `cargo install docling-serve` |
 | Node.js / Bun / Electron | [`docling.rs`](./crates/docling-node/README.md), an N-API addon | `npm i docling.rs` (`docling.rs-cuda`) |
 | Python | [`docling-rs`](./crates/docling-py/README.md): docling's and MarkItDown's APIs | `pip install docling-rs` (`docling-rs-cuda`) |
+| LangChain / LlamaIndex | [`DoclingLoader`](./crates/docling-py/README.md#langchain) (langchain-docling's API) · [`DoclingReader`](./crates/docling-py/README.md#llamaindex) (llama-index-readers-docling's API) | `pip install langchain-docling-rs` · `pip install llama-index-readers-docling-rs` |
 | the browser / Tauri / a PWA | [`docling.rs-wasm`](./crates/docling-wasm/README.md), fully client-side | `npm i docling.rs-wasm` |
 | C, C++, C#, Go, Java, Swift, Zig | [`docling-ffi`](./crates/docling-ffi/README.md): one `docling.h` | release archives `docling-ffi-<tag>-<target>` |
 
@@ -307,8 +313,8 @@ println!("{}", result.document.export_to_json());     // docling DoclingDocument
 Every conversion knob is one serializable struct, `docling::ConvertOptions`,
 filled the same way by every surface ([`docs/OPTIONS.md`](./docs/OPTIONS.md)).
 The [library guide](./crates/docling/README.md) covers the output formats,
-error handling, chunking, image extraction, streaming, OCR, the PDF switches
-and the remote VLM pipeline.
+error handling, chunking, image extraction, streaming, OCR, the PDF switches,
+the remote VLM pipeline and registering your own backends (#680).
 
 ## HTTP conversion API — `docling-rs serve`
 

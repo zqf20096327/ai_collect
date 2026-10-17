@@ -8,12 +8,12 @@
 
 [![Website](https://img.shields.io/badge/website-omnijev.github.io-2F80ED?style=flat-square&logo=githubpages&logoColor=white)](https://omnijev.github.io/awesome-jev-gallery/)
 
-![Entries](https://img.shields.io/badge/entries-170-8A2BE2?style=flat-square&logo=bookstack&logoColor=white)
-![Papers](https://img.shields.io/badge/papers-26-B31B1B?style=flat-square&logo=arxiv&logoColor=white)
-![Open source](https://img.shields.io/badge/open%20source-48-0EA5E9?style=flat-square&logo=huggingface&logoColor=white)
+![Entries](https://img.shields.io/badge/entries-171-8A2BE2?style=flat-square&logo=bookstack&logoColor=white)
+![Papers](https://img.shields.io/badge/papers-27-B31B1B?style=flat-square&logo=arxiv&logoColor=white)
+![Open source](https://img.shields.io/badge/open%20source-49-0EA5E9?style=flat-square&logo=huggingface&logoColor=white)
 ![Benchmarks](https://img.shields.io/badge/benchmarks-35-F0545C?style=flat-square&logo=speedtest&logoColor=white)
 ![With code](https://img.shields.io/badge/with%20code-127-181717?style=flat-square&logo=github&logoColor=white)
-![Daily Papers](https://img.shields.io/badge/%F0%9F%A4%97%20daily%20papers-20-FFD21E?style=flat-square)
+![Daily Papers](https://img.shields.io/badge/%F0%9F%A4%97%20daily%20papers-21-FFD21E?style=flat-square)
 [![License](https://img.shields.io/badge/license-CC%20BY%204.0-10B981?style=flat-square&logo=creativecommons&logoColor=white)](LICENSE)
 
 ⚡ System One & Jev · 🧪 Open Source · 🔧 Built with Jev · 📊 Benchmarks · 📰 Commentary · 🧬 Lineage
@@ -26,7 +26,7 @@
 
 - [🔥 News](#-news)
 - [⚡ System One & Jev](#-system-one--jev) (8)
-- [🧪 Open Source](#-open-source) (48)
+- [🧪 Open Source](#-open-source) (49)
 - [🔧 Built with Jev](#-built-with-jev) (41)
 - [📊 Benchmark & Leaderboard](#-benchmark--leaderboard) (36)
 - [📰 Commentary & Analysis](#-commentary--analysis) (8)
@@ -112,12 +112,13 @@ Open weights and code that rebuild the System One shape from encoders, small dec
 - [Phocinae-Largha-150M-v1](https://github.com/Phocinae/Phocinae-Largha-150M-v1), Apache-2.0 bilingual (English/Chinese) decision model on mmBERT-small that returns calibrated Choice, Score and Noul probabilities in one 144.3M-parameter forward pass; authors report typed-decisions 0.906 (en, specialist: fitted on this dataset's train split) / 0.848 (zh, machine-translated cases) at 21.0 ms p50 on an RTX 5090. [![Code](https://img.shields.io/github/stars/Phocinae/Phocinae-Largha-150M-v1?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/Phocinae/Phocinae-Largha-150M-v1) [![Model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-8B5CF6?style=flat-square)](https://huggingface.co/Phocinae/Phocinae-Largha-150M-v1)
 - [VideoJev](https://arxiv.org/abs/2610.18615), "System One Model for Video Understanding and Interaction". [![arXiv](https://img.shields.io/badge/arXiv-2610.18615-B31B1B?style=flat-square)](https://arxiv.org/abs/2610.18615) [![Code](https://img.shields.io/github/stars/MCG-NJU/VideoJev?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/MCG-NJU/VideoJev) [![Model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-8B5CF6?style=flat-square)](https://huggingface.co/ZhuYuhan/VideoJev-4B)
 - [Dwight 4B](https://huggingface.co/zime-ai/dwight-4b), Apache-2.0 Qwen3-4B fine-tune for sales call transcripts that answers a yes/no, Choice or 0-10 Score question as one option token with a probability per option; it also writes JSON insights with verbatim quotes. [![Model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-8B5CF6?style=flat-square)](https://huggingface.co/zime-ai/dwight-4b)
+- [TurinTech compressed decision models](https://huggingface.co/collections/turintech/compressed-decision-models-6accea74eb7016a886f25fdb), GGUF conversions of open decision models for local inference, with quality comparisons on each model card. [![Model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-8B5CF6?style=flat-square)](https://huggingface.co/collections/turintech/compressed-decision-models-6accea74eb7016a886f25fdb)
 
 ---
 
 ## 🔧 Built with Jev
 
-Open, licensed software that puts Jev inside something that runs: routers, agents, games and integrations.
+Software that puts Jev inside something that runs: routers, agents, games and integrations.
 
 - [Jev Chat Assistant](https://github.com/jev-chat/jev-chat-jarvis), Android chat overlay where Jev judges intent and ranks replies while a separate LLM drafts them; the author reports device-tested QQ, X and Feishu/Lark adapters, and the app also reads WhatsApp. [![Code](https://img.shields.io/github/stars/jev-chat/jev-chat-jarvis?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/jev-chat/jev-chat-jarvis)
 - [RoboJEV](https://github.com/lykycy123/RoboJEV), Two-stage Franka Panda control from structured simulator state; 43 of 50 Jev trials succeed versus 48 of 50 rule-baseline trials across five MuJoCo tasks, with success and failure recordings. [![Code](https://img.shields.io/github/stars/lykycy123/RoboJEV?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/lykycy123/RoboJEV) [![Website](https://img.shields.io/badge/Website-2EA44F?style=flat-square&logo=googlechrome&logoColor=white)](https://lykycy123.github.io/RoboJEV/)
@@ -154,7 +155,7 @@ Open, licensed software that puts Jev inside something that runs: routers, agent
 - [jev-robot-control](https://github.com/openroboto-ai/jev-robot-control), Same task, different decisions: Jev against GPT-4.1 and GPT-4o mini on a robot arm, with cost and time per episode. [![Code](https://img.shields.io/github/stars/openroboto-ai/jev-robot-control?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/openroboto-ai/jev-robot-control)
 - [tsai-sc](https://github.com/phyous/tsai-sc), TypeSafe Jev controls the original StarCraft, one typed decision per game tick. [![Code](https://img.shields.io/github/stars/phyous/tsai-sc?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/phyous/tsai-sc)
 - [jgrep](https://github.com/kyu1204/jgrep), Code search, diff gate and test selection with one Jev Noul per chunk, 16 chunks per request; the author measures a 238-chunk TypeScript tree in 1.0 s for $0.003 and `--tests` picking tests for a diff in one 3,430-token request. [![Code](https://img.shields.io/github/stars/kyu1204/jgrep?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/kyu1204/jgrep)
-- [Jev Deep Research](https://github.com/sunyasheng/JevDeepResearch), Parallel evidence finding for GPT research agents with Jev Choice and Noul through Pi-Serini; reports 19/20 correct for Jev-60 on a 20-question BrowseComp-Plus development sample, with reproduction commands. [![Code](https://img.shields.io/github/stars/sunyasheng/JevDeepResearch?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/sunyasheng/JevDeepResearch)
+- [JevGPT](https://arxiv.org/abs/2610.18272), "Thinking Fast and Slow in Autonomous Research". Research agent where GPT-5.5 plans and Jev Choice and Noul pick the answering source lines across documents in parallel; the authors report 90.48% accuracy on 830 BrowseComp-Plus questions and nDCG@20 0.5390 on 105 NeuCLIRBench topics. [![arXiv](https://img.shields.io/badge/arXiv-2610.18272-B31B1B?style=flat-square)](https://arxiv.org/abs/2610.18272) [![Code](https://img.shields.io/github/stars/sunyasheng/JevGPT?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/sunyasheng/JevGPT) [![Daily Papers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fapi%2Fpapers%2F2610.18272&query=%24.upvotes&label=%F0%9F%A4%97%20Daily&color=FFD21E&style=flat-square)](https://huggingface.co/papers/2610.18272) [![Website](https://img.shields.io/badge/Website-2EA44F?style=flat-square&logo=googlechrome&logoColor=white)](https://sunyasheng.github.io/projects/JevGPT)
 - [Sedum](https://github.com/sedum-dev/sedum), Playwright test tool where Jev picks each next action in goal mode, resolves the element for each plain-English step and judges verify claims; the author's five-run timing of a 17-step saucedemo checkout is 14 s vs 69 s on a per-step AI platform. [![Code](https://img.shields.io/github/stars/sedum-dev/sedum?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/sedum-dev/sedum) [![Website](https://img.shields.io/badge/Website-2EA44F?style=flat-square&logo=googlechrome&logoColor=white)](https://sedum.dev)
 - [FlightBench](https://github.com/AlperKartkaya/FlightBench), A fixed-wing landing simulator and benchmark where you can compete with Jev in landing a plane. [![Code](https://img.shields.io/github/stars/AlperKartkaya/FlightBench?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/AlperKartkaya/FlightBench) [![Website](https://img.shields.io/badge/Website-2EA44F?style=flat-square&logo=googlechrome&logoColor=white)](https://alperkartkaya.github.io/FlightBench/jev-flight/)
 - [jev-skill-router](https://github.com/shimo4228/jev-skill-router), Claude Code hook that asks Jev which installed skill fits each prompt and logs the answer; in the author's week of shadow mode, 28 of 539 suggestions were followed by a call of that skill within 30 minutes, and the author removed it. [![Code](https://img.shields.io/github/stars/shimo4228/jev-skill-router?style=flat-square&logo=github&label=Code&color=181717)](https://github.com/shimo4228/jev-skill-router)
@@ -283,7 +284,7 @@ The sibling lists.
 
 ## Contributing
 
-Open a pull request. Link the paper or the primary page, add the code repository or Hugging Face path if there is one, and say in one line which test the entry passes. [CONTRIBUTING.md](CONTRIBUTING.md) has the four tests and the entry format.
+Add one line to the section that fits, then open a pull request. [CONTRIBUTING.md](CONTRIBUTING.md) shows the format.
 
 ---
 

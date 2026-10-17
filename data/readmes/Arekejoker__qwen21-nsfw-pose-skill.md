@@ -83,18 +83,31 @@ python3 scripts/qwen_pose_test.py \
 - **推荐**：24GB 显存（3090/4090 级）+ 32–64GB 内存——模型基本常驻，体验最顺
 - **8GB 显存**：建议用 GGUF 量化版（社区实测 12–16GB 显存可跑 Q4；8GB 靠 offload 会明显更慢）
 - 纯 CPU 不推荐（单张图耗时过长）
-- 硬盘预留 ~40GB；CPU 无特殊要求（现代 x86_64/ARM 均可）；Linux 最省事，Windows 建议 WSL2，Mac 统一内存能跑但更慢
+- 硬盘预留 ~40GB；CPU 无特殊要求（现代 x86_64/ARM 均可）；Linux 最省事，Windows 建议 WSL2；Mac（Apple Silicon）见下方单独小节
 - 路线④额外需要一个可连接的桌面浏览器（Playwright/CDP，见 `install/setup.md`）
 
 本仓库案例图与实测数据来自统一内存设备（DGX Spark）：1024×1024、40 步约 32 秒/张，峰值增量约 7–10GB。
 
-## 三条路线
+### macOS（Apple Silicon）
+
+- 适用 M 系芯片（M1 及以上）；Intel Mac 不建议
+- **模型选择看统一内存**：≥32GB 直接用本仓库原版 int8 套件（ComfyUI + MPS）；16–32GB 建议改用 GGUF 量化版（搭配 ComfyUI-GGUF；社区实测 Q8 更快、Q4 更省内存）
+- **速度预期：分钟级/张**——社区报告：M5 Pro 48GB 跑 int8 约 144 秒/1024；M1 Max 64GB 约 7–10 分钟/张（加缓存优化节点如 Comfyui-Spectrum-Qwen2.1 可提速 2–3 倍）。对比本仓库 DGX Spark 实测 32 秒/张，仅供参考
+- 已知坑：编辑模式在 MPS 上偶发 VAE 编码异常，可用 ComfyUI 的 `--cpu-vae` 绕过（ComfyUI issue #16433，已有修复讨论）；内存紧张时建议单张生成、关闭其他大内存应用
+- 路线兼容：①②③ 脚本在 macOS 可直接运行（纯 Python 标准库、POSIX 兼容）；④ 需 `playwright install chromium`（macOS 版），`install/setup.md` 中的 AppArmor 提示不适用
+- ⚠️ 以上 Mac 数据来自社区报告，维护者没有 Mac 硬件、未经实测；如果你在 Mac 上跑通或遇到问题，欢迎开 issue 反馈，我们会持续更新本说明
+
+## 四条路线
 
 | 需求 | 路线 | 命令 |
 | --- | --- | --- |
 | 新 NSFW/性感图（文字出图） | ① T2I + NSFW LoRA（必开） | `scripts/qwen_pose_test.py --mode t2i` |
 | 已有角色图换姿势（保脸/保服装） | ② Edit | `scripts/qwen_pose_test.py --mode edit` |
+| 已有 3D 人偶姿势渲染图，脚本换姿势（不开浏览器） | ③ 脚本姿势迁移（人偶参考 + VNCCS LoRA） | `scripts/run_pose_transfer.py --char <角色图> --pose-ref <人偶渲染图> --out <出图.png>` |
 | 指定 3D 姿势库里的精确姿势 | ④ VNCCS PoseStudio | `scripts/run_vnccs_ui.py --pose <name> [--prompt "<场景>"]` |
+
+路线③的人偶参考图可由路线④的运行自动保存（输出目录里的 `doll_*.png`），或任何 3D 姿态渲染图。
+不要用照片/插画当姿势参考——模型会把参考人物拼进画面，或直接重画参考人物；请使用无身份特征的 3D 人偶渲染图（路线③/④）。
 
 姿势怎么选（大胆度阶梯 L0–L3、用户要求→姿势族映射表）：见 `SKILL.md` §4，或
 `scripts/run_vnccs_ui.py --list-poses` 列出全部 136 个姿势。
@@ -126,3 +139,7 @@ python3 scripts/qwen_pose_test.py \
 - 本仓库原创代码与文档（`scripts/`、`workflows/`、`prompts/`、`SKILL.md`、README 等）采用 [Apache License 2.0](LICENSE)
 - 第三方素材不在 Apache-2.0 覆盖范围内，权利归各自原作者：`downloads/samples/` 作者原图（Civitai 作者）、`pose_library/` 社区姿势与预览（MIUProject / Totemistyk，其中 Ballet 仓库为 MIT）、模型与 LoRA（HF `Comfy-Org/Qwen-Image-2.1`、Civitai 2986844 / 2958918 / 2988215、RunningHubAI、MIUProject 等）
 - NSFW 示例图仅供配方演示；仓库为公开仓库，介意图片的先收藏后阅读
+
+## 致谢
+
+本仓库的姿势控制能力（路线③④）与 136 姿势库基于 [AHEKOT](https://github.com/AHEKOT/ComfyUI_VNCCS_Utils)（VNCCS_Utils）、[Totemistyk](https://huggingface.co/Totemistyk)、[MIUProject](https://huggingface.co/MIUProject) 的开源工作；底模与 LoRA 来自 Qwen / Comfy-Org、RunningHubAI 及 Civitai 的 tawsLoRa、TheseAlpacas、posture-v3。感谢所有作者。

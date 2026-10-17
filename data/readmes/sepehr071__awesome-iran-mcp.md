@@ -1,35 +1,48 @@
 <div align="center">
 
-<img src="assets/banner.svg" alt="awesome-iran-mcp: 20 MCP servers and 321 tools for Iranian shopping, food, travel, health, book and crypto sites, for Claude, Cursor and Copilot" width="100%">
+<img src="assets/banner.svg" alt="awesome-iran-mcp: 23 MCP servers and 359 tools for Iranian shopping, classifieds, food, travel, health, book and crypto sites, for Claude, Cursor and Copilot" width="100%">
 
 **English** · [فارسی](README.fa.md)
 
 # Iran MCP servers: awesome-iran-mcp
 
 **Give your AI agent the Iranian web.**<br>
-19 unofficial, open-source Persian-web MCP servers for Digikala, Snappfood, Jabama, MrBilit, Paziresh24, Taaghche and more, plus SwapWallet's official one.<br>
+20 unofficial, open-source Persian-web MCP servers for Digikala, Divar, Snappfood, Jabama, MrBilit, Paziresh24, Taaghche and more, plus official ones from ExirYab, Pasavard and SwapWallet.<br>
 Search, compare prices in Toman, find free slots and today's deals from Claude, Cursor, GitHub Copilot in VS Code or any MCP client.<br>
 Install them as Claude Code plugins with skills, or as Agent Skills for Codex, Cursor, Antigravity and Grok Build.
 
-[![Servers](https://img.shields.io/badge/servers-20-3fd6c9)](#the-servers)
-[![Tools](https://img.shields.io/badge/tools-321-f4b54a)](TOOLS.md)
+[![Servers](https://img.shields.io/badge/servers-23-3fd6c9)](#the-servers)
+[![Tools](https://img.shields.io/badge/tools-359-f4b54a)](TOOLS.md)
 [![Claude Code plugins](https://img.shields.io/badge/Claude_Code-plugin_marketplace-d97757)](#quick-start)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.sepehr071-7c3aed)](https://registry.modelcontextprotocol.io/?q=sepehr071)
 [![License: MIT](https://img.shields.io/badge/license-MIT-16a34a)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/sepehr071/awesome-iran-mcp?style=social)](https://github.com/sepehr071/awesome-iran-mcp)
 
-[Quick start](#quick-start) · [The servers](#the-servers) · [For AI agents](#for-ai-agents) · [All tools](TOOLS.md) · [FAQ](#faq)
+[What's new](#whats-new-in-v15) · [Quick start](#quick-start) · [The servers](#the-servers) · [For AI agents](#for-ai-agents) · [All tools](TOOLS.md) · [FAQ](#faq)
 
 </div>
 
 ---
 
+## What's new in v1.5
+
+<img src="assets/release.svg" alt="awesome-iran-mcp v1.5: about 62% fewer tokens per tool call, a 19% smaller tool list, security hardening, and the new Divar server" width="100%">
+
+- **About 62% fewer tokens per tool call** and a 19% smaller tool list across the 19 package servers, with the same
+  rankings and cheapest prices as before.
+- **Security hardening** in 30book, Bale and Okala, and site text is treated as untrusted in every server.
+- **Caches, parallel requests and retries** where the servers were slow or fragile.
+- **New: [divar-mcp](https://github.com/sepehr071/divar-mcp)**, 31 tools for Divar classifieds: homes, cars, phones,
+  fair-price checks and new-ad alerts.
+
+Full list, including changes for callers: [CHANGELOG.md](CHANGELOG.md).
+
 ## Why
 
 Iranian websites are not built for AI agents. Most have no public API, prices come in Rial on one page and Toman
 on the next, and every site hides its best deals behind a different menu. Each package server here maps one site's
-real (undocumented) API, tests it, and exposes it as clean MCP tools with prices in **Toman**. `swapwallet-mcp` is
-SwapWallet's own server, built on its documented API.
+real (undocumented) API, tests it, and exposes it as clean MCP tools with prices in **Toman**. `exiryab-mcp`,
+`pasavard-mcp` and `swapwallet-mcp` are the sites' own servers, built on their documented APIs.
 
 Put a few of them together and one sentence does a day of tab-hopping (illustrative example):
 
@@ -47,7 +60,8 @@ Put a few of them together and one sentence does a day of tab-hopping (illustrat
 ## Quick start
 
 Every server is a small Python package on PyPI, run with [`uvx`](https://docs.astral.sh/uv/), except
-`swapwallet-mcp`, which SwapWallet hosts: you add it by URL and sign in once with OAuth. The site servers need no
+`pasavard-mcp` and `swapwallet-mcp`, which their sites host: you add them by URL, and sign in to SwapWallet once
+with OAuth. The site servers need no
 account and no API key. `payping-mcp` and `bale-mcp` work on your own account with your token, and `swapwallet-mcp`
 with your SwapWallet sign-in.
 
@@ -83,6 +97,7 @@ servers one by one (Grok doesn't install a bundle's members). Which agent suppor
 ```bash
 claude mcp add digikala -- uvx digikala-mcp
 claude mcp add --transport http swapwallet https://swapwallet.app/mcp   # hosted; then sign in from /mcp
+claude mcp add --transport http pasavard https://pasavard.ir/api/mcp      # hosted, no sign-in
 ```
 
 **Any MCP client** (Claude Desktop, Cursor, Windsurf, VS Code, ...):
@@ -99,7 +114,7 @@ claude mcp add --transport http swapwallet https://swapwallet.app/mcp   # hosted
 `swapwallet-mcp` is added by URL, and each client takes a URL in its own shape (Windsurf uses `serverUrl`, Claude
 Desktop takes it under Settings → Connectors): see [its setup for each client](https://github.com/SwapWallet/swapwallet-mcp#connect).
 
-**All 20 at once:** clone this repo and open it in Claude Code. The [`.mcp.json`](.mcp.json) at the root
+**All 23 at once:** clone this repo and open it in Claude Code. The [`.mcp.json`](.mcp.json) at the root
 registers every server; approve the ones you want.
 
 ```bash
@@ -108,7 +123,7 @@ cd awesome-iran-mcp && claude
 ```
 
 > [!TIP]
-> 321 tools is a lot of context. Enable the servers for the task at hand rather than all of them.
+> 359 tools is a lot of context. Enable the servers for the task at hand rather than all of them.
 
 ## The servers
 
@@ -120,6 +135,13 @@ cd awesome-iran-mcp && claude
 | [technolife-mcp](https://github.com/sepehr071/technolife-mcp) | [Technolife](https://www.technolife.com) | 19 | [![PyPI](https://img.shields.io/pypi/v/technolife-mcp?label=&color=2fe0cf)](https://pypi.org/project/technolife-mcp/) | [![Last commit](https://img.shields.io/github/last-commit/sepehr071/technolife-mcp?label=&color=ffc23d)](https://github.com/sepehr071/technolife-mcp/commits/main) | Electronics: each seller's cash and installment price, specs, reviews, deals |
 | [masterkala-mcp](https://github.com/sepehr071/masterkala-mcp) | [MasterKala](https://masterkala.com) | 14 | [![PyPI](https://img.shields.io/pypi/v/masterkala-mcp?label=&color=2fe0cf)](https://pypi.org/project/masterkala-mcp/) | [![Last commit](https://img.shields.io/github/last-commit/sepehr071/masterkala-mcp?label=&color=ffc23d)](https://github.com/sepehr071/masterkala-mcp/commits/main) | Gadgets and accessories: prices, specs, deals |
 | [shopino-mcp](https://github.com/sepehr071/shopino-mcp) | [Shopino](https://shopino.app) | 14 | [![PyPI](https://img.shields.io/pypi/v/shopino-mcp?label=&color=2fe0cf)](https://pypi.org/project/shopino-mcp/) | [![Last commit](https://img.shields.io/github/last-commit/sepehr071/shopino-mcp?label=&color=ffc23d)](https://github.com/sepehr071/shopino-mcp/commits/main) | Fashion from thousands of shops: prices, sizes, stock, shop ratings |
+| [pasavard-mcp](https://github.com/ashkancapella/pasavard-mcp) | [Pasavard](https://pasavard.ir) (official, hosted) | 4 | [![Version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fashkancapella%2Fpasavard-mcp%2Fmain%2Fserver.json&query=%24.version&label=&color=2fe0cf)](https://github.com/ashkancapella/pasavard-mcp/blob/main/server.json) | [![Last commit](https://img.shields.io/github/last-commit/ashkancapella/pasavard-mcp?label=&color=ffc23d)](https://github.com/ashkancapella/pasavard-mcp/commits/main) | Digikala and Snappshop prices tracked hourly: best picks per budget against each product's 30-day low, with affiliate and cashback links |
+
+### 🏠 Classifieds
+
+| Server | Site | Tools | Version | Updated | What your agent can do |
+|---|---|---:|:---:|:---:|---|
+| [divar-mcp](https://github.com/sepehr071/divar-mcp) | [Divar](https://divar.ir) | 31 | [![PyPI](https://img.shields.io/pypi/v/divar-mcp?label=&color=2fe0cf)](https://pypi.org/project/divar-mcp/) | [![Last commit](https://img.shields.io/github/last-commit/sepehr071/divar-mcp?label=&color=ffc23d)](https://github.com/sepehr071/divar-mcp/commits/main) | Homes, cars, phones and more in any city: cheapest and best-value ads, fair-price check, market stats, new-ad alerts |
 
 ### 💄 Beauty
 
@@ -150,6 +172,7 @@ cd awesome-iran-mcp && claude
 |---|---|---:|:---:|:---:|---|
 | [paziresh24-mcp](https://github.com/sepehr071/paziresh24-mcp) | [Paziresh24](https://www.paziresh24.com) | 12 | [![PyPI](https://img.shields.io/pypi/v/paziresh24-mcp?label=&color=2fe0cf)](https://pypi.org/project/paziresh24-mcp/) | [![Last commit](https://img.shields.io/github/last-commit/sepehr071/paziresh24-mcp?label=&color=ffc23d)](https://github.com/sepehr071/paziresh24-mcp/commits/main) | Doctors, visit prices, reviews, free appointment slots |
 | [doctoreto-mcp](https://github.com/sepehr071/doctoreto-mcp) | [Doctoreto](https://doctoreto.com) | 14 | [![PyPI](https://img.shields.io/pypi/v/doctoreto-mcp?label=&color=2fe0cf)](https://pypi.org/project/doctoreto-mcp/) | [![Last commit](https://img.shields.io/github/last-commit/sepehr071/doctoreto-mcp?label=&color=ffc23d)](https://github.com/sepehr071/doctoreto-mcp/commits/main) | Doctors, visit fees, free slots, reviews, clinics, labs, offers |
+| [exiryab-mcp](https://github.com/sshnevis/exiryab-mcp) | [ExirYab](https://exiryab.com) (official) | 3 | [![PyPI](https://img.shields.io/pypi/v/exiryab-mcp?label=&color=2fe0cf)](https://pypi.org/project/exiryab-mcp/) | [![Last commit](https://img.shields.io/github/last-commit/sshnevis/exiryab-mcp?label=&color=ffc23d)](https://github.com/sshnevis/exiryab-mcp/commits/main) | Find a doctor by name, city and specialty: profile, clinics, phones, hours, map location |
 
 ### 📚 Books
 
@@ -177,7 +200,7 @@ This repo is built to be read by agents as much as by people:
 |---|---|
 | [`AGENTS.md`](AGENTS.md) | Which server to pick for which task, conventions, safety rules, how to work in this repo |
 | [`servers.json`](servers.json) | Machine-readable catalog: package or URL, version, category, env vars and every tool of each server |
-| [`TOOLS.md`](TOOLS.md) | All 321 tools grouped by server, one line each |
+| [`TOOLS.md`](TOOLS.md) | All 359 tools grouped by server, one line each |
 | [`llms.txt`](llms.txt) | Short index for LLMs ([llmstxt.org](https://llmstxt.org)) |
 | [`.mcp.json`](.mcp.json) | Ready-to-use config for every server |
 | [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) | The `iran-mcp` plugin marketplace: one plugin per server plus bundles |
@@ -234,9 +257,11 @@ Bugs and feature requests for a server go to that server's own repo.
 <details>
 <summary><b>Are these official?</b></summary>
 
-All but one are unofficial and not affiliated with the sites. They call the same endpoints the sites' own web
+All but three are unofficial and not affiliated with the sites. They call the same endpoints the sites' own web
 apps use. Those APIs are undocumented and can change; open an issue on the server's repo when one breaks.
 `swapwallet-mcp` is SwapWallet's own server, documented at [swapwallet.app/docs/mcp](https://swapwallet.app/docs/mcp).
+`exiryab-mcp` is ExirYab's own server, on the public API listed in [exiryab.com/llms.txt](https://exiryab.com/llms.txt).
+`pasavard-mcp` is Pasavard's own hosted server; its store links are affiliate links, and every result says so.
 </details>
 
 <details>
@@ -258,14 +283,14 @@ moves until you approve it in Telegram.
 <summary><b>Do I need Python?</b></summary>
 
 You need [uv](https://docs.astral.sh/uv/getting-started/installation/). `uvx` downloads the right Python and the
-package on first run. `swapwallet-mcp` runs on SwapWallet's servers and needs nothing installed.
+package on first run. `pasavard-mcp` and `swapwallet-mcp` run on their sites' servers and need nothing installed.
 </details>
 
 <details>
 <summary><b>How do I get updates?</b></summary>
 
-Plugins pin each package server to a release, so a plugin update is a server update. `swapwallet-mcp` is hosted: it
-changes whenever SwapWallet deploys it, and a plugin update only brings a new skill. Turn on auto-update once in
+Plugins pin each package server to a release, so a plugin update is a server update. `pasavard-mcp` and `swapwallet-mcp` are hosted:
+they change whenever their sites deploy them, and a plugin update only brings a new skill. Turn on auto-update once in
 `/plugin` → **Marketplaces** → `iran-mcp`, or run `claude plugin update <name>@iran-mcp`. A plain
 `uvx digikala-mcp` config keeps running its cached copy; run `uvx digikala-mcp@latest --help` once and restart
 your client to upgrade it.

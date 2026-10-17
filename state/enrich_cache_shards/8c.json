@@ -226,5 +226,199 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "openml/automlbenchmark": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.1.7",
+  "rel_pub": "2023-09-01",
+  "rel_days": 1142,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 29,
+  "lang": {
+   "Python": 79,
+   "Jupyter Notebook": 17,
+   "Shell": 3,
+   "R": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "wyg5208/nct": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "PaddlePaddle/PaddleScience": {
+  "commit_90d": 2,
+  "commit_7d": 1,
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2025-04-08",
+  "rel_days": 557,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 93,
+  "lang": {
+   "Python": 88,
+   "Jupyter Notebook": 9,
+   "Cuda": 1,
+   "Shell": 1,
+   "C": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "langchain-ai/docs": {
+  "commit_90d": 1557,
+  "commit_7d": 123,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 477,
+  "lang": {
+   "MDX": 89,
+   "Python": 7,
+   "TypeScript": 2,
+   "Kotlin": 1,
+   "Go": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "openai/euphony": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 79,
+   "CSS": 18,
+   "Python": 3,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "rwth-i6/returnn": {
+  "commit_90d": 747,
+  "commit_7d": 33,
+  "rel_ver": "v2.1.0-beta",
+  "rel_pub": "2018-11-20",
+  "rel_days": 2888,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 58,
+  "lang": {
+   "Python": 98,
+   "C++": 2,
+   "Makefile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ai-shifu/ai-shifu": {
+  "commit_90d": 863,
+  "commit_7d": 46,
+  "rel_ver": "v3.0.0",
+  "rel_pub": "2026-10-14",
+  "rel_days": 3,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-10-10",
+  "sec_ids": [
+   "GHSA-29h3-2gcr-x7f9(-,high)"
+  ],
+  "contrib_n": 23,
+  "lang": {
+   "Python": 68,
+   "TypeScript": 31,
+   "SCSS": 0,
+   "JavaScript": 0,
+   "MDX": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

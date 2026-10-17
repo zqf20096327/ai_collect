@@ -33,13 +33,14 @@ from the command line and **~12–16 tok/s in the app**.
 * [Why Liyab](#why-liyab)
 * [Design principles](#design-principles)
 * [What it does today](#what-it-does-today)
-* [Quick start](#quick-start)
+* [Quick start](#quick-start): host, Android, iOS, [Windows](#windows-x64), CMake options
 * [Architecture](#architecture)
 * [Supported models](#supported-models)
 * [Models larger than RAM](#models-larger-than-ram)
 * [Context, memory and serving](#context-memory-and-serving)
 * [Heat and power](#heat-and-power)
 * [Speculative decoding](#speculative-decoding)
+* [Embeddings and reranking](#embeddings-and-reranking)
 * [Using the engine](#using-the-engine): C++, C ABI, Kotlin, Swift, command line
 * [The Liyab app](#the-liyab-app): assistant, agent tools, local OpenAI / Anthropic / gRPC API
 * [Look and feel](#look-and-feel): the living flame, colours, type
@@ -75,7 +76,8 @@ Liyab is built around those constraints:
   tokens and asks the governor for lower clocks, so the same tokens cost fewer watts. It does not run flat out and
   then collapse.
 * **Serving a single user well.** Context is reused across turns, including the recurrent state of hybrid models.
-  A prefix cache brings back earlier conversations. Prefill can be cancelled and resumed. Structured output covers
+  A prefix cache of KV chunks brings back earlier conversations, keeps a shared system prompt once and outlives a
+  restart. Prefill can be cancelled and resumed. Structured output covers
   tool calls. A local OpenAI, Anthropic Messages and gRPC API lets other apps on the device use the same model.
 * **A private agent on top.** The Liyab app replaces the system assistant. It answers questions about your day from
   your own calendar, notifications, messages and calls, and nothing leaves the phone.
@@ -104,28 +106,31 @@ These rules decide what goes into the code:
 | Area | Status |
 | :--- | :--- |
 | GGUF v2/v3 loader: `mmap`, zero-copy, validated against malformed files; split models (`-00001-of-0000N.gguf`) | ✅ |
-| Architectures: `llama`, `mistral`, `qwen2`, `qwen3`, `qwen35` (hybrid Gated DeltaNet + attention), `qwen3moe`, `qwen35moe`, `hunyuan-dense`, `gemma3`, `phi3` | ✅ cross-checked against llama.cpp or Hugging Face transformers |
+| Architectures: `llama`, `mistral`, `qwen2`, `qwen3`, `qwen35` (hybrid Gated DeltaNet + attention), `qwen3moe`, `qwen35moe`, `hunyuan-dense`, `gemma2`, `gemma3`, `phi3`, `deepseek2` (multi-head latent attention) | ✅ cross-checked against llama.cpp or Hugging Face transformers |
 | Every GGML tensor format (F32/F16/BF16, legacy Q4–Q8, K-quants, I-quants, TQ1_0/TQ2_0, MXFP4, NVFP4) | ✅ bit-exact against llama.cpp's reference decoder |
-| Tokenizers: SentencePiece and byte-level BPE, pre-tokenizers as data (Qwen, Llama 3, GPT-2, DeepSeek, Hunyuan, Phi, Gemma) | ✅ token-identical to each model's Hugging Face tokenizer |
+| Tokenizers: SentencePiece and byte-level BPE, pre-tokenizers as data (Qwen, Llama 3, GPT-2, DeepSeek, Hunyuan, Phi, Gemma, Mistral-Nemo, SmolLM2, Youtu-LLM) | ✅ token-identical to each model's Hugging Face tokenizer |
 | Chat templates: the GGUF's Jinja template rendered by Liyab's own interpreter; layout of turns and prefix stability for context reuse | ✅ byte-identical to transformers' `apply_chat_template` |
 | Models larger than RAM: dense blocks streamed by parallel `O_DIRECT` reads; MoE experts streamed into an LFU cache with router-predicted prefetch | ✅ automatic |
 | Memory planning: per-app budget, automatic requantization only when the expert cache would be too small, recommended budget reported | ✅ |
 | CPU backend: NEON + SDOT; i8mm (SMMLA) layouts for Q4_K/Q5_K/Q6_K/Q8_0; WFE-waiting thread pool with chunks claimed on demand | ✅ |
 | CPU backend on x86-64: AVX2 + FMA + F16C kernels chosen at run time by CPUID, scalar fallback in the same binary | 🟡 tested under Rosetta 2 only |
+| Windows x64 port of the engine, `liyab-cli`, the tests and tools: file mapping, unbuffered direct reads, processor groups and hybrid cores, UTF-8 paths and console; MSVC or clang-cl | 🟡 written, not yet compiled or run on Windows ([Windows](#windows-x64)) |
 | GPU backends: Metal (zero-copy on unified memory), Vulkan (Adreno/Mali; native kernels for 23 formats on GPU-shared memory) | ✅ |
-| Paged KV cache (F16 / Q8_0 / Q4_0 / Q4_1) with per-channel key scaling, sliding window with attention sinks, grouped-query attention over spans | ✅ |
+| Paged KV cache (F16 / Q8_0 / Q4_0 / Q4_1) with per-channel key scaling, sliding window with attention sinks, grouped-query attention over spans, latent rows for multi-head latent attention, read in the absorbed form or, for long prefills, the expanded one (chosen by a threshold measured once per device) | ✅ |
 | Context kept between turns, recurrent-state snapshots for hybrid models, save/restore to disk | ✅ |
 | Automatic context length from the KV cache's cost; cancellable, resumable chunked prefill | ✅ |
-| Prefix cache across conversations (LRU of serialized contexts, in RAM or on storage) | ✅ |
+| Prefix cache across conversations: a content-addressed store of KV chunks (shared prefixes kept once), in RAM and on storage across runs, capped, LRU | ✅ |
+| Segment reuse: marked parts of a prompt (documents, tool results) reused wherever they appear, keys turned to their new positions, a share calibrated per model processed again; attention-only models | ✅ opt-in, lossy |
 | Speculative decoding: draft model, n-gram lookup or suffix drafts from this and earlier conversations, adaptive draft count, hybrid models included | ✅ |
-| Structured output: grammar-constrained decoding (JSON Schema, grammar text) and forced continuations (tool-call syntax and names in the app) | ✅ |
+| Structured output: grammar-constrained decoding (JSON Schema, grammar text; tool calls in the app and the local API) and forced continuations | ✅ |
+| Embeddings and reranking: decoder embedding models and rerankers as their GGUF declares them (last-token or mean pooling, ranking heads, or LM-head labels), shared prefixes computed once | ✅ cross-checked against Hugging Face transformers |
 | Heat and power: OS headroom forecast, adaptive pacing, ADPF performance hints, emergency guards, power profiles | ✅ |
 | SoC detection (Snapdragon, Dimensity, Tensor, Exynos, Apple) and backend ranking | ✅ |
 | Qualcomm QNN (Hexagon NPU), MediaTek NeuroPilot | 🟡 detected at runtime; compute falls back to GPU/CPU |
 | Liyab app (Flutter): chat, model library with Hugging Face downloads, activity meters, settings, system assistant sheet (phone) or command bar (computer) | ✅ Android · ✅ macOS (Apple silicon) · 🟡 iOS app not built yet (the engine builds for iOS) |
 | Agent tools: calendar, notifications (chats, email previews), SMS, calls, contacts, clipboard on Android; calendar, Apple Mail, Messages, calls, contacts, clipboard on macOS; each source opt-in | ✅ |
 | Local API for other apps on the device: OpenAI, Anthropic Messages, gRPC; loopback only, token-protected, off by default; tools and JSON answers by constrained decoding | ✅ text (no images) |
-| Voice, actions (alarms, events, replies), local memory/RAG, embedding models | 🔜 [Roadmap](#roadmap) |
+| Voice, actions (alarms, events, replies), local memory/RAG | 🔜 [Roadmap](#roadmap) |
 | Experimental: early exit, head pruning, EGLS, 2:4 sparsity, JIT unpacker, persistent KV prefix files, io_uring | 🧪 `LIYAB_ENABLE_EXPERIMENTAL` |
 
 ---
@@ -133,7 +138,8 @@ These rules decide what goes into the code:
 ## Quick start
 
 Requirements: CMake ≥ 3.22, a C++20 compiler (Clang 17+ / Apple Clang 15+), Ninja recommended. Android: NDK r26+.
-iOS: Xcode 15+. The app: Flutter 3.x, Android SDK platform 36, JDK 17.
+iOS: Xcode 15+. Windows: Visual Studio 2022 with its C++ tools (MSVC, or its clang-cl). The app: Flutter 3.x,
+Android SDK platform 36, JDK 17.
 
 ```bash
 # Build and test on the host (macOS / Linux)
@@ -170,6 +176,46 @@ The Android NDK is located from `--ndk`, `$ANDROID_NDK_HOME`, or the newest NDK 
 `.so` is linked with 16 KB page alignment, which Android 15+ devices with 16 KB pages require. If `xcodebuild`
 reports missing components, run `sudo xcodebuild -runFirstLaunch` once.
 
+### Windows (x64)
+
+The engine library (`liyab.dll`), `liyab-cli`, the tests and the tools are ported to Windows x64. The port has not
+been compiled or run on Windows yet (see [Known limitations](#known-limitations)). In an "x64 Native Tools Command
+Prompt for VS 2022":
+
+```bat
+rem clang-cl (Visual Studio's "C++ Clang tools"); leave out the two compiler options to build with cl.exe
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DLIYAB_ENABLE_EXPERIMENTAL=ON -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl
+cmake --build build
+ctest --test-dir build --output-on-failure
+build\liyab-cli.exe --device
+```
+
+What the port does differently from the POSIX platforms:
+
+* **Mapping.** The GGUF is mapped with `CreateFileMappingW` / `MapViewOfFile` as one view. `PrefetchVirtualMemory`
+  and `VirtualUnlock` (which takes unlocked pages out of the working set) stand in for `madvise`'s `WILLNEED` and
+  `DONTNEED`; a mapped view has no `SEQUENTIAL` or `RANDOM` hint. The file stays deletable while it is mapped.
+* **Direct reads.** `DirectFile` opens with `FILE_FLAG_NO_BUFFERING` (offsets, lengths and buffers in 4 KiB
+  multiples, as with `O_DIRECT`) and reads with overlapped `ReadFile`, one event per request: requests made through
+  a synchronous handle would run one after another. A volume that refuses an unbuffered read of the first block gets
+  buffered reads.
+* **Threads.** The pool's default size counts the physical cores of the highest efficiency class (an Intel hybrid's
+  P-cores; every core of a homogeneous CPU), SMT siblings excluded. On machines with more than 64 logical
+  processors, which Windows splits into processor groups, each worker is moved to a group so that the pool spreads
+  over them. Workers wait with `PAUSE` and are named with `SetThreadDescription`.
+* **Device.** The CPU name comes from the registry, memory from `GlobalMemoryStatusEx`, AVX2/FMA/F16C from
+  `__cpuidex` / `_xgetbv` under MSVC and clang-cl.
+* **Text.** Every path is UTF-8, as on the other platforms: the library converts paths to UTF-16 for Windows.
+  `liyab-cli` reads its UTF-16 command line and switches the console to UTF-8 while it runs; the executables
+  declare UTF-8 as their code page in their manifest (Windows 10 1903 and later).
+* **Linking.** `liyab.dll` exports the C and the C++ API; CMake's `liyab` target defines `LIYAB_DLL_IMPORT` for the
+  code that links it. An app that loads the DLL at run time (FFI) only needs the C API's exported names.
+* **Not available on Windows:** the GPU and NPU backends (`LIYAB_USE_VULKAN`, `LIYAB_USE_QNN`,
+  `LIYAB_USE_NEUROPILOT` stop the configuration), thermal readings (Windows has no thermal status, headroom forecast
+  or sensor zones Liyab reads, so the steering of [Heat and power](#heat-and-power) stays idle while the profiles'
+  rate caps and core shares still apply), and locking the expert cache in RAM (`VirtualLock` is capped by the
+  working-set minimum).
+
 ### CMake options
 
 | Option | Default | Effect |
@@ -178,10 +224,10 @@ reports missing components, run `sudo xcodebuild -runFirstLaunch` once.
 | `LIYAB_ARM_DOTPROD` | ON on arm64 | `-march=armv8.2-a+dotprod+fp16` on Android/iOS/Linux (SDOT) |
 | `LIYAB_USE_AVX2` | ON on x86-64 | AVX2 + FMA + F16C kernels, used when CPUID reports them (the library itself keeps the x86-64 baseline) |
 | `LIYAB_USE_METAL` | ON on Apple | Metal GPU backend |
-| `LIYAB_USE_VULKAN` | ON on Android | Vulkan GPU backend and probe (loader opened with `dlopen`; shaders need `glslc` from the NDK or the Vulkan SDK) |
-| `LIYAB_USE_QNN` / `LIYAB_USE_NEUROPILOT` | ON on Android | NPU runtime probes (no SDK needed) |
+| `LIYAB_USE_VULKAN` | ON on Android | Vulkan GPU backend and probe (loader opened with `dlopen`; shaders need `glslc` from the NDK or the Vulkan SDK); not available on Windows |
+| `LIYAB_USE_QNN` / `LIYAB_USE_NEUROPILOT` | ON on Android | NPU runtime probes (no SDK needed); not available on Windows |
 | `LIYAB_ENABLE_EXPERIMENTAL` | OFF | [Experimental modules](#experimental-modules) and `test_experimental` |
-| `LIYAB_BUILD_SHARED` | ON | Shared (`.so`/`.dylib`) or static library |
+| `LIYAB_BUILD_SHARED` | ON | Shared (`.so`/`.dylib`/`.dll`) or static library |
 | `LIYAB_BUILD_TESTS` / `LIYAB_BUILD_CLI` | ON | Unit tests, benchmarks and `liyab-cli` |
 
 ---
@@ -218,12 +264,13 @@ reports missing components, run `sudo xcodebuild -runFirstLaunch` once.
   CPU kernels read quantized blocks in place. On Apple Silicon each tensor is wrapped in an `MTLBuffer` with
   `newBufferWithBytesNoCopy`, so the GPU reads the page cache directly.
 * **One forward pass for every architecture.** The transformer is not written per model. For each block the loader
-  picks the token mixer from the tensors present (`ssm_conv1d` → Gated DeltaNet, otherwise softmax attention) and
-  detects optional pieces (QKV biases, Q/K norms, an attention output gate, the pre-FFN norm, norms after the
-  attention and the FFN). The facts the tensors cannot tell are one row per architecture: whether Q/K norms come
-  before or after RoPE, the FFN's activation (SwiGLU or GeGLU), whether embeddings are scaled, which blocks attend
-  through a sliding window and with which RoPE base. The FFN is a mixture of experts when the block has a router.
-  See [Supported models](#supported-models).
+  picks the token mixer from the tensors present (`ssm_conv1d` → Gated DeltaNet, `attn_kv_a_mqa` → multi-head latent
+  attention, otherwise softmax attention) and detects optional pieces (QKV biases, Q/K norms, an attention output
+  gate, the pre-FFN norm, norms after the attention and the FFN). The facts the tensors cannot tell are one row per
+  architecture: whether Q/K norms come before or after RoPE, the FFN's activation (SwiGLU or GeGLU), whether
+  embeddings are scaled, which blocks attend through a sliding window and with which RoPE base. The FFN is a mixture
+  of experts when the block has a router. Scalars a model states in its file (RoPE scaling, soft caps, the q·k
+  scale) are read from it. See [Supported models](#supported-models).
 * **Per-operation routing.** Attention projections can go to the GPU and the FFN to the NPU. A backend that reports
   `Unsupported` for a matmul falls back to the next one for that matmul only.
 * **Vulkan on phones.** Mobile drivers lack `VK_EXT_external_memory_host` (Adreno 830 included), so mapped weights
@@ -238,8 +285,10 @@ reports missing components, run `sudo xcodebuild -runFirstLaunch` once.
 * **Paged KV cache.** Fixed 64-token pages, covering every layer, come from a pool on demand through a page table.
   Memory follows the positions actually used, and freed pages are reused exactly. Sliding windows keep the first
   `kv_sink_tokens` positions (attention sinks, default 8) plus the last *N*. Blocks the model itself windows (Gemma
-  3's local layers) see only their last *W* positions of what the cache keeps; their rows stay in the shared pages,
-  so they save attention work, not memory. Attention scores a KV head's whole query
+  2's and 3's local layers) see only their last *W* positions of what the cache keeps; their rows stay in the shared pages,
+  so they save attention work, not memory. Multi-head latent attention caches one row per position and block, its
+  RoPE key and its latent, and reads the values from the latent channels of that row
+  ([Supported models](#supported-models)). Attention scores a KV head's whole query
   group at once, and each V row is dequantized once per group. On a 2,812-token context this cut attention from 67.6
   to 44.4 ms per token on the 35B. Each token's visible positions are cut into up to 84 equal spans of at least 32
   positions, merged in order with log-sum-exp. While decoding, the spans of the one token are the tasks every
@@ -256,7 +305,10 @@ reports missing components, run `sudo xcodebuild -runFirstLaunch` once.
     For each channel, t takes the largest value the keys and queries reach at any position up to 32,768: RoPE turns
     each pair of channels by a known angle per position, so that range is exact even though the text covers only a
     few positions. Ranges are floored at a quarter of their head's median and t is bounded, so a channel the text
-    barely reached cannot get an extreme factor.
+    barely reached cannot get an extreme factor. A model whose tokenizer cannot encode text (a pre-tokenizer
+    Liyab does not have) cannot be measured: it loads with its keys as computed, and the log and `describe()`
+    (a `Keys:` line) say so. On a model with large key channels that costs a quantized cache the accuracy above;
+    an F16 cache loses nothing.
   * **Only where it helps.** A model is scaled when some head's largest key channel reaches 12 times its median
     channel: Qwen3-0.6B 107×, Qwen3-4B 87×, Qwen2.5-0.5B 52×. Below that (Qwen3.5-0.8B 10.5×, the Qwen3.6-35B
     MoE 7.4×, Qwen3.5-4B 7.5×, Llama 3.2 6.3×) scaling moved the KL against F16 only within noise, sometimes up,
@@ -306,20 +358,86 @@ reports missing components, run `sudo xcodebuild -runFirstLaunch` once.
     is already folded into `rope.freq_base` by the GGUF converter. Its `hunyuan` / `hunyuan-dense` pre-tokenizers
     are table rows (below). A prompt must start with its BOS token, which the GGUF does not ask the tokenizer to
     add;
+  * `gemma2` (Gemma 2): embeddings scaled by √d, GeGLU, norms after the attention and the FFN, every other block
+    (the even ones) through the sliding window, and soft caps on the attention scores and the logits
+    (cap · tanh(x / cap), from the file's `attn_logit_softcapping` and `final_logit_softcapping`; tanh is the
+    engine's own (`core/portable_math.h`, within 1.32 ulp), because the C library's differs between Apple and
+    Android in the last bits and the Mac and the phone gave Gemma 2 different logits; the logits' cap runs in
+    chunks on the thread pool, the same bits for any
+    thread count: 0.34 ms per token on one thread, 0.05 ms on eight, over a 256k vocabulary on an M-series Mac);
   * `gemma3` (Gemma 3 text models): embeddings scaled by √d, GeGLU, norms after the attention and the FFN, Q/K
     norms, five sliding-window blocks (RoPE base 10,000) per global block (the file's base and scaling). The GGUF
-    stores its RMSNorm weights as 1 + w already;
-  * `phi3` (Phi-3, Phi-3.5, Phi-4-mini): fused `attn_qkv` and `[gate | up]` projections, partial rotation, LongRoPE.
+    stores its RMSNorm weights as 1 + w already, for Gemma 2 too;
+  * `phi3` (Phi-3, Phi-3.5, Phi-4-mini): fused `attn_qkv` and `[gate | up]` projections, partial rotation, LongRoPE;
+  * `ernie4_5` (ERNIE 4.5 dense: ERNIE-4.5-0.3B): a pre-norm block with SwiGLU, RoPE on adjacent pairs; the row was
+    proposed and gated by `tools/describe_model.py` ([docs/model-descriptions.md](docs/model-descriptions.md)).
+    The published GGUFs (unsloth, bartowski and mradermacher were checked) ask for a BOS token
+    (`tokenizer.ggml.add_bos_token` true, or absent, which for a SentencePiece vocabulary means true) and, by
+    leaving `tokenizer.ggml.add_space_prefix` out, for a space before the text, while the model's own tokenizer
+    adds neither. Liyab reads the file as written, so such a file encodes text unlike the model's tokenizer from the
+    first token on (the forward pass itself matches the reference). Fix a copy once; the tensors are copied as
+    they are:
 
-  Linear RoPE scaling, Llama 3.x `rope_freqs` and LongRoPE are supported, and windowed blocks can rotate with a RoPE
-  base of their own. LongRoPE picks its factors once, from the configured context: the short ones up to the model's
-  original context (4,096 on Phi-3.5), where the result is the reference's, and the long ones beyond it from the
-  first position on (the reference switches when the sequence grows past it, rotating earlier keys again). YaRN is
-  rejected with a clear error.
+    ```bash
+    tools/gguf_set_keys.py ERNIE-4.5-0.3B-PT-F16.gguf ERNIE-4.5-0.3B-PT-F16-fixed.gguf \
+        --bool tokenizer.ggml.add_bos_token=false --bool tokenizer.ggml.add_space_prefix=false
+    ```
+  * `deepseek2` (DeepSeek-V2-Lite, DeepSeek-V3-structured models with one expert group, and the models converted to
+    their architecture, such as Youtu-LLM-2B): multi-head latent attention, queries from one projection or a
+    low-rank pair with its norm, dense FFNs in the leading blocks and MoE with shared experts in the others (from
+    the tensors), YaRN with its log multiplier. The cache holds one row per position and block, `[k_pe | latent]`
+    (576 values on DeepSeek-V2-Lite instead of the 5,120 of per-head keys and values), whose latent channels are the
+    values. Attention reads it in one of two forms, chosen per forward pass:
+    * absorbed (always for decoding): each head's query is projected onto the latent once (`attn_k_b`), so all
+      heads attend over the cached rows themselves; the weighted latent is then expanded per head (`attn_v_b`). Per
+      position and head that scores 576 channels and accumulates 512;
+    * expanded (prefill batches): per-head keys `[W_kb c | k_pe]` and values `W_vb c` are expanded from the cached
+      latents of the positions the batch sees, a tile of at most 256 positions at a time (5 MiB on
+      DeepSeek-V2-Lite, plus 8 MiB of the decoded `attn_k_b` and `attn_v_b` of the block being run; never the
+      whole context: the cache keeps latents only), and the batch attends over them: 192 channels scored and 128
+      accumulated per position and head, for the cost of expanding each position once per pass instead of
+      projecting each token's query. Tiles have absolute bounds and are merged in order, so a token's result is the
+      same however its prompt was split into passes and however many threads run.
+
+    The form is chosen from measured cost, measured once: each form's work is counted per pass from its batch size
+    and context, and the ratio of what a multiply-add costs in each form on this device sets the threshold, so it is
+    the device's own instead of a constant. The engine times both forms of one block on a synthetic pass at load
+    (256 tokens after 768 cached positions, best of 3 each; 0.18 s on Youtu-LLM-2B on the Mac, ratio 0.595), rounds
+    the ratio to 1/8 octave and keeps it in `EngineConfig::cache_dir` next to the key scales (measured again when
+    the file is missing or damaged; without a `cache_dir`, kept in memory for the process only, and two processes
+    may measure a step apart: 0.595 and 0.648 in three runs there). It is never re-measured on
+    the fly: from then on a pass's form follows from its shape alone, so the same prompt gives the same bits on that
+    device in every run, whatever else loads it. Another device (or another kernel set) may set another threshold
+    and round a long prompt differently. The engine prefills these models in passes of 512 tokens (64 for other models, 1,024 with streamed
+    experts): a pass of 64 tokens deep in a context does not repay expanding every position it sees, and stays
+    absorbed. Both forms compute the same function and round differently: outputs are not bit-identical across
+    forms (each form on its own is, and `test_golden` pins both); against transformers both give a mean KL of
+    0.00000 with an F16 cache, and the expanded form is the closer with a Q8_0 one ([Correctness](#correctness)).
+    `TransformerOptions::latent_form` / `EngineConfig::latent_form` pin one form. Queries are scaled for the
+    per-head width the model was trained with (1/√192 there). Key scaling covers the latent too: the absorbed form
+    multiplies the attention output back, the expanded one the latents before it expands them. Files converted
+    before `attn_kv_b` was split into `attn_k_b` and `attn_v_b` are refused with a request to convert them again,
+    and so is group-limited expert routing
+    (`expert_group_count` > 1: DeepSeek-V2 236B, V3 and R1).
+
+  Linear RoPE scaling, Llama 3.x `rope_freqs`, LongRoPE and YaRN are supported, and windowed blocks can rotate with
+  a RoPE base of their own. LongRoPE picks its factors once, from the configured context: the short ones up to the
+  model's original context (4,096 on Phi-3.5), where the result is the reference's, and the long ones beyond it from
+  the first position on (the reference switches when the sequence grows past it, rotating earlier keys again).
+  YaRN is read from the file's `rope.scaling.*` keys (factor, original context, `yarn_beta_fast` / `yarn_beta_slow`,
+  `yarn_ext_factor`, `yarn_truncate`, `yarn_attn_factor`, `yarn_log_multiplier`): each rotary pair's frequency is
+  blended between its own and the one divided by the factor along the reference's ramp, and queries and keys get
+  its attention factor (0.1 ln factor + 1 unless the file states one). It does not depend on the context length,
+  so one table serves every position. The q·k scale is the file's `attention.scale` when it has one, else 1/√head_dim.
   `liyab_supported_architectures()` lists what a build runs, so front ends can filter downloads.
+* **Embedding models and rerankers** built on these architectures (Qwen3-Embedding, Qwen3-Reranker) run as their
+  GGUF declares them: see [Embeddings and reranking](#embeddings-and-reranking). Encoder-only models (BERT, XLM-R)
+  are not supported.
 * **MoE details:**
   * softmax or sigmoid gating, optional selection bias, top-k, renormalization and scale from the metadata;
   * an optional shared expert with a sigmoid gate;
+  * each expert's gate and up projections as two tensors or as one `[gate | up]` tensor (`ffn_gate_up_exps`,
+    written by converters that fuse them); the fused rows are the split ones, so the logits are the same bits;
   * the tokens of a batch are grouped per expert, so each expert is read once.
 * **Hybrid models:** DeltaNet blocks keep a recurrent state: conv history plus one 128×128 matrix per value head.
   These models can roll back only:
@@ -349,11 +467,14 @@ reports missing components, run `sudo xcodebuild -runFirstLaunch` once.
   * **Pre-tokenizers are data.** Before merging, a byte-level BPE tokenizer cuts the text into pieces with regular
     expressions. Each scheme is one row of a table keyed by the GGUF's `tokenizer.ggml.pre`
     (`src/core/pre_tokenizer.cpp`): the patterns of the model's own `tokenizer.json`, NFC normalization where it
-    asks for it (Qwen), and whole-piece vocabulary lookup before merging (Llama 3, Hunyuan). Rows: `default` /
-    `gpt-2` / `gpt2` / `phi-2`, `llama-bpe` / `llama3`, `qwen2` / `deepseek-r1-qwen`, `qwen35`, `hunyuan`,
-    `hunyuan-dense` / `deepseek-v3`, `deepseek-llm` and `gpt-4o` (Phi-4-mini). A GGUF without the key uses
-    `default`. Any other value is an error naming it and the supported list; the model still loads and runs on
-    token ids.
+    asks for it (Qwen), and whole-piece vocabulary lookup before merging (Llama 3, Hunyuan, Tekken). Rows:
+    `default` / `gpt-2` / `gpt2` / `phi-2`, `llama-bpe` / `llama3`, `qwen2` / `deepseek-r1-qwen`, `qwen35`,
+    `hunyuan`, `hunyuan-dense` / `deepseek-v3`, `deepseek-llm`, `gpt-4o` (Phi-4-mini), `smollm` (SmolLM2: every
+    digit alone, then GPT-2's split), `tekken` (Mistral-Nemo) and `youtu` (Youtu-LLM: Hangul, CJK punctuation,
+    Bopomofo and Han/kana runs first; its `\p{Hangul}` is written out as the script's code-point ranges, since the
+    regex engine has categories, not scripts). A GGUF without the key uses `default`. Any other value is an error
+    naming it and the supported list; the model still loads and runs on token ids, with a quantized KV cache too
+    (its keys then unscaled, see [key scaling](#architecture)).
   * **Liyab's own regex engine** (`src/core/regex.cpp`) runs the patterns: Unicode general categories (`\p{L}`,
     `\p{Lu}`, `\P{N}`…), classes, alternation, greedy, lazy and possessive quantifiers, case-insensitive groups,
     lookahead and atomic groups. It decodes the text once into code points with a category key each, so a class
@@ -400,8 +521,8 @@ available memory or of `memory_budget_mb`.
 * **Storage that is fast only when used right.** UFS 4 reaches ~4.4 GB/s with 2–4 direct requests of ≥ 256 KiB in
   flight, random or sequential alike, but stays under 1.2 GB/s with 16 KiB requests (see the
   [flash chart](#charts)).
-  * `DirectFile` reads with `O_DIRECT`, so there is no page-cache copy and resident weights are not evicted. It
-    splits large reads into concurrent 4 MiB requests.
+  * `DirectFile` reads with `O_DIRECT` (`F_NOCACHE` on Apple, `FILE_FLAG_NO_BUFFERING` on Windows), so there is no
+    page-cache copy and resident weights are not evicted. It splits large reads into concurrent 4 MiB requests.
   * On FUSE (Android's `/storage/emulated`), direct reads were seen to return success without the file's bytes, so
     Liyab never uses them there, and it self-tests direct against buffered reads before trusting any file.
 * **Dense models.** As many blocks as fit stay resident. The others stream through a 3-slot pipeline (fetch →
@@ -418,7 +539,7 @@ available memory or of `memory_budget_mb`.
     chooses: queued ones are dropped, and ones already read become the next to evict.
   * **Reads shaped for flash.** Four I/O threads read the experts. The thread that starts an expert reads its gate
     matrix and hands up and down to idle threads, so a waiting forward pass gets its expert after one matrix's read
-    instead of three.
+    instead of three. A fused `[gate | up]` matrix is contiguous per expert: one read, then down, two in all.
   * **Compute that overlaps I/O.** Experts already in RAM run first, in one batched pass (gate/up, then down). The
     shared expert runs while the routed ones wait for a read.
   * **Batch-aware.** For a multi-token pass (prefill), experts are rearranged into the i8mm layouts on the I/O
@@ -462,17 +583,245 @@ each of those as a scheduling problem.
 * **State snapshots for hybrid models.** Four are kept: the oldest one, the end of the last prompt (pinned, so
   background drafts cannot evict it), and the two newest others (a draft's words and the whole draft after them).
   They are set aside from the expert cache's budget (62.8 MiB each on the 35B).
-* **Prefix cache across conversations** (`prefix_cache_mb`). A context that an unrelated prompt replaces is kept in
-  RAM as a serialized state (KV pages plus recurrent states) with the text it encodes, in an LRU of at most that
-  size. The whole context is kept, the last reply included, with a hybrid model's state snapshots (the last
-  prompt's end among them). A later prompt that continues that text is restored, cut back to where the two diverge,
-  instead of being processed again, even when its earlier replies would encode to other tokens. The output equals
-  that of a context never interrupted (tested on attention-only and hybrid models). A 2,000-token conversation on
-  the 35B costs ~85 MiB, plus 62.8 MiB per state snapshot kept. In RAM (`prefix_cache_mb`) the cache comes out of
-  the memory budget; on a MoE whose experts stream, only as far as the expert cache can spare above 10% of the
-  experts, so it never causes a requantization. On storage (`prefix_cache_dir`, `prefix_cache_disk_mb`) it costs no
-  RAM at all: contexts that RAM does not hold go to files, least recently used out first. On the phone a 4,907-token chat on the 35B (114 MiB) was set aside in 81 ms and
-  restored in 95 ms, where processing a 4,009-token one again had taken 163 s.
+* **Prefix cache across conversations** (`prefix_cache_mb`, `prefix_cache_dir`). A context that another prompt
+  replaces (or an embedding call) is set aside in a content-addressed store of KV chunks. A prompt replaces it when
+  it shares less than half of it, or leaves it before the end of its last prompt and rewinding would process at
+  least 128 tokens again: another chat after a long shared system prompt, an edited message (on a hybrid model,
+  rewinding goes back to the nearest state snapshot). A draft typed ahead and edited after the last reply keeps
+  using the context's own snapshots instead. Whenever a prompt leaves the context, the store is asked for more of
+  it than the context keeps. A chunk is a whole number of pages of the paged KV cache, about 2 MiB and at most
+  256 tokens (each is a file on storage, and creating one costs about as much as writing a megabyte), keyed by a
+  hash chained over every token before it and rooted in what its bytes depend on (the model file, cache layout and
+  type, key scales, kernels and backends, and a latent-attention model's prefill form). A prefix that several
+  conversations share (the system prompt, the tool block, the start of a conversation) is therefore stored once,
+  and setting a conversation aside again writes only its new chunks. A later prompt is restored up to the longest
+  prefix the store holds, chunk by chunk, then cut to where the two diverge, even when its earlier replies would
+  encode to other tokens: the store keeps the text each context encodes. The rows the live context already holds
+  for the same tokens stay where they are. Recurrent states cannot be cut into chunks, so a hybrid model keeps them
+  as images at the positions the prefix cache always kept (the end of the context, the end of its last prompt and
+  the oldest snapshot). Each image is attached to a chunk holding its prefix and moves to another such chunk when
+  that one goes; a prompt restores up to the deepest one it reaches. The output equals that of a context never
+  interrupted (tested on attention-only and hybrid models, in RAM, on storage and in a later engine).
+  * **Tiers and caps.** RAM (`prefix_cache_mb`) holds the most recently used chunks. It comes out of the memory
+    budget; on a MoE whose experts stream, only as far as the expert cache can spare above 10% of the experts, so
+    it never causes a requantization. What RAM cannot hold goes to storage (`prefix_cache_dir`,
+    `prefix_cache_disk_mb`), which costs no RAM at all. What storage cannot hold goes, least recently used first:
+    a chunk with every chunk after it, a state image on its own. Room is made before anything is written, so
+    neither tier is ever above its cap. A 2,000-token conversation on the 35B costs ~21 MiB of chunks plus
+    62.8 MiB per state image.
+  * **Across runs.** The storage tier outlives the engine. When destroyed, the engine sets its context aside
+    there too, and a later engine or process with the same model and settings restores from it: a system prompt
+    or a conversation comes back after a restart without being processed again. Other models' chunks stay and
+    count against the cap. Files are written to a temporary name and renamed. When it opens the directory, the
+    engine removes interrupted writes, damaged files, other format versions, broken chains and the files of
+    builds before the store; a chunk whose payload hash does not match when read is removed and the prompt
+    processed. One engine at a time uses a directory (an OS lock); another one runs without the storage tier.
+  * **Compressed on storage, only where it pays.** What fills the storage cap is the KV rows, so a chunk can be
+    written compressed (`src/core/kv_codec.cpp`) and decoded when read back; RAM keeps rows as they are, and every
+    cap counts the bytes written. Measured on real pages of Qwen3-0.6B, Qwen3.5-0.8B and Llama 3.2 1B, KV bytes are
+    close to random except the exponents of 16-bit floats, which stay near the largest one their channel takes in
+    the page. The lossless encoding therefore stores each 16-bit float (F16 values, Q8_0 block scales) as its low
+    byte plus a symbol for its high byte relative to its channel's largest exponent, and codes those symbols with
+    our own static rANS coder (12-bit tables per plane, 4 interleaved states, branchless refills). Q8_0 quants are
+    coded too, a key channel that changes less from one position to the next than it is large (the slowly turning
+    RoPE pairs) as those differences. Pages are encoded one by one and decoded straight into the cache's pages,
+    layers in parallel on the engine's threads. With every stream coded (`liyab-kl --store-codec`, 2,047
+    positions, every logit identical; decode and encode on the Mac's chunk files, M4 Pro, best of 3):
+
+    | Cache | Stored / raw | Contexts per 512 MB (2,000 tokens) | Decode, 1 thread / 10 | Encode, 10 threads |
+    | :--- | ---: | ---: | ---: | ---: |
+    | F16 (Qwen3-0.6B, Qwen3.5-0.8B, Llama 3.2 1B) | 1 / 1.168–1.177 | Qwen3-0.6B 2.34 → 2.74 | 0.65–0.89 / 0.11–0.16 ms per MiB | 0.34–0.55 ms per MiB |
+    | Q8_0 (same) | 1 / 1.11–1.13 | Qwen3-0.6B 4.41 → 4.90 | 0.83–1.7 / 0.13–0.4 ms per MiB | 0.5–0.8 ms per MiB |
+
+    Restores come first, so a stream is coded only when the read time its smaller size saves exceeds the time
+    decoding it takes, on this device: once per storage directory, cache layout and thread count, the store
+    writes an 8 MiB probe file next to its chunks, reads it back uncached (`O_DIRECT` / `F_NOCACHE`) and through
+    its own buffered, hashed read (a read costs the slower of the two), and decodes a synthetic chunk of the
+    layout on the pool. The result is kept in `cache_dir` (`kv-costs-*.bin`, 16 sets at most), so what is coded
+    is fixed afterwards; where reads cannot be measured uncached, nothing is coded. A coded stream saves less than
+    its own size, so where decoding a symbol costs at least as much as reading a byte nothing can pay: chunks are
+    then written raw without trying, and set-asides and restores are exactly those of raw chunks. While a
+    compressed chunk decodes, the next one's file is read on a thread of its own (`KvStore::read_ahead()`).
+    On the Mac (M4 Pro: reads 8.4–8.8 GB/s, decoding 0.23–0.46 ns per symbol on 10 threads) nothing pays,
+    and restores equal the raw store's (alternating runs, 5 each; "coded" forces every stream coded):
+
+    | Context | Raw store | This build (raw chosen) | Coded | Storage, raw → coded |
+    | :--- | ---: | ---: | ---: | ---: |
+    | Qwen3.5-0.8B Q8_0, 27.9k tokens | 36.3–40.3 ms | 36.3–37.8 ms | 156–192 ms | 213 → 194 MiB |
+    | Qwen3.5-0.8B F16, 27.9k tokens | 59.8–61.5 ms | 60.0–62.2 ms | 84.6–86.8 ms | 367 → 320 MiB |
+    | Qwen3-0.6B Q8_0, 8.3k tokens | 73.2–75.1 ms | 73.1–75.1 ms | 155–161 ms | 480 → 430 MiB |
+    | Qwen3-0.6B F16, 8.3k tokens | 137–141 ms | 134–140 ms | 192–201 ms | 903 → 772 MiB |
+
+    Old raw chunk files stay readable; a build that does not know an encoding removes its files when it opens the
+    directory. Recurrent state images are stored raw: their 32-bit floats would code ~13% smaller (Qwen3.5-0.8B),
+    which on such storage would not pay either.
+  * **Lossy, opt-in** (`prefix_cache_lossy`, `--prefix-cache-lossy`): chunks re-quantized to 4 bits on their way
+    to storage. Keys channel by channel, each (layer, KV head, channel) with its own minimum and step over the
+    chunk's 64 positions, so the few large, nearly constant key channels of some models keep their own range
+    (key scaling, from the chunk itself); values in 32-channel blocks of one position (Q4_1). They come back in
+    the cache's type. 3.37× smaller than F16 rows, 1.79× than Q8_0 (Qwen3-0.6B F16: 2.34 → 7.9 contexts of
+    2,000 tokens per 512 MB). Cost, `liyab-kl` against the uncompressed restore (every page after the first
+    attended to as decoded), 2,047 positions:
+
+    | Model | Cache | KL mean / median | Top-1 agreement | Perplexity |
+    | :--- | :--- | ---: | ---: | ---: |
+    | Qwen3-0.6B | F16 | 0.0061 / 0.0023 | 96.34% | 14.475 → 14.518 |
+    | Qwen3-0.6B | Q8_0 | 0.0063 / 0.0026 | 96.14% | 14.472 → 14.584 |
+    | Qwen3.5-0.8B | F16 | 0.0017 / 0.0007 | 97.95% | 10.424 → 10.424 |
+    | Qwen3.5-0.8B | Q8_0 | 0.0019 / 0.0007 | 97.85% | 10.428 → 10.414 |
+    | Llama 3.2 1B | F16 | 0.0070 / 0.0032 | 95.51% | 13.981 → 14.224 |
+    | Llama 3.2 1B | Q8_0 | 0.0078 / 0.0034 | 95.70% | 14.005 → 14.192 |
+
+    A lossy engine keys its chunks apart (its store's seed differs): they are never restored by an engine that
+    did not opt in, and a lossy chunk under a lossless engine's own key is removed as untrusted. Q4_0 / Q4_1
+    caches are already 4-bit: they are stored lossless.
+  * **Measured on the Mac** (8 threads; the app's configuration: storage only, 512 MiB) with a scripted workload: a
+    1,392-token system and tool block, seven chats with 160-token replies, four of them resumed (two twice), three
+    abandoned, then a restart that resumes the first. Every reply equals that of a context never interrupted, with
+    this cache and with the earlier per-context one.
+    * Qwen3-0.6B: 91.1% of prompt tokens reused, against 84.4%. The earlier cache set nothing aside (each chat was
+      shorter than the system block), so a resumed chat processed its turns again: 1.8–3.8 s to the first token,
+      against 0.19–0.25 s. A set-aside took 3–24 ms and wrote only the chat's own chunks, 10–13 MiB (91 MiB for the
+      first context), where the earlier cache wrote the whole context each time; a restore took 1–4 ms, the system
+      block's rows staying in place. Storage peaked at 208 MiB. After the restart the first chat came back from
+      storage: 0.17 s to the first token instead of 14.5 s.
+    * Qwen3.5-0.8B (hybrid): 44.5% reused, against nothing (rewinding went back to the start, the nearest state
+      snapshot). Every resumed turn was restored: 0.19–0.30 s to the first token against 12–18 s. New chats still
+      process the system block, whose end has no state snapshot when it is not prepared on its own. A set-aside
+      wrote 1–2 chunks of 4 pages and 2 state images, ~40 MiB, in 9–11 ms; storage peaked at 312 MiB (352 MiB once
+      the engine set its context aside when destroyed). After the restart: 0.17 s to the first token instead of
+      18.4 s.
+    * Throughput, Qwen3.5-0.8B with a 25.8k-token context and three state images (218.6 MiB), alternating runs:
+      set aside in 43–49 ms (4.7–5.3 GB/s) and restored in 28–31 ms (7.5–8.3 GB/s), where the earlier cache wrote
+      its one file in 23–25 ms and read it back in 41–47 ms. State images are read into the model's states and the
+      snapshots' own buffers, and written from them, with no copy in between; each 1 MiB block is hashed while it
+      is in cache (xxHash64 runs at ~25 GB/s, reading from the page cache at ~17).
+    * Decoding is as fast as before (alternating runs, best of 3: 68.6, 67.9, 62.9 tok/s before; 68.9, 68.6,
+      63.3 after).
+  * On the phone (Snapdragon 8 Elite, Qwen3.6-35B-A3B, the app's 512 MiB on storage), a chat of 1,355 tokens
+    that a local-API request replaced was set aside in 73 ms (2 of its 8 chunks new, its 2 state images: 127.7
+    MiB written) and restored in 151 ms when the next message came, which then processed 17 new tokens and
+    gave its first token 1.66 s after sending. The same chat set aside again one message later wrote 1 new
+    chunk and its 2 state images (126.0 MiB) in 87 ms and came back in 127 ms. Most of what is written is the
+    DeltaNet state images (62.8 MiB each), which change with every turn; the KV chunks are written once. The
+    store's files outlived an update of the app: the next load kept 9 chunks and 2 contexts. (With the earlier
+    per-context cache, a 4,907-token chat (114 MiB) was set aside in 81 ms and restored in 95 ms, where
+    processing a 4,009-token one again had taken 163 s.)
+* **Segment reuse: KV reused away from its prefix** (`segment_reuse`; opt-in and lossy). An agent's prompts carry
+  documents, memory snippets and tool results in the middle, and a change before them forced everything after them
+  to be processed again. A request can mark parts of its prompt (`GenerateOptions::segments`,
+  `liyab_engine_generate_segmented`, `prefill()` with segments: byte ranges of a system block, tools, documents,
+  tool results, turns). With segment reuse on, the KV of each marked part is kept, and a later prompt that holds the
+  same part anywhere takes it from there instead of processing it again.
+  * **Exact reuse first.** What the live context or the prefix cache holds of a prompt is kept or restored as
+    before, losslessly; segments are reused only after it. A request that marks nothing never sees a reused row: a
+    context holding some is processed again from the first one, the prefix cache keeps only the rows before it,
+    and `save_state()` records where they start.
+  * **Kept in the prefix cache's store.** A segment is kept once a prompt marking it has been processed, as a
+    context of its own whose tokens sit between two ids no vocabulary has, the first naming the position it was
+    computed at. So it gets the store's tiers, caps, LRU order and files, and no prompt's chain ever reaches it
+    (its rows are exact only after what preceded it there). It is kept once, as first computed, and reused from
+    there wherever it appears. Text a segment holds is encoded on its own, so its tokens are the same wherever
+    it appears (with a SentencePiece vocabulary, wherever it follows the same kind of token), and segments
+    shorter than 16 tokens are processed as usual.
+  * **Turned to its new positions.** RoPE turns each key by an angle proportional to its position, so a stored key
+    is turned back by its old angle and on by its new one, with each block's own table: both pairings, partial
+    rotation, `rope_freqs`, linear scaling, LongRoPE, YaRN, the windowed blocks' own base, latent attention's RoPE
+    key. Key scales and Q/K norms after RoPE are taken out first and put back after; only the quantized blocks
+    that hold rotated channels are rounded again, and values, latents and keys moved by 0 keep their bits.
+    Measured with `liyab-reuse --shift` (a context's rows moved 300 or 3,000 positions away and back, so rounded
+    twice), against the unmoved context: KL 0.0003–0.0004 on Qwen3-0.6B and 0.0006–0.0007 on Llama 3.2 1B with
+    a Q8_0 cache, under 0.000001 with F16, 0.02–0.03 with Q4_0. Segments are therefore kept in the cache's own
+    format: an F16 copy would take nearly twice the memory of a Q8_0 one to remove a difference two orders of
+    magnitude below what reuse itself changes, and an INT4 cache's extra rounding is part of what the
+    calibration measures. A move takes ~4 µs per position across all the blocks of a 1B model on the Mac.
+  * **Partly processed again.** Reused rows lack attention to what now precedes them. Every reused token runs the
+    first two blocks again with the tokens around it; the share whose keys and values moved most there runs
+    through the rest of the model, the others keep their reused rows. The whole span from the end of the exact
+    prefix to the last reused token goes block by block, in passes in order, so each token sees every position
+    before it. The share is not a constant: the engine measures it per model on prompts shaped like real ones,
+    the documents of the corpus below in the model's own chat template: three prompts store them, four others
+    arrange 3 to 5 of them in other orders, each followed in turn by three questions about them. For each share
+    of 5, 10, 15, 20, 30 and 45% it takes the mean KL of the answers against processing the whole prompt, and a
+    bound above it (1.645 standard errors of the 12 questions' own means); it keeps the smallest share whose
+    bound, and every larger share's, is within `segment_reuse_max_kl` (default 0.03). With none, the model is
+    refused. `Engine::segment_reuse()` gives the share and the calibration's KL, bound and top-1,
+    `GenerationStats` and `PrefixCacheStats` what was reused.
+  * **Calibrated in the background.** Loading does not wait for the measurement: it runs once the engine has
+    been idle for 2 s, a stage (a few passes over one prompt's documents) at a time, on a context of its own
+    swapped in for the stage, so the conversation's context stays as it was. A call arriving meanwhile stops
+    the stage between two blocks, waiting a fraction of a second instead of getting `Busy`, and the stage runs
+    again at the next idle time. Until the measurement ends segment reuse is off: marked prompts are processed as
+    usual, and `Engine::segment_reuse()` reports `Busy` with its progress. The result is kept in `cache_dir`, so
+    the next engine has it at once (without one, every load measures again).
+  * **Measured on the Mac** (`liyab-reuse`; CPU, Q8_0 cache with key scaling; on a Mac other jobs loaded heavily,
+    so times are compared within each run). 8 prompts per model: the system prompt of a small company's
+    assistant, 3–5 of its 12 documents in random order (77–80% of ~555 tokens) and a question, through the
+    model's chat template, after warm-up prompts had stored the documents in other orders. (The calibration
+    draws on the same corpus, in other arrangements.) Quality against
+    processing the whole prompt, at the first answer token and each next one up to the end of the greedy answer
+    (at most 33); the first token's time against the lossless path, the part before the first document restored
+    from the prefix cache and the rest processed:
+
+    | Model | Processed again | Mean KL | Median KL | Top-1 | Same greedy answer | First token sooner |
+    | :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+    | Qwen3-0.6B | 0% | 0.049 | 0.0013 | 95.7% | 2 of 8 | 5.5× |
+    | | 10% | 0.041 | 0.0012 | 96.2% | 3 of 8 | 3.7× |
+    | | 20% | 0.030 | 0.0008 | 95.7% | 1 of 8 | 2.8× |
+    | | 30% | 0.026 | 0.0006 | 98.3% | 4 of 8 | 2.5× |
+    | Llama 3.2 1B | 0% | 0.027 | 0.0034 | 96.5% | 3 of 8 | 4.2× |
+    | | 10% | 0.020 | 0.0025 | 97.2% | 4 of 8 | 3.2× |
+    | | 20% | 0.013 | 0.0021 | 98.0% | 4 of 8 | 2.7× |
+    | | 30% | 0.011 | 0.0015 | 98.4% | 4 of 8 | 2.2× |
+
+    The first token comes as much sooner as the work left predicts: the selection runs 2 of Qwen3-0.6B's 28
+    blocks (2 of Llama's 16) for every reused token, the share processed again all of them. The mean KL is a
+    few answer tokens' doing: the median is 6 (Llama) to 48 (Qwen3) times lower, the largest single token's KL
+    0.3–1.9. A reused document costs the store its rows, ~60 KiB per token on Qwen3-0.6B and ~17 KiB on Llama
+    3.2 1B. Documents kept from prompts that had themselves reused others, as the engine keeps them
+    (`--warm-up-reuse`, at 10% on Qwen3-0.6B and 5% on Llama), give the same KL within 0.0006: copies made after
+    reused rows add no measurable error of their own.
+  * **Which tokens are processed again matters**, at equal work too. Mean KL on Qwen3-0.6B at 10, 20 and 30%:
+    the deviation criterion 0.041, 0.030, 0.026; random tokens 0.045, 0.043, 0.039; each document's first ones
+    0.052, 0.041, 0.056; ranked by the attention the prompt's last tokens pay them (the question taken into the
+    pass) 0.037, 0.038, 0.034, and by that attention times their deviation 0.042, 0.037, 0.026; the deviation
+    with each document's first 8 tokens added 0.046 and 0.036 (10 and 20%), compared at block 3 instead of
+    block 1 0.039 and 0.037. On Llama 3.2 1B random tokens give 0.025, 0.022, 0.018. Random needs no selection
+    pass, yet with it counted the deviation still leads: at 20% it costs 26% of the documents' work on
+    Qwen3-0.6B and 30% on Llama, and gives 0.030 and 0.013 where random tokens at 30% give 0.039 and 0.018.
+    So the deviation at block 1 is the default (`liyab-reuse --criterion`, `--select-block` and `--first-tokens`
+    measure the others).
+  * **The calibration against the measurement.** The share the calibration keeps holds on the prompts measured
+    above (`liyab-reuse --calibrate 0.03` runs both), or the model is refused:
+
+    | Model | Kept at the default target (0.03) | Calibration: mean KL (bound) | Measured above at that share | First token sooner |
+    | :--- | ---: | ---: | ---: | ---: |
+    | Llama 3.2 1B | 15% | 0.0219 (0.0280) | 0.0162 | 3.0× |
+    | Qwen3-0.6B | refused (45%, the largest) | 0.0364 (0.0543) | 0.0180 | |
+    | Qwen3.5-0.8B | refused: hybrid | | | |
+
+    Its prompts ask more than the measured ones. From 5 to 45% Llama's calibration gives 0.035, 0.027, 0.022,
+    0.019, 0.019 and 0.012 (bounds 0.045 to 0.016), where the measured prompts give 0.020 at 10% and 0.013 at
+    20%. Qwen3-0.6B's stays at 0.036–0.042 whatever the share, carried by a few of its 12 questions (at 45%,
+    0.14 and 0.07 for two of them, under 0.022 for seven), while the measured prompts fall to 0.018 at 45%. So
+    the share kept errs on the safe side: at a target of 0.02 Llama 3.2 1B kept 45% and got its first token
+    1.8× sooner, where 20% (2.7×) would have stayed within 0.02 on the measured prompts; the default is 0.03,
+    where it keeps 15% (3.0×) and measures 0.016. Earlier, with plain-text prompts, four
+    documents and one or three questions, the calibration was the gentler one (Llama 3.2 1B: 0.0097 at 5%
+    against 0.027 at 0% and 0.020 at 10% measured), which is why it now uses the model's chat template, the
+    corpus's numbered documents and a bound. It took 205 s of background work on Llama 3.2 1B and 90 s on
+    Qwen3-0.6B (BF16 weights on the Mac's CPU), about as much as processing 15,000 tokens, once per model and
+    cache format.
+  * **Hybrid models are refused**, with the reason in `Engine::segment_reuse()`: their recurrent blocks must run
+    over the whole prompt in order, so every token still goes through every block, and reusing the attention
+    blocks' keys and values would skip only their key and value projections (1.3% of a prompt token's matrix work
+    on Qwen3.5-0.8B). Marked prompts are then processed as usual. Windowed blocks (Gemma) take part like global
+    ones, each turned with its own RoPE table, a recomputed token seeing its window; with the engine's own
+    sliding window there is no prefix cache, so no segment reuse.
+  * **Off, nothing changes.** The forward pass, split into the steps this reuse runs block by block at scattered
+    positions, gives the same bits (golden logits, arm64 and x86) at the same speed: alternating runs on the Mac
+    before and after, a 520-token prompt and 96 tokens, prefill median 5.59 and 5.61 s, decoding 72.2 and 72.1
+    tok/s on Qwen3-0.6B, 9.49 and 9.53 s, 42.0 and 43.7 tok/s on Llama 3.2 1B, the same replies.
 * **Cancellable, resumable prefill.** `cancel_prefill()` stops a background prefill between blocks, within a fraction
   of a second even inside a 1,024-token pass, and keeps the work done. The next prompt continues from there. A user
   request therefore never waits behind background work.
@@ -495,8 +844,8 @@ each of those as a scheduling problem.
   and may return text the output must continue with. The engine runs that text through the model in one batched
   pass, like a short prefill, and emits it as output. That pass also gives the logits of the token after the forced
   text, which is sampled from them, so forced text costs no decoding step of its own (the CPU backend computes a row
-  the same bits in any batch, so the output is the same as with a separate step). The app uses this to force the
-  fixed syntax of tool calls and to complete a tool name as soon as only one fits. It works with speculative
+  the same bits in any batch, so the output is the same as with a separate step). Constrained decoding (below)
+  forces a grammar's fixed text through the same pass: the syntax and names of tool calls. It works with speculative
   decoding too: the callback is asked after every token, and tokens a step verified past a forced point are rolled
   back. Forced text that ends inside a character is emitted up to it, the rest with the token that completes it.
   Forced tokens are counted apart from sampled ones, with the time their passes took, and
@@ -523,6 +872,15 @@ each of those as a scheduling problem.
     writes it (`", "` and `": "`) by default, so the model samples only values and choices; any white space is an
     option. End-of-generation tokens are allowed only where the grammar accepts, and a whole-output grammar ends the
     generation as soon as its match is complete.
+  * **Token healing.** Forced text ends where the grammar offers a choice, and its last token can be the start of a
+    longer token the model writes there: Qwen writes ` {"` after `"arguments":` and `</` before `function>`. Forced
+    alone, ` {` or `<` makes the model go on from a token boundary it never saw in training, which skews its choice.
+    Through the app's tool calls, Qwen3-0.6B then mostly wrote `{}` and left out its optional arguments (a date in
+    10 of 50 replies, against 30 when it wrote that token itself), and Qwen3.5-0.8B added a parameter it did not
+    need. So when a longer token the grammar allows starts with the forced text's last token, that token is left
+    to the model, which samples it or the longer one under the mask; the batched pass only gets shorter, so it
+    costs no step. With it, Qwen3-0.6B gave a date in 30 of 50 replies again, and Qwen3.5-0.8B's greedy calls are
+    the ones it writes when only their syntax and names are forced.
   * **Cost.** On an M4 Pro (Qwen3-0.6B, Qwen3.5-0.8B, Llama 3.2 1B, Qwen2.5-0.5B), constrained decoding cost
     0.14–0.24 ms per token greedy, 0.25–0.62 ms with top-k sampling, and 0.09–0.12 ms with whole masks once a
     state's mask is cached, against decode steps of 18–92 ms. A state's first whole mask takes 1.5–2.7 ms (inside a
@@ -648,6 +1006,93 @@ conversation. Every reply was identical to plain decoding's.
 
 ---
 
+## Embeddings and reranking
+
+Local memory and retrieval need two more kinds of model next to the generative one: an embedding model, which turns
+a text into a vector so similar texts lie close together, and a reranker, which scores how well a document answers a
+query. Decoder models fine-tuned for these jobs (Qwen3-Embedding, Qwen3-Reranker) run on the architectures above with
+the same forward pass; `Engine::embed()` and `Engine::rerank()` (C: `liyab_engine_embed` / `_rerank`) use them, and
+so does the app's [local API](#local-api-one-model-for-every-app-on-the-device) (`/v1/embeddings`, `/v1/rerank`).
+
+* **What a model does is data from its GGUF**, never a per-model branch:
+  * `<arch>.pooling_type` says how the decoder's final hidden states become one vector: the last token's (3,
+    Qwen3-Embedding), the mean of all tokens' (1), or a ranking head over the last token's (4, a reranker).
+    `Engine::pooling()` reports it.
+  * `tokenizer.ggml.add_eos_token` ends every input with the EOS token, as the model's Hugging Face tokenizer
+    appends it (Qwen3-Embedding's `<|endoftext|>`, whose state is the one pooled). A file converted without the flag
+    needs the token's text at the end of each input.
+  * A reranker carries its ranking head (`cls.output.weight`, one row per label of
+    `<arch>.classifier.output_labels`: Qwen3-Reranker's are the rows of "yes" and "no" in its LM head, with an
+    optional `cls.output.bias`) and the prompt of one pair (`tokenizer.chat_template.rerank`, with `{query}` and
+    `{document}`). Some published Qwen3-Reranker GGUFs are plain causal models without either: `RerankOptions`
+    gives the prompt and `labels` (`{"yes", "no"}`), and the pair is scored with the LM head's logits of those
+    tokens, the way the model card does.
+* **How.** `embed()` runs each text through the transformer without the LM head and takes the final hidden state
+  after the output norm, the state the LM head would read: the last token's or the mean of every token's. Vectors are
+  L2-normalized; `dimensions` keeps the first values for models trained for it (Qwen3-Embedding: 32 to 1,024).
+  `rerank()` writes each pair into the prompt and scores the last token's state with the head: the softmax
+  probability of the first label, which for Qwen3-Reranker is P(yes) over {yes, no}, its model card's
+  normalization (a head with one output: its sigmoid). An instruction is part of the text: Qwen3-Embedding queries
+  are `Instruct: {task}\nQuery:{query}`, its documents plain text; Qwen3-Reranker's prompt carries its instruction.
+* **Shared prefixes are computed once.** The inputs of a call run one after another in the context, sorted by
+  their tokens, and each keeps the KV of the prefix it shares with the one before: the queries' instruction, the
+  reranker's system prompt and query. That is 17% of the tokens of the embedding check set below and 47% of the
+  reranking one. The last token always runs. On the CPU backend a row's result does not depend on the pass it is
+  computed in, so a vector or a score is the same bits alone, in any batch and in any order (tested; on Metal, each
+  input of the check sets below gave the same bits alone as in its batch too). Hybrid models start every input over
+  (their recurrent states cannot rewind to any position), and a mean needs every row, so mean pooling shares
+  nothing.
+* **The KV cache of a pooling model is F16** (`EngineConfig::pooling_kv_cache_type`): it holds one input at a time
+  and no conversation, so a quantized cache saves little memory, while its rounding moves every result. With the
+  Q8_0 default of generative models, Qwen3-Embedding-0.6B's vectors kept a cosine of 0.99949 with transformers' and
+  Qwen3-Reranker-0.6B's scores moved by up to 0.0038; with F16, 0.9999997 and 0.00006.
+* **Contract.** An input holds at most `context_length()` tokens, its special tokens included; a longer one is an
+  error naming it, or is cut (`EmbedOptions::truncate`, keeping BOS and EOS) for embeddings. The calls use the
+  engine's context and leave it empty: a conversation in progress is set aside in the prefix cache when one is
+  configured, and restored when its next prompt comes, as when another conversation's prompt replaces it. An
+  engine serves one call at a time (`Busy` while a generation, a prefill or another call runs), and `cancel()`
+  stops a call within a block of the model. The public header has the whole contract.
+
+**Against Hugging Face transformers.** `tools/pooling_reference.py` computes the reference the way the model cards
+do, in float32 (for Qwen3-Embedding it reproduces its card's example scores to 1e-6; sentence-transformers 6.1,
+run in float32, agrees with it to a cosine of 0.9999998 and, through the sigmoid of its CrossEncoder's score, to
+2e-7 on every reranker score), over
+`tests/data/pooling_cases.json`: 39 texts in 18 languages, code and emoji (Instruct-formatted queries, documents,
+an empty text, a chat-formatted text, a 232-token paragraph that changes language four times) and 5 queries with 19
+documents. `liyab-embed` checks that every input encodes to the reference's token ids, then compares. Every
+input gave the reference's ids, and every vector and score was the same bits alone as in its batch:
+
+| GGUF | Backend | Against the reference |
+| :--- | :--- | :--- |
+| Qwen3-Embedding-0.6B F16 (Qwen's), last token | CPU / Metal | cosine ≥ 0.99999965 / 0.99999967 per vector |
+| the same, mean pooling | CPU | cosine ≥ 0.99999964 |
+| the same, not normalized | CPU | relative L2 error ≤ 0.00084 |
+| Qwen3-Reranker-0.6B BF16 (ranking head) | CPU / Metal | scores within 0.000063 |
+| the same, scored with the LM head's "yes" and "no" (`labels`) | CPU | scores within 0.000063 |
+| Qwen3-Embedding-0.6B Q8_0 (Qwen's) | CPU / Metal | cosine mean 0.9972 / 0.9983; ≥ 0.9983 / 0.9994 except the empty text (its EOS alone): 0.92 / 0.95 |
+| Qwen3-Reranker-0.6B Q8_0 (ggml-org) | CPU / Metal | scores within 0.011 / 0.012 |
+
+The 8-bit files lose what their weights lose (and, on the CPU, what 8-bit activations lose), most where a single
+token's state is pooled: use F16 or BF16 files of these small models when the vectors must match the reference.
+
+**Throughput** on an Apple M4 Pro (CPU backend with 10 threads, or Metal), over the same sets: 39 texts of 37
+tokens on average in one `embed()` call, and the 5 queries' 19 pairs of 110 tokens on average, one `rerank()` call
+per query. Medians of 7 runs (`liyab-embed --bench 7`), on a Mac other jobs shared (load average 10–14):
+
+| GGUF | CPU | Metal |
+| :--- | ---: | ---: |
+| Qwen3-Embedding-0.6B Q8_0 | 30.2 texts/s (1,128 tokens/s) | 9.4 texts/s |
+| Qwen3-Embedding-0.6B F16 | 6.6 texts/s | 8.6 texts/s |
+| Qwen3-Reranker-0.6B Q8_0 | 18.4 pairs/s | 6.7 pairs/s |
+| Qwen3-Reranker-0.6B BF16 | 3.5 pairs/s | 3.6 pairs/s |
+
+The CPU's 8-bit kernels lead: Metal submits one command buffer per matrix product, which these small passes
+cannot hide, and F16 / BF16 weights multiply row by row on the CPU (see [Known limitations](#known-limitations)).
+Sharing prefixes skipped 17% of the embedding tokens and 47% of the reranking ones. A single 525-token text ran at
+~380 tokens/s on the Q8_0 file: per token, short inputs are cheaper, since attention grows with the input.
+
+---
+
 ## Using the engine
 
 ### C++
@@ -688,6 +1133,32 @@ options.grammar = *schema;  // or options.continuation: forced text and constrai
 auto stats = engine.value()->generate(prompt, params, on_piece, options);
 ```
 
+Embeddings and reranking, with an embedding model and a reranker (each its own engine):
+
+```cpp
+const std::string_view texts[] = {
+    "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery:What is the capital of China?",
+    "The capital of China is Beijing."};
+auto vectors = embedder->embed(texts);  // unit vectors of embedding_size() values; dot product = cosine
+const std::string_view documents[] = {"The capital of China is Beijing.", "Gravity is a force..."};
+auto scores = reranker->rerank("What is the capital of China?", documents);  // P(relevant) per document
+```
+
+Segment reuse (opt-in, lossy; needs the prefix cache): mark the documents of a prompt, and a later prompt that holds
+any of them anywhere reuses their KV instead of processing them again.
+
+```cpp
+config.prefix_cache_mb = 256;
+config.segment_reuse = true;       // calibrated once per model in the background (off until then), kept in config.cache_dir
+liyab::GenerateOptions options;
+for (const std::string& doc : documents) {  // byte ranges of the documents in the rendered prompt
+    const size_t at = prompt.find(doc);
+    options.segments.push_back({at, at + doc.size()});
+}
+auto stats = engine.value()->generate(prompt, params, on_piece, options);
+// stats->segment_reused_tokens, segment_recomputed_tokens; engine.value()->segment_reuse() says why it is off
+```
+
 `Engine::cancel()` is thread-safe and stops at the next token. `prefill(text)` processes a prefix ahead of time,
 such as a system prompt right after loading. `reset_context()` forgets everything. The public headers in
 `include/liyab/` document each function's contract: preconditions, ownership, thread safety and error cases.
@@ -722,6 +1193,8 @@ No C++ exception crosses the ABI. Errors return a `liyab_status`, with the messa
 | `liyab_engine_prefill` / `_reset_context` | Process a prefix ahead of time / forget the context |
 | `liyab_engine_save_state` / `_load_state` | Persist and restore the context across processes |
 | `liyab_engine_save_state_of` | Persist the context a text continues, also one the prefix cache set aside |
+| `liyab_engine_prefix_cache_stats` | What the prefix cache holds (RAM, storage, chunks, contexts, segments) and how it was used (thread-safe) |
+| `liyab_engine_generate_segmented` / `_prefill_segmented` / `_segment_reuse` | Segment reuse (opt-in, lossy): generation and prefill with marked parts of the prompt; whether it is on and its calibrated share, or how far its background calibration got (`LIYAB_ERR_BUSY` until it ends) |
 | `liyab_engine_trim_memory` / `_warm_memory` | Give the expert cache back while idle / refill it from its hot list |
 | `liyab_engine_save_expert_profile` / `_load_expert_profile` | Carry the expert hot list to a later process |
 | `liyab_engine_memory_plan` / `_context_length` | How the model uses memory; the resolved context length |
@@ -730,6 +1203,8 @@ No C++ exception crosses the ABI. Errors return a `liyab_status`, with the messa
 | `liyab_engine_metadata` / `_describe` / `liyab_describe_device` | GGUF metadata (e.g. recommended sampling), engine and device descriptions |
 | `liyab_supported_architectures` | Architectures this build runs |
 | `liyab_engine_render_chat` / `_chat_format` | The model's chat template applied to a conversation (JSON); its layout of turns and whether it is prefix-stable |
+| `liyab_engine_embed` / `_rerank` | Pooling models: one vector per text; one relevance score per document of a query |
+| `liyab_engine_pooling` / `_embedding_size` | What the model pools (none, mean, last token, rank); the values per vector |
 | `liyab_set_log_callback` / `liyab_log_buffer_enable` / `_take` | Logs to a callback, or to a buffer for polling UIs |
 
 `liyab_generation_stats` reports where time went:
@@ -737,14 +1212,18 @@ No C++ exception crosses the ABI. Errors return a `liyab_status`, with the messa
   time before it spent matching or restoring the context, and the part of it spent waiting for expert reads;
 * decode time per phase: attention, DeltaNet, routers, experts, shared expert, dense FFN, LM head;
 * the expert cache's behaviour: hits, late prefetches, misses, bytes read, read-but-unused, prediction precision,
-  dropped guesses, skipped experts, time waiting.
+  dropped guesses, skipped experts, time waiting;
+* segment reuse: prompt positions taken from stored segments, how many of them were processed again, the time it
+  took.
 
 `liyab_engine_config` exposes:
 * the backend, threads and power profile;
 * the memory budget, expert cache, `requant_bits`, context length, and the prefix cache in RAM (`prefix_cache_mb`)
   and on storage (`prefix_cache_dir`, `prefix_cache_disk_mb`);
-* `cache_dir`, where what is measured once per model is kept (the KV cache's key scales);
-* KV type, sliding window and sinks;
+* `cache_dir`, where what is measured once per model is kept (the KV cache's key scales, latent attention's
+  form ratio, segment reuse's calibration);
+* segment reuse (`segment_reuse`, its target `segment_reuse_max_kl`);
+* KV type, sliding window and sinks, and the KV type of pooling models (`pooling_kv_cache_type`, F16 by default);
 * speculative decoding (draft model, lookup or suffix drafts);
 * the MoE trade-offs;
 * the experimental flags.
@@ -761,656 +1240,4 @@ The library exposes the C ABI. The JNI glue lives in your app, because its symbo
 struct Ctx { JNIEnv* env; jobject cb; jmethodID onToken; };
 
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_example_ai_Liyab_nativeCreate(JNIEnv* env, jclass, jstring path) {
-    liyab_engine_config c; liyab_engine_config_default(&c);
-    const char* p = env->GetStringUTFChars(path, nullptr);
-    c.model_path = p;
-    liyab_engine* e = nullptr;
-    liyab_engine_create(&c, &e);
-    env->ReleaseStringUTFChars(path, p);
-    return reinterpret_cast<jlong>(e);
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_example_ai_Liyab_nativeGenerate(JNIEnv* env, jclass, jlong h, jstring prompt, jobject cb) {
-    Ctx ctx{env, cb, env->GetMethodID(env->GetObjectClass(cb), "onToken", "([B)Z")};
-    liyab_sampling_params sp; liyab_sampling_params_default(&sp);
-    const char* p = env->GetStringUTFChars(prompt, nullptr);
-    liyab_engine_generate(reinterpret_cast<liyab_engine*>(h), p, &sp,
-        [](const char* s, size_t n, int32_t, void* u) -> int32_t {
-            auto* c = static_cast<Ctx*>(u);
-            jbyteArray bytes = c->env->NewByteArray(static_cast<jsize>(n));
-            c->env->SetByteArrayRegion(bytes, 0, static_cast<jsize>(n), reinterpret_cast<const jbyte*>(s));
-            const jboolean go = c->env->CallBooleanMethod(c->cb, c->onToken, bytes);
-            c->env->DeleteLocalRef(bytes);
-            return go ? 1 : 0;
-        }, &ctx, nullptr);
-    env->ReleaseStringUTFChars(prompt, p);
-}
-```
-
-```kotlin
-object Liyab {
-    init { System.loadLibrary("liyab"); System.loadLibrary("app_jni") }
-    external fun nativeCreate(modelPath: String): Long
-    external fun nativeGenerate(handle: Long, prompt: String, cb: TokenCallback)
-    fun interface TokenCallback { fun onToken(utf8: ByteArray): Boolean }
-}
-// Pieces are complete UTF-8, so String(bytes, Charsets.UTF_8) is safe. Generate off the main thread.
-```
-
-### iOS (Swift)
-
-```swift
-import Liyab
-
-final class LiyabEngine {
-    private var engine: OpaquePointer?
-
-    init(modelPath: String) throws {
-        var config = liyab_engine_config()
-        liyab_engine_config_default(&config)
-        let status = modelPath.withCString { path -> liyab_status in
-            config.model_path = path
-            return liyab_engine_create(&config, &engine)
-        }
-        guard status == LIYAB_OK else { throw NSError(domain: String(cString: liyab_last_error()), code: Int(status.rawValue)) }
-    }
-
-    func generate(_ prompt: String, onPiece: @escaping (String) -> Bool) {
-        var params = liyab_sampling_params()
-        liyab_sampling_params_default(&params)
-        let box = Unmanaged.passRetained(onPiece as AnyObject)
-        defer { box.release() }
-        liyab_engine_generate(engine, prompt, &params, { piece, len, _, user in
-            let cb = Unmanaged<AnyObject>.fromOpaque(user!).takeUnretainedValue() as! (String) -> Bool
-            return cb(String(decoding: Data(bytes: piece!, count: len), as: UTF8.self)) ? 1 : 0
-        }, box.toOpaque(), nil)
-    }
-
-    deinit { liyab_engine_destroy(engine) }
-}
-```
-
-### Command line
-
-```bash
-liyab-cli --device                                          # SoC, accelerators, backend ranking
-liyab-cli -m model.gguf -p "Once upon a time" -n 128 --temp 0.8
-liyab-cli -m moe.gguf -p "..." --memory-budget 5500         # stay within a per-app memory limit
-liyab-cli -m moe.gguf -p "..." --expert-cache 3000          # MoE: experts through a 3000 MiB cache (-1 auto)
-liyab-cli -m moe.gguf -p "..." --expert-mass 0.9            # lossy: top experts covering 90% of router weight
-liyab-cli -m model.gguf -p "..." --lookup                   # speculative decoding from the text itself (suffix drafts)
-liyab-cli -m model.gguf -p "..." --context-lookup           # ... by context lookup instead
-liyab-cli -m model.gguf -p "..." --draft draft.gguf         # speculative decoding with a draft model
-liyab-cli -m model.gguf -p "..." --prefix-cache 256         # keep replaced contexts in a 256 MiB LRU
-liyab-cli -m model.gguf -p "..." --prefix-cache-disk 1024 /tmp/ctx  # ... or in files, without RAM
-liyab-cli -m model.gguf -p "..." --profile low_power        # performance | balanced | low_power
-liyab-cli -m model.gguf -p "..." --window 1024 --sinks 8 --kv q4_1
-liyab-cli -m model.gguf -p "..." --cache-dir ~/.cache/liyab   # keep the key scales: measured on the first run only
-liyab-cli -m model.gguf -p "$TURN1" --then "$TURN2"           # a follow-up turn that reuses the context, as a chat does
-liyab-cli -m model.gguf -p "..." --json                     # one JSON line per turn (stats, peak RSS, reply) for scripts
-liyab-cli --help                                            # every option
-```
-
-For each generation, `liyab-cli` prints the prompt tokens it reused, decode time per phase, the expert cache's
-behaviour and the process's peak resident memory. `--then TEXT` (repeatable) adds a turn whose prompt is the previous
-prompt, the reply to it and `TEXT`, so it measures what a follow-up message costs.
-
----
-
-## The Liyab app
-
-`app/` is a Flutter app (Android and macOS today, iOS next) that calls the C ABI directly through `dart:ffi`. The
-bindings are hand-written in `app/lib/engine/liyab_ffi.dart`. On macOS the engine is linked statically into the app
-(`app/macos/Runner/Configs/Engine.xcconfig`) and looked up in the process, as on iOS. Loads, prefills and generations run on a worker isolate, while
-cancellation and live counters go straight to the C API, which makes them thread-safe.
-
-### An assistant that replaces the cloud one
-
-* **System assistant.** Liyab can be the default digital assistant. The assist gesture opens a sheet over the
-  current app, with the living flame, a text field and the latest answer. Pulling the sheet up turns it into the full
-  app, as Gemini's overlay does. Both windows share one engine, so the model is loaded once.
-* **On a Mac, a command bar.** **Option-Space** opens Liyab from any app, in the manner of Spotlight: a large input
-  with the living flame, the conversation under it, and a footer with the model and the keys (Return asks, ⌘N
-  starts a new chat, ⌘Return opens the app, Esc stops an answer or closes the bar). The bar grows downward as the
-  answer streams, over the system's blurred material; an aura of the flame's colours turns around it with the
-  assistant's state. It is the app's own window and engine in another mode, so the model is loaded once; closing it
-  returns to the app you were in. The app keeps running with its window closed, so the shortcut always works.
-* **Agent tools.** The assistant reads your own data to answer about your day:
-  * on Android: calendar events; notifications from every app (chat messages, email previews; kept in memory
-    only); SMS, the call log, contacts and the clipboard;
-  * on macOS: calendar events and contacts (after the system's prompt); email from every account in Apple Mail,
-    iMessage and SMS, and the Phone/FaceTime call history (these three read Apple's own databases, which need Full
-    Disk Access, granted in System Settings); the clipboard. macOS has no API for other apps' notifications.
-
-  Each source is off until you turn it on, and only enabled sources are offered to the model.
-* **How tools are called.** Tools are described and called in the model's own format, read from its GGUF chat
-  template: Qwen3.5/3.6 XML calls or Qwen2.5/3 JSON calls. A reply can make up to 4 calls, each shown above the
-  answer ("Read your calendar: 3 events").
-  * Calls are **structured output**: after `<tool_call>` the fixed syntax is forced, a tool name is completed as soon
-    as it is unambiguous, and the call is closed. The model chooses only what it should: whether to call, which tool,
-    and the arguments.
-  * Results are compact text with ISO dates. On Qwen3.6's tokenizer, 6 events take 190 tokens instead of 428 as
-    JSON, which saves ~18 s of prefill on the 35B.
-  * The system prompt tells the model to treat tool results as data, not instructions.
-* **Prompts in the model's own format.** At load the app asks the engine how the model's chat template lays out
-  turns (`chat_format`), in each thinking mode it uses and with `preserve_thinking`, since past replies are replayed
-  with their reasoning. When the template is prefix-stable, prompts are built from its pieces, so each turn's prompt
-  continues the previous one and only the new message is processed. Otherwise (Qwen3, Qwen3.5), or without a
-  template, the built-in format of the model's family is used (ChatML, Llama 3, Zephyr) and the log says why. For
-  Qwen3.6 the template's pieces are exactly the built-in ChatML ones, so its prompts and saved contexts are
-  unchanged. Llama 3's template writes today's date into the system block, so its context is prepared again
-  once a day. Tools are offered when the format is ChatML's, whose tool-call formats the app knows.
-
-### Fast where users feel it
-
-* **Context-aware chat.** History is cut by the token budget, and past replies are replayed exactly as generated, so
-  each message reuses the engine's context. The system block is restored from a state saved the first time it was
-  processed.
-* **Typing ahead.** While you write, the draft's words are processed in the background as each one ends. When you
-  pause, so is the whole message as it would be sent, time line and reply opening included, all but its last token.
-  Text that arrives all at once (a paste, dictation, text shared into the composer: 12 or more characters in one
-  edit) is prepared whole right away, without waiting for the pause.
-  On the 35B a message sent after a pause started its answer in 0.38 s (1 new prompt token), and short messages
-  typed and sent at once in 0.68–0.91 s (9–10 new tokens), where they had taken 3.5–5.6 s (~48).
-* **The time, when it changed.** A message carries the current date and time (`[Now: …]`, ~20 tokens) only when the
-  history holds none from the last half hour of the same day; in a quick exchange the last one still holds.
-* **A priority scheduler.** Your requests (loading, generating) go before background work (typed-ahead prefills,
-  preparation, saves, cache warming). A request that arrives during a background prefill cancels it and continues
-  from the work already done.
-* **Long conversations.** When the history no longer fits, the oldest turns leave the context in one step, until
-  the history fills at most half of it. A divider marks the cut and the messages stay on screen. The following
-  messages extend the same prompt, so the cost comes once every many messages, not every time.
-* **Leaving the screen.** HyperOS stops background apps that hold several GB. When Liyab is hidden, it parks:
-  1. it saves the expert hot list;
-  2. it empties the expert cache (2.4 GB on the 35B);
-  3. it saves the conversation and its context: the engine's, or, when another app's request replaced it, the copy
-     the prefix cache set aside (written as kept, nothing processed).
-
-  After 5 minutes hidden (configurable) the model is unloaded. A request from another app through the
-  [local API](#local-api-one-model-for-every-app-on-the-device) loads it again, and it is unloaded again 5 minutes
-  after the last request. Coming back reloads it, restores the context and warms the cache; with the model still
-  loaded (back from copying something in another app, say), it warms the cache at once. While the model wakes up,
-  the flame burns in the middle of the conversation.
-* **Finishing work in the background (Android).** Android leaves a hidden app little: on HyperOS four of the eight
-  cores (a reply drops from ~7 to 1.3 tok/s on the 35B while another app is in use), and soon none, because its
-  cgroup freezer stops hidden apps. Leave Liyab while it works (a reply, a load, a model being moved, a request of
-  another app) and it holds a foreground service until that work and the park after it are done. The process keeps
-  all eight cores and is not frozen, and a partial wake lock lets the reply finish with the screen off. The service
-  computes nothing itself and starts only with work in hand, so leaving an idle Liyab costs nothing. On the
-  reference phone, Qwen3.6-35B-A3B:
-
-  | A reply while Liyab is hidden | Without the service | With it |
-  |-------------------------------|--------------------:|--------:|
-  | Another app in use            | 1.3 tok/s           | 8.2 tok/s |
-  | Phone locked                  | 7.4 tok/s (four cores) | 8.1–8.6 tok/s |
-
-  In Liyab itself the same chat ran at 7.5–7.6 tok/s. The service stopped within a second of the conversation being
-  saved, and HyperOS froze the idle process two seconds later. Its notification asks for a Live Update (Android
-  16): systems that support it show a chip in the status bar or their island (HyperOS 3 shows it in its Super
-  Island) and a card on the lock screen. It alerts once, without sound or vibration, on a channel with a
-  notification light; HyperOS plays no edge light for it. Android starts the service only while or just after
-  Liyab is on screen, or at any time when Liyab's battery use is unrestricted.
-
-  With the [local API](#local-api-one-model-for-every-app-on-the-device) on, the service also stays while Liyab is
-  hidden and idle, only listening: a frozen process never accepts a connection, and on HyperOS a request to a
-  hidden Liyab hung for 10 minutes without an answer. Listening holds no wake lock and runs no code (0 CPU ticks
-  in 2 minutes; 382 MB resident once the idle model is released) and shows a notification of the lowest
-  importance. A request updates the running service in place, which Android allows at any time: the wake lock and
-  the Live Update come with it, and it goes back to listening when the request ends. On the reference phone a
-  request to a hidden Liyab whose 35B had been released loaded it in 2.3–3.4 s and answered 200 tokens at
-  10.9–11.1 tok/s. Releasing the model again a minute later took about 1 s of CPU, and the 2 minutes after it
-  none. A model loaded that way warms its expert cache only once you write in Liyab again.
-* **A new chat** restores the system prompt from its saved state (47 ms on the 35B), so its first message costs
-  only its own tokens.
-* **A first-token budget.** A reply's first token is due within 2 s of sending. A slower one is logged
-  ("Latency budget: …") with where the time went: the model waking up, waiting in line, restoring or rewinding the
-  context, the new prompt tokens and the first step, and expert reads. Every step's log line also gives the time
-  from sending to its first token.
-
-### Local API: one model for every app on the device
-
-Settings → Apps on this phone → **Local API** (off by default) lets other apps on the device use the loaded model as
-they would a server:
-
-| Protocol | Endpoint | Calls |
-| :--- | :--- | :--- |
-| OpenAI | `http://127.0.0.1:8642/v1` | `POST /chat/completions`, `POST /completions`, `GET /models` |
-| Anthropic Messages | `http://127.0.0.1:8642/v1` | `POST /messages`, `POST /messages/count_tokens`, `GET /models` |
-| gRPC | `127.0.0.1:8643` | `liyab.v1.Liyab`: `ListModels`, `Generate` (server streaming), `CountTokens` ([`app/proto/liyab.proto`](app/proto/liyab.proto)) |
-
-The model lists name the model requests are served with, also while it is not in memory (released while idle, or
-not loaded yet in a process Android started without a window): the first request loads it.
-
-```bash
-curl http://127.0.0.1:8642/v1/chat/completions \
-  -H "Authorization: Bearer $LIYAB_TOKEN" -H "Content-Type: application/json" \
-  -d '{"messages":[{"role":"user","content":"Summarize my day in one line."}],"stream":true}'
-```
-
-* **Security.** Both servers listen on the loopback interface only, so nothing outside the device can connect.
-  Every call needs the token shown in Settings: `Authorization: Bearer`, `x-api-key` for Anthropic clients, or gRPC
-  metadata. **New token** revokes the old one.
-* **Compatibility.**
-  * Prompts are built with the loaded model's own chat template when it is prefix-stable, else with the built-in
-    format of its family (see [the app](#an-assistant-that-replaces-the-cloud-one)).
-  * Streaming (server-sent events), sampling, `max_tokens`, stop sequences and usage are supported. Usage includes
-    the reused prompt tokens.
-  * Thinking is off unless requested, through `reasoning_effort`, `chat_template_kwargs.enable_thinking` or
-    Anthropic's `thinking`. Reasoning comes back separately: `reasoning_content` for OpenAI clients, `thinking`
-    blocks for Anthropic ones.
-  * A final assistant message is continued, like Anthropic's prefill.
-* **Fair and frugal.** Requests wait their turn with your own messages. A client that disconnects stops its
-  generation, even while it is still queued or its prompt is being processed.
-* **Your chat keeps its place.** A request's prompt replaces the chat's context in the engine, which sets the chat's
-  aside on storage (the prefix cache: at most 512 MB, no RAM) and restores it on your next message: 95 ms for a
-  4,907-token chat on the 35B, where processing a 4,009-token one again had taken 163 s.
-* **Listening without Liyab open.** With notification access granted, Android binds Liyab's notification listener
-  on its own (at boot, after it stopped the process), which starts Liyab's process without a window. With the local
-  API on, that process starts the app's Dart side and the API listens at once, under its listening service; the
-  model loads for the first request (and unloads again after the idle delay). Android allows that service although
-  Liyab was never on screen: the system binds the listener as a foreground binding, which lets the process start
-  foreground services. With the API off, such a process starts nothing. HyperOS / MIUI refuse that binding unless
-  Liyab's Autostart is allowed (after a reboot the log shows "AutoStartManagerService: Reject service …
-  LiyabNotificationListener" and no process starts). No API can allow it, so with the local API on, Settings shows
-  **Allow Autostart** while the switch reads off, and opens the system's Autostart screen.
-* **Tools and JSON answers.** OpenAI clients pass `tools`, `tool_choice` (`auto`, `none`, `required`, a named
-  function) and `parallel_tool_calls`, and get `tool_calls` back, streamed as deltas; tool results come back in
-  `tool` messages. Anthropic clients pass `tools` and `tool_choice` (`auto`, `any`, `tool`, `none`,
-  `disable_parallel_tool_use`) and get `tool_use` blocks, streamed as `input_json_delta` events; results come back
-  in `tool_result` blocks. Calls are written in the loaded model's own format (Hermes JSON for Qwen2.5 / Qwen3,
-  XML for Qwen3.5 / Qwen3.6, from its chat template), and past calls and results are replayed the way its template
-  renders them.
-  * **Every call is valid.** The model chooses to write `<tool_call>`; from there the call is one constrained span
-    (see [constrained decoding](#context-memory-and-serving)): only the names of the request's tools, and only
-    arguments valid against the chosen tool's schema. Names, keys and separators are forced, so the model samples
-    only the tool and the values. With `tool_choice` `required` or a named tool, the call is forced right away
-    (after the reasoning, when the model reasons). In XML calls, string parameters are written raw, as Qwen's
-    parser reads them, and every other type as JSON.
-  * **A tool whose schema uses a keyword the engine cannot enforce** (`pattern`, `uniqueItems`...) keeps working:
-    its arguments are then constrained to any JSON object (any parameters in XML), not to its schema.
-  * **`response_format`** `json_object` or `json_schema` constrains the whole answer to a JSON object or to the
-    schema (after the reasoning, when the model reasons); a schema the engine cannot enforce is refused with an
-    error naming the keyword. `response_format` and `tools` together are refused.
-  * Tools need a ChatML model whose template uses one of these formats; other models refuse them with an error.
-    gRPC carries text only.
-* **Not yet.** Images, `n` > 1 and logprobs are refused with an error, never silently ignored.
-
-### Everything else
-
-* **Models.** Search Hugging Face and pick a quantization. Models that the engine cannot run are flagged before
-  download. Downloads use 4 parallel range requests per file, can be paused and resumed (they survive app restarts),
-  and every part is checked against the published SHA-256. GGUFs can also be imported through the system file
-  picker. Models stored in shared storage (FUSE, where direct reads are unusable) are marked, with a one-tap move to
-  app storage.
-* **Activity.** Live tok/s, battery W, CPU %, storage MB/s, thermal status with the 10 s headroom forecast, and
-  J/token on battery, plus the app's and the engine's log.
-* **Settings.**
-  * Per model: sampling, context length (Auto by default) and system prompt.
-  * Per device: CPU or GPU, the power profile (Fastest / Balanced / Coolest), the memory budget with its
-    recommendation, and the idle release time. On a computer the memory budget is 5 GiB at most, whatever its RAM,
-    so the assistant stays a light app next to your work; larger models stream from the SSD. On an M4 Pro,
-    Qwen3.6-35B-A3B answers at 9.7–10.2 tok/s within that budget (4.8 GB resident), against 11.1–11.5 tok/s with
-    all 22 GB in RAM. The model stays loaded by default, so the command bar answers at once.
-  * The permissions Liyab uses, and why.
-  * An **Experimental** section exposes the engine's lossy or measurement-only options.
-* **The living flame.** The Liyab mark is drawn live as the assistant's presence: see
-  [Look and feel](#look-and-feel).
-
-```bash
-scripts/build_flutter_app.sh --install   # libliyab + release APK; never interrupts the app while it is in use
-scripts/build_flutter_app.sh --macos     # libliyab (static) + Liyab.app; then `flutter run -d macos` works too
-cd app && flutter analyze && flutter test
-```
-
-The application id is `com.liyab.chat`. Models downloaded in the app live in app-private storage (plain f2fs),
-where direct reads work at full speed.
-
----
-
-## Look and feel
-
-<p align="center"><img src="docs/brand/liyab-states.svg" width="100%" alt="The living flame's four states: resting, listening, thinking, answering"></p>
-
-The Liyab mark (two blades of flame around a core of light) is not a static logo in the app: it is drawn live as the
-assistant's presence. Its motion says what the assistant is doing:
-* **resting**: it breathes slowly;
-* **listening**: it leans toward your voice and its core swells with it;
-* **thinking**: sparks rise while the model reasons;
-* **answering**: it flickers as words stream.
-
-It redraws about 24 times a second at rest and 30 while the model works, never at the display's full rate, so the UI
-leaves the cores to the engine.
-
-<p align="center"><img src="docs/brand/liyab-heat.svg" width="100%" alt="The flame's colour follows the phone's thermal headroom, from cool violet to hot red"></p>
-
-Its colour is the device's temperature, read from the same thermal-headroom forecast that steers the engine:
-violet-cool while there is room, ember in normal use, red as throttling gets near. The work happening on the device
-stays visible without a single number on screen. The same colours light the edge of the assistant sheet and the input
-field while the model works. On a computer they turn as an aura around the command bar: it barely breathes at rest,
-wakes as you type, turns fast while the model reasons and flows while the answer streams, at most 30 frames a
-second like the flame.
-
-<p align="center"><img src="docs/brand/liyab-palette.svg" width="100%" alt="Liyab colour palette and typography"></p>
-
-* **Night first.** The app sits on a deep night ground (*Kiln*) lit by its own flame. A day theme mirrors it with
-  warm off-whites.
-* **Fire for meaning.** *Ember* marks primary actions, *Flare* and *Gold* accent, and *Core*, the cool light at the
-  flame's heart, is kept for the mark itself.
-* **Type.**
-  * Bricolage Grotesque for display, headings and the wordmark;
-  * Figtree for everything you read, with tabular figures for live numbers.
-
-  Both fonts are SIL Open Font License and ship in `app/assets/fonts`.
-* **Sources.**
-  * The tokens are defined in [`app/lib/ui/theme.dart`](app/lib/ui/theme.dart) and the flame in
-    [`app/lib/ui/living_flame.dart`](app/lib/ui/living_flame.dart).
-  * The mark and the app icon are in [`docs/brand/`](docs/brand).
-  * The animated images on this page come from `tools/gen_brand_svgs.py` (`pip install fonttools`), which translates
-    the app's flame to SVG with the same paths, colour ramps and rhythms.
-
-<p align="center">
-  <img src="docs/brand/liyab-mark.svg" width="96" alt="The Liyab mark">
-  &nbsp;&nbsp;&nbsp;
-  <img src="docs/brand/liyab-icon.svg" width="96" alt="The Liyab app icon">
-  &nbsp;&nbsp;&nbsp;
-  <img src="docs/brand/liyab-flame.svg" width="96" alt="The Liyab flame, animated">
-</p>
-
----
-
-## Measured results
-
-The reference device is a **Xiaomi 25010PN30G**:
-* Snapdragon 8 Elite (SM8750), 15 GB RAM, UFS 4;
-* Adreno 830 GPU, Hexagon v79 NPU;
-* HyperOS, with a 6 GiB per-app memory limit.
-
-Phones throttle as they heat up, so the comparisons below come from alternating A/B runs unless noted. The raw
-numbers live in [`docs/benchmarks/results.json`](docs/benchmarks/results.json); after adding a measurement, run
-`python3 tools/gen_bench_charts.py` to redraw the charts.
-
-### Qwen3.6-35B-A3B: a 22 GB MoE on a phone
-
-UD-Q4_K_M, 22.1 GB. 40 blocks, of which 30 are Gated DeltaNet. 256 experts, top-8. Run with `--memory-budget 5500`,
-CPU backend, greedy decoding, starting from a cold expert cache.
-
-| Engine version | Decode | ms/token | Expert reads/token |
-| :--- | ---: | ---: | ---: |
-| Condition-variable thread pool (start) | 3.06 tok/s | 327 | 596 MiB |
-| + spinning thread pool | 3.24 tok/s | 308 | 480 MiB |
-| + freshly loaded experts kept until used | 5.54 tok/s | 181 | 309 MiB |
-| + a block's experts in one batched pass | 5.93 tok/s | 169 | 309 MiB |
-| + Q4_K/Q5_K/Q6_K × Q8_K kernels | 6.15 tok/s | 163 | 308 MiB |
-| + next block's experts predicted after the mixer | 6.44 tok/s | 155 | 283 MiB |
-| + 7 threads, chunks claimed on demand | 7.83 tok/s | 128 | 283 MiB |
-| + an expert's three matrices read in parallel | **8.89 tok/s** | 112 | 280–311 MiB |
-
-Later work raised it further: WFE waits, parallel DeltaNet passes, prediction by rank, the shared expert overlapped
-with reads, and the attention rewrite. The command line now reaches **~9–10.5 tok/s on a cool phone**, and the app
-**~7.5–9.4 tok/s** (7.4 tok/s at a 1.9k-token context when first measured; the phone regression run tracks both,
-see [Regression run on the phone](#regression-run-on-the-phone)).
-
-Per token, about 105 ms on a cool phone:
-
-| Phase | ms |
-| :--- | ---: |
-| Routed experts | ~55 (about a third of the decode waiting for flash) |
-| DeltaNet | ~25 |
-| LM head | ~8 |
-| Attention | ~7 |
-| Routers and prediction | ~6 |
-| Shared expert | ~4 |
-
-The model reads ~2 GB of resident weights per token, plus ~0.27 GB of experts. RAM bandwidth (~55 GB/s measured)
-therefore caps a single token near 20 tok/s.
-
-**Lossy options, measured.** Quality is measured with `liyab-kl` over a 473-token mixed text (prose, code, Italian,
-math) against the lossless path.
-
-| Option | Decode | Expert reads/token | KL mean / median | Top-1 agreement |
-| :--- | ---: | ---: | ---: | ---: |
-| none (default) | 7.41–8.08 tok/s | 283 MiB | — | — |
-| `--requant 5` | 7.88 tok/s | 255 MiB | 0.055 / 0.014 | 91.1% |
-| `--requant 4` | 8.61 tok/s | 246 MiB | 0.082 / 0.023 | 89.6% |
-| `--expert-mass 0.95` | 7.64 tok/s | 273 MiB | 0.027 / 0.007 | 94.9% |
-| `--expert-mass 0.9` (~6.5 experts) | 8.19 tok/s | 234 MiB | 0.039 / 0.012 | 92.0% |
-| `--expert-mass 0.8` (~5.5 experts) | 9.49 tok/s | 164 MiB | 0.092 / 0.034 | 90.1% |
-
-A larger memory budget is free in quality. At `--memory-budget 7000` expert reads drop from 284 to 208 MiB per token
-and decode goes from 8.29 to 9.50 tok/s. On an Apple M4 Pro (48 GB, CPU, 10 threads) the same file decodes at 48–50
-tok/s fully in RAM, and at 27.5 tok/s within the phone's 5,500 MiB budget (single runs).
-
-### A dense 27B larger than RAM
-
-Qwen3.8-27B UD-IQ2_S, 8.4 GB, with 8.2 GB of free RAM:
-
-| Engine | Prompt (18 tokens) | Decode |
-| :--- | ---: | ---: |
-| `mmap` streaming window, CPU | 71 s | 0.14 tok/s |
-| Block streaming, CPU | 71 s | 0.17 tok/s |
-| Block streaming + GPU-shared memory + native Vulkan kernels | 8.7 s | **0.94 tok/s** |
-
-Dense 30B-class models are bandwidth-bound on phones. Every token reads every weight, so MoE models and speculative
-decoding are the practical routes to interactive speeds.
-
-### Models that fit in RAM
-
-| Model | CPU (NEON + SDOT, 4 threads) | GPU (Vulkan) |
-| :--- | ---: | ---: |
-| TinyLlama-1.1B Q4_0 | 31.0 tok/s | **38.6 tok/s (+25%)** |
-| TinyLlama-1.1B Q4_K_M | 24.7 tok/s | 20.7 tok/s |
-| Qwen2.5-0.5B Q4_K_M | 35.2 tok/s | 27.9 tok/s |
-| Qwen3.5-0.8B Q4_K_M (hybrid) | 22.6 tok/s | — |
-| Qwen3.5-2B Q4_K_M (hybrid) | 11.8 tok/s | 12.3 tok/s |
-
-Models that fit use the GPU's repacked-copy path, where some formats fall back to the CPU. Streamed models use the
-native kernels instead.
-
-### Storage and kernels
-
-| Direct reads from UFS 4 | Throughput |
-| :--- | ---: |
-| `mmap` + page touch | 2.28 GB/s |
-| `pread` + `O_DIRECT`, single requests | 2.80 GB/s |
-| `pread` + `O_DIRECT`, 2–4 concurrent requests ≥ 256 KiB | **~4.4 GB/s** |
-| `pread` + `O_DIRECT`, 16 KiB requests, 1–8 threads | 0.16–1.18 GB/s |
-
-| Matvec on real tensors (GB/s) | CPU, generic (start) | CPU, NEON | GPU, native Vulkan |
-| :--- | ---: | ---: | ---: |
-| Q2_K | 0.24 | 12.6 | 15.5 |
-| IQ2_XXS | 0.70 | 8.4 | 15.7 |
-| IQ3_S | 2.07 | 6.7 | 21.1 |
-| IQ4_XS | 0.99 | 21.7 | 24.1 |
-| Q4_K | 16.8 | 16.8 | 17.4 |
-
-With i8mm repacking, a 2048×8192 matmul over 4 rows on 8 threads takes:
-
-| Format | Before | Now |
-| :--- | ---: | ---: |
-| Q8_0 | 500 µs | 380 µs |
-| Q4_K | 623 µs | 300 µs |
-| Q5_K | 601 µs | 408 µs |
-| Q6_K | 728 µs | 387 µs |
-
-KV memory per token for a Llama-3-8B-class shape:
-
-| Format | Per token | vs F16 |
-| :--- | ---: | ---: |
-| F16 | 128 KiB | — |
-| Q8_0 | 68 KiB | −47% |
-| Q4_0 | 36 KiB | −72% |
-| Q4_1 | 40 KiB | −69% |
-
-### Correctness
-
-Every one of the 24 tensor formats decodes bit-exactly like the GGUF reference decoder, and the tokenizers produce
-the Hugging Face tokenizers' ids, special tokens, CJK and emoji included. Float models give logits within 0.0015 of the
-reference implementation with the same argmax at every position. On Qwen3.5 Q8_0 and Q4_K_M the top token matches
-at 98.9% of positions, and the remaining differences are the reference's own second choice. Streamed and in-place
-weights, the file's layouts and the repacked ones, batched and token-by-token prefill, any thread count, and
-speculative and plain greedy decoding all give bit-identical logits (tested for every format and KV cache type). On
-the phone, nine runs of the same chat on the 35B gave the same greedy replies, and the app gave the CLI's.
-
-**Against Hugging Face transformers.** `liyab-kl` compared BF16/F16 GGUFs with transformers' own implementation in
-float32 (`tools/conform_reference.py`) over `tests/data/conform_text.txt`, teacher-forced. Every supported tokenizer
-gave the reference's ids for the whole text. The Hunyuan models were measured on the reference's ids
-(`--ref-tokens`), before their pre-tokenizers were added; those now give the same ids on their own. With an F16 KV
-cache the forward passes agree:
-
-| Model (architecture) | Tokens | Mean KL | Top-1 agreement |
-| :--- | ---: | ---: | ---: |
-| Llama-3.2-1B-Instruct (`llama`) | 499 | 0.00000 | 99.80% |
-| Qwen2.5-0.5B-Instruct (`qwen2`) | 512 | 0.00001 | 99.80% |
-| Qwen3-0.6B (`qwen3`) | 512 | 0.00000 | 99.80% |
-| Qwen3.5-0.8B (`qwen35`, hybrid) | 510 | 0.00000 | 100.00% |
-| Hunyuan-0.5B-Instruct (`hunyuan-dense`, reference ids, text after its BOS) | 500 | 0.00000 | 100.00% |
-| Hunyuan-MT-7B (`hunyuan-dense`, reference ids, text after its BOS) | 512 | 0.00000 | 100.00% |
-| gemma-3-270m-it (`gemma3`) | 512 | 0.00000 | 100.00% |
-| gemma-3-270m-it, a longer text: 4 times its 512-position window | 2,048 | 0.00000 | 99.95% |
-| Phi-3.5-mini-instruct (`phi3`, LongRoPE short factors) | 512 | 0.00000 | 99.80% |
-| Phi-3.5-mini-instruct, a longer text past its 4,096-position original context (long factors) | 4,200 | 0.00000 | 99.95% |
-
-**Tokenizers against Hugging Face.** `liyab-tok` compared Liyab's ids with those of each model's own
-`tokenizer.json`, run by the Hugging Face `tokenizers` library (`tools/tokenizer_reference.py`), on three texts:
-`conform_text.txt`, `tokenizer_edge.txt` (contractions in both cases, digit runs, white-space runs, `\r\n`, CJK,
-decomposed Hangul, emoji sequences, composed and decomposed accents, Devanagari, Thai, Hebrew and Arabic with marks,
-code) and `tokenizer_chat.txt` (the chat special tokens of several families in one text). Vocabularies without a
-local model came from the first megabytes of a published GGUF (`tools/gguf_vocab.py`). Every one gave the same ids:
-
-| Tokenizer (`tokenizer.ggml.pre`) | Model | Tokens: conform / edge / chat |
-| :--- | :--- | ---: |
-| SentencePiece | Gemma-3-270m-it | 523 / 801 / 211 |
-| SentencePiece | Phi-3.5-mini-instruct | 644 / 1,053 / 246 |
-| `gpt-2` | GPT-2 | 655 / 1,077 / 276 |
-| `default` (GPT-2 scheme) | Phi-2 | 641 / 1,056 / 276 |
-| `llama-bpe` | Llama-3.2-1B-Instruct | 498 / 797 / 202 |
-| `qwen2` | Qwen2.5-0.5B-Instruct | 524 / 804 / 181 |
-| `qwen2` | Qwen3-0.6B | 524 / 804 / 179 |
-| `qwen35` | Qwen3.5-0.8B | 510 / 790 / 186 |
-| `gpt-4o` | Phi-4-mini-instruct | 484 / 725 / 198 |
-| `deepseek-llm` | DeepSeek-LLM-7B-chat | 618 / 1,013 / 241 |
-| `deepseek-v3` | DeepSeek-V3.1 | 485 / 783 / 215 |
-| `hunyuan` | Hunyuan-MT-7B | 546 / 890 / 204 |
-| `hunyuan` | Hunyuan-A13B-Instruct | 546 / 890 / 204 |
-| `hunyuan-dense` | Hunyuan-0.5B-Instruct | 499 / 818 / 194 |
-
-The quantized KV caches against the same references (Qwen3-4B Q4_K_M against its own F16-cache run), with keys
-stored as computed and with [key scaling](#architecture) (the default), as mean KL and top-1 agreement:
-
-| Model (largest key channel / median) | Q8_0, keys as computed | Q8_0, default | Q4_1, keys as computed | Q4_1, default |
-| :--- | ---: | ---: | ---: | ---: |
-| Qwen2.5-0.5B-Instruct (52×, scaled) | 0.070, 86.9% | 0.0018, 97.7% | 2.51, 29.2% | 0.47, 63.2% |
-| Qwen3-0.6B (107×, scaled) | 0.051, 88.7% | 0.0021, 97.9% | 3.23, 19.6% | 0.11, 81.2% |
-| Qwen3-4B Q4_K_M (87×, scaled) | 0.015, 94.3% | 0.0063, 96.3% | 0.63, 69.5% | 0.10, 87.1% |
-| Llama-3.2-1B-Instruct (6.3×, as computed) | 0.00090, 97.2% | same | 0.078, 79.7% | same |
-| Qwen3.5-0.8B (10.5×, as computed) | 0.00007, 99.2% | same | 0.010, 92.5% | same |
-
-What remains on Qwen3-4B is the 8-bit rounding itself: rounding only its values to Q8_0 costs as much as rounding
-only its scaled keys. Measured on the phone the same way, Q8_0 costs Qwen3.5-4B 0.0019 (97.0%) and the Qwen3.6-35B
-MoE 0.0056 (95.7%), whose keys need no scaling. `--kv f16` removes the remaining difference at twice the KV memory.
-
-### Charts
-
-![Qwen3.6-35B-A3B decode speed by engine version](docs/benchmarks/moe_35b_decode.svg)
-
-![Qwen3.6-35B-A3B decode time per token by phase](docs/benchmarks/moe_35b_phases.svg)
-
-![Qwen3.8-27B UD-IQ2_S decode speed by engine version](docs/benchmarks/dense_27b_decode.svg)
-
-![Qwen3.8-27B UD-IQ2_S prompt time by engine version](docs/benchmarks/dense_27b_prompt.svg)
-
-![Direct random read throughput by request size and thread count](docs/benchmarks/flash_reads.svg)
-
-![Matrix-vector throughput by weight format](docs/benchmarks/matvec_formats.svg)
-
-![Decode speed of models that fit in RAM, CPU vs GPU](docs/benchmarks/in_ram_decode.svg)
-
-### What we found along the way
-
-Facts measured while building Liyab that shaped the code, kept here because they are easy to get wrong.
-
-* **Some model families need help to fit their keys in 8 bits.** Qwen2.5 and Qwen3 carry a few key channels 50–107
-  times their head's median, nearly constant across tokens; a Q8_0 cache then rounded everything near them with a
-  step a hundred times too coarse (KL 0.05–0.07 against F16). Scaling keys per channel, with the inverse on the
-  queries, removes it (KL ~0.002) at no cost in memory or speed. Qwen3.5/3.6, the 27B and Llama 3.2 have no such
-  channels (6–11×): scaling gained nothing there, so they keep their keys bit for bit
-  ([key scaling](#architecture)). What a Q8_0 cache still costs the 35B (KL 0.0056, 95.7% top-1) is 8-bit rounding
-  itself; values alone cost as much as keys alone. Only an F16 cache removes it.
-* **A published GGUF may not hold the weights of the model it names.** The official Qwen2.5-0.5B-Instruct GGUF
-  matched its Hugging Face model only in the biases; a GGUF converted from the Hugging Face weights matched at KL
-  0.00001. When conformance fails from the first token, compare tensors before suspecting the engine.
-* **The Mac and the phone compute the same bits.** The same kernel set (NEON with dot product) gives identical
-  logits on an Apple M4 Pro and a Snapdragon 8 Elite, through different compilers and operating systems
-  (`test_golden`). Reproducibility across batch splits, thread counts and layouts holds on both.
-* **A model may write one character in two tokens.** Byte-level vocabularies split rare characters and emoji, so a
-  conversation's text can end inside a character; matching the next prompt must step back to a whole character,
-  or a hybrid model processes the whole conversation again.
-* **Tokenizing a prompt can be slow enough to matter.** Before tokenizers became data, an 81 KB Llama chat took
-  1.35 s to encode and a 75 KB ChatML one 158 ms, on every prompt typed ahead; now 2.5–3.5 ms.
-* **Not every chat template can be reused across turns.** Qwen3 and Qwen3.5 drop earlier reasoning from the
-  rendered history, so turn n is not a prefix of turn n + 1; Liyab detects that at load and keeps its own format
-  there. Llama 3's template writes today's date, so its system prompt changes once a day.
-* **A stop inside a speculative step must cut the step.** Tokens verified past an end-of-generation token stayed
-  in the cache, and the next turn diverged from plain decoding.
-* **Experts are not low-rank.** Qwen3.6's routed experts need ~65% of their rank for 90% of their energy; the
-  least used quarter of them carries only 5–8% of routings. A smaller tier for all experts in Q3_K costs about
-  what `--expert-mass 0.9` costs ([study](docs/research/cold-experts.md)).
-* **HyperOS starts nothing in the background without Autostart.** Android binds the notification listener after a
-  reboot, but HyperOS rejects it unless Liyab's Autostart is allowed; with it, the local API answers a request
-  after a reboot without Liyab ever being opened (first token 6.4 s, the 35B loaded from cold).
-* **Swap distorts speed measurements.** With 7.5 GB of zram in use by other apps, the same build ran prefill
-  ~30% slower; alternating A/B runs, not single runs, tell a change from the phone's state.
-* **Rosetta 2 is not an x86 benchmark.** It translates `VPSIGNB` and `VPSHUFB` into long sequences, so AVX2
-  kernels that are faster natively can run slower there than scalar code.
-
-### What did not pay off (so you don't have to try)
-
-* **Predicting experts two or three blocks ahead.** Late prefetches halved, but ~11% more bytes were read; it tied
-  with one block ahead. Guessing 2 extra experts per block was slower too.
-* **More or smaller I/O requests.** 8 I/O threads instead of 4, or each matrix split into 2–4 reads, were slower.
-  Small reads cost the flash more than the concurrency saves.
-* **The kernel page cache as a second expert cache.** Copies from it are fast, but buffered misses hold the I/O
-  threads that urgent reads wait for. Decode got slower in every A/B run.
-* **Speculation on streamed MoE.** A verification pass reads the union of its tokens' experts: 1.55× the cost of
-  one token for 2 tokens, 2.5× for 3.
-* **2:4 sparsity on phones.** There are no sparse tensor units, so index decoding costs more than the halved
-  multiply-accumulates: −54% decode (see [Experimental](#experimental-modules)).
-* **Binary low-rank experts (LittleBit-style).** Qwen3.6's experts are nearly full-rank (90% of the energy needs
-  ~65% of the rank), so binary factors at 1 bit/weight lose about half of each expert: with the least used quarter
-  replaced, KL 0.069 against 0.0095 for Q3_K ([study](docs/research/cold-experts.md)).
-* **Repacking every streamed expert on read.** It added ~0.1–0.2 ms to each decode miss (−6% decode), so only
-  experts read for batched passes are repacked.
-
----
-
-## Experimental modules
-
-These are built with `-DLIYAB_ENABLE_EXPERIMENTAL=ON` (`scripts/build_android.sh --experimental`; the app's build
-includes them, all off by default). Enable them through `EngineConfig::experimental`, the C config or `liyab-cli
---early-exit P --prune-heads R --egls T --tdss hot|always --kv-dedup DIR`.
-
-| Module | What it does | Measured | Verdict |
-| :--- | :--- | :--- | :--- |
-| **Early exit** | Projects the hidden state through the LM head after probed blocks; exits when top-1 > 0.98 and writes the skipped blocks' K/V from the exited state | Forced exit at block 6: +53% (synthetic) | Lossy for models not trained for it |
-| **Head pruning** | Ranks query heads by `Wo` column norm; while throttled, skips the least important heads' attention | 50% heads: +12% at 1,536 context | Lossy |
-| **EGLS** | Skips a block's FFN when the residual's entropy barely changes | TinyLlama: +5–48% | Output diverges early: not viable without a model trained for it |
-| **JIT unpacker** | Emits unrolled AArch64 NEON unpack routines at runtime (W^X) | +37% for a 4,096-element row | Row-sized routines only; not on the hot path; unavailable on iOS |
-| **TDSS (2:4 sparsity)** | While throttled, FFN switches to a 2:4 magnitude-pruned copy (`TBL` gather + `SDOT`) | −54% decode on the phone | Counterproductive without sparse units |
-| **KV dedup** | Persists a prompt's KV pages to files keyed by hash; a later session mmaps them read-only | 447-token system prompt: TTFT 6.4 s → 1.06 s | Attention-only models; no eviction yet |
-| **io_uring loader** | `O_DIRECT` reads via raw io_uring syscalls | — | Android denies `io_uring_setup` to apps; kept for platforms that allow it |
-
----
-
-## Testing
-
-The tests depend on nothing beyond the compiler. They generate small GGUF models on the fly, so nothing needs to be
-downloaded.
-
-| Suite | Covers |
-| :--- | :--- |
-| `test_mmap` | Mapping, GGUF parsing and malformed-file rejection, split models, prefetcher, triple-buffer pipeline |
-| `test_device_detect` | SoC classification, backend ranking, sysfs thermal parsing, headroom bands, pacing, emergency guards, sampling only during work |
-| `test_text` | The regex engine, the pre-tokenizer table and NFC against `tests/data/text_cases.txt` (Python's `regex` and `unicodedata`, cross-checked with the Hugging Face tokenizers' own splitting); rejected regex syntax; byte-level BPE on generated vocabularies: merges, NFC per family, whole-piece lookup, missing bytes, Phi-3 special tokens, unknown pre-tokenizers; chat templates byte for byte against transformers (`tests/data/chat_templates.json`), Jinja semantics, layouts of turns and prefix stability, `render_chat` / `chat_format` through the engine and the C API, one BOS |
-| `test_engine` | All 24 quant formats bit-exact; kernels, each format the same bits for every batch size and layout; on x86-64 the AVX2 set against the scalar one in the same process (identical activation quantization and decodes, close dots, -128 weights); long-context attention the same bits for every batch split, thread count and KV cache type; tokenizers; transformer vs an independent float reference, for every query-group size; batching and rollback; MoE vs its dense twin; fused QKV and gate/up projections vs the separate matrices, bit for bit; block plans (windowed blocks from the architecture or the file, fused projections, LongRoPE); streamed experts vs in-place reads; hybrid snapshots, also restored from a saved context; context reuse, also after cancelled work and saves and when a context's text ends inside a character; prefix cache in RAM and on storage; key scaling (factor rule, Q8_0 against F16 on large key channels, saved contexts converted, factors kept in `cache_dir` and measured again when damaged); canc
+Java_com_example_ai_Liyab_nativeCreate(JNIEn

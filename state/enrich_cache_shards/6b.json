@@ -345,5 +345,200 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "statelyai/agent": {
+  "commit_90d": 302,
+  "commit_7d": 29,
+  "rel_ver": "@statelyai/agent@2.0.0-alpha.28",
+  "rel_pub": "2026-10-08",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "agenvoy/Agenvoy": {
+  "commit_90d": 618,
+  "commit_7d": 20,
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 78,
+   "JavaScript": 13,
+   "SCSS": 5,
+   "HTML": 2,
+   "Python": 2
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "devswha/patina": {
+  "commit_90d": 739,
+  "commit_7d": 0,
+  "rel_ver": "v9.1.0",
+  "rel_pub": "2026-09-26",
+  "rel_days": 21,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "JavaScript": 98,
+   "CSS": 1,
+   "HTML": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "dlp3d-ai/dlp3d.ai": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-05-25",
+  "rel_days": 145,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 73,
+   "CSS": 13,
+   "JavaScript": 12,
+   "SCSS": 2,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "mlco2/ecologits": {
+  "commit_90d": 19,
+  "commit_7d": 6,
+  "rel_ver": "0.11.3",
+  "rel_pub": "2026-10-14",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "giriss/comfy-image-saver": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "sgaofen/humanizer-local-model": {
+  "commit_90d": 95,
+  "commit_7d": 25,
+  "rel_ver": "app-v0.3.4",
+  "rel_pub": "2026-10-11",
+  "rel_days": 6,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 32,
+   "Go": 28,
+   "JavaScript": 19,
+   "CSS": 8,
+   "HTML": 7
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

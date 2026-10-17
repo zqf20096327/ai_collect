@@ -15,7 +15,7 @@ The REST API documentation can be found on [platform.openai.com](https://platfor
 ### Gradle
 
 ```kotlin
-implementation("com.openai:openai-java:4.82.0")
+implementation("com.openai:openai-java:4.84.0")
 ```
 
 ### Maven
@@ -24,7 +24,7 @@ implementation("com.openai:openai-java:4.82.0")
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.82.0</version>
+  <version>4.84.0</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@ with normal AWS credentials:
 <!-- x-release-please-start-version -->
 
 ```kotlin
-implementation("com.openai:openai-java-bedrock:4.82.0")
+implementation("com.openai:openai-java-bedrock:4.84.0")
 ```
 
 <!-- x-release-please-end -->
@@ -1586,6 +1586,33 @@ The [`ClientOptions`](openai-java-core/src/main/kotlin/com/openai/core/ClientOpt
 - `AzureUrlPathMode.AUTO`: automatically detects the path mode based on the base URL. Default value.
 
 ## Network options
+
+### Telemetry headers
+
+Disable SDK-generated telemetry for a client:
+
+```java
+OpenAIClient client = OpenAIOkHttpClient.builder()
+    .fromEnv()
+    .disableTelemetry(true)
+    .build();
+```
+
+To set the default for newly built clients in the JVM, set the system property before constructing
+clients, or pass `-Dopenai.disableTelemetry=true` to Java:
+
+```java
+System.setProperty("openai.disableTelemetry", "true");
+```
+
+An explicit `.disableTelemetry(true)` or `.disableTelemetry(false)` overrides the system property.
+Without either setting, telemetry remains enabled. The property is read at build time; existing
+clients and `withOptions` clones retain their resolved setting unless explicitly overridden.
+
+Disabling telemetry omits SDK-generated `X-Stainless-*` headers and the SDK's `User-Agent` from API
+requests, including retries and WebSocket handshakes. Explicit caller headers are preserved, including
+caller-supplied telemetry headers. Authentication, Azure API versions, and actual timeout behavior
+are unchanged. The HTTP transport may still supply its own `User-Agent`.
 
 ### Retries
 

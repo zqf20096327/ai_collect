@@ -4,6 +4,7 @@
 
 <img src="https://firebasestorage.googleapis.com/v0/b/facesift.firebasestorage.app/o/user_uploads%2F83EXwNWgaKe1BHmyd9ISw3HCEfi2%2F1765301877738-Generated%20Image%20December%2009%2C%202025%20-%2012_37PM.jpeg?alt=media&token=e2e9e673-ff88-4683-a0b0-9eb3aeeb9559" alt="API Mega List" style="max-width: 100%; height: auto;">
 
+
 **The most comprehensive collection of APIs on GitHub** - 11,860 core directory APIs plus 200 sponsored partner listings for building everything from simple automations to full-scale applications.
 
 ---
@@ -455,4 +456,6 @@ This collection contains **11,860 ready-to-use APIs** that you can integrate dir
 | [Linkedin Jobs Scrapper &#124; Pay Per Event](https://apify.com/scrapeverse/linkedin-jobs-scrapper-pay-per-event?fpr=p2hrc6) | Get detailed and insightful data just by entering few information, No need to worry about Cookies and Authentication. |
 | [LinkedIn MCP Server - AI Assistant](https://apify.com/alizarin_refrigerator-owner/linkedin-mcp-server?fpr=p2hrc6) | Model Context Protocol server for LinkedIn automation. Enable AI assistants to search profiles, send messages & manage connections programmatically. |
 | [LinkedIn Profile Lookup](https://apify.com/agentx/linkedin-profile-lookup?fpr=p2hrc6) | Look up any public LinkedIn profile by URL and get back the structured person record: name, headline, about, location, follower and connection counts, full work-experience and education history,... |
-| [LinkedIn Profile Scraper with Email (No Cookies)](https://apify.com/futurizerush/linkedin-profile-scraper?fpr=p2hrc6) | Extract structured data from public LinkedIn profile URLs — name, headline, work history, 
+| [LinkedIn Profile Scraper with Email (No Cookies)](https://apify.com/futurizerush/linkedin-profile-scraper?fpr=p2hrc6) | Extract structured data from public LinkedIn profile URLs — name, headline, work history, education, follower counts, websites. When the person has published their own email or phone openly in their... |
+| [LinkedIn Profile Search Scraper](https://apify.com/akash9078/linkedin-profile-search-scraper?fpr=p2hrc6) | Find and extract publicly available LinkedIn profile data from Google search results. This Actor searches Google for LinkedIn profiles using targeted queries and returns profile URLs, names, job... |
+| [LLM Visibility Monitor: AI Search Brand Audit](https://apify.com/constructive_calm/llm-visibility-monitor?fpr=p2hrc6) | Audit how your brand appears across ChatGPT-style answers, Claude, Gemini (including the Google AI Overview signal), Perp

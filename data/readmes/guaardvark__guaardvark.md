@@ -69,7 +69,7 @@ Other ways in: [Docker](INSTALL.md#alternative-docker-linux-core-stack-only) · 
 - **Directors.** A beat-synced music-video director, a five-role Film Crew that turns a logline into a finished video, and a built-in video editor. [▶ Ep 8](https://www.youtube.com/watch?v=l2LqKA9GQDc) · [▶ Ep 9](https://www.youtube.com/watch?v=sq104u9N4Qg)
 - **Self-improvement.** Guaardvark tests itself, drafts fixes and stages them for your review behind a codebase lock; the System Map draws the whole codebase from its real imports. [▶ Ep 11](https://www.youtube.com/watch?v=7kHvi_2vT6U) · [▶ Ep 14](https://www.youtube.com/watch?v=yEy1tVKxsF0)
 - **Command center.** A GPU orchestrator, a plugin manager with a live VRAM budget, jobs and scheduling, schema-aware backups, and a multi-machine Interconnector. [▶ Ep 12](https://www.youtube.com/watch?v=A1-_ykcHOhQ)
-- **Terminal and API.** The `guaardvark` [CLI](#cli) with an interactive REPL, plus REST, GraphQL and Socket.IO. [▶ Ep 20](https://www.youtube.com/watch?v=Z3nXVtfdlSI)
+- **Terminal and API.** The `guaardvark` [CLI](#cli) with an interactive REPL, plus REST and Socket.IO. [▶ Ep 20](https://www.youtube.com/watch?v=Z3nXVtfdlSI)
 
 The complete, enumerated list of models, tools, plugins and pages is in **[CAPABILITIES.md](CAPABILITIES.md)**.
 
@@ -247,7 +247,7 @@ See [SECURITY.md](SECURITY.md) to report a vulnerability.
 
 ## More built in
 
-- **Supervised outreach.** Drafts replies to threads on Reddit, YouTube, Discord, X and Facebook, grounded in your own indexed documents, graded for relevance before they reach the queue, with nothing posted until you approve it. Kill switch, per-platform cadence limits and a JSONL audit trail.
+- **Supervised outreach.** Drafts replies to threads on Reddit, YouTube, Discord and Facebook, grounded in your own indexed documents, graded for relevance before they reach the queue, with nothing posted until you approve it. Reddit, YouTube and Facebook posts go out one at a time while you watch the Agent Screen. Kill switch, per-platform cadence limits and a JSONL audit trail.
 - **Files and projects.** A desktop-style file manager (folders as windows, drag and drop, right-click menus) with clients, projects, websites and notes linked together and indexed recursively. Files stream into the browser's own players and viewers, so video plays without a codec pack and PDFs start rendering before they finish downloading.
 - **Rules, prompts, lessons and memory.** Portable rule bundles, lessons that teach the agent from a good run, and "remember …" notes that carry across chats.
 - **Discord bot** plugin for chat, `/imagine` images and search against your own install.
@@ -258,14 +258,14 @@ See [SECURITY.md](SECURITY.md) to report a vulnerability.
 <details>
 <summary>How supervised outreach works</summary>
 
-1. **Discover.** The agent scouts target threads from a URL you paste or from platform entry points (subscribed subreddits, Discord channels, Twitter feeds, Facebook groups).
-2. **Context.** For each candidate it fetches the post and top comments: Reddit through its JSON API, Discord, Twitter and Facebook through the agent's logged-in Firefox session, with a vision-model fallback when page selectors drift.
+1. **Discover.** The agent scouts target threads from a URL you paste or from platform entry points (subscribed subreddits, Discord channels, Facebook groups).
+2. **Context.** For each candidate it fetches the post and top comments: Reddit through its JSON API, Discord and Facebook through the agent's logged-in Firefox session, with a vision-model fallback when page selectors drift.
 3. **Draft.** Your local model writes a reply grounded in the thread and in citations from your indexed documents, shaped by one configurable persona (voice, expertise, citation style, what never to say).
 4. **Grade.** Every draft is scored against a relevance and quality rubric; anything below the threshold is dropped. Generic "great post!" replies don't survive.
-5. **Review.** Drafts land in a queue. In supervised mode (the default) nothing posts without your approval.
-6. **Post.** Approved drafts post through the logged-in browser session (Reddit comments and link posts, Facebook comments, YouTube) or the Discord API, cadence-gated. The Reddit and Facebook posters read the page at every step: they check the browser is still on the approved post, read the text back out of the box before submitting, and count a post only once it shows on the page. `/outreach …` in chat or `guaardvark outreach "…"` runs recon and drafting; posting still needs approval while supervised.
+5. **Review.** Drafts land in a queue. Nothing posts without your approval, and there is no setting that changes that.
+6. **Post.** Approved Discord replies go out through the Discord bot. Reddit comments and link posts, Facebook comments and YouTube comments go through the agent's logged-in browser, so each one starts only when you press **Post now, I'm watching** on the Approvals page with the Agent Screen open: one click, one post, driven on screen while you watch, cadence-gated. Closing the Agent Screen before the submit step stops it. The Reddit and Facebook posters read the page at every step: they check the browser is still on the approved post, read the text back out of the box before submitting, and count a post only once it shows on the page. `/outreach …` in chat or `guaardvark outreach "…"` runs recon and drafting; posting still needs your approval and your click. X and LinkedIn are not offered: both forbid driving an account with browser automation.
 
-Safety: a system-wide kill switch stops every pipeline mid-flight; supervised mode is the default; at most one post per 30 minutes per platform (configurable); every scout, draft, grade, approval, rejection, post and failure is recorded in a JSONL audit trail. Manual draft mode and on-demand passes for one platform or subreddit are available from the UI.
+Safety: a system-wide kill switch stops every pipeline mid-flight; every post needs a person's approval; at most one post per 30 minutes per platform; every scout, draft, grade, approval, rejection, post and failure is recorded in a JSONL audit trail. Manual draft mode and on-demand passes for one platform or subreddit are available from the UI.
 
 </details>
 
@@ -477,7 +477,7 @@ Config: `~/.guaardvark/cli.json` (legacy `~/.llx/config.json` is still read). Th
 Browser / CLI (PyPI: guaardvark) / MCP Client (Claude Desktop, Cursor, etc.)
     | HTTP + WebSocket / stdio MCP
     v
-Flask (~100 API blueprints, auto-discovered) + GraphQL + Socket.IO
+Flask (~100 API blueprints, auto-discovered) + Socket.IO
     |
     +-- AgentBrain (3-tier routing: Reflex → Instinct → Deliberation)
     |
@@ -502,7 +502,7 @@ PostgreSQL  Redis  Ollama  Agent Display (:99, on-demand)  ComfyUI / Audio Found
 - Many components (blueprints, tool registry, plugins) are discovered or declared at runtime; exact counts drift between releases.
 - `backend/mcp/config.py` controls the MCP server's default-deny policy.
 
-**Frontend:** React 18 · Vite · Material-UI v5 · Zustand · Apollo Client · Monaco Editor · Socket.IO<br>
+**Frontend:** React 18 · Vite · Material-UI v5 · Zustand · Monaco Editor · Socket.IO<br>
 **Core models and engines:** Gemma4 / Llama-family / Moondream (vision) · Z-Image / FLUX.1 / Krea 2 / SDXL · Wan 2.2 / LTX / HunyuanVideo / CogVideoX / MiniMax H3 · ACE-Step / Stable Audio Open / Chatterbox / Kokoro / Piper · Real-ESRGAN family + HAT · Whisper
 
 More: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [agent mental model](docs/AGENT_MENTAL_MODEL.md).

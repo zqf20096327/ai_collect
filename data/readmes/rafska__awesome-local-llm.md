@@ -143,11 +143,11 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 - <img src="https://img.shields.io/badge/NVIDIA-%25?logo=nvidia&labelColor=white" height="17" align="texttop"/> [OpenReasoning-Nemotron](https://huggingface.co/collections/nvidia/openreasoning-nemotron-687730dae0170059860f1f01) - a collection of models from NVIDIA, trained on 5M reasoning traces for math, code and science
 - [Kimi K2.5](https://huggingface.co/collections/moonshotai/kimi-k25) - a collection of open-source, native multimodal agentic models from Moonshot AI that advances practical capabilities in long-horizon coding, coding-driven design, proactive autonomous execution, and swarm-based task orchestration
 - [GLM-5.3](https://huggingface.co/collections/zai-org/glm-53) - a Z.ai's flagship model for long-horizon tasks
-- [Ling-3.0-flash](https://huggingface.co/inclusionAI/Ling-3.0-flash) - a native hybrid reasoning model from inclusionAI, operating with 124B total and 5.1B active parameters 
+- [Ling-3.1-flash](https://huggingface.co/inclusionAI/Ling-3.1-flash) - an upgraded native hybrid reasoning model from inclusionAI designed for complex, real-world tasks
 - [Granite 4.1](https://huggingface.co/collections/ibm-granite/granite-41-language-models) - efficient language models from IBM for multilingual generation, coding, RAG, and AI assistant workflows
 - [Ornith-1.5](https://huggingface.co/collections/ornith-ai/ornith-15) - a collection of open-source models for agentic tasks and coding
 - [EXAONE-4.5](https://huggingface.co/collections/LGAI-EXAONE/exaone-45) - LG's First Open-Weight Vision-Language Model for Industrial Intelligence
-- [Step-3.7-Flash](https://huggingface.co/collections/stepfun-ai/step-37-flash) - Mixture-of-Experts vision-language model for developers who need to scale agentic workflows that combine perception, search, and reasoning
+- [Step-5-Preview](https://huggingface.co/collections/stepfun-ai/step-5-preview) - StepFun's flagship model for agentic work
 - [Occamy-1.0](https://huggingface.co/Accio-Lab/occamy-1.0) - a compact agentic model purpose-built for real-world co-work
 - [MiniCPM5](https://huggingface.co/collections/openbmb/minicpm5) - a collection of SOTA on-device LLMs, small yet powerful
 - [LFM2.5](https://huggingface.co/collections/LiquidAI/lfm25) - a family of hybrid models designed for on-device deployment
@@ -213,7 +213,7 @@ A curated list of awesome platforms, tools, practices and resources that helps r
 
 #### Retrieval-Augmented Generation
 
-- <img src="https://img.shields.io/badge/NVIDIA-%25?logo=nvidia&labelColor=white" height="17" align="texttop"/> [Nemotron RAG](https://huggingface.co/collections/nvidia/nemotron-rag) - a set of tools to build retrieval-augmented generation (RAG) systems, improve search and ranking accuracy, and extract structured data from complex docs
+- <img src="https://img.shields.io/badge/NVIDIA-%25?logo=nvidia&labelColor=white" height="17" align="texttop"/> [Nemotron Retriever](https://huggingface.co/collections/nvidia/nemotron-retriever) - models for embedding, reranking, and document parsing for RAG and agentic retrieval
 - <img src="https://img.shields.io/badge/Google-%234285F4?logo=google&logoColor=red" height="17" align="texttop"/> [EmbeddingGemma 2](https://huggingface.co/google/embeddinggemma-2) - an open multimodal embedding model built by Google DeepMind which maps text (incl. code), images, video, and audio inputs—and combinations thereof—into a single, unified 768-dimensional vector space
 - [Qwen3-Embedding](https://huggingface.co/collections/Qwen/qwen3-embedding) - a collection of the latest proprietary Qwen models, specifically designed for text embedding and ranking tasks
 - [Qwen3-VL-Embedding](https://huggingface.co/collections/Qwen/qwen3-vl-embedding) - an addition to the Qwen embedding models, specifically designed for multimodal information retrieval and cross-modal understanding

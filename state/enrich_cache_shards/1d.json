@@ -603,5 +603,167 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "zapplyjobs/awesome-ml-internships-2027": {
+  "commit_90d": 7015,
+  "commit_7d": 952,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {},
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "google-deepmind/dm_pix": {
+  "commit_90d": 17,
+  "commit_7d": 4,
+  "rel_ver": "v0.4.5",
+  "rel_pub": "2026-06-02",
+  "rel_days": 137,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "Djdefrag/RealScaler": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "2026.3",
+  "rel_pub": "2026-04-26",
+  "rel_days": 174,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "ohdearquant/lionagi": {
+  "commit_90d": 1934,
+  "commit_7d": 323,
+  "rel_ver": "v0.35.5",
+  "rel_pub": "2026-10-12",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 17,
+  "lang": {
+   "Python": 84,
+   "TypeScript": 9,
+   "Jupyter Notebook": 4,
+   "Rust": 2,
+   "Swift": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "kuafuai/andee": {
+  "commit_90d": 157,
+  "commit_7d": 54,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-16",
+  "rel_days": 1,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 5,
+  "lang": {
+   "Kotlin": 86,
+   "HTML": 7,
+   "Python": 5,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "pdsuwwz/nextjs-nextra-starter": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v5.1.0",
+  "rel_pub": "2026-06-18",
+  "rel_days": 121,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 75,
+   "MDX": 19,
+   "CSS": 5,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

@@ -14,16 +14,16 @@ You can either use TabSTAR as a package for your own tabular data tasks, or expl
 
 ---
 
-### 🚀 TabSTAR v1.1 is on its way
+### 🚀 TabSTAR v1.1 is out
 
-We are releasing **TabSTAR v1.1**, a new generation of pretrained TabSTAR models. It ships alongside the original models, in its own module, so existing code keeps working unchanged:
+We released **TabSTAR v1.1**, a new generation of pretrained TabSTAR models. It ships alongside the original models, in its own module, so existing code keeps working unchanged:
 
 | | import | estimators |
 |---|---|---|
 | TabSTAR | `tabstar.tabstar_model` | `TabSTARClassifier`, `TabSTARRegressor` |
 | TabSTAR v1.1 | `tabstar.tabstarv1p1_model` | `TabSTARv1p1Classifier`, `TabSTARv1p1Regressor` |
 
-See [TabSTAR v1.1](#tabstar-v11) below for usage. We are releasing the model first; a detailed writeup of what changed, together with the v1.1 pretraining code, will follow.
+See [TabSTAR v1.1](#tabstar-v11) below for usage. The v1.1 pretraining code lives in [`tabstarv1p1_pretrain/`](tabstarv1p1_pretrain/README.md); a detailed writeup of what changed will follow.
 
 ---
 
@@ -160,6 +160,8 @@ python tabstar_paper/do_pretrain.py --n_datasets=256
 ```
 
 `--n_datasets` determines how many datasets to use for pretraining. You can reduce this number for quick debugging, but note this will harm downstream performance.
+
+For the TabSTAR v1.1 pretraining pipeline (T4 data curation, pretraining, per-epoch finetunability Elo), see [`tabstarv1p1_pretrain/`](tabstarv1p1_pretrain/README.md).
 
 ### Finetuning
 

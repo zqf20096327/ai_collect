@@ -22,7 +22,7 @@ Any IMAP mailbox, Gmail and Microsoft 365 / Exchange\*.
 [ohmail.app](https://ohmail.app)
 
 [![build](https://github.com/trafficflowhq/ohmail/actions/workflows/build.yml/badge.svg)](https://github.com/trafficflowhq/ohmail/actions/workflows/build.yml)
-[![latest release](https://img.shields.io/badge/download-v0.26.1-a3461c)](https://github.com/trafficflowhq/ohmail/releases/latest)
+[![latest release](https://img.shields.io/badge/download-v0.27.0-a3461c)](https://github.com/trafficflowhq/ohmail/releases/latest)
 [![licence: AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-a3461c)](LICENSE)
 [![macOS 15+](https://img.shields.io/badge/macOS-15%2B-111111)](#macos)
 [![Windows 10+](https://img.shields.io/badge/Windows-10%2B-111111)](#windows)
@@ -58,8 +58,8 @@ New senders wait here until you decide where they go. Someone you have written
 to since you set up ohmail, or who answers a message you sent, goes straight to
 the Ohbox.
 
-With AI on — your own Anthropic or OpenAI key, or a local model through
-[Ollama](https://ollama.com), and off until you turn it on — the Screener
+With AI on — your own Anthropic, OpenAI or OpenCode Go key, or a local model
+through [Ollama](https://ollama.com), and off until you turn it on — the Screener
 proposes a door for each waiting sender, with a confidence and a reason, and one
 press accepts. Switch on auto-suggest and the proposal is already waiting as the
 mail arrives. Nothing applies itself unless you ask: a pattern you have
@@ -538,12 +538,20 @@ mail, its folders and the profile above are what travel.
 ### Model providers and keys
 
 Pick the model in **Settings → Desktop**, under *AI for suggestions and drafts*.
-Three options, and each model is yours to name:
+Four options:
 
 - **Your Anthropic key** — requests go to `api.anthropic.com`, billed to your
   account.
 - **Your OpenAI key** — requests go to `api.openai.com`, billed to your
   account.
+- **Your OpenCode Go key** — requests go to `opencode.ai` and on to the
+  provider behind the model you choose, billed through your OpenCode account.
+  The models to choose from are the ones your Go workspace lists that this app
+  can drive; Settings shows them after the key is checked, and marks the free
+  and preview ones. The check reads your workspace's Go configuration and runs
+  no model, so it does not prove the model will answer. Eligibility, model
+  privacy and billing are managed in your OpenCode account, where ohmail cannot
+  see or enforce them.
 - **A model on this machine** — served by Ollama at
   `http://127.0.0.1:11434` by default, or any address you give it. Install
   Ollama and `ollama pull llama3.2` before choosing it. Nothing leaves the
@@ -555,7 +563,8 @@ A key is sealed under a key held in your operating system's keystore, is never
 written down in the clear, is never read back, and is sent to no host but its
 own vendor's. The endpoint for a key is fixed in the code and no setting can
 move it — the option whose address you can change is the local one, which
-carries no key. Saving runs a fresh test, so a server that is not running, or
+carries no key. Saving runs a fresh test (for OpenCode Go, the configuration
+read above), so a server that is not running, or
 is running without the model you named, is reported while you are still in the
 settings rather than the next time you open your mail.
 
@@ -765,7 +774,7 @@ docker compose logs api   # the first-run setup token is printed here, once
 Open your `OHMAIL_ORIGIN` in a browser and register with that setup token —
 there is no public signup on a self-host server. The stack is Caddy as the
 one origin (automatic TLS on a real domain), the web app, the API server,
-the sync organizer, Postgres, MinIO for attachment staging, and a local
+the sync organizer, Postgres, RustFS for attachment staging, and a local
 mail sink for verification mail until you point `SMTP_URL` at a real relay.
 `deploy/selfhost/docker-compose.yml` documents every service and
 `deploy/selfhost/.env.example` every setting.
@@ -897,8 +906,12 @@ while host mode is off; arming host mode opens exactly the loopback door the
 host section above describes, and nothing else.
 
 **The page reaches nothing directly.** The webview's Content-Security-Policy
-is `connect-src 'none'`, so `fetch`, XHR and WebSocket are refused before they
-are attempted. In the interface-only build the main window's capability list
+names one source in `connect-src`, the app's in-process command scheme, in the
+spelling of each platform's webview (`ipc:` on Linux and macOS,
+`http://ipc.localhost` on Windows; `apps/desktop/src-tauri/tauri.<os>.conf.json`).
+On Windows a CSP also lets that source match `https://ipc.localhost`, a loopback
+address nothing in the app serves. `fetch`, XHR and WebSocket to any other
+address are refused before they are attempted. In the interface-only build the main window's capability list
 is literally empty (`"permissions": []`). In the build you download, the
 window can call thirty-five commands and nothing else, every one declared in
 `src-tauri/build.rs`: the bridge to the mail engine and its restart, a

@@ -25,6 +25,15 @@ JetBot is a fully browser-based AI coding assistant. No backend server, no deplo
               └────────────────┘
 ```
 
+<p align="center">
+  <a href="docs/screenshots/demo.mp4">
+    <img src="docs/screenshots/demo-preview.gif" alt="JetBot in action — one prompt becomes a playable game" width="100%">
+  </a>
+</p>
+
+> **One prompt → a playable Snake game.** The agent planned, wrote the file, rendered a live preview and verified the game rules — all inside a browser tab.
+> [▶ 56-second tour](docs/screenshots/demo.mp4) · [full walkthrough (110s)](docs/screenshots/demo-full.mp4)
+
 ## Quick Start
 
 ```bash

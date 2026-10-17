@@ -2779,4 +2779,4 @@ ids_out, num_out, is_number_mask = model.generate(start_ids, start_nums, 17)
 ```bibtex
 @misc{gladstone2026explorativemodelingunlockingpretraining,
     title   = {Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation},
-    aut
+    author  = {Alexi

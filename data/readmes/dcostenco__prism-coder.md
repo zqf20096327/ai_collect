@@ -170,6 +170,26 @@ or by re-enabling after each run.
 <details>
 <summary>Release history (optional)</summary>
 
+## What's New in v20.21.27
+
+**Why it matters:** a script that feeds Prism Browser through a pipe can
+now pause between blocks of commands. Before, commands that had already
+arrived waited for the next write, and never ran if the 600 s idle timeout
+came first, so a script that checked a result before sending more stalled
+and then failed.
+
+- **Every piped command runs when it arrives.** The reader waited on
+  `select()` for new pipe data while `readline()` had already buffered the
+  commands sent so far. It now reads the descriptor itself and decodes it as
+  the text stream did (its encoding, universal newlines). Measured with two
+  commands written together and a third written only after the reader hands
+  over the second: the second came out only with the third before, and
+  before the third is written now.
+- **Unchanged:** the idle timeout, `\` line continuation (CRLF endings
+  included), comment lines, and streams `select()` cannot watch, now read
+  blocking. At the idle timeout, a command still being written is dropped,
+  never run cut short.
+
 ## What's New in v20.21.26
 
 **Why it matters:** routine wording no longer lets a mixed request skip
@@ -1828,16 +1848,4 @@ Router toggle or set `PRISM_TASK_ROUTER_ENABLED=false` for an explicit opt-out.
 <details>
 <summary>How Prism survives context compaction</summary>
 
-The LLM context window is treated as ephemeral scratch space; durable state lives in the persistent store (SQLite locally, the portal in the cloud). Every session begins with a mandatory no-argument `session_bootstrap` call, so Prism applies the dashboard's project and quick/standard/deep setting before the agent writes a response. When a project exceeds a threshold (default 50 entries), `session_compact_ledger` summarizes old entries into a rollup, soft-archives the originals, and links them in the graph. See [`docs/COMPACTION.md`](docs/COMPACTION.md)
-</details>
-
----
-
-## CLI
-
-```bash
-prism load <project>      # load session context
-prism save                # save ledger + handoff
-prism search <query>      # search code across repos (exact / regex / symbol / semantic)
-prism review <files...>   # AI code review — security, performance, style
-prism scan <files...>     # security scan — secrets, licenses, Dockerfil
+The LLM context window is treated as ephemeral scratch space; durable state lives in the persistent store (SQLite locally, the portal in the cloud). Every session begins with a mandatory no-argument `session_bootstrap` call, so Prism applies the dashboard's project and quick/standard/deep setting before the agent writes a response. When a projec

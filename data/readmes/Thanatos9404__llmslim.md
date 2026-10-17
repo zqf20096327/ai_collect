@@ -17,7 +17,7 @@
 <br/>
 
 **The context layer for production AI agents.**
-*This repository is **LLMSlim Core** (v0.9.0, MIT): local-first context planning and compression that fits prompts, conversation history, RAG, memory, and tool schemas into real token budgets while preserving instructions and execution boundaries.*
+*This repository is **LLMSlim Core** (v0.11.1, MIT): local-first context planning and compression that fits prompts, conversation history, RAG, memory, and tool schemas into real token budgets while preserving instructions and execution boundaries.*
 
 <br/>
 
@@ -54,7 +54,7 @@ print(result.compressed_text)
 print(f"{result.original_tokens} -> {result.compressed_tokens} tokens ({result.reduction_percent:.1f}% fewer)")
 ```
 
-**3. What you should see** (llmslim 0.9.0, base install):
+**3. What you should see** (llmslim 0.11.1, base install):
 
 ```text
 Hi team, I hope you are all doing well and had a good weekend. I am writing about invoice INV-2291, which charged us $480 instead of $240. We upgraded to the Pro plan on 3 September, but the old Basic plan was billed as well. Please refund the duplicate $240 charge to the card ending 4417.
@@ -79,7 +79,7 @@ If LLMSlim is useful, consider starring the repo or opening an issue with feedba
 
 | | **LLMSlim Core** | **LLMSlim Platform** |
 |---|---|---|
-| Version | 0.9.0 | 0.9.1 beta |
+| Version | 0.11.1 | 0.9.1 beta |
 | License | MIT, this repository | Proprietary, private beta |
 | Install | `pip install llmslim` | By invitation; not published to PyPI |
 | What it does | Compresses, plans, and traces model-visible context inside your Python process | Builds on Core: a verifiable timeline of agent state, explainable and replayable context decisions, and outcome-driven context policies that start in shadow mode |
@@ -506,7 +506,50 @@ result instead and reports why in `rewrite_metadata.failure_reasons`.
 
 ---
 
-## Memory for agents, with no LLM in the loop (on main, next release)
+## Coding agents: `llmslim wrap claude`
+
+Claude Code resends the whole conversation on every turn. So long test logs, build output, search results and web
+pages get paid for again and again, and they fill the context window until it compacts.
+
+`llmslim wrap claude` runs Claude Code through a local proxy:
+- It shrinks such output the first time the model sees it, keeping errors and the lines related to the command.
+- It sends exactly the same bytes on every later request, so the prompt cache keeps hitting and Claude's thinking
+  stays valid.
+- File reads and edits are never touched.
+
+```bash
+pip install "llmslim[proxy]"
+llmslim wrap claude
+llmslim proxy stats
+```
+
+**What it does to the bill, measured** on real Claude Code with Claude Haiku 5.5. We counted billed dollars, with cache
+reads priced separately, and published all 572 runs in
+[benchmarks/claude_code_cost](benchmarks/claude_code_cost/README.md):
+- **Long logs:** a failing CI run cost 26-32% less, and a lint run with three errors among 260 warnings 17-21% less.
+- **Test runs:** -2% to -15%. Agents already trim test output with `tail`.
+- **Over 8 tasks:** between -5% and +5% overall. Shortened JSON made one task cost about twice as much, so JSON is
+  left alone by default since 0.11.1.
+- **Real sessions:** tool output is a small part of a Claude Code bill. Re-reading long context is the big part, and
+  Claude Code's `/autocompact` setting controls it.
+
+Without the byte-for-byte replay, an edited history gets the request rejected with HTTP 400 once Claude's thinking is
+in it; with it, cache reads keep growing every turn. See [docs/PROXY.md](docs/PROXY.md) for what is compressed, the
+limits and security.
+
+**As a Claude Code plugin.** The plugin adds LLMSlim's memory server (below) and two commands:
+- `/llmslim:wrap-claude` walks you through starting Claude Code through the proxy;
+- `/llmslim:savings` shows what the proxy kept out of your requests.
+
+```text
+/plugin marketplace add Thanatos9404/llmslim
+/plugin install llmslim@llmslim
+```
+
+On Claude Code 2.1.275 or later, `/plugin install llmslim --marketplace Thanatos9404/llmslim` does both in one step.
+The memory server runs with `uvx`, so it needs [uv](https://docs.astral.sh/uv/).
+
+## Memory for agents, with no LLM in the loop
 
 `llmslim.memory` stores every turn verbatim and selects, at read time, the turns that answer a question within a
 token budget. There is no extraction model on the way in and no model call on the way out.
@@ -539,7 +582,7 @@ claude mcp add llmslim -- llmslim mcp
 - **Storage:** a local SQLite file; the server makes no network calls.
 - **More:** client configs and options are in [docs/MCP.md](docs/MCP.md).
 
-<!-- mcp-name: io.github.thanatos9404/llmslim -->
+<!-- mcp-name: io.github.Thanatos9404/llmslim -->
 
 ### Over HTTP, from any language
 
@@ -553,8 +596,8 @@ curl -s localhost:8080/v1/memories/search -H 'content-type: application/json'   
 It needs a bearer API key to listen beyond localhost. The routes, limits and Docker setup are in
 [docs/SERVER.md](docs/SERVER.md).
 
-The TypeScript client in [clients/typescript](clients/typescript) wraps this API with no dependencies. It also gives
-the Vercel AI SDK `recall_memory` and `remember` tools and a middleware that saves turns. None of them changes your
+The TypeScript client, `npm install llmslim` ([clients/typescript](clients/typescript)), wraps this API with no
+dependencies. It also gives the Vercel AI SDK `recall_memory` and `remember` tools and a middleware that saves turns. None of them changes your
 prompt, so prompt caches keep hitting and Claude's preserved thinking stays valid.
 
 ## Use with LangChain / LlamaIndex / Haystack
@@ -808,7 +851,7 @@ llmslim document.txt --stats
 
 ## 📋 Changelog
 
-Release notes for every version, including 0.9.0, are in
+Release notes for every version, including 0.11.1, are in
 [CHANGELOG.md](CHANGELOG.md) and on
 [GitHub Releases](https://github.com/Thanatos9404/llmslim/releases).
 

@@ -40,6 +40,7 @@ WeeLLM dynamically streams text encoder and transformer layers to the GPU for ma
 | `ERNIE-Image` (`Baidu/ERNIE-Image`)|       ~10B | **1.69 GB** | **2.54 GB** | ~123s · 5 steps  |
 | `Krea-2-Turbo`                     |       ~13B |   **3  GB** | **3.23 GB** | ~810s · 10 steps |
 | `MiniMax-H3`                       |       ~34B | **3.14 GB** |           — |                — |
+| `MOSS-Image-SFT`                   |       ~14B | **1.25 GB** | **2.10 GB** | ~260s · 6 steps  |
 
 > The models run with **no quantization** on RTX-3050 — full bfloat16 (1024x1024) weights streamed layer-by-layer to GPU.
 
@@ -64,6 +65,7 @@ WeeLLM dynamically streams text encoder and transformer layers to the GPU for ma
 - Flux.1 Krea
 - Flux.2 Klein 4B
 - Flux.2 Klein 9B
+- Flux.3 Klein (Base + Distilled)
 - CogView 4
 - LongCat Image
 - Z-Image Turbo
@@ -78,6 +80,7 @@ WeeLLM dynamically streams text encoder and transformer layers to the GPU for ma
 - Lumina Image 2.0
 - Hidream I1 Full
 - Auraflow
+- MOSS-Image
 
 ## Image Edit Models
 
@@ -91,6 +94,7 @@ WeeLLM dynamically streams text encoder and transformer layers to the GPU for ma
 - Flux.1 Fill Dev
 - Flux.2 Klein 4B
 - Flux.2 Klein 9B
+- Flux.3 Klein (Base + Distilled)
 - LongCat Image Edit
 - Qwen Image Edit
 - Qwen Image 2.1

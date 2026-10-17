@@ -12,31 +12,36 @@ or train your own architecture.
 
 ## A local workspace, included
 
-Chat with your models, translate text and documents, watch GPU usage, and run a
-warmed benchmark from the bundled browser UI. Streaming, conversation history,
-glossaries, and generation controls are included, with no frontend build step.
+Chat with text and images, translate documents, extract OCR Markdown, and ask
+questions over a local document collection. Watch GPU usage and run a warmed
+benchmark from the bundled browser UI, with no frontend build step.
 
-![Eole workspace: Qwen chat and benchmark, plus Hy-MT2 translation](recipes/ui/images/showcase.gif)
+![Eole workspace: Chat, Translate, Documents (OCR), Knowledge (RAG), Monitor and Benchmark](recipes/ui/images/showcase.gif)
 
-[Watch the short MP4 tour](recipes/ui/images/showcase.mp4) ·
+[Watch the 39-second MP4 tour](recipes/ui/images/showcase.mp4) ·
 [Chat workspace](recipes/ui/README.md) ·
-[Hy-MT2 translation workspace](recipes/translation/README.md)
+[Hy-MT2 translation workspace](recipes/translation/README.md) ·
+[Knowledge (RAG)](recipes/rag/README.md)
 
-The tour shows two separately loaded models on one RTX 5090: RedHat
-Qwen3.8-27B INT4 for chat and benchmarking (MTP on, 28,672-token context), and
-Hy-MT2-7B BF16 for translation (MTP off, 16,384-token context). Both use compile
-mode 0. The benchmark measures post-first-token decode speed; results depend on
-the prompt, settings, and hardware.
+The edited tour uses real local results: RedHat Qwen3.8-27B INT4 for visual chat,
+RAG answers and benchmarking, Hy-MT2-7B for translation, and DeepSeek-OCR for
+page extraction. The complete workspace menu stays visible. Model loading and
+compilation waits are omitted; the displayed generation measurements come from
+Eole's inference worker on an RTX 5090. Benchmark numbers measure post-first-token
+decode speed and depend on the prompt, settings and hardware.
 
-## Latest: 0.6.2
+## Latest: 0.6.3
 
-This release fixes Qwen RoPE conversion and GGUF MTP/tokenizer handling, adds
-compressed-tensors INT4 support and the out-of-tree vLLM GGUF backend, and
-provides a LiveCodeBench evaluation recipe. Start with the
-[Qwen3.8/MTP recipe](recipes/qwen38/README.md) using the recommended RedHatAI INT4
-checkpoint, or the [LiveCodeBench recipe](recipes/livecodebench/README.md).
-See the [changelog](CHANGELOG.md#062) for details, conversion migration guidance,
-and current limitations.
+This release adds a bundled browser workspace for Chat with images, translation,
+PDF/image OCR and local document RAG, with coordinated model switching. It also
+improves compiled decoding and MTP verification, packed Marlin projections and
+INT4 tensor parallelism, and expands OpenAI/Anthropic API compatibility.
+
+Eole supports **PyTorch >= 2.10 and < 2.15**, including PyTorch 2.14.1. The refreshed
+Docker defaults use PyTorch 2.14.1 with CUDA 13.2. Start with the
+[workspace UI](recipes/ui/README.md), [Qwen3.8/MTP recipe](recipes/qwen38/README.md),
+or [Docker guide](docs/docker.md). See the [changelog](CHANGELOG.md#063) for release
+details and remaining limitations.
 
 ## Choose your workflow
 
@@ -48,6 +53,8 @@ and current limitations.
 | Try Qwen3.8-27B with MTP speculative decoding | [Qwen3.8 and MTP](recipes/qwen38/README.md) |
 | Use Codex with a locally served Qwen model | [Codex Responses API](recipes/codex/README.md) |
 | Use Claude Code with a locally served Qwen model | [Claude Code endpoint](recipes/claude-code/README.md) |
+| Ask questions about your documents with sources | [Local Knowledge / RAG workspace](recipes/rag/README.md) |
+| Chat with images in the browser | [Qwen vision Chat workspace](recipes/ui/README.md#images-in-chat) |
 | Try Qwen3.5 text and image inputs | [Qwen3.5](recipes/qwen35/README.md) |
 | Train a translation model | [WMT17](recipes/wmt17/README.md) |
 | Translate with a pretrained multilingual model | [NLLB](recipes/nllb/README.md) |
@@ -147,7 +154,7 @@ must be measured on the chosen checkpoint.
 ### From source
 
 - Python >= 3.11 (current CI uses Python 3.12).
-- PyTorch >= 2.10 and < 2.13, with a CUDA build compatible with your GPU and driver.
+- PyTorch >= 2.10 and < 2.15, with a CUDA build compatible with your GPU and driver.
 - To compile CUDA extensions: the CUDA toolkit (`nvcc`), a compatible C++ compiler,
   and the build dependencies below. The CUDA runtime bundled with PyTorch alone
   does not provide `nvcc`.
@@ -242,7 +249,8 @@ Requires Docker, a compatible NVIDIA driver, and the
 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
 
 Use a [published image](https://github.com/eole-nlp/eole/pkgs/container/eole) or
-build an image from your checkout. The [Docker guide](docs/docker.md) covers GPU
+build an image from your checkout (the tested default is PyTorch 2.14.1 / CUDA 13.2).
+Images include the Chat, Translate, Documents and Knowledge dependencies. The [Docker guide](docs/docker.md) covers GPU
 prerequisites, local builds, CUDA kernels, model/data mounts, YAML inference and
 training, and serving an API endpoint.
 

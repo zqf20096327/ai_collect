@@ -106,7 +106,7 @@ Fresh 2026 work that is already drawing attention.
   - [🌐 Interactive Environments (60)](#environments)
   - [🚀 Applications (57)](#applications)
 - **⚖️ Part III: Cross-Cutting Concerns**
-  - [📊 Evaluation & Benchmarks (56)](#evaluation)
+  - [📊 Evaluation & Benchmarks (57)](#evaluation)
   - [🛡️ Safety & Alignment (62)](#safety)
 
 ## 🧭 Background
@@ -405,4 +405,5 @@ Fresh 2026 work that is already drawing attention.
 - **[GPT4Tools: Teaching Large Language Model to Use Tools via Self-instruction](https://arxiv.org/abs/2305.18752)** (Yang et al., NeurIPS 2023) - *Widely used reference for open-source instruction-tuning approaches to multimodal tool use, complementing proprietary-model tool-use papers.* [[code](https://github.com/StevenGrove/GPT4Tools)]
 - **[ToolkenGPT: Augmenting Frozen Language Models with Massive Tools via Tool Embeddings](https://arxiv.org/abs/2305.11554)** (Hao et al., NeurIPS 2023) - *An influential alternative architecture for scalable tool selection that avoids the context-length bottleneck of prompt-based tool listing.* [[code](https://github.com/Ber666/ToolkenGPT)]
 - **[ToolAlpaca: Generalized Tool Learning for Language Models with 3000 Simulated Cases](https://arxiv.org/abs/2306.05301)** (Tang et al., arXiv 2023) - *Key evidence that generalized tool-use capability is achievable in small open models via automatically synthesized tool-use corpora, influential for later synthetic-data tool-training pipelines.* [[code](https://github.com/tangqiaoyu/ToolAlpaca)]
-- **[RestGPT: Connecting Large Language Models with Real-World RESTful APIs](https://arxiv.org/abs/2306.06624)** (Song et al., arXiv 2023) - *Demonstrates tool-use extended to complex, stateful real-world REST APIs beyond toy tool sets, with a benchmark still
+- **[RestGPT: Connecting Large Language Models with Real-World RESTful APIs](https://arxiv.org/abs/2306.06624)** (Song et al., arXiv 2023) - *Demonstrates tool-use extended to complex, stateful real-world REST APIs beyond toy tool sets, with a benchmark still used for API-grounded agent evaluation.* [[code](https://github.com/Yifan-Song793/RestGPT)]
+- **[ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs](https://arxiv.org/abs/2307.16789)** (Qin 

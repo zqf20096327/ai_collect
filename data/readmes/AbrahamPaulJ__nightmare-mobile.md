@@ -20,8 +20,9 @@ and it downloads on first use; the app shows which ones your phone can run.
 | chip | runs |
 |---|---|
 | Snapdragon 888 and newer | SD 1.5 |
-| 8 Gen 3 and newer | SDXL, Anima; **alpha:** FLUX.2 Klein 4B / 9B, Qwen Image 2.1 and 2.1 Turbo, Anima Turbo 1.1 on the DiT engine, Iris 3B Turbo (not yet run on an 8 Gen 3), Z-Image Turbo as a Q4_0 GGUF (not yet run on an 8 Gen 3), your own quantised (GGUF) DiT, Wan 2.2 video |
-| 8 Elite and newer | Z-Image Turbo in FP8, SDXL Swap, Neodragon text and image to video, and all of the above |
+| 8 Gen 2, 8s Gen 3 and newer | **alpha:** Z-Image Turbo as a Q4_0 GGUF, FLUX.2 Klein 9B, Anima Turbo 1.1 and Iris 3B Turbo on the DiT engine. On the 8s Gen 4 and 8s Gen 3 they run with the NPU's matrix unit off and decode on the CPU for now, because with it the picture comes back grey or as noise: right pictures, but much slower (minutes at 512, far longer at 1024). A model's ⋮ **Test the NPU** finds which part fails, so it can be made fast again. Iris keeps it on there and is still noisy |
+| 8 Gen 3 and newer | SDXL, Anima, community-converted SDXL and SDXL Swap models; **alpha:** FLUX.2 Klein 4B / 9B, Qwen Image 2.1 and 2.1 Turbo, Anima Turbo 1.1 on the DiT engine, Iris 3B Turbo (not yet run on an 8 Gen 3), Z-Image Turbo as a Q4_0 GGUF, your own quantised (GGUF) DiT, Wan 2.2 video |
+| 8 Elite and newer | Z-Image Turbo in FP8, SDXL Swap, MOSS-Image, Neodragon text and image to video, and all of the above |
 | 12 GB RAM | Krea 2 Turbo (8 Elite; alpha on 8 Gen 3); on 12 GB it renders in parts, about 3.5 to 4 min at 1024² |
 
 ## Features
@@ -30,8 +31,14 @@ and it downloads on first use; the app shows which ones your phone can run.
 - **Built for a phone**: big ports, snap to connect, pinch to zoom (out to 0.15x to see a big flow whole); the picture appears on the node that made it. The run bar folds to one row (+ Node, Run, the time, the locks) for more canvas.
 - **Local Dream's models, no second download**: models Local Dream keeps in `Download/LocalDream` are listed and run in place, never changed or deleted.
 - **UltraFix**: Local Dream's tiled repair: redraws the detail of an upscaled picture without changing it (SD 1.5 / SDXL).
+- **More options** on the Image node holds the after-render switches below, folded away; closed, it names the ones that are on.
+  Switching one on that needs a download (the upscaler, the face and hand detector) offers it there and then.
 - **Hires fix**: one switch on the Image node: render, enlarge ×2, then UltraFix, in one Run (SD 1.5 / SDXL).
   Every other model has **Enlarge ×2** instead, so its picture can be enlarged and passed on to an inpaint that fixes faces.
+- **Fix faces / Fix hands** (ADetailer): switches on the Image node. After the render the phone finds each face and
+  hand (Bingsu's YOLOv8 detectors, a 25 MB Tools download) and redraws it close up with the same prompt and model, its tone matched to the picture along the edge. **Detection settings** shows what is found on your last picture and sets the confidence, padding, mask blur and strength, for faces and hands apart.
+- **Colour**: **Match colours** on the Image node keeps an image to image, inpaint or Fix faces result in the colours of
+  the picture going in; **Auto colour** and **Adjust colours** (brightness, contrast, saturation, warmth) on the Output node.
 - **LoRA library**: sort LoRAs by name, newest, most used or size, filter by base model, star favourites, set a LoRA's model by hand when its file is not recognised, and sort them into your own folders.
 - **Draw on a picture**: doodle shapes and colours over the image node's photo (or a blank page) and let image to image make them real; pinch to zoom, pick a colour from the picture or any colour from a picker.
 - **Recipes**: text to image, image to image, inpaint, upscale, image edit, text / image to video, motion transfer and two Advanced flows, listed from least to most demanding; one your phone can't run says so.
@@ -40,8 +47,9 @@ and it downloads on first use; the app shows which ones your phone can run.
 - **Results**: star, save, share, reopen any picture as the flow that made it; each keeps how long it took. Fold the big preview away and the grid fills the screen. In a picture's info, long-press its prompt, negative, seed or the picture itself and **Use** them on the open flow, each matched to the node you pick.
 
 ### Models
-- **38 checkpoints in the catalogue**: SD 1.5, SD 1.5 Swap, SDXL, SDXL Swap, Anima and the DiT family, each downloaded on demand.
-- **FLUX.2 Klein 4B / 9B, Z-Image Turbo, Qwen Image 2.1 (and its 8-step Turbo), Krea 2 Turbo, Anima Turbo 1.1**: any size from 512 to 2048 in 64 px steps, no reload to change it.
+- **44 checkpoints in the catalogue**: SD 1.5, SD 1.5 Swap, SDXL, SDXL Swap, Anima and the DiT family, each downloaded on demand. A **Community** tab under SDXL and SDXL Swap lists models converted by community members on an 8 Gen 3, so they run on the 8 Gen 3 and newer; they are hosted on their converters' own pages.
+- **FLUX.2 Klein 4B / 9B, Z-Image Turbo, Qwen Image 2.1 (and its 8-step Turbo), Krea 2 Turbo, Anima Turbo 1.1, Anima 2.9B (preview)**: any size from 512 to 2048 in 64 px steps, no reload to change it.
+- **MOSS-Image** (8 steps): OpenMOSS's 5B model with a 9B text encoder (Qwen3.5) and lodestones' 8-step speed-up applied every time. Careful, detailed pictures, and slow on a phone: about 3 min at 512x512 and 11 to 12 min at 1024x1024 on an 8 Elite. About 10 GB. Text to image.
 - **Iris 3B Turbo**: draws pixels directly, so there is no VAE and no decode step to run out of memory in. Only the sizes it was trained at, about 1 MP each (1024x1024, 896x1200, 896x1344, 752x1344 and the turned versions); smaller ones come out in blocks. About 2.5 min at 1024x1024 on an 8 Elite. Text to image.
 - **Bring your own**: one **+** on the Models page takes any of them and works out what the file is: a converted checkpoint zip, a FLUX.2 / Z-Image / Krea 2 / Anima `.safetensors` or `.gguf` fine-tune used as it is, or an upscaler. Rename any import from its card. Or convert one on the phone with [npuforge](https://github.com/AbrahamPaulJ/npuforge).
 - **Upscalers**: RealESRGAN anime and 4x UltraSharp V2 Lite, or your own; a checkbox on the output node.
@@ -57,7 +65,7 @@ and it downloads on first use; the app shows which ones your phone can run.
 - **Motion transfer** (Wan 2.2 Fun Control): your picture moving like a video you choose, by its pose or a control video you already have (a pose or depth video). Pick the part of the video (its length is the clip's, up to 5 s, at any size up to 1280×704) and crop it on its first frame. 480×832 for 2 s in about 90 s on an 8 Elite.
 
 ### LoRA, ControlNet and IP-Adapter
-- **LoRAs per render**: on Anima and the Swap models, and experimentally on FLUX.2, Z-Image, Qwen Image and Krea 2: tick, set strength, no reload. A note per LoRA keeps its trigger words.
+- **LoRAs per render**: on Anima and the Swap models, and experimentally on FLUX.2, Z-Image, Qwen Image and Krea 2: tick, set strength (typed or slid; -2 to 2 on the DiT models), no reload. A note per LoRA keeps its trigger words.
 - **Get LoRAs in the app**: search CivitAI and Hugging Face filtered to the model's family (SD 1.5, SDXL, Anima, FLUX.2 Klein, Z-Image, Qwen 2.1, Krea 2), or paste a link; hash-checked downloads.
 - **SD 1.5 Swap and SDXL Swap**: npuforge conversions whose LoRA, **ControlNet** (canny, depth, openpose) and **IP-Adapter** (Plus, Face) are chosen per render; pose and depth are found from a photo on the phone.
 - **Embeddings**: import a textual inversion and name it in a prompt.
@@ -74,11 +82,11 @@ and it downloads on first use; the app shows which ones your phone can run.
 - **English, Chinese and Russian**: the app follows your phone's language.
 - **Models where you can see them**: optionally in `Download/Nightmare`, surviving an uninstall.
 - **Download from a mirror**: hf-mirror.com or any address, for every model the app fetches and the DiT engine (which falls back from GitHub to Hugging Face by itself); large files come over four connections at once. Tap Download on a second model while one downloads and it waits its turn.
-- **Your RAM back**: the model is released when you leave; low-RAM switches for SDXL and Anima.
+- **Your RAM back**: the model is released when you leave; low-RAM switches for SDXL and Anima, and one that streams the video model for phones whose clips come out as a coloured grid.
 - **A report when the phone restarts mid-run**: the next launch says what was running and how much memory was free at each step, ready to copy into a bug report.
 - **Three views of one flow**: **Default** (one step at a time, the easy way in), **Advanced** (the whole flow as connected boxes) and **Chat** (hide it in Settings if you don't use it), switched from one button beside the current model (tap the model to change it); in **Default**, **Swap flow** moves to another flow for the same model keeping your prompt and settings. Models, Flows, Results and the current flow live in a sidebar; Models, Flows, Results and Settings open as sheets over the flow.
 - **An agent**: ask for pictures in words: an AI model you bring your own key for (OpenRouter, OpenAI, DeepSeek, xAI, Groq or a local server) builds the flow on your canvas, finds and downloads LoRAs, uses a picture you attach, runs it and shows you the picture; no picture is ever sent to the AI model ([guide](https://abrahampaulj.github.io/nightmare-mobile/reference/agent/)).
-- **A local API**: a script, desktop app or AI agent on your Wi-Fi or tailnet can run any flow; pictures and Motion transfer's video go in the request; token-protected, off by default ([guide](https://abrahampaulj.github.io/nightmare-mobile/reference/api/)).
+- **A local API**: a script, desktop app or AI agent on your Wi-Fi or tailnet can run any flow; pictures and Motion transfer's video go in the request; token-protected, off by default; **Allow browser pages** lets a web page call it too ([guide](https://abrahampaulj.github.io/nightmare-mobile/reference/api/)).
 - **Offline and private**: nothing is uploaded, no account (the optional agent talks to the provider you choose); a failure report never includes your prompt.
 
 The [user guide](https://abrahampaulj.github.io/nightmare-mobile/) explains each of these, with measurements.
@@ -103,7 +111,7 @@ there. Every component, with its licence and terms, is listed in [NOTICE](NOTICE
 | project | by | licence | used for |
 |---|---|---|---|
 | [local-dream](https://github.com/xororz/local-dream) | xororz | CC BY-NC 4.0 | the inference server this app forks |
-| [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) + [Hexagon work](https://github.com/happyyzy/stable-diffusion.cpp) | leejet, happyyzy | MIT | the DiT engine (FLUX.2, Z-Image, Qwen Image, Krea 2, Anima, Iris) |
+| [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) + [Hexagon work](https://github.com/happyyzy/stable-diffusion.cpp) | leejet, happyyzy | MIT | the DiT engine (FLUX.2, Z-Image, Qwen Image, Krea 2, Anima, Iris, MOSS-Image) |
 | [ggml](https://github.com/ggml-org/ggml) | ggml authors | MIT | under stable-diffusion.cpp |
 | Qualcomm AI Runtime (QNN) | Qualcomm | Qualcomm's terms | the NPU; not in this repository |
 | [MNN](https://github.com/alibaba/MNN) | Alibaba | Apache 2.0 | CPU and GPU model paths |
@@ -121,15 +129,18 @@ there. Every component, with its licence and terms, is listed in [NOTICE](NOTICE
 | [Z-Image Turbo](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo) | Tongyi-MAI | Apache 2.0 | fp8 weights by [Kijai](https://huggingface.co/Kijai/Z-Image_comfy_fp8_scaled); [leejet's GGUF](https://huggingface.co/leejet/Z-Image-Turbo-GGUF) on 8 Gen 3 |
 | [Qwen Image 2.1](https://huggingface.co/Qwen/Qwen-Image-2.1) and [2.1 Turbo](https://huggingface.co/Qwen/Qwen-Image-2.1-Turbo) | Qwen team | Qwen Research License | [leejet's GGUF](https://huggingface.co/leejet/Qwen-Image-2.1-GGUF) / [unsloth's FP8](https://huggingface.co/unsloth/Qwen-Image-2.1-FP8); Turbo: [molbal's GGUF](https://huggingface.co/molbal/Qwen-Image-2.1-Turbo-GGUF); VAE by [Comfy-Org](https://huggingface.co/Comfy-Org/Qwen-Image-2.1); [Qwen3-VL-8B](https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct) encoder (Apache 2.0, [bartowski](https://huggingface.co/bartowski/Qwen_Qwen3-VL-8B-Instruct-GGUF)) |
 | [Krea 2 Turbo](https://huggingface.co/krea/Krea-2-Turbo) | Krea | [Krea 2 Community License](https://krea.ai/krea-2-licensing) | [gguf-org MXFP4 GGUF](https://huggingface.co/gguf-org/krea-2-gguf); [Qwen3-VL-4B](https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct) encoder (Apache 2.0, [bartowski](https://huggingface.co/bartowski/Qwen_Qwen3-VL-4B-Instruct-GGUF)); [Wan 2.1 VAE](https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged) (Apache 2.0) |
+| [MOSS-Image](https://huggingface.co/OpenMOSS-Team/MOSS-Image-SFT) | OpenMOSS | Apache 2.0 | the SFT DiT as our Q4_0 ([nightmare-moss-image](https://huggingface.co/AbrahamPJ/nightmare-moss-image), from [realrebelai's GGUF](https://huggingface.co/realrebelai/MOSS-Image_GGUFs)); [8-step DMD LoRA](https://huggingface.co/lodestones/MOSS-Image-SFT-8-steps-dmd) (lodestones, Apache 2.0); [Qwen3.5 9B](https://huggingface.co/unsloth/Qwen3.5-9B-GGUF) encoder (Apache 2.0); FLUX.2 VAE |
 | [Iris 3B Turbo](https://huggingface.co/speridlabs/iris-3b) | speridlabs | Apache 2.0 | the official BF16, converted to GGUF on the phone; [Qwen3-VL-4B](https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct) encoder (Apache 2.0, [bartowski](https://huggingface.co/bartowski/Qwen_Qwen3-VL-4B-Instruct-GGUF)) |
 | [Wan 2.2 Fun 5B Control](https://huggingface.co/alibaba-pai/Wan2.2-Fun-5B-Control) | alibaba-pai | Apache 2.0 | motion transfer; [QuantStack's Q4_0 GGUF](https://huggingface.co/QuantStack/Wan2.2-Fun-5B-Control-GGUF) (Apache 2.0); 3 steps with [FastVideo](https://huggingface.co/FastVideo/FastWan2.2-TI2V-5B-FullAttn-Diffusers)'s FastWan (Apache 2.0) as [Kijai's LoRA](https://huggingface.co/Kijai/WanVideo_comfy); Wan 2.2 Turbo's encoder and decoder |
 | [Neodragon](https://huggingface.co/Qualcomm-AI-Research/Neodragon) | Qualcomm AI Research | BSD-3-Clause-Clear + model card terms | text and image to video, converted for the NPU |
 | [SSD-1B](https://huggingface.co/segmind/SSD-1B) | Segmind | Apache 2.0 | the video's first frame |
 | [Wan 2.2 TI2V 5B](https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B) Turbo | Wan team (Alibaba); [Turbo](https://github.com/quanhaol/Wan2.2-TI2V-5B-Turbo) by quanhaol | Apache 2.0 (Wan 2.2); the Turbo code is CC BY-NC-SA 4.0 and its weights state none | [hum-ma's Q4_0 GGUF](https://huggingface.co/hum-ma/Wan2.2-TI2V-5B-Turbo-GGUF) (Apache 2.0); [umT5-XXL](https://huggingface.co/google/umt5-xxl) encoder (Apache 2.0, [city96's GGUF](https://huggingface.co/city96/umt5-xxl-encoder-gguf)); [TAEHV](https://github.com/madebyollin/taehv) decoder by madebyollin (MIT) |
 | [Anima Turbo 1.1](https://huggingface.co/circlestone-labs/Anima) | CircleStone Labs, built on NVIDIA Cosmos | [CircleStone Labs Non-Commercial License](https://huggingface.co/circlestone-labs/Anima/blob/main/LICENSE.md) and the [NVIDIA Open Model License](https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/) | downloaded as published and converted to Q8_0 on the phone; [Qwen3-0.6B-Base](https://huggingface.co/Qwen/Qwen3-0.6B-Base) encoder (Apache 2.0, [mradermacher GGUF](https://huggingface.co/mradermacher/Qwen3-0.6B-Base-GGUF)); Qwen-Image VAE (Apache 2.0) |
+| [Anima 2.9B (preview)](https://huggingface.co/Gazingstars123/Anima-2.9B) | Gazingstars123, a depth expansion of CircleStone Labs' Anima | [CircleStone Labs Non-Commercial License](https://huggingface.co/circlestone-labs/Anima/blob/main/LICENSE.md) (derivative model) | downloaded as published and converted to Q8_0 on the phone; Anima Turbo's encoder and VAE |
 | SD 1.5, SDXL, Anima catalogue and upscalers | their authors, converted by xororz | each model's licence | via local-dream |
 | AbsoluteReality v1.8.1 / Inpaint, CuteYukiMix, Anything V5 | Lykon, kemiaomiao, Yuno779 | CreativeML OpenRAIL-M | SD 1.5 Swap defaults, [our conversions](https://huggingface.co/AbrahamPJ/nightmare-sd15-swap-models) |
 | Illustrious XL v1.0, Juggernaut XL Ragnarok | OnomaAI Research, RunDiffusion | OpenRAIL++-M; OpenRAIL-M + RunDiffusion's terms | SDXL Swap defaults, [our conversions](https://huggingface.co/AbrahamPJ/nightmare-sdxl-swap-models) |
+| Community SDXL and SDXL Swap conversions | their authors, converted with npuforge by community members | each model's licence | the Community tab, downloaded from their converters' pages |
 
 ### Control, reference and picture helpers
 
@@ -139,6 +150,7 @@ there. Every component, with its licence and terms, is listed in [NOTICE](NOTICE
 | SDXL ControlNets: [canny](https://huggingface.co/diffusers/controlnet-canny-sdxl-1.0), [depth](https://huggingface.co/diffusers/controlnet-depth-sdxl-1.0), [openpose](https://huggingface.co/thibaud/controlnet-openpose-sdxl-1.0) | diffusers team; Thibaud Zamora | OpenRAIL++-M; openpose: CMU non-commercial | SDXL Swap, [our QNN builds](https://huggingface.co/AbrahamPJ/nightmare-sdxl-controlnet-qnn) |
 | [IP-Adapter Plus / Plus Face](https://huggingface.co/h94/IP-Adapter) + OpenCLIP ViT-H/14 | Tencent AI Lab; OpenCLIP (LAION-2B) | Apache 2.0; MIT | reference pictures, [as ONNX](https://huggingface.co/AbrahamPJ/nightmare-ip-adapter) |
 | [MoveNet MultiPose Lightning](https://huggingface.co/Xenova/movenet-multipose-lightning) | Google | Apache 2.0 | pose from a photo (with local-dream's OpenPose renderer) |
+| [ADetailer face and hand detectors](https://huggingface.co/Bingsu/adetailer) | Bingsu (Ultralytics YOLOv8), ONNX export mirrored at [AbrahamPJ/nightmare-adetailer](https://huggingface.co/AbrahamPJ/nightmare-adetailer) | Apache 2.0 | Fix faces, Fix hands |
 | [Depth Anything V2 Small](https://huggingface.co/onnx-community/depth-anything-v2-small) | Depth Anything team | Apache 2.0 | depth from a photo |
 | [SAM 2.1](https://github.com/facebookresearch/sam2) hiera-tiny | Meta | Apache 2.0 | tap to select |
 | [SegFormer-B2 on ATR](https://huggingface.co/mattmdjaga/segformer_b2_clothes) | mattmdjaga | MIT | auto mask by name |
@@ -169,6 +181,6 @@ nothing: the app stays free, offline and CC BY-NC, and nothing is gated behind t
 
 <sub>**Keywords:** on device AI, offline Stable Diffusion, ComfyUI for Android, mobile Stable
 Diffusion, local image generation, on device video generation, node editor, Qualcomm Hexagon NPU,
-Snapdragon, QNN, FLUX.2, Z-Image, Qwen Image, Krea 2, Iris, SDXL, Anima, Illustrious, ControlNet,
+Snapdragon, QNN, FLUX.2, Z-Image, Qwen Image, Krea 2, Iris, MOSS-Image, SDXL, Anima, Illustrious, ControlNet,
 IP-Adapter, LoRA, img2img, inpainting, outpainting, Segment Anything, npuforge, image to prompt,
 Danbooru tags, no cloud, private.</sub>

@@ -73,7 +73,13 @@ palette (the full list is in `actions.example.toml` and
 - **Relative dates to real dates**: finds phrases like "next Tuesday", "in
   3 days" or "end of the month" in the selection (or on screen) and lists the
   date each one works out to, from today's date on your PC. No model, no
-  network. A phrase with two possible readings shows both.
+  network. A phrase with two possible readings shows both. A time after the
+  phrase ("tomorrow at 5pm", "Friday EOD", "in 2 hours") is shown too, and
+  "this week" follows the first day of the week in your Windows region.
+- **Ask my documents**: set a folder under `[knowledge]` in the config file,
+  type a question in Quick Ask and press Down to pick it. Wingman answers from
+  your `.txt` and `.md` files and cites the file for every quote. See
+  [docs/knowledge.md](docs/knowledge.md).
 
 The confirm-and-execute loop, the executors (calendar add, form fill, text
 replace, image-to-clipboard) and the actions framework itself
@@ -169,8 +175,14 @@ few things first (the zip above is the quick path and needs none of them):
 Then, from the cloned folder:
 
 ```powershell
-.\install.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
 ```
+
+That long form is on purpose. A stock Windows 11 PC refuses to run script
+files ("running scripts is disabled on this system"), and a repository
+downloaded as a zip is also marked as coming from the internet. The flag lifts
+both for this one run only: it changes no Windows setting and needs no
+`Unblock-File`.
 
 Builds it, puts the `.exe` in `%LOCALAPPDATA%\Programs\Wingman`, registers
 it with Windows, and switches on start-with-Windows. Re-run it to upgrade in
@@ -209,9 +221,12 @@ screenshot detail, card corner, monitor and timeout, and the prompt. A saved key
 Credential Manager, not the file; Settings shows only its last four
 characters afterward.
 
-No key but Ollama running on this PC? The first press finds a model that can
-read images, saves it as your setup and says so on the card. It does not ask
-yet: press again to ask it.
+No key but Ollama running on this PC? The first press of the Wingman key (or
+"What can I do here?" in the tray) finds a model that can read images, saves
+it as your setup and says so on the card. It does not ask yet: press again to
+ask it. If it finds nothing, the card lists what works without a model and ends
+with **Set up a model**, which opens Settings (press its number, or click it).
+Nothing is sent and nothing is billed until you pick an option.
 
 Settings has key and model fields for OpenAI, Anthropic and Gemini (with a
 key saved, opening Settings asks the provider for its current model list, so
@@ -230,10 +245,10 @@ Local (Ollama) and Offline are both real options now, via the tray's
 otherwise cloud) or Offline (loopback only, enforced in code). See
 [`docs/offline.md`](docs/offline.md) for exactly what each mode does.
 
-The config file is still there (`Open config.toml` in the tray menu) if you
+The config file is still there (**Help and diagnostics** > **Open config.toml** in the tray menu) if you
 want to edit it by hand. If it has a mistake that stops it parsing, Wingman
 starts in Offline mode, tells you so on a card, and does not save over the
-file; fix it and choose **Reload settings**. Settings also refuses to save
+file; fix it and choose **Reload settings** (in **Help and diagnostics**). Settings also refuses to save
 over a file that changed while it was open, and one backup copy
 (`config.toml.bak`, keys blanked) is kept before a save replaces the file. See
 [`docs/offline.md`](docs/offline.md#a-config-file-that-does-not-parse).
@@ -257,7 +272,7 @@ Two bindings, both live at once:
 | | default | notes |
 |---|---|---|
 | primary | the Copilot key | Windows emits it as `Win+Shift+F23` |
-| secondary | `Ctrl+Shift+/` | works on any keyboard |
+| secondary | `Ctrl+Shift+/` | works on any keyboard. On a layout that prints another character on that key (`#` on a German keyboard, for example), Wingman shows that character instead. |
 
 One press of the primary key shows the options card: a few choices for what
 is on your screen. Press the key once while the card is up to run the first
@@ -267,7 +282,11 @@ showing closes it. Under `[hotkeys]` in `config.toml`, `key_mode` is
 `"dynamic"` (the default), `"pick"` (the key never closes an answer card) or
 `"close"` (the key only ever closes a card), and `double_press_ms` (default
 300, from 150 to 600) is how fast the second press must come; `0` turns
-double press off, so the first press acts at once. To make
+double press off, so the first press acts at once. A click outside an answer
+or options card closes it; set `click_away_dismiss = false` under `[options]`
+to keep the card up (Esc and the key still close it). A preview with a "Do it"
+button stays up when you switch to another window, so a half-edited entry is
+not lost; Esc or the key closes it. To make
 one press run a single action instead, set `primary_action` under `[hotkeys]`
 in `config.toml`:
 
@@ -280,14 +299,14 @@ in `config.toml`:
 An id that no action has is named on a card once. After that the key shows the
 options card.
 
-If the Copilot key does nothing, use **Set Copilot key...** in the tray menu
-and press it once: whatever your firmware actually emits gets captured and
+If the Copilot key does nothing, open **Settings...** from the tray menu, choose **Change** beside
+the Copilot key and press it once: whatever your firmware actually emits gets captured and
 saved. Same for the secondary binding.
 
 A third, optional chord toggles Pause: running -> paused until resumed;
 paused, for any reason -> resume. Unlike primary/secondary it has no default
-binding. Use **Set pause key...** in the tray menu and press the key, or set
-it by hand in `config.toml`:
+binding. Use **Change...** beside **Pause shortcut** on the **General** page of Settings and press the
+key, or set it by hand in `config.toml`:
 
 ```toml
 [hotkeys.pause]
@@ -298,9 +317,9 @@ alt = false
 win = false
 ```
 
-then **Reload settings** (or restart) to pick it up. The tray label shows
+then **Reload settings** (in **Help and diagnostics**, or restart) to pick it up. The tray label shows
 the current key, or "not set". To clear it, delete the `[hotkeys.pause]`
-table from `config.toml` and choose **Reload settings**. It is the one chord
+table from `config.toml` and choose **Reload settings** (in **Help and diagnostics**). It is the one chord
 that still works while paused.
 
 ### Through Windows Settings instead
@@ -351,21 +370,19 @@ which one.
 - **Ask now (same as the key)**: trigger without the hotkey
 - **Actions ▸**: **Quick Ask (pick an action)** (a palette of every action)
   plus each action directly: copy text, read a QR code, copy a region,
-  calculate, add an event, review an email, fill a form, restore the last form
+  calculate, add an event, review an email, fill a form, restore the last form,
+  and import or export an action as a file
 - **Copy last answer**: headline and working to the clipboard
 - **Pause ▸**: 1 hour / until tomorrow / until resumed; shown as **Resume**
   instead while already paused
 - **Mode ▸**: Cloud / Local / Auto / Offline, radio-checked
-- **Providers and keys ▸**: **Provider** (which service answers),
-  **ChatGPT model** / **Claude model** / **Ollama model** (saved
-  immediately), and **Set
-  Copilot key...** / **Set secondary key...** / **Set pause key...** to
-  rebind by pressing the key
+- **Models ▸**: **Provider** (which service answers) and
+  **ChatGPT model** / **Claude model** / **Gemini model** / **Ollama model**
+  (saved immediately). Keyboard shortcuts are set in Settings, General
 - **Settings...**: the settings window (left-clicking the tray icon opens
   this too)
-- **Help and diagnostics ▸**: open `config.toml`, import or export an action
-  as a file, reload settings, copy diagnostics, copy the egress log, check
-  this PC for local models
+- **Help and diagnostics ▸**: open `config.toml`, reload settings, copy
+  diagnostics, copy the egress log, check this PC for local models
 - **Quit**
 
 ## Settings worth knowing
@@ -389,7 +406,7 @@ which one.
 | `ui.card_monitor` | `"cursor"` | which monitor the card appears on: `"cursor"` (the one the mouse is on), `"primary"`, or `"1"`, `"2"`, ... counting monitors left to right (not the numbers in Windows Settings, and they shift if you rearrange or dock monitors). Ignored by `follow_mouse` |
 | `providers.*.models` | see file | what the tray's model submenu offers (Ollama has no list; it uses `providers.ollama.model` directly) |
 | `ui.prompt` | see file | the system prompt, edit it to change what it checks |
-| `hotkeys.pause` | unset (absent from the file) | optional third chord: toggles Pause until resumed / Resume; no default, learnable from the tray's **Set pause key...**, see [Hotkeys](#hotkeys) |
+| `hotkeys.pause` | unset (absent from the file) | optional third chord: toggles Pause until resumed / Resume; no default, learnable from Settings, General, see [Hotkeys](#hotkeys) |
 
 Roughly 1-2 cents and 3-8 seconds per check at the defaults.
 
@@ -437,7 +454,7 @@ it.
 ## Uninstall
 
 ```powershell
-.\uninstall.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\uninstall.ps1
 ```
 
 Stops it, unregisters the package, clears the autostart entry, hands the

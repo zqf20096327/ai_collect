@@ -9,7 +9,7 @@
 [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2022%20%7C%202026-purple)]()
 [![.NET](https://img.shields.io/badge/.NET%20Framework-4.7.2-blueviolet)]()
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64%20%2F%20ARM64-lightgrey)]()
-[![Version](https://img.shields.io/badge/version-1.2.8-blue)]()
+[![Version](https://img.shields.io/badge/version-1.2.9-blue)]()
 [![GitHub Stars](https://img.shields.io/github/stars/zmy15/DeepSeek-for-VisualStudio?style=social)](https://github.com/zmy15/DeepSeek-for-VisualStudio)
 
 [简体中文](https://github.com/zmy15/DeepSeek-for-VisualStudio/blob/master/README.zh-CN.md)
@@ -109,7 +109,7 @@ Recommended starting settings:
 | Model | Choose from the list returned by `/models` |
 | Deep Reasoning | Enabled, effort `high` |
 | Token budget | `90%` |
-| Vision models | Mark multimodal models in the Vision Models picker |
+| Vision models | Official models get vision and context window from `/models` automatically; custom endpoint models can be marked manually |
 
 | Shortcut | Action |
 |---|---|

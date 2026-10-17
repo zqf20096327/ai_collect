@@ -473,5 +473,58 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "stephenhky/PyShortTextCategorization": {
+  "commit_90d": 92,
+  "commit_7d": 6,
+  "rel_ver": "4.1.0",
+  "rel_pub": "2026-10-01",
+  "rel_days": 16,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "yaroslavyaroslav/OpenAI-sublime-text": {
+  "commit_90d": 28,
+  "commit_7d": 0,
+  "rel_ver": "6.3.2",
+  "rel_pub": "2026-10-06",
+  "rel_days": 11,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

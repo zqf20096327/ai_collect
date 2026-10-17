@@ -639,5 +639,65 @@
    "contrib": "20261017",
    "lang": "20261017"
   }
+ },
+ "mrwogu/promptscript": {
+  "commit_90d": 553,
+  "commit_7d": 4,
+  "rel_ver": "v1.21.0",
+  "rel_pub": "2026-09-29",
+  "rel_days": 18,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 95,
+   "Python": 2,
+   "HTML": 2,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
+ },
+ "OpenSource03/harnss": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.22.0-beta.2",
+  "rel_pub": "2026-04-14",
+  "rel_days": 186,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261017",
+  "dim_ts": {
+   "commit": "20261017",
+   "release": "20261017",
+   "security": "20261017",
+   "contrib": "20261017",
+   "lang": "20261017"
+  }
  }
 }

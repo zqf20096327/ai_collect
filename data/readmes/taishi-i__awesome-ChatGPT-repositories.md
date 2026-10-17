@@ -87,24 +87,31 @@ To update, run `npx skills update awesome-chatgpt-search`. You don't need this i
 
 ## The latest additions 🎉
 
+**Chatbots**
+ * [open-dots](https://github.com/anil-matcha/open-dots) - Open-source, self-hosted AI agent workspace and alternative to OpenAI Dots, Meta Muse, Grok Bot, Instinct, Manus Cue, Claude Cowork, and ChatGPT agent. MIT-licensed; includes chat, connectors, approvals, and optional computer use. Early prototype.
+
+
 **Browser-extensions**
- * [quivr](https://github.com/the-vibe-company/quivr) - An open-source engine that turns continuous content streams into search and monitoring. Durable ingestion, hybrid search, alerts, and plugins for formats, models and business rules.
+ * [archcore](https://github.com/archcore-ai/archcore) - Spec-driven development and context engineering for Claude Code, Cursor, Codex, and GitHub Copilot — backed by project context in Git.
+ * [voyager](https://github.com/voyager-crew/voyager) - Enhancement suite for Gemini, AI Studio, Claude, ChatGPT & DeepSeek — plus a prompt manager for any website, DeepSeek Harness included. / 面向 Gemini、AI Studio、Claude、ChatGPT 与 DeepSeek 的增强套件；其中的提示词管理器可用于任意网站，如 DeepSeek Harness。
 
 
 **CLIs**
- * [rea](https://github.com/morluto/rea) - Reverse engineer anything with agents, from app behavior down to native binaries.
+ * [codex-multiple-env](https://github.com/masakaai/codex-multiple-env) - Switch between multiple isolated Codex accounts and ChatGPT workspaces without repeated logout/login.
+ * [ouroboros](https://github.com/q00/ouroboros) - Agent OS: the agent gets smarter on its own. We just hold the line: Interview-gated, staged evaluation, budgeted evolution loop. MCP server, 14 runtimes: Claude Code, Codex CLI, Gemini CLI, OpenCode, Copilot, Kiro and more.
 
 
-**Langchain**
- * [LibreChat](https://github.com/librechat-ai/librechat) - Enhanced ChatGPT Clone: Features Agents, MCP, Skills, DeepSeek, Anthropic, AWS, OpenAI, Responses API, Azure, Groq, o1, GPT-5, Mistral, OpenRouter, Vertex AI, Gemini, Artifacts, AI model switching, message search, Code Interpreter, langchain, DALL-E-3, OpenAPI Actions, Functions, Secure Multi-User Auth, Presets, open-source for self-hosting. Active
+**NLP**
+ * [bifrost](https://github.com/maximhq/bifrost) - Open-source, high-performance AI gateway that works as your LLM gateway, MCP gateway and agent gateway. One OpenAI-compatible API for 10,000+ models, with failover, load balancing, semantic caching, virtual keys, budgets and MCP Code Mode. Works with any SDK or agent and adds under 200µs of overhead at 5k RPS.
+ * [esp32-iphone-agent](https://github.com/onehumanbeing/esp32-iphone-agent) - Let an AI model use a real iPhone with a $7 ESP32: AirPlay eyes, USB HID hands, any OpenAI-compatible vision model. No Mac, no developer account, no jailbreak.
 
 
 **Others**
- * [loopx](https://github.com/loopx-project/loopx) - A control plane with a durable state kernel for long-horizon agents and teams. Keep work moving and improving across sessions, with less human attention.
- * [letta-code](https://github.com/letta-ai/letta-code) - Stateful agents that are like people, with memory, identity, and the ability to learn and adapt
+ * [search-mcp](https://github.com/parallel-web/search-mcp) - Free web search and page fetching for agents. Hosted MCP, no API key required.
+ * [supercov](https://github.com/supercorp-ai/supercov) - Coverage, security and code quality for coding agents
 
 
-_Updated on October 09, 2026_ (A total of 2724 repositories listed.)
+_Updated on October 16, 2026_ (A total of 2733 repositories listed.)
 
 ## Table of contents
 
@@ -650,4 +657,35 @@ _Updated on October 09, 2026_ (A total of 2724 repositories listed.)
  * [GURU-Ai](https://github.com/guru322/guru-ai) - A SIMPLE YET COMPLICATED AI Chat Robot LOADED WITH FEATURES🚩
  * [voxelgpt](https://github.com/voxel51/voxelgpt) - AI assistant that can query visual datasets, search the FiftyOne docs, and answer general computer vision questions
  * [XYBot](https://github.com/henryxiaoyang/xybot) - 基于docker和pywxdll hook注入的微信机器人🤖️！✅高度可自定义！ ✅支持自我编写插件！非常多的功能：天气🌤️、获取新闻📰、ChatGPT聊天🗣️、Hypixel玩家查询🎮、随机图片📷、随机链接🔗、随机群成员👥、五子棋♟️、签到✅、查询积分📊、积分榜🏆、积分转送💰、积分抽奖🎁、积分红包🧧等
- * [GPTPortal](https://github.com/zaki-1052/gptportal) - A feature-rich portal to chat with GPT-4, Claude, Gemini, Mistral, & OpenAI Assistant APIs via a lightweight Node.js web app; supports customizable multimodality for
+ * [GPTPortal](https://github.com/zaki-1052/gptportal) - A feature-rich portal to chat with GPT-4, Claude, Gemini, Mistral, & OpenAI Assistant APIs via a lightweight Node.js web app; supports customizable multimodality for voice, images, & files.
+ * [CreativeChatGLM](https://github.com/ypwhs/creativechatglm) - 👋 欢迎来到 ChatGLM 创意世界！你可以使用修订和续写的功能来生成创意内容！
+ * [ChatPilot](https://github.com/shibing624/chatpilot) - ChatPilot: 实现AgentChat对话，支持Google搜索、文件网址对话（RAG）、代码解释器功能，复现了Kimi Chat(文件，拖进来；网址，发出来)。
+ * [Whatsapp-Ai-BOT](https://github.com/yesbhautik/whatsapp-ai-bot) - Introducing the AI Chatbot for WhatsApp - a cutting-edge solution powered by OpenAI's ChatGPT, Playground & DALL·E. This innovative chatbot has been developed using NodeJS technology and leverages the latest advancements in AI to provide an unmatched user experience for WhatsApp today!
+ * [fastui-chat](https://github.com/shroominic/fastui-chat) - 💬 minimalistic ChatBot Interface in pure python
+ * [pokitoki](https://github.com/nalgeon/pokitoki) - Humble GPT Telegram Bot
+ * [openai-chat-api-workflow](https://github.com/yohasebe/openai-chat-api-workflow) - 🎩 An Alfred 5 Workflow for using OpenAI Chat API to interact with GPT-3.5/GPT-4 🤖💬 It also allows image generation 🖼️, image understanding 👀, speech-to-text conversion 🎤, and text-to-speech synthesis 🔈
+ * [AIUI](https://github.com/lspahija/aiui) - AIUI is a platform enabling seamless two-way verbal communication with AI.
+ * [OPERA](https://github.com/shikiw/opera) - [CVPR 2024 Highlight] OPERA: Alleviating Hallucination in Multi-Modal Large Language Models via Over-Trust Penalty and Retrospection-Allocation
+ * [bot-on-anything](https://github.com/zhayujie/bot-on-anything) - Connect AI models (like ChatGPT-3.5/4.0, Baidu Yiyan, New Bing, Bard) to apps (like Wechat, public account, DingTalk, Telegram,  QQ).  将 ChatGPT、必应、文心一言、谷歌Bard 等对话模型连接各类应用，如微信、公众号、QQ、Telegram、Gmail、Slack、Web、企业微信、飞书、钉钉等。
+ * [psychic](https://github.com/psychic-api/psychic) - Data integration platform for LLMs. Connect to SaaS tools with turnkey auth and sync documents from N data sources with only one integration
+ * [gpt-computer-assistant](https://github.com/upsonic/gpt-computer-assistant) - gpt-4o for windows, macos and linux
+ * [OpenAssistantGPT](https://github.com/openassistantgpt/openassistantgpt) - A Community Open-Source Saas for Crafting/Building/Creating Chatbots with OpenAI's Assistant API that you can add to your website.
+ * [ChatGPT](https://github.com/nisabmohd/chatgpt) - I've developed a ChatGPT clone using Next.js 14, Shadcn-UI, Prisma ORM, and integrated it with the OpenAI API. It offers a user-friendly conversational AI experience.
+ * [ChatGPT-Linebot-using-python-flask-on-vercel](https://github.com/howarder3/chatgpt-linebot-using-python-flask-on-vercel) - GPT-Linebot using python flask for vercel
+ * [ComfyUI-GPT_SoVITS](https://github.com/aifsh/comfyui-gpt_sovits) - a comfyui custom node for GPT-SoVITS! you can voice cloning and tts in comfyui now
+ * [slack-bot](https://github.com/innogames/slack-bot) - Ready to use Slack bot for lazy developers: start Jenkins jobs, watch Jira tickets, watch pull requests with AI support...
+ * [psychic](https://github.com/finic-ai/psychic) - Data integration platform for LLMs. Connect to SaaS tools with turnkey auth and sync documents from N data sources with only one integration
+ * [repopack](https://github.com/yamadashy/repopack) - 📦 Repopack is a powerful tool that packs your entire repository into a single, AI-friendly file. Perfect for when you need to feed your codebase to Large Language Models (LLMs) or other AI tools like Claude, ChatGPT, and Gemini.
+ * [finic](https://github.com/finic-ai/finic) - Data integration platform for LLMs. Connect to SaaS tools with turnkey auth and sync documents from N data sources with only one integration
+ * [llmcord.py](https://github.com/jakobdylanc/llmcord.py) - A Discord LLM chat bot that supports any OpenAI compatible API (OpenAI, AI/ML API, Mistral, Groq, OpenRouter, ollama, oobabooga, Jan, LM Studio and more)
+ * [django-ai-assistant](https://github.com/vintasoftware/django-ai-assistant) - Integrate AI Assistants with Django to build intelligent applications
+ * [MindSQL](https://github.com/mindinventory/mindsql) - MindSQL: A Python Text-to-SQL RAG Library simplifying database interactions. Seamlessly integrates with PostgreSQL, MySQL, SQLite, Snowflake, and BigQuery. Powered by GPT-4 and Llama 2, it enables natural language queries. Supports ChromaDB and Faiss for context-aware responses.
+ * [insights-bot](https://github.com/nekomeowww/insights-bot) - A bot works with OpenAI GPT models to provide insights for your info flows.
+ * [Babagaboosh](https://github.com/dougdouggithub/babagaboosh) - App that lets you have a verbal conversation with OpenAi's GPT 4
+ * [wandbot](https://github.com/wandb/wandbot) - wandbot is a technical support bot for Weights & Biases' AI developer tools that can run in Discord, Slack, ChatGPT and Zendesk
+ * [ai-data-analysis-MulitAgent](https://github.com/starpig1129/ai-data-analysis-mulitagent) - AI-Driven Research Assistant: An advanced multi-agent system for automating complex research processes. Leveraging LangChain, OpenAI GPT, and LangGraph, this tool streamlines hypothesis generation, data analysis, visualization, and report writing. Perfect for researchers and data scientists seeking to enhance their workflow and productivity.
+ * [lobe-vidol](https://github.com/lobehub/lobe-vidol) - 🧸 Lobe Vidol - Making Virtual Idols Accessible for EveryOne
+ * [RLAIF-V](https://github.com/rlhf-v/rlaif-v) - RLAIF-V: Aligning MLLMs through Open-Source AI Feedback for Super GPT-4V Trustworthiness
+ * [builderbot](https://github.com/codigoencasa/builderbot) - 🤖 Crear Chatbot WhatsApp en minutos. Únete a este proyecto OpenSource
+ * [hey](https://github.com/lnxpy/hey) - 💬 AI-Powered Pair Programming Friend!
+ * [Auto-Gmail-Creator](https://github.com/ai-to-ai/auto-gmail-creator) - Open Source Bulk Auto Gmail Creator Bo
