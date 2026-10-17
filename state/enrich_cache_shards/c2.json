@@ -1,7 +1,7 @@
 {
  "tt-a1i/archify": {
-  "commit_90d": 1426,
   "commit_7d": 119,
+  "commit_90d": 1426,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -30,8 +30,8 @@
   }
  },
  "netdata/netdata": {
-  "commit_90d": 1009,
   "commit_7d": 112,
+  "commit_90d": 1009,
   "rel_ver": "v2.12.1",
   "rel_pub": "2026-10-08",
   "rel_days": 8,
@@ -69,8 +69,8 @@
   }
  },
  "camenduru/stable-diffusion-webui-colab": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "0.0.17",
   "rel_pub": "2023-03-15",
   "rel_days": 1311,
@@ -84,6 +84,89 @@
   "contrib_n": 14,
   "lang": {
    "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "skorch-dev/skorch": {
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-05-14",
+  "rel_days": 155,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 70,
+  "lang": {
+   "Jupyter Notebook": 80,
+   "Python": 20,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "OFA-Sys/Chinese-CLIP": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Jupyter Notebook": 71,
+   "Python": 27,
+   "Shell": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "TingsongYu/PyTorch-Tutorial-2nd": {
+  "commit_90d": 13,
+  "commit_7d": 1,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2024-05-20",
+  "rel_days": 879,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 70,
+   "Python": 29,
+   "Shell": 0,
+   "Dockerfile": 0,
+   "HTML": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

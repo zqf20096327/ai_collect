@@ -1,7 +1,7 @@
 {
  "google/skills": {
-  "commit_90d": 314,
   "commit_7d": 26,
+  "commit_90d": 314,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -15,6 +15,33 @@
    "HTML": 6,
    "HCL": 3,
    "Go Template": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "facebookresearch/map-anything": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v1.1.3",
+  "rel_pub": "2026-07-17",
+  "rel_days": 91,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 14,
+  "lang": {
+   "Python": 92,
+   "Shell": 8
   },
   "enriched_at": "20261016",
   "dim_ts": {

@@ -1,7 +1,7 @@
 {
  "DietrichGebert/ponytail": {
-  "commit_90d": 147,
   "commit_7d": 38,
+  "commit_90d": 147,
   "rel_ver": "v5.3.1",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -30,8 +30,8 @@
   }
  },
  "supabase/supabase": {
-  "commit_90d": 1727,
   "commit_7d": 137,
+  "commit_90d": 1727,
   "rel_ver": "v1.26.08",
   "rel_pub": "2026-08-07",
   "rel_days": 70,
@@ -60,8 +60,8 @@
   }
  },
  "openai/codex-plugin-cc": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v1.0.6",
   "rel_pub": "2026-07-08",
   "rel_days": 100,
@@ -86,8 +86,8 @@
   }
  },
  "dipakkr/awesome-ai-engineering": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -106,8 +106,8 @@
   }
  },
  "ramitsurana/awesome-kubernetes": {
-  "commit_90d": 2,
   "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v5.0",
   "rel_pub": "2020-01-02",
   "rel_days": 2479,
@@ -123,6 +123,170 @@
    "Shell": 52,
    "Makefile": 26,
    "Dockerfile": 22
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ThinkInAIXYZ/deepchat": {
+  "commit_90d": 1142,
+  "commit_7d": 17,
+  "rel_ver": "v1.1.4-beta.3",
+  "rel_pub": "2026-10-12",
+  "rel_days": 4,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 7,
+  "sec_worst": "critical",
+  "sec_last": "2026-04-25",
+  "sec_ids": [
+   "GHSA-cp8j-jx7q-7r5f(CVE-2026-43899,critical)",
+   "GHSA-7r59-67v3-3mgp(CVE-2026-43900,critical)",
+   "GHSA-w8w8-82pv-5rg9(CVE-2025-67744,critical)",
+   "GHSA-h9f5-7hhf-fqm4(CVE-2025-66481,critical)",
+   "GHSA-v8v5-c872-mf8r(CVE-2025-66222,critical)",
+   "GHSA-f7q5-vc93-wp6j(CVE-2025-58768,critical)",
+   "GHSA-hqr4-4gfc-5p2j(CVE-2025-55733,critical)"
+  ],
+  "contrib_n": 91,
+  "lang": {
+   "TypeScript": 85,
+   "Vue": 10,
+   "JavaScript": 3,
+   "Python": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Eigenwise/atomic-agents": {
+  "commit_90d": 105,
+  "commit_7d": 34,
+  "rel_ver": "v2.12.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "Python": 100,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "NVIDIA/Model-Optimizer": {
+  "commit_90d": 376,
+  "commit_7d": 65,
+  "rel_ver": "0.48.0rc0",
+  "rel_pub": "2026-10-08",
+  "rel_days": 8,
+  "rel_n90": 10,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 100,
+  "lang": {
+   "Python": 97,
+   "Shell": 1,
+   "Cuda": 1,
+   "Jinja": 0,
+   "C++": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ag2ai/ag2": {
+  "commit_90d": 243,
+  "commit_7d": 29,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-11",
+  "rel_days": 5,
+  "rel_n90": 11,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 10,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-03",
+  "sec_ids": [
+   "GHSA-fxhh-6rm2-v2pp(-,medium)",
+   "GHSA-rppm-w5cw-6qcg(-,medium)",
+   "GHSA-2h3q-9p6m-4hm4(-,medium)",
+   "GHSA-2h4w-29cv-2cmv(-,high)",
+   "GHSA-3ccw-g7ph-hrcr(-,high)",
+   "GHSA-hf3x-42qp-4rq6(-,high)",
+   "GHSA-qrjx-72xx-xhmh(-,high)",
+   "GHSA-42mf-vpmr-gw5r(-,critical)"
+  ],
+  "contrib_n": 427,
+  "lang": {
+   "Python": 83,
+   "MDX": 16,
+   "HTML": 0,
+   "JavaScript": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "intuitem/ciso-assistant-community": {
+  "commit_90d": 406,
+  "commit_7d": 53,
+  "rel_ver": "v4.1.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 126,
+  "lang": {
+   "Python": 65,
+   "Svelte": 21,
+   "TypeScript": 9,
+   "HTML": 3,
+   "Typst": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

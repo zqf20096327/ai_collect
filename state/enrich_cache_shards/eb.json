@@ -1,7 +1,7 @@
 {
  "datawhalechina/pumpkin-book": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v2.0.0",
   "rel_pub": "2023-11-17",
   "rel_days": 1064,
@@ -24,8 +24,8 @@
   }
  },
  "google/cadvisor": {
-  "commit_90d": 5,
   "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": "v0.60.6",
   "rel_pub": "2026-09-18",
   "rel_days": 28,
@@ -43,6 +43,98 @@
    "JavaScript": 2,
    "HTML": 1,
    "Python": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tensorflow/docs": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "2023.5.24.56664",
+  "rel_pub": "2023-05-25",
+  "rel_days": 1240,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 382,
+  "lang": {
+   "Jupyter Notebook": 91,
+   "Python": 8,
+   "C#": 1,
+   "Shell": 0,
+   "Jinja": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "langwatch/langwatch": {
+  "commit_90d": 1377,
+  "commit_7d": 88,
+  "rel_ver": "v3.20.1",
+  "rel_pub": "2026-10-02",
+  "rel_days": 14,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": null,
+  "sec_last": "2026-08-19",
+  "sec_ids": [
+   "GHSA-h25p-f8f6-2ccf(-,medium)"
+  ],
+  "contrib_n": 36,
+  "lang": {
+   "TypeScript": 77,
+   "Gherkin": 10,
+   "Go": 9,
+   "Python": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "sligter/LandPPT": {
+  "commit_90d": 76,
+  "commit_7d": 19,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 51,
+   "JavaScript": 33,
+   "HTML": 9,
+   "TypeScript": 4,
+   "CSS": 3
   },
   "enriched_at": "20261016",
   "dim_ts": {

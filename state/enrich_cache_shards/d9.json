@@ -1,7 +1,7 @@
 {
  "openai/codex": {
-  "commit_90d": 3988,
   "commit_7d": 233,
+  "commit_90d": 3988,
   "rel_ver": "rust-v0.164.0-alpha.2",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -32,8 +32,8 @@
   }
  },
  "walkinglabs/learn-harness-engineering": {
-  "commit_90d": 43,
   "commit_7d": 0,
+  "commit_90d": 43,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -47,6 +47,36 @@
    "JavaScript": 5,
    "Python": 3,
    "HTML": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Forget-C/Jellyfish": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.3.2",
+  "rel_pub": "2026-04-17",
+  "rel_days": 182,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 50,
+   "TypeScript": 48,
+   "CSS": 1,
+   "PLpgSQL": 1,
+   "HTML": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

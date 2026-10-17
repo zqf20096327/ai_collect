@@ -1,7 +1,7 @@
 {
  "MochiDiffusion/MochiDiffusion": {
-  "commit_90d": 195,
   "commit_7d": 0,
+  "commit_90d": 195,
   "rel_ver": "v6.2",
   "rel_pub": "2026-09-30",
   "rel_days": 16,
@@ -28,8 +28,8 @@
   }
  },
  "aidenybai/react-grab": {
-  "commit_90d": 27,
   "commit_7d": 0,
+  "commit_90d": 27,
   "rel_ver": "react-grab@0.2.0",
   "rel_pub": "2026-08-16",
   "rel_days": 61,
@@ -58,8 +58,8 @@
   }
  },
  "datawhalechina/fun-rec": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -84,8 +84,8 @@
   }
  },
  "rcourtman/Pulse": {
-  "commit_90d": 6535,
   "commit_7d": 971,
+  "commit_90d": 6535,
   "rel_ver": "v6.6.0-rc.2",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -122,8 +122,8 @@
   }
  },
  "hanshuaikang/AI-Media2Doc": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.8.0",
   "rel_pub": "2025-11-23",
   "rel_days": 327,

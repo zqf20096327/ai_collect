@@ -1,7 +1,7 @@
 {
  "simonw/llm": {
-  "commit_90d": 204,
   "commit_7d": 3,
+  "commit_90d": 204,
   "rel_ver": "0.36",
   "rel_pub": "2026-09-22",
   "rel_days": 24,
@@ -28,8 +28,8 @@
   }
  },
  "Yorko/mlcourse.ai": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": "v1.0.0",
   "rel_pub": "2022-01-16",
   "rel_days": 1734,
@@ -45,6 +45,66 @@
    "Python": 91,
    "HTML": 9,
    "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "katanaml/sparrow": {
+  "commit_90d": 15,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-06-05",
+  "rel_days": 133,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 66,
+   "TypeScript": 28,
+   "CSS": 6,
+   "Shell": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "zgsm-ai/costrict": {
+  "commit_90d": 18,
+  "commit_7d": 0,
+  "rel_ver": "v3.0.23",
+  "rel_pub": "2026-09-30",
+  "rel_days": 16,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 254,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1,
+   "CSS": 0,
+   "Shell": 0,
+   "HTML": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

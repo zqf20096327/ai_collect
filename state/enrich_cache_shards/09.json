@@ -1,7 +1,7 @@
 {
  "qax-os/excelize": {
-  "commit_90d": 53,
   "commit_7d": 2,
+  "commit_90d": 53,
   "rel_ver": "v2.11.0",
   "rel_pub": "2026-07-06",
   "rel_days": 102,
@@ -35,8 +35,8 @@
   }
  },
  "liaokongVFX/LangChain-Chinese-Getting-Started-Guide": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -45,6 +45,30 @@
   "sec_ids": [],
   "contrib_n": 10,
   "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openai/harmony": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Rust": 74,
+   "Python": 26,
+   "Shell": 0
+  },
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

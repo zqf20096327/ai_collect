@@ -1,7 +1,7 @@
 {
  "sinaptik-ai/pandas-ai": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v3.0.0",
   "rel_pub": "2025-10-07",
   "rel_days": 374,
@@ -28,8 +28,8 @@
   }
  },
  "modelscope/ms-swift": {
-  "commit_90d": 341,
   "commit_7d": 21,
+  "commit_90d": 341,
   "rel_ver": "v4.6.0",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -60,8 +60,8 @@
   }
  },
  "YaoFANGUK/video-subtitle-remover": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "1.4.0",
   "rel_pub": "2026-04-09",
   "rel_days": 190,
@@ -76,6 +76,109 @@
   "lang": {
    "Python": 100,
    "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "sindresorhus/awesome-chatgpt": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 47,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "kucherenko/jscpd": {
+  "commit_90d": 683,
+  "commit_7d": 38,
+  "rel_ver": "v5.4.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 68,
+  "lang": {
+   "Rust": 81,
+   "HTML": 3,
+   "JavaScript": 2,
+   "TypeScript": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "chatopera/Synonyms": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "3.16.0",
+  "rel_pub": "2021-01-03",
+  "rel_days": 2112,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "cvg/LightGlue": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.2",
+  "rel_pub": "2024-06-20",
+  "rel_days": 848,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "Python": 100
   },
   "enriched_at": "20261016",
   "dim_ts": {

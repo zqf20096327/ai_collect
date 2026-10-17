@@ -1,7 +1,7 @@
 {
  "browserbase/stagehand": {
-  "commit_90d": 200,
   "commit_7d": 13,
+  "commit_90d": 200,
   "rel_ver": "stagehand-server-v3/v3.7.6",
   "rel_pub": "2026-08-28",
   "rel_days": 49,
@@ -30,8 +30,8 @@
   }
  },
  "sapientinc/HRM": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -44,6 +44,55 @@
    "HTML": 14,
    "Jupyter Notebook": 9,
    "JavaScript": 5
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "TestSprite/testsprite-cli": {
+  "commit_90d": 35,
+  "commit_7d": 0,
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-10-06",
+  "rel_days": 10,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 31,
+  "lang": {
+   "TypeScript": 100,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "liyupi/free-programming-resources": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
   },
   "enriched_at": "20261016",
   "dim_ts": {

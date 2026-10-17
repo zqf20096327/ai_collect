@@ -1,7 +1,7 @@
 {
  "anthropics/claude-cookbooks": {
-  "commit_90d": 39,
   "commit_7d": 3,
+  "commit_90d": 39,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -26,8 +26,8 @@
   }
  },
  "MadsLorentzen/ai-job-search": {
-  "commit_90d": 227,
   "commit_7d": 14,
+  "commit_90d": 227,
   "rel_ver": "v1.7.2",
   "rel_pub": "2026-09-29",
   "rel_days": 17,
@@ -54,8 +54,8 @@
   }
  },
  "agentscope-ai/QwenPaw": {
-  "commit_90d": 695,
   "commit_7d": 39,
+  "commit_90d": 695,
   "rel_ver": "v2.2.2",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -84,8 +84,8 @@
   }
  },
  "Fincept-Corporation/FinceptTerminal": {
-  "commit_90d": 53,
   "commit_7d": 4,
+  "commit_90d": 53,
   "rel_ver": "v4.5.1",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -114,8 +114,8 @@
   }
  },
  "NirDiamant/RAG_Techniques": {
-  "commit_90d": 31,
   "commit_7d": 4,
+  "commit_90d": 31,
   "rel_ver": "book-v1.0",
   "rel_pub": "2026-04-15",
   "rel_days": 184,
@@ -141,8 +141,8 @@
   }
  },
  "letta-ai/letta": {
-  "commit_90d": 7,
   "commit_7d": 0,
+  "commit_90d": 7,
   "rel_ver": "0.16.8",
   "rel_pub": "2026-05-14",
   "rel_days": 155,
@@ -165,8 +165,8 @@
   }
  },
  "nari-labs/dia": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,

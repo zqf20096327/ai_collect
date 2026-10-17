@@ -1,7 +1,7 @@
 {
  "owainlewis/awesome-artificial-intelligence": {
-  "commit_90d": 8,
   "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -22,8 +22,8 @@
   }
  },
  "dotnet/machinelearning": {
-  "commit_90d": 56,
   "commit_7d": 23,
+  "commit_90d": 56,
   "rel_ver": "v5.0.1",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -41,6 +41,117 @@
    "Shell": 1,
    "PowerShell": 1,
    "CMake": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tensorflow/tensorboard": {
+  "commit_90d": 7,
+  "commit_7d": 0,
+  "rel_ver": "2.21.0",
+  "rel_pub": "2026-06-29",
+  "rel_days": 109,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 292,
+  "lang": {
+   "TypeScript": 61,
+   "Python": 27,
+   "Starlark": 5,
+   "Rust": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "tensorchord/Awesome-LLMOps": {
+  "commit_90d": 114,
+  "commit_7d": 18,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 256,
+  "lang": {
+   "Shell": 58,
+   "Python": 42
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "mistralai/mistral-vibe": {
+  "commit_90d": 23,
+  "commit_7d": 0,
+  "rel_ver": "v2.26.1",
+  "rel_pub": "2026-10-09",
+  "rel_days": 7,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 12,
+  "lang": {
+   "Python": 76,
+   "Rust": 24,
+   "Shell": 0,
+   "Nix": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "jtablesaw/tablesaw": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.44.4",
+  "rel_pub": "2026-01-09",
+  "rel_days": 280,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 88,
+  "lang": {
+   "Java": 99,
+   "HTML": 1,
+   "Shell": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

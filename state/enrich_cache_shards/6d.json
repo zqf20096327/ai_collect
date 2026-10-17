@@ -1,7 +1,7 @@
 {
  "aaif-goose/goose": {
-  "commit_90d": 749,
   "commit_7d": 39,
+  "commit_90d": 749,
   "rel_ver": "v1.55.0",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -32,8 +32,8 @@
   }
  },
  "HKUDS/LightRAG": {
-  "commit_90d": 1967,
   "commit_7d": 13,
+  "commit_90d": 1967,
   "rel_ver": "v1.5.7",
   "rel_pub": "2026-09-02",
   "rel_days": 44,
@@ -71,8 +71,8 @@
   }
  },
  "qdrant/qdrant": {
-  "commit_90d": 970,
   "commit_7d": 0,
+  "commit_90d": 970,
   "rel_ver": "v1.19.2",
   "rel_pub": "2026-10-05",
   "rel_days": 11,
@@ -93,6 +93,142 @@
    "Shell": 0,
    "HTML": 0,
    "C": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "meta-llama/llama-models": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2025-04-05",
+  "rel_days": 559,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 40,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "deepseek-ai/DeepSpec": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 98,
+   "Shell": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ATH-MaaS/ComfyUI-Copilot": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v2.0",
+  "rel_pub": "2025-08-18",
+  "rel_days": 424,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "TypeScript": 61,
+   "Python": 29,
+   "CSS": 5,
+   "HTML": 4,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "Ironclad/rivet": {
+  "commit_90d": 3,
+  "commit_7d": 0,
+  "rel_ver": "app-v1.11.3",
+  "rel_pub": "2025-08-08",
+  "rel_days": 434,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 44,
+  "lang": {
+   "TypeScript": 82,
+   "MDX": 16,
+   "JavaScript": 1,
+   "CSS": 1,
+   "Rust": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "simonlin1212/TradingAgents-astock": {
+  "commit_90d": 95,
+  "commit_7d": 9,
+  "rel_ver": "v0.5.21",
+  "rel_pub": "2026-10-11",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

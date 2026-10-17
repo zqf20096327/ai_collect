@@ -1,7 +1,7 @@
 {
  "nadermx/backgroundremover": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.4.5",
   "rel_pub": "2026-07-10",
   "rel_days": 98,
@@ -28,8 +28,8 @@
   }
  },
  "open-compass/VLMEvalKit": {
-  "commit_90d": 71,
   "commit_7d": 16,
+  "commit_90d": 71,
   "rel_ver": "v0.3rc1",
   "rel_pub": "2025-06-21",
   "rel_days": 482,
@@ -56,8 +56,8 @@
   }
  },
  "e-m-b-a/emba": {
-  "commit_90d": 321,
   "commit_7d": 10,
+  "commit_90d": 321,
   "rel_ver": "v2.0.4-summer_edition",
   "rel_pub": "2026-09-21",
   "rel_days": 25,
@@ -85,8 +85,8 @@
   }
  },
  "edtechre/pybroker": {
-  "commit_90d": 401,
   "commit_7d": 0,
+  "commit_90d": 401,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-08-28",
   "rel_days": 49,

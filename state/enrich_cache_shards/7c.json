@@ -1,7 +1,7 @@
 {
  "microsoft/ai-agents-for-beginners": {
-  "commit_90d": 278,
   "commit_7d": 35,
+  "commit_90d": 278,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -26,8 +26,8 @@
   }
  },
  "bytedance/UI-TARS": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -49,8 +49,8 @@
   }
  },
  "deepseek-ai/3FS": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -75,8 +75,8 @@
   }
  },
  "Thysrael/Horizon": {
-  "commit_90d": 60,
   "commit_7d": 1,
+  "commit_90d": 60,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -87,6 +87,36 @@
   "lang": {
    "Python": 100,
    "Shell": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "PaddlePaddle/ERNIE": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "ernie-4.5",
+  "rel_pub": "2025-06-30",
+  "rel_days": 473,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 45,
+  "lang": {
+   "Python": 61,
+   "Jupyter Notebook": 39,
+   "Shell": 0,
+   "Makefile": 0,
    "Dockerfile": 0
   },
   "enriched_at": "20261016",

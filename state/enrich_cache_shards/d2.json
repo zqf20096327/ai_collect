@@ -1,7 +1,7 @@
 {
  "gradio-app/gradio": {
-  "commit_90d": 199,
   "commit_7d": 4,
+  "commit_90d": 199,
   "rel_ver": "gradio@6.30.0",
   "rel_pub": "2026-10-08",
   "rel_days": 8,
@@ -39,8 +39,8 @@
   }
  },
  "NVIDIA/TensorRT": {
-  "commit_90d": 6,
   "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": "v11.4",
   "rel_pub": "2026-10-09",
   "rel_days": 7,
@@ -69,8 +69,8 @@
   }
  },
  "roboflow/notebooks": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": "1.0.0",
   "rel_pub": "2022-12-01",
   "rel_days": 1415,
@@ -86,6 +86,53 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "unicity-sphere/sphere-sdk": {
+  "commit_90d": 254,
+  "commit_7d": 25,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-05-29",
+  "rel_days": 140,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "eosphoros-ai/Awesome-Text2SQL": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {},
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

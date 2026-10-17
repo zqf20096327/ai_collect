@@ -1,7 +1,7 @@
 {
  "speedyapply/2027-AI-College-Jobs": {
-  "commit_90d": 90,
   "commit_7d": 8,
+  "commit_90d": 90,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -20,8 +20,8 @@
   }
  },
  "FlorianBruniaux/claude-code-ultimate-guide": {
-  "commit_90d": 378,
   "commit_7d": 4,
+  "commit_90d": 378,
   "rel_ver": "v3.44.1",
   "rel_pub": "2026-10-06",
   "rel_days": 10,
@@ -50,8 +50,8 @@
   }
  },
  "aurelio-labs/semantic-router": {
-  "commit_90d": 107,
   "commit_7d": 29,
+  "commit_90d": 107,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -80,8 +80,8 @@
   }
  },
  "yvgude/lean-ctx": {
-  "commit_90d": 5414,
   "commit_7d": 105,
+  "commit_90d": 5414,
   "rel_ver": "v3.11.4",
   "rel_pub": "2026-10-11",
   "rel_days": 5,

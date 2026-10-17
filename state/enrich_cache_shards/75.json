@@ -1,7 +1,7 @@
 {
  "k4yt3x/video2x": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "6.4.0",
   "rel_pub": "2025-01-24",
   "rel_days": 630,
@@ -30,8 +30,8 @@
   }
  },
  "InsForge/InsForge": {
-  "commit_90d": 550,
   "commit_7d": 14,
+  "commit_90d": 550,
   "rel_ver": "v2.3.4",
   "rel_pub": "2026-10-13",
   "rel_days": 3,
@@ -60,8 +60,8 @@
   }
  },
  "kyrolabs/awesome-langchain": {
-  "commit_90d": 17,
   "commit_7d": 3,
+  "commit_90d": 17,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -70,6 +70,65 @@
   "sec_ids": [],
   "contrib_n": 69,
   "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "AgentOps-AI/agentops": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "0.4.21",
+  "rel_pub": "2025-08-29",
+  "rel_days": 413,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 49,
+  "lang": {
+   "Python": 60,
+   "TypeScript": 37,
+   "PLpgSQL": 1,
+   "Shell": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "opengeos/segment-geospatial": {
+  "commit_90d": 9,
+  "commit_7d": 0,
+  "rel_ver": "v1.4.2",
+  "rel_pub": "2026-08-22",
+  "rel_days": 55,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 27,
+  "lang": {
+   "Python": 99,
+   "TeX": 0,
+   "Shell": 0,
+   "Dockerfile": 0
+  },
   "enriched_at": "20261016",
   "dim_ts": {
    "commit": "20261016",

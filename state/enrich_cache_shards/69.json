@@ -1,7 +1,7 @@
 {
  "micro/go-micro": {
-  "commit_90d": 118,
   "commit_7d": 14,
+  "commit_90d": 118,
   "rel_ver": "v6.15.0",
   "rel_pub": "2026-10-10",
   "rel_days": 6,

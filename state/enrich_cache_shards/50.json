@@ -1,7 +1,7 @@
 {
  "livekit/agents": {
-  "commit_90d": 563,
   "commit_7d": 61,
+  "commit_90d": 563,
   "rel_ver": "livekit-agents@1.8.8",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -31,8 +31,8 @@
   }
  },
  "BasedHardware/omi": {
-  "commit_90d": 12216,
   "commit_7d": 1012,
+  "commit_90d": 12216,
   "rel_ver": "v0.12.493+12493-macos",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -50,6 +50,32 @@
    "Swift": 19,
    "TypeScript": 13,
    "C": 6
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "gluonfield/enchanted": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.8.2",
+  "rel_pub": "2026-06-15",
+  "rel_days": 123,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Swift": 100
   },
   "enriched_at": "20261016",
   "dim_ts": {

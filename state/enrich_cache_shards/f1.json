@@ -1,7 +1,7 @@
 {
  "OpenHands/OpenHands": {
-  "commit_90d": 789,
   "commit_7d": 122,
+  "commit_90d": 789,
   "rel_ver": "v1.27.1",
   "rel_pub": "2026-10-12",
   "rel_days": 4,
@@ -32,8 +32,8 @@
   }
  },
  "continuedev/continue": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": "v2.1.0-vscode",
   "rel_pub": "2026-06-19",
   "rel_days": 119,
@@ -62,8 +62,8 @@
   }
  },
  "microsoft/data-formulator": {
-  "commit_90d": 59,
   "commit_7d": 0,
+  "commit_90d": 59,
   "rel_ver": "0.8b1",
   "rel_pub": "2026-08-15",
   "rel_days": 62,
@@ -92,8 +92,8 @@
   }
  },
  "Tencent-Hunyuan/HunyuanVideo": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -115,8 +115,8 @@
   }
  },
  "speechbrain/speechbrain": {
-  "commit_90d": 25,
   "commit_7d": 13,
+  "commit_90d": 25,
   "rel_ver": "v1.1.2",
   "rel_pub": "2026-10-14",
   "rel_days": 2,
@@ -133,6 +133,75 @@
    "Perl": 1,
    "MATLAB": 0,
    "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "zai-org/GLM-4": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 28,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "jphall663/awesome-machine-learning-interpretability": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 36,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "lightly-ai/lightly": {
+  "commit_90d": 48,
+  "commit_7d": 1,
+  "rel_ver": "v1.5.26",
+  "rel_pub": "2026-07-27",
+  "rel_days": 81,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 97,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1
   },
   "enriched_at": "20261016",
   "dim_ts": {

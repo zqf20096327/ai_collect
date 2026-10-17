@@ -1,7 +1,7 @@
 {
  "paperclipai/paperclip": {
-  "commit_90d": 2171,
   "commit_7d": 369,
+  "commit_90d": 2171,
   "rel_ver": "v2026.1012.0",
   "rel_pub": "2026-10-12",
   "rel_days": 4,
@@ -39,8 +39,8 @@
   }
  },
  "vercel/ai": {
-  "commit_90d": 1496,
   "commit_7d": 92,
+  "commit_90d": 1496,
   "rel_ver": "ai@7.0.143",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -76,8 +76,8 @@
   }
  },
  "Lightning-AI/litgpt": {
-  "commit_90d": 9,
   "commit_7d": 0,
+  "commit_90d": 9,
   "rel_ver": "v0.5.13",
   "rel_pub": "2026-06-29",
   "rel_days": 109,
@@ -103,8 +103,8 @@
   }
  },
  "bentoml/OpenLLM": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.6.30",
   "rel_pub": "2025-04-21",
   "rel_days": 543,
@@ -119,6 +119,34 @@
   "lang": {
    "Python": 96,
    "Shell": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/LLMLingua": {
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2024-04-09",
+  "rel_days": 920,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 18,
+  "lang": {
+   "Python": 98,
+   "Shell": 2,
+   "Makefile": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

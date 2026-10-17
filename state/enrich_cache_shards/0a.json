@@ -1,7 +1,7 @@
 {
  "calesthio/OpenMontage": {
-  "commit_90d": 172,
   "commit_7d": 25,
+  "commit_90d": 172,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -26,8 +26,8 @@
   }
  },
  "huggingface/pytorch-image-models": {
-  "commit_90d": 198,
   "commit_7d": 34,
+  "commit_90d": 198,
   "rel_ver": "v1.0.30",
   "rel_pub": "2026-09-22",
   "rel_days": 24,
@@ -54,8 +54,8 @@
   }
  },
  "AiHubCN/Awesome-Chinese-LLM": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -74,8 +74,8 @@
   }
  },
  "microsoft/magentic-ui": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": "v0.2.1",
   "rel_pub": "2026-05-21",
   "rel_days": 148,
@@ -104,8 +104,8 @@
   }
  },
  "Nasiko-Labs/nasiko": {
-  "commit_90d": 1861,
   "commit_7d": 26,
+  "commit_90d": 1861,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-02-12",
   "rel_days": 246,
@@ -123,6 +123,162 @@
    "Python": 1,
    "Go": 0,
    "PLpgSQL": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "lazyprogrammer/machine_learning_examples": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ChatLab/ChatLab": {
+  "commit_90d": 352,
+  "commit_7d": 1,
+  "rel_ver": "v0.37.5",
+  "rel_pub": "2026-09-28",
+  "rel_days": 18,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 24,
+  "lang": {
+   "TypeScript": 76,
+   "Vue": 21,
+   "JavaScript": 2,
+   "Rust": 1,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "openai/openai-cs-agents-demo": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 60,
+   "TypeScript": 38,
+   "CSS": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "walkinglabs/awesome-harness-engineering": {
+  "commit_90d": 25,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 48,
+  "lang": {},
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "1186258278/OpenClawChineseTranslation": {
+  "commit_90d": 29,
+  "commit_7d": 6,
+  "rel_ver": "v2026.10.4-zh.1",
+  "rel_pub": "2026-10-16",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "JavaScript": 48,
+   "Shell": 13,
+   "PowerShell": 13,
+   "TypeScript": 11,
+   "CSS": 9
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "ben1234560/AiLearning-Theory-Applying": {
+  "commit_90d": 6,
+  "commit_7d": 0,
+  "rel_ver": "embodied-simulation-baseline",
+  "rel_pub": "2026-09-03",
+  "rel_days": 43,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 2,
+   "Shell": 0,
+   "Dockerfile": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

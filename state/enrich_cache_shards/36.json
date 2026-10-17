@@ -1,7 +1,7 @@
 {
  "hpcaitech/ColossalAI": {
-  "commit_90d": 44,
   "commit_7d": 13,
+  "commit_90d": 44,
   "rel_ver": "v0.5.0",
   "rel_pub": "2025-06-04",
   "rel_days": 499,
@@ -30,8 +30,8 @@
   }
  },
  "titanwings/distilly": {
-  "commit_90d": 45,
   "commit_7d": 14,
+  "commit_90d": 45,
   "rel_ver": "v0.01",
   "rel_pub": "2026-03-30",
   "rel_days": 200,
@@ -58,8 +58,8 @@
   }
  },
  "DLR-RM/stable-baselines3": {
-  "commit_90d": 5,
   "commit_7d": 1,
+  "commit_90d": 5,
   "rel_ver": "v2.9.0",
   "rel_pub": "2026-06-15",
   "rel_days": 123,
@@ -87,8 +87,8 @@
   }
  },
  "frankbria/ralph-claude-code": {
-  "commit_90d": 13,
   "commit_7d": 2,
+  "commit_90d": 13,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -111,8 +111,8 @@
   }
  },
  "anthropics/claude-for-legal": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -134,8 +134,8 @@
   }
  },
  "arogozhnikov/einops": {
-  "commit_90d": 3,
   "commit_7d": 0,
+  "commit_90d": 3,
   "rel_ver": "v0.9.0dev",
   "rel_pub": "2026-07-05",
   "rel_days": 103,
@@ -163,8 +163,8 @@
   }
  },
  "pytorch/tutorials": {
-  "commit_90d": 12,
   "commit_7d": 2,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -189,8 +189,8 @@
   }
  },
  "modelscope/modelscope": {
-  "commit_90d": 20,
   "commit_7d": 1,
+  "commit_90d": 20,
   "rel_ver": "v1.40.2",
   "rel_pub": "2026-10-09",
   "rel_days": 7,
@@ -219,8 +219,8 @@
   }
  },
  "open-pencil/open-pencil": {
-  "commit_90d": 1111,
   "commit_7d": 111,
+  "commit_90d": 1111,
   "rel_ver": "v0.16.0",
   "rel_pub": "2026-10-14",
   "rel_days": 2,
@@ -239,6 +239,73 @@
    "Vue": 9,
    "Rust": 1,
    "CSS": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "VowpalWabbit/vowpal_wabbit": {
+  "commit_90d": 48,
+  "commit_7d": 0,
+  "rel_ver": "9.11.9",
+  "rel_pub": "2026-09-27",
+  "rel_days": 19,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 6,
+  "sec_worst": "high",
+  "sec_last": "2026-09-13",
+  "sec_ids": [
+   "GHSA-9cm9-qvp3-c2v4(-,low)",
+   "GHSA-q2hj-ggqm-4g62(-,medium)",
+   "GHSA-9463-43mc-xhc6(-,medium)",
+   "GHSA-x3cx-p52g-p5q7(-,high)",
+   "GHSA-c8v3-p4fg-v3pm(-,high)",
+   "GHSA-cg2g-xgg7-3xxq(CVE-2026-44723,medium)"
+  ],
+  "contrib_n": 220,
+  "lang": {
+   "C++": 58,
+   "C#": 15,
+   "PLSQL": 10,
+   "Python": 6,
+   "Jupyter Notebook": 3
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "54yyyu/zotero-mcp": {
+  "commit_90d": 684,
+  "commit_7d": 30,
+  "rel_ver": "v0.15.0",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 91,
+  "lang": {
+   "Python": 77,
+   "TypeScript": 17,
+   "JavaScript": 7,
+   "Dockerfile": 0,
    "HTML": 0
   },
   "enriched_at": "20261016",

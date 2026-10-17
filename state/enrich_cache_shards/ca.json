@@ -1,7 +1,7 @@
 {
  "mlabonne/llm-course": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -20,8 +20,8 @@
   }
  },
  "onlook-dev/onlook": {
-  "commit_90d": 1,
   "commit_7d": 0,
+  "commit_90d": 1,
   "rel_ver": "v0.2.32",
   "rel_pub": "2025-07-17",
   "rel_days": 456,
@@ -54,8 +54,8 @@
   }
  },
  "QwenLM/Qwen3-VL": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -78,8 +78,8 @@
   }
  },
  "bbfamily/abu": {
-  "commit_90d": 1,
   "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "1.3.0",
   "rel_pub": "2019-06-20",
   "rel_days": 2675,
@@ -105,8 +105,8 @@
   }
  },
  "Tencent-Hunyuan/Hunyuan3D-2": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -131,8 +131,8 @@
   }
  },
  "datalab-to/chandra": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-03-18",
   "rel_days": 212,
@@ -147,6 +147,188 @@
   "lang": {
    "Python": 80,
    "HTML": 20
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "bytedance/flowgram.ai": {
+  "commit_90d": 15,
+  "commit_7d": 9,
+  "rel_ver": "v1.0.16",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 33,
+  "lang": {
+   "TypeScript": 78,
+   "MDX": 19,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Less": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "google/draco": {
+  "commit_90d": 59,
+  "commit_7d": 12,
+  "rel_ver": "1.5.8",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 78,
+  "lang": {
+   "C++": 93,
+   "CMake": 4,
+   "JavaScript": 1,
+   "Python": 1,
+   "C#": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "drumih/turbo-fieldfare": {
+  "commit_90d": 51,
+  "commit_7d": 2,
+  "rel_ver": "0.9.3",
+  "rel_pub": "2026-10-15",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 95,
+   "Metal": 4,
+   "Ruby": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "roboflow/sports": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "soccer-analytics-pr-demos",
+  "rel_pub": "2026-07-06",
+  "rel_days": 102,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "PeonPing/peon-ping": {
+  "commit_90d": 64,
+  "commit_7d": 0,
+  "rel_ver": "v2.37.0",
+  "rel_pub": "2026-08-26",
+  "rel_days": 51,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 171,
+  "lang": {
+   "Shell": 52,
+   "PowerShell": 31,
+   "TypeScript": 7,
+   "Python": 4,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "dagucloud/dagu": {
+  "commit_90d": 603,
+  "commit_7d": 95,
+  "rel_ver": "v2.20.1",
+  "rel_pub": "2026-10-14",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 6,
+  "sec_worst": "critical",
+  "sec_last": "2026-07-26",
+  "sec_ids": [
+   "GHSA-5m6c-38r8-5w76(CVE-2026-102943,medium)",
+   "GHSA-ph8x-4jfv-v9v8(CVE-2026-33344,high)",
+   "GHSA-9wmw-9wph-2vwp(CVE-2026-31882,high)",
+   "GHSA-m4q3-457p-hh2x(CVE-2026-31886,critical)",
+   "GHSA-6qr9-g2xw-cw92(-,low)",
+   "GHSA-6v48-fcq6-ff23(CVE-2026-27598,low)"
+  ],
+  "contrib_n": 109,
+  "lang": {
+   "Go": 77,
+   "TypeScript": 22,
+   "Shell": 0,
+   "PowerShell": 0,
+   "HTML": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {

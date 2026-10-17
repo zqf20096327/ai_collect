@@ -1,7 +1,7 @@
 {
  "eyaltoledano/claude-task-master": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": "task-master-ai@0.43.1",
   "rel_pub": "2026-03-31",
   "rel_days": 199,
@@ -30,8 +30,8 @@
   }
  },
  "flipped-aurora/gin-vue-admin": {
-  "commit_90d": 20,
   "commit_7d": 2,
+  "commit_90d": 20,
   "rel_ver": "v2.9.2-stable",
   "rel_pub": "2026-07-17",
   "rel_days": 91,
@@ -69,8 +69,8 @@
   }
  },
  "amusi/CVPR2026-Papers-with-Code": {
-  "commit_90d": 0,
   "commit_7d": 0,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -89,8 +89,8 @@
   }
  },
  "NirDiamant/agents-towards-production": {
-  "commit_90d": 19,
   "commit_7d": 0,
+  "commit_90d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -103,6 +103,150 @@
    "HTML": 5,
    "Python": 1,
    "Kotlin": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "flashlight/wav2letter": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v0.2",
+  "rel_pub": "2020-12-28",
+  "rel_days": 2118,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 38,
+  "lang": {
+   "C++": 51,
+   "Python": 24,
+   "Jupyter Notebook": 17,
+   "Shell": 4,
+   "CMake": 2
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "aisingapore/TagUI": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v6.110.0",
+  "rel_pub": "2022-06-20",
+  "rel_days": 1579,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "JavaScript": 32,
+   "C#": 29,
+   "PHP": 23,
+   "Batchfile": 6,
+   "Shell": 6
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "timeseriesAI/tsai": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-05-27",
+  "rel_days": 142,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 23,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3,
+   "CSS": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "modelscope/ms-agent": {
+  "commit_90d": 58,
+  "commit_7d": 0,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-03-23",
+  "rel_days": 207,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 45,
+  "lang": {
+   "Python": 86,
+   "TypeScript": 13,
+   "CSS": 0,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "LosaLosSantos/aurelio-finance": {
+  "commit_90d": 94,
+  "commit_7d": 68,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 80,
+   "TypeScript": 20,
+   "CSS": 0,
+   "JavaScript": 0,
    "Shell": 0
   },
   "enriched_at": "20261016",

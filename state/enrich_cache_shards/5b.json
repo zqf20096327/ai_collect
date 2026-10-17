@@ -1,7 +1,7 @@
 {
  "unslothai/unsloth": {
-  "commit_90d": 4991,
   "commit_7d": 744,
+  "commit_90d": 4991,
   "rel_ver": "v0.1.908-beta",
   "rel_pub": "2026-10-15",
   "rel_days": 1,
@@ -30,8 +30,8 @@
   }
  },
  "can1357/oh-my-pi": {
-  "commit_90d": 16632,
   "commit_7d": 2157,
+  "commit_90d": 16632,
   "rel_ver": "v18.11.2",
   "rel_pub": "2026-10-16",
   "rel_days": 0,
@@ -60,8 +60,8 @@
   }
  },
  "NielsRogge/Transformers-Tutorials": {
-  "commit_90d": 4,
   "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -72,6 +72,121 @@
   "lang": {
    "Jupyter Notebook": 100,
    "Python": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "netease-youdao/EmotiVoice": {
+  "commit_90d": 1,
+  "commit_7d": 0,
+  "rel_ver": "v0.3",
+  "rel_pub": "2023-12-28",
+  "rel_days": 1023,
+  "rel_n90": 0,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 11,
+  "lang": {
+   "Python": 100,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "vllm-project/semantic-router": {
+  "commit_90d": 1202,
+  "commit_7d": 166,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-09-27",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 257,
+  "lang": {
+   "Go": 51,
+   "Python": 30,
+   "TypeScript": 12,
+   "CSS": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "google/nsjail": {
+  "commit_90d": 60,
+  "commit_7d": 0,
+  "rel_ver": "3.6",
+  "rel_pub": "2026-03-18",
+  "rel_days": 212,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 76,
+  "lang": {
+   "C++": 90,
+   "Makefile": 4,
+   "C": 3,
+   "Roff": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261016",
+  "dim_ts": {
+   "commit": "20261016",
+   "release": "20261016",
+   "security": "20261016",
+   "contrib": "20261016",
+   "lang": "20261016"
+  }
+ },
+ "microsoft/WinUI-Gallery": {
+  "commit_90d": 52,
+  "commit_7d": 7,
+  "rel_ver": "v3.0.4",
+  "rel_pub": "2026-10-13",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 122,
+  "lang": {
+   "C#": 100,
+   "PowerShell": 0
   },
   "enriched_at": "20261016",
   "dim_ts": {
