@@ -123,9 +123,18 @@ jobs:
             for i in 1 2 3 4 5; do
               git fetch origin main
               if ! git rebase --autostash origin/main; then
-                # 同日两次运行的状态文件会 add/add 冲突;rebase 语义反转:
-                # --theirs 才是本窗提交(当日最新状态),冲突一律取它
-                git diff --name-only --diff-filter=U -z | xargs -0 -r git checkout --theirs --
+                # 撞车分流:富集台账/侧车按 fn/dim_ts 并集合并,两窗数据都保
+                # (10-16 事故是整文件取本窗,顶掉前窗 843 仓台账);
+                # 其余文件维持原策略:rebase 语义反转,--theirs 才是本窗提交
+                git diff --name-only --diff-filter=U -z | while IFS= read -r -d '' p; do
+                  case "$p" in
+                    state/enrich_cache_shards/*.json|state/enrich_state.json)
+                      python tools/merge_state_json.py --path "$p" --tie theirs \
+                        || git checkout --theirs -- "$p" ;;
+                    *)
+                      git checkout --theirs -- "$p" ;;
+                  esac
+                done
                 git diff --name-only --diff-filter=U -z | xargs -0 -r git add
                 GIT_EDITOR=true git rebase --continue
               fi
